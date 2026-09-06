@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hen Screenshots — Brand identity</title>
+  <meta name="description" content="The visual identity of Hen Screenshots, an app screenshot studio.">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./tokens.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--brand-paper); color: var(--brand-ink); font-family: var(--font-brand); -webkit-font-smoothing: antialiased; }
+    main { max-width: 1440px; margin: auto; padding: 44px 64px 28px; }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+    .wordmark { display: flex; align-items: center; gap: 14px; font-size: 25px; font-weight: 750; letter-spacing: -1px; }
+    .wordmark img { width: 43px; height: 43px; }
+    .meta, .eyebrow, .label { font-size: 12px; letter-spacing: .11em; text-transform: uppercase; font-weight: 650; color: var(--brand-muted); }
+    .meta { text-align: right; line-height: 1.7; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 38px; align-items: center; margin: 66px 0 60px; min-height: 475px; }
+    .hero > *, .foundations > * { min-width: 0; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; }
+    .eyebrow::before { content: ''; width: 24px; height: 2px; background: var(--brand-clay); }
+    h1 { font-size: clamp(50px, 5.4vw, 78px); font-weight: 600; line-height: 1.06; letter-spacing: -.055em; margin: 24px 0; }
+    h1 span { color: var(--brand-clay); }
+    .intro { font-size: 17px; line-height: 1.7; color: var(--brand-muted); max-width: 37ch; margin: 0; }
+    .specimen { height: 468px; margin: 0; position: relative; display: grid; place-items: center; }
+    .orbit { position: absolute; width: 440px; height: 440px; border-radius: 50%; border: 1px solid var(--brand-border); }
+    .artwork { position: absolute; width: 230px; height: 375px; padding: 27px 24px 0; border-radius: 3px; overflow: hidden; box-shadow: 0 12px 22px #20272515; }
+    .artwork.one { background: var(--brand-clay); color: var(--brand-paper); transform: translate(-111px, -13px) rotate(-9deg); z-index: 1; }
+    .artwork.two { background: var(--brand-sage); transform: translate(112px, 22px) rotate(8deg); z-index: 2; }
+    .art-title { font-size: 25px; line-height: 1.13; font-weight: 650; letter-spacing: -.9px; margin: 0 0 12px; }
+    .art-caption { font-size: 10px; font-weight: 500; margin: 0 0 19px; }
+    .phone { width: 175px; height: 276px; padding: 18px 12px; border: 5px solid var(--brand-ink); border-radius: 28px; background: #fbfaf6; color: var(--brand-ink); box-shadow: 0 8px 20px #20272520; margin: auto; position: relative; }
+    .phone::before { content: ''; position: absolute; top: 6px; left: calc(50% - 17px); width: 34px; height: 5px; background: var(--brand-ink); border-radius: 9px; }
+    .app-name { font-size: 9px; font-weight: 800; letter-spacing: .04em; margin-top: 8px; }
+    .phone h3 { font-size: 21px; line-height: 1.1; margin: 12px 0 4px; letter-spacing: -.7px; }
+    .phone p { font-size: 8px; color: var(--brand-muted); margin: 0; }
+    .habit { display: flex; align-items: center; gap: 7px; padding: 11px 0; font-size: 8px; border-bottom: 1px solid var(--brand-border); }
+    .habit::before { content: ''; width: 14px; height: 14px; border: 1px solid #70796e; border-radius: 50%; flex-shrink: 0; }
+    .habit.done::before { content: '✓'; text-align: center; font-size: 9px; background: var(--brand-sage); }
+    .ring { width: 100px; height: 100px; margin: 20px auto 17px; border-radius: 50%; background: conic-gradient(var(--brand-clay) 0deg 270deg, var(--brand-sage) 270deg); display: grid; place-items: center; }
+    .ring-inner { width: 79px; height: 79px; background: #fbfaf6; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; font-weight: 650; }
+    .ring-inner small { font-size: 7px; font-weight: 500; color: var(--brand-muted); }
+    .week { display: flex; justify-content: space-between; gap: 4px; margin-top: 16px; }
+    .week span { background: var(--brand-sage); border-radius: 4px; width: 16px; height: 21px; font-size: 7px; display: grid; place-items: center; }
+    .week span:nth-child(4) { background: var(--brand-clay); color: var(--brand-paper); }
+    .art-note { position: absolute; bottom: -4px; font-size: 11px; color: var(--brand-muted); }
+    .foundations { display: grid; grid-template-columns: .85fr 1.15fr 1fr; gap: 42px; border-top: 1px solid var(--brand-border); padding-top: 28px; }
+    .label { margin: 0 0 23px; }
+    .marks { display: flex; align-items: center; gap: 15px; height: 83px; }
+    .mark-tile { width: 80px; height: 80px; display: grid; place-items: center; border-radius: 18px; }
+    .mark-tile.light { border: 1px solid var(--brand-border); }
+    .mark-tile.dark { background: var(--brand-ink); }
+    .mark-tile img { width: 49px; height: 49px; }
+    .marks > img { width: 80px; height: 80px; }
+    .detail { font-size: 12px; line-height: 1.6; color: var(--brand-muted); margin: 20px 0 0; }
+    .palette { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .swatch { height: 53px; border-radius: 5px; border: 1px solid #20272510; }
+    .swatch-name { display: block; font-size: 12px; margin-top: 8px; font-weight: 650; }
+    .hex { display: block; font-size: 10px; margin-top: 3px; color: var(--brand-muted); }
+    .type-name { font-size: 36px; font-weight: 650; letter-spacing: -1.7px; margin: -10px 0 4px; }
+    .type-specimen { font-size: 17px; letter-spacing: -.2px; margin: 0; }
+    footer { margin-top: 35px; padding-top: 18px; border-top: 1px solid var(--brand-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; font-size: 11px; color: var(--brand-muted); line-height: 1.5; }
+    .portfolio-link { display: inline-flex; align-items: center; min-height: 44px; gap: 7px; color: var(--brand-ink); font-size: 12px; font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
+    .portfolio-link:hover { color: var(--brand-clay); }
+    .portfolio-link:focus-visible { outline: 2px solid var(--brand-clay); outline-offset: 4px; border-radius: 2px; }
+    @media (max-width: 1000px) {
+      main { padding: 32px; }
+      .hero { gap: 20px; }
+      h1 { font-size: clamp(46px, 6vw, 64px); }
+      .specimen { transform: scale(.79); transform-origin: center; width: 100%; justify-self: center; }
+      .foundations { gap: 24px; grid-template-columns: 1fr 1.2fr; }
+      .typography { grid-column: 1 / -1; }
+    }
+    @media (max-width: 720px) {
+      main { padding: 28px 24px 24px; }
+      .wordmark { font-size: 20px; gap: 10px; letter-spacing: -.7px; }
+      .wordmark img { width: 34px; height: 34px; }
+      .meta { display: none; }
+      .hero { grid-template-columns: 1fr; gap: 24px; margin: 50px 0 30px; }
+      h1 { font-size: clamp(48px, 10.5vw, 72px); margin-top: 22px; }
+      .intro { max-width: 40ch; font-size: 16px; }
+      .specimen { width: 100%; height: 370px; transform: none; }
+      .orbit { width: min(100%, 330px); height: auto; aspect-ratio: 1; }
+      .artwork { width: 172px; height: 290px; padding: 22px 18px 0; }
+      .artwork.one { transform: translate(-65px, -14px) rotate(-8deg) scale(.85); }
+      .artwork.two { transform: translate(64px, 14px) rotate(7deg) scale(.85); }
+      .art-title { font-size: 20px; }
+      .art-caption { font-size: 8px; margin-bottom: 13px; }
+      .phone { transform: scale(.76); transform-origin: top left; margin-left: 1px; }
+      .foundations { grid-template-columns: 1fr; gap: 35px; }
+      .typography { grid-column: auto; }
+      .label { margin-bottom: 20px; }
+      .palette { max-width: 410px; }
+      .type-name { margin-top: 0; }
+      footer { flex-direction: column; align-items: flex-start; gap: 5px; }
+    }
+    @media (max-width: 370px) {
+      main { padding-left: 20px; padding-right: 20px; }
+      .artwork.one { transform: translate(-54px, -12px) rotate(-7deg) scale(.78); }
+      .artwork.two { transform: translate(54px, 14px) rotate(6deg) scale(.78); }
+      .specimen { height: 330px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="wordmark"><img src="./mark.svg" alt=""><span>Hen Screenshots</span></div>
+      <div class="meta">Brand identity · 01<br>September 2026</div>
+    </header>
+    <section class="hero" aria-labelledby="brand-headline">
+      <div>
+        <div class="eyebrow">App screenshot studio</div>
+        <h1 id="brand-headline">Your app.<br><span>Beautifully</span><br>presented.</h1>
+        <p class="intro">Turn your app’s screenshots into a polished set for Google Play. Customize each image and keep the whole set consistent.</p>
+      </div>
+      <figure class="specimen" role="img" aria-label="Example promotional artwork for a fictional habit app: two coordinated screenshots with a clay and sage palette.">
+        <div class="orbit" aria-hidden="true"></div>
+        <div class="artwork one" aria-hidden="true">
+          <div class="art-title">Small habits.<br>Real progress.</div>
+          <div class="art-caption">Make room for what matters.</div>
+          <div class="phone">
+            <div class="app-name">steady.</div><h3>A little<br>every day.</h3><p>Your space to build better habits.</p>
+            <div class="habit done">Read for 20 minutes</div><div class="habit done">Take a walk</div><div class="habit">Drink more water</div>
+            <div class="week"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          </div>
+        </div>
+        <div class="artwork two" aria-hidden="true">
+          <div class="art-title">Look how<br>far you've come.</div>
+          <div class="art-caption">Every small step adds up.</div>
+          <div class="phone">
+            <div class="app-name">steady.</div><h3>Your week.</h3><p>A little more consistent, every day.</p>
+            <div class="ring"><div class="ring-inner">6<small>habits completed</small></div></div>
+            <div class="week"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          </div>
+        </div>
+        <figcaption class="art-note">Sample artwork · Fictional app</figcaption>
+      </figure>
+    </section>
+    <section class="foundations" aria-label="Visual identity foundations">
+      <div>
+        <h2 class="label">01 / The mark</h2>
+        <div class="marks"><div class="mark-tile light"><img src="./mark.svg" alt="Dark H mark"></div><div class="mark-tile dark"><img src="./mark-light.svg" alt="Light H mark"></div><img src="./icon.svg" alt="Clay app icon"></div>
+        <p class="detail">Two frames. One H.<br>A small signature for a considered tool.</p>
+      </div>
+      <div>
+        <h2 class="label">02 / The palette</h2>
+        <div class="palette">
+          <div><div class="swatch" style="background:#202725"></div><span class="swatch-name">Ink</span><span class="hex">#202725</span></div>
+          <div><div class="swatch" style="background:#B64C35"></div><span class="swatch-name">Clay</span><span class="hex">#B64C35</span></div>
+          <div><div class="swatch" style="background:#F6F4ED"></div><span class="swatch-name">Paper</span><span class="hex">#F6F4ED</span></div>
+          <div><div class="swatch" style="background:#E3E8DE"></div><span class="swatch-name">Sage</span><span class="hex">#E3E8DE</span></div>
+        </div>
+        <p class="detail">Quiet surfaces. A warm, purposeful accent.</p>
+      </div>
+      <div class="typography">
+        <h2 class="label">03 / The type</h2>
+        <p class="type-name">Manrope</p>
+        <p class="type-specimen">Aa Bb Cc Dd Ee Ff Gg<br>0123456789 &amp; @</p>
+        <p class="detail">Clear, friendly, precise.<br>One family, from wordmark to workspace.</p>
+      </div>
+    </section>
+    <footer><span>Hen Screenshots · App screenshot studio</span><a class="portfolio-link" href="https://hensell.dev" target="_blank" rel="noopener noreferrer" aria-label="Hensell’s portfolio (opens in a new tab)">Portfolio · hensell.dev <span aria-hidden="true">↗</span></a><span>Identity specimen · Editor in development</span></footer>
+  </main>
+</body>
+</html>

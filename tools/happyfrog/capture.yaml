@@ -1,0 +1,35 @@
+appId: com.hensell.froghappy.dev
+name: HappyFrog screenshot series
+# Run only on the seeded HenScreenshots_QA emulator. OUTPUT_DIR must be absolute.
+---
+- launchApp:
+    clearState: false
+- assertVisible: Today
+- assertVisible: '09:41'
+- assertVisible: 'Battery 100 percent.'
+- tapOn: Sort habits
+- assertVisible: 'Morning stretch\nMorning'
+- waitForAnimationToEnd
+- takeScreenshot: ${OUTPUT_DIR}/01-home
+- tapOn: 'Work\nTab 2 of 5'
+- tapOn: 'Now\n2'
+- assertVisible: '(?s).*Sketch the welcome screen.*'
+- waitForAnimationToEnd
+- takeScreenshot: ${OUTPUT_DIR}/03-work
+- tapOn: 'Journal\nTab 3 of 5'
+- assertVisible: '(?s).*A calmer start.*'
+- waitForAnimationToEnd
+- takeScreenshot: ${OUTPUT_DIR}/04-journal
+- tapOn: 'More\nTab 5 of 5'
+- tapOn: Focus
+- assertVisible: '25:00'
+- waitForAnimationToEnd
+- takeScreenshot: ${OUTPUT_DIR}/05-focus
+- back
+- tapOn: Insights
+- tapOn: Habits
+- assertVisible: '21 days\nBest Streak'
+- waitForAnimationToEnd
+- takeScreenshot: ${OUTPUT_DIR}/02-insights
+- back
+- tapOn: 'Home\nTab 1 of 5'

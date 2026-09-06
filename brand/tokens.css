@@ -1,0 +1,23 @@
+@font-face {
+  font-family: "Manrope";
+  src: url("./fonts/Manrope.ttf") format("truetype");
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+:root {
+  --brand-paper: #f6f4ed;
+  --brand-ink: #202725;
+  --brand-clay: #b64c35;
+  --brand-clay-hover: #983d2a;
+  --brand-sage: #e3e8de;
+  --brand-muted: #5e655f;
+  --brand-border: #d7dbd3;
+  --color-background: var(--brand-paper);
+  --color-text: var(--brand-ink);
+  --color-text-secondary: var(--brand-muted);
+  --color-action: var(--brand-clay);
+  --color-on-action: var(--brand-paper);
+  --color-focus: var(--brand-clay);
+  --font-brand: "Manrope", "Helvetica Neue", Arial, sans-serif;
+}

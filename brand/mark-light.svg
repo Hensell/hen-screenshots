@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <title>Hen Screenshots</title>
+  <g stroke="#F6F4ED" stroke-width="5" stroke-linejoin="round">
+    <rect x="9" y="9" width="18" height="46" rx="5"/>
+    <rect x="37" y="9" width="18" height="46" rx="5"/>
+    <path d="M27 32h10"/>
+  </g>
+</svg>
