@@ -1,4 +1,12 @@
-import type { Project, Shot, Style, TemplateId } from "./model";
+import {
+  resolveStyle,
+  type Project,
+  type Shot,
+  type Style,
+  type TemplateId,
+} from "./model";
+import { canonicalCanvas, type ExportProfileId } from "./export-profiles";
+import { deviceGeometry, type Rect } from "../rendering/geometry";
 
 interface TextBox {
   x: number;
@@ -58,7 +66,7 @@ export const templates: readonly Template[] = [
     id: "spotlight",
     name: "Spotlight",
     description: "Big words. A closer look at your app.",
-    note: "An oversized phone extends beyond the canvas for a closer look.",
+    note: "A generous product view with a bold headline.",
     style: {
       template: "spotlight",
       background: "#142E29",
@@ -80,7 +88,7 @@ export const templates: readonly Template[] = [
     id: "tilt",
     name: "Tilt",
     description: "An unexpected angle. A confident entrance.",
-    note: "A tilted phone and an oversized headline, with a deliberate crop below.",
+    note: "A considered angle and an oversized headline.",
     style: {
       template: "tilt",
       background: "#F4EADA",
@@ -102,7 +110,7 @@ export const templates: readonly Template[] = [
     id: "editorial",
     name: "Editorial",
     description: "Let your product lead. Then make your point.",
-    note: "A full phone above the headline, like a considered magazine cover.",
+    note: "A framed product view and an editorial headline.",
     style: {
       template: "editorial",
       background: "#F1E2D6",
@@ -126,6 +134,118 @@ export function getTemplate(id: TemplateId): Template {
   const template = templates.find((item) => item.id === id);
   if (!template) throw new Error("This template is not supported.");
   return template;
+}
+
+/** Existing portrait phone compositions retain their original coordinates. */
+export function templateLayout(project: Project, style: Style) {
+  const template = getTemplate(style.template);
+  const canvas = canonicalCanvas(project);
+  const legacy =
+    canvas.height === 1920 &&
+    (style.device === "android" || style.device === "ios") &&
+    style.deviceOrientation === "portrait";
+  if (legacy)
+    return {
+      ...template,
+      fontScale: 1,
+      subtitleSize: 34,
+      panel: { x: 48, y: 52, width: 984, height: 1332 },
+    };
+  const h = canvas.height;
+  const wide = h <= 1080;
+  const editorial = style.template === "editorial";
+  const spotlight = style.template === "spotlight";
+  let title: Rect, subtitle: Rect, area: Rect;
+  if (
+    wide &&
+    (!spotlight ||
+      ((style.device === "ios" || style.device === "android") &&
+        style.deviceOrientation === "portrait"))
+  ) {
+    const textX = editorial ? 700 : 60;
+    title = { x: textX, y: h * 0.21, width: 320, height: h * 0.4 };
+    subtitle = { x: textX, y: h * 0.67, width: 320, height: h * 0.19 };
+    area = { x: editorial ? 48 : 430, y: h * 0.1, width: 602, height: h * 0.8 };
+  } else if (wide) {
+    title = { x: 90, y: h * 0.065, width: 900, height: h * 0.2 };
+    subtitle = { x: 150, y: h * 0.28, width: 780, height: h * 0.08 };
+    area = { x: 100, y: h * 0.4, width: 880, height: h * 0.55 };
+  } else {
+    title = {
+      x: 84,
+      y: editorial ? h * 0.76 : h * 0.055,
+      width: 912,
+      height: h * 0.16,
+    };
+    subtitle = {
+      x: 88,
+      y: editorial ? h * 0.93 : h * 0.235,
+      width: 904,
+      height: h * 0.06,
+    };
+    area = {
+      x: 80,
+      y: editorial ? h * 0.05 : h * 0.335,
+      width: 920,
+      height: h * (editorial ? 0.65 : 0.61),
+    };
+  }
+  const rotation = style.template === "tilt" ? -6 : 0;
+  const unit = deviceGeometry(
+    style.device,
+    1000,
+    style.frame,
+    style.deviceOrientation,
+  );
+  const radians = (Math.abs(rotation) * Math.PI) / 180;
+  const boundW =
+    Math.cos(radians) * unit.width + Math.sin(radians) * unit.height;
+  const boundH =
+    Math.sin(radians) * unit.width + Math.cos(radians) * unit.height;
+  const scale = Math.min(area.width / boundW, area.height / boundH);
+  const width = Math.round(unit.width * scale);
+  const height = deviceGeometry(
+    style.device,
+    width,
+    style.frame,
+    style.deviceOrientation,
+  ).height;
+  const phone = {
+    width,
+    x: Math.round(area.x + (area.width - width) / 2),
+    y: Math.round(area.y + (area.height - height) / 2),
+    rotation,
+  };
+  return {
+    ...template,
+    title,
+    subtitle,
+    phone,
+    fontScale: wide ? 0.6 : 0.92,
+    subtitleSize: wide ? 23 : 30,
+    panel: {
+      x: area.x - 16,
+      y: area.y - 20,
+      width: area.width + 32,
+      height: area.height + 40,
+    },
+  };
+}
+
+export function resetComposition(project: Project, shot: Shot): void {
+  shot.phone = {
+    ...templateLayout(project, resolveStyle(project, shot)).phone,
+  };
+}
+
+/** The caller wraps this in one history edit, so format and reflow undo together. */
+export function changeExportProfile(
+  project: Project,
+  id: ExportProfileId,
+): void {
+  if (project.exportProfile === id) return;
+  project.exportProfile = id;
+  for (const shot of project.shots) resetComposition(project, shot);
 }
 
 const colorKeys = [
@@ -152,7 +272,6 @@ export function applyTemplate(
   keepColors = false,
 ): void {
   if (!project.shots.some((shot) => shot.id === shotId)) return;
-  const preset = getTemplate(id);
   const patch = templateStyle(id, keepColors);
   if (all) Object.assign(project.style, patch);
   for (const shot of project.shots) {
@@ -161,7 +280,7 @@ export function applyTemplate(
       for (const key of Object.keys(patch) as (keyof Style)[])
         delete shot.style[key];
     } else Object.assign(shot.style, patch);
-    shot.phone = { ...preset.phone };
+    resetComposition(project, shot);
   }
 }
 
@@ -171,13 +290,15 @@ export function templatePreview(
   id: TemplateId,
   keepColors: boolean,
 ): Shot {
-  return {
+  const preview = {
     ...shot,
     style: {
       ...project.style,
       ...shot.style,
       ...templateStyle(id, keepColors),
     },
-    phone: { ...getTemplate(id).phone },
+    phone: { ...shot.phone },
   };
+  resetComposition(project, preview);
+  return preview;
 }

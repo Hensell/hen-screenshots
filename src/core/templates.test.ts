@@ -1,7 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("../storage/repository", () => ({ saveProject: vi.fn(async () => 1) }));
 import { createProject, createShot, resolveStyle } from "./model";
-import { applyTemplate, getTemplate, templatePreview } from "./templates";
+import {
+  applyTemplate,
+  changeExportProfile,
+  getTemplate,
+  templatePreview,
+} from "./templates";
 import { useEditor } from "../editor/store";
 
 function fixture() {
@@ -136,6 +141,28 @@ describe("template application", () => {
         resolveStyle(project, project.shots[0]),
       );
     }
+  });
+
+  it("undoes a destination change and every reflow together", () => {
+    const project = fixture();
+    const original = structuredClone(project);
+    useEditor.getState().open({ project, assets: [], revision: 1 });
+    useEditor
+      .getState()
+      .edit((draft) => changeExportProfile(draft, "apple-ipad13-landscape"));
+    expect(useEditor.getState().past).toHaveLength(1);
+    expect(useEditor.getState().project!.exportProfile).toBe(
+      "apple-ipad13-landscape",
+    );
+    useEditor.getState().undo();
+    expect({
+      ...useEditor.getState().project,
+      updatedAt: original.updatedAt,
+    }).toEqual(original);
+    useEditor.getState().redo();
+    expect(useEditor.getState().project!.exportProfile).toBe(
+      "apple-ipad13-landscape",
+    );
   });
 
   it("ignores a stale selected screenshot rather than restyling another project", () => {

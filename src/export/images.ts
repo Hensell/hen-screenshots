@@ -1,5 +1,9 @@
 import Konva from "konva";
-import { CANVAS } from "../core/model";
+import {
+  getExportProfile,
+  validateDimensions,
+  validateExportPng,
+} from "../core/export-profiles";
 import type { Project, Shot } from "../core/model";
 import { ensureManrope } from "../rendering/fonts";
 import { createScene } from "../rendering/scene";
@@ -12,25 +16,36 @@ export async function renderShot(
 ): Promise<Blob> {
   // Freeze the requested revision before font loading or PNG encoding can yield.
   const snapshot = structuredClone({ project, shot });
+  const profile = getExportProfile(snapshot.project.exportProfile);
+  const dimensions = { width: profile.width, height: profile.height };
+  validateDimensions(profile, dimensions.width, dimensions.height);
   await ensureManrope();
   const container = document.createElement("div");
   let stage: Konva.Stage | undefined;
   try {
-    stage = new Konva.Stage({ container, ...CANVAS });
+    stage = new Konva.Stage({
+      container,
+      ...dimensions,
+      scaleX: dimensions.width / 1080,
+      scaleY: dimensions.width / 1080,
+    });
     stage.add(createScene(snapshot.project, snapshot.shot, image));
     stage.draw();
     const canvas = stage.toCanvas({
-      ...CANVAS,
+      ...dimensions,
       pixelRatio: 1,
       imageSmoothingEnabled: true,
     });
-    if (canvas.width !== CANVAS.width || canvas.height !== CANVAS.height)
+    if (
+      canvas.width !== dimensions.width ||
+      canvas.height !== dimensions.height
+    )
       throw new Error("The exported image has incorrect dimensions.");
     // Canvas PNG encoders otherwise retain an alpha channel even when all pixels
     // are opaque. Google Play expects a 24-bit PNG without that channel.
     const opaque = document.createElement("canvas");
-    opaque.width = CANVAS.width;
-    opaque.height = CANVAS.height;
+    opaque.width = dimensions.width;
+    opaque.height = dimensions.height;
     const context = opaque.getContext("2d", { alpha: false });
     if (!context)
       throw new Error("The browser could not prepare the export canvas.");
@@ -46,6 +61,7 @@ export async function renderShot(
         else resolve(result);
       }, "image/png");
     });
+    await validateExportPng(blob, profile);
     return blob;
   } catch (cause) {
     const detail = cause instanceof Error ? ` ${cause.message}` : "";

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { deviceGeometry, fitImage, previewDimensions } from "./geometry";
+import type { DeviceFamily } from "../core/model";
 
 describe("capture geometry", () => {
   it("contains the whole source with equal scale on both axes", () => {
@@ -56,6 +57,142 @@ describe("capture geometry", () => {
     expect(bare.screen.height).toBe(bare.height);
   });
 
+  it.each(["android", "ios"] as const)(
+    "preserves the original portrait %s geometry",
+    (family) => {
+      const width = 620;
+      for (const frame of [true, false]) {
+        const inset = frame ? width * (family === "ios" ? 0.027 : 0.024) : 0;
+        const screenWidth = width - inset * 2;
+        const screenHeight =
+          screenWidth * (family === "ios" ? 19.5 / 9 : 20 / 9);
+        const radius = width * (family === "ios" ? 0.102 : 0.078);
+        const cameraWidth =
+          family === "ios" ? screenWidth * 0.29 : screenWidth * 0.032;
+        const cameraHeight =
+          family === "ios" ? screenWidth * 0.065 : cameraWidth;
+        expect(deviceGeometry(family, width, frame)).toMatchObject({
+          width,
+          height: screenHeight + inset * 2,
+          radius,
+          screen: {
+            x: inset,
+            y: inset,
+            width: screenWidth,
+            height: screenHeight,
+            radius: Math.max(0, radius - inset),
+          },
+          camera: {
+            x: (width - cameraWidth) / 2,
+            y: inset + screenWidth * (family === "ios" ? 0.016 : 0.022),
+            width: cameraWidth,
+            height: cameraHeight,
+            radius: cameraHeight / 2,
+          },
+        });
+      }
+    },
+  );
+
+  const screenRatios: Record<DeviceFamily, number> = {
+    android: 9 / 20,
+    ios: 9 / 19.5,
+    ipad: 3 / 4,
+    "android-tablet": 10 / 16,
+    monitor: 16 / 9,
+    laptop: 16 / 10,
+  };
+
+  it.each(Object.keys(screenRatios) as DeviceFamily[])(
+    "keeps every %s part in bounds and scales without distorting the screen",
+    (family) => {
+      for (const width of [160, 620, 2160]) {
+        for (const frame of [true, false]) {
+          for (const orientation of ["portrait", "landscape"] as const) {
+            const geometry = deviceGeometry(family, width, frame, orientation);
+            const desktop = family === "monitor" || family === "laptop";
+            const ratio =
+              !desktop && orientation === "landscape"
+                ? 1 / screenRatios[family]
+                : screenRatios[family];
+            expect(geometry.width).toBe(width);
+            expect(geometry.screen.width / geometry.screen.height).toBeCloseTo(
+              ratio,
+            );
+            for (const part of [
+              geometry.screen,
+              geometry.camera,
+              geometry.body,
+              geometry.stand,
+              geometry.base,
+              geometry.keyboard,
+              geometry.trackpad,
+            ]) {
+              if (!part) continue;
+              expect(part.x).toBeGreaterThanOrEqual(-0.000001);
+              expect(part.y).toBeGreaterThanOrEqual(-0.000001);
+              expect(part.width).toBeGreaterThan(0);
+              expect(part.height).toBeGreaterThan(0);
+              expect(part.x + part.width).toBeLessThanOrEqual(
+                geometry.width + 0.000001,
+              );
+              expect(part.y + part.height).toBeLessThanOrEqual(
+                geometry.height + 0.000001,
+              );
+            }
+            const fitted = fitImage(2560, 1440, geometry.screen, "contain");
+            expect(fitted.width / fitted.height).toBeCloseTo(2560 / 1440);
+            expect(fitted.width).toBeLessThanOrEqual(
+              geometry.screen.width + 0.000001,
+            );
+            expect(fitted.height).toBeLessThanOrEqual(
+              geometry.screen.height + 0.000001,
+            );
+            const doubled = deviceGeometry(
+              family,
+              width * 2,
+              frame,
+              orientation,
+            );
+            expect(doubled.height).toBeCloseTo(geometry.height * 2);
+            if (!frame) {
+              expect(geometry.body).toBeUndefined();
+              expect(geometry.stand).toBeUndefined();
+              expect(geometry.base).toBeUndefined();
+              expect(geometry.screen.width).toBeCloseTo(geometry.width);
+              expect(geometry.screen.height).toBeCloseTo(geometry.height);
+            }
+          }
+        }
+      }
+    },
+  );
+
+  it("rotates handheld hardware together with its screen", () => {
+    const portrait = deviceGeometry("ipad", 620, true);
+    const landscape = deviceGeometry(
+      "ipad",
+      portrait.height,
+      true,
+      "landscape",
+    );
+    expect(landscape.height).toBeCloseTo(portrait.width);
+    expect(landscape.screen.width).toBeCloseTo(portrait.screen.height);
+    expect(landscape.screen.height).toBeCloseTo(portrait.screen.width);
+    expect(landscape.camera.x).toBeCloseTo(portrait.camera.y);
+    expect(landscape.camera.width).toBeCloseTo(portrait.camera.height);
+  });
+
+  it("counts desktop hardware as part of the device bounds", () => {
+    const monitor = deviceGeometry("monitor", 900, true);
+    const laptop = deviceGeometry("laptop", 900, true);
+    expect(monitor.height).toBeGreaterThan(monitor.body!.height);
+    expect(monitor.base!.y).toBeGreaterThan(monitor.body!.height);
+    expect(laptop.body!.width).toBeLessThan(laptop.width);
+    expect(laptop.base!.width).toBe(laptop.width);
+    expect(laptop.base!.y + laptop.base!.height).toBe(laptop.height);
+  });
+
   it("uses canonical document scaling at thumbnail and editor widths", () => {
     for (const width of [90, 270, 540, 1080]) {
       const preview = previewDimensions(width);
@@ -64,10 +201,18 @@ describe("capture geometry", () => {
     }
   });
 
+  it("uses the selected canvas aspect ratio for a preview", () => {
+    const landscape = previewDimensions(360, { width: 1080, height: 675 });
+    expect(landscape).toEqual({ width: 360, height: 225, scale: 1 / 3 });
+    const tablet = previewDimensions(270, { width: 1080, height: 1440 });
+    expect(tablet).toEqual({ width: 270, height: 360, scale: 0.25 });
+  });
+
   it("rejects invalid geometry before attempting to draw or allocate an image", () => {
     expect(() => deviceGeometry("ios", 0, true)).toThrow();
     expect(() => deviceGeometry("android", Infinity, true)).toThrow();
     expect(() => previewDimensions(-1)).toThrow();
+    expect(() => previewDimensions(100, { width: 1080, height: 0 })).toThrow();
     expect(() =>
       fitImage(0, 100, { x: 0, y: 0, width: 100, height: 200 }, "cover"),
     ).toThrow();

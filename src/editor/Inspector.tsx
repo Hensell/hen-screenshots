@@ -1,8 +1,28 @@
-import { resolveStyle } from "../core/model";
+import { resolveStyle, PLACEMENT_LIMITS } from "../core/model";
 import type { Project, Shot, Style } from "../core/model";
 import { useEditor } from "./store";
 import { Icon } from "../app/Icon";
-import { getTemplate } from "../core/templates";
+import {
+  getTemplate,
+  resetComposition,
+  changeExportProfile,
+} from "../core/templates";
+
+import {
+  exportProfiles,
+  getExportProfile,
+  PROFILE_REVIEW_DATE,
+  type ExportProfileId,
+} from "../core/export-profiles";
+
+export const deviceNames = {
+  android: "Android phone",
+  ios: "iPhone",
+  ipad: "iPad",
+  "android-tablet": "Android tablet",
+  monitor: "Monitor",
+  laptop: "Laptop",
+} as const;
 
 const palettes = [
   { name: "Sage", background: "#E3E8DE", textColor: "#202725" },
@@ -38,6 +58,8 @@ export function Inspector({
   function setStyle(patch: Partial<Style>) {
     updateShot((shot) => {
       Object.assign(shot.style, patch);
+      if (patch.device || patch.deviceOrientation)
+        resetComposition(project, shot);
     });
   }
   function range(
@@ -84,6 +106,137 @@ export function Inspector({
         </span>
       </div>
       <fieldset disabled={disabled} className="inspector-fields">
+        <section className="property-section export-format">
+          <h3>Export destination</h3>
+          <label className="field">
+            Store &amp; size
+            <select
+              value={project.exportProfile}
+              onChange={(event) =>
+                edit((draft) =>
+                  changeExportProfile(
+                    draft,
+                    event.target.value as ExportProfileId,
+                  ),
+                )
+              }
+            >
+              {(["apple", "google", "presentation"] as const).map((store) => (
+                <optgroup
+                  key={store}
+                  label={
+                    store === "apple"
+                      ? "Apple App Store"
+                      : store === "google"
+                        ? "Google Play"
+                        : "Website & portfolio"
+                  }
+                >
+                  {exportProfiles
+                    .filter((profile) => profile.store === store)
+                    .map((profile) => (
+                      <option key={profile.id} value={profile.id}>
+                        {profile.name} · {profile.width} × {profile.height}
+                      </option>
+                    ))}
+                </optgroup>
+              ))}
+            </select>
+          </label>
+          <p className="format-dimensions">
+            {getExportProfile(project.exportProfile).width} ×{" "}
+            {getExportProfile(project.exportProfile).height}
+            <span>RGB PNG · No transparency</span>
+          </p>
+          <p className="field-help">
+            Applies to the whole series and refits each layout. Undo anytime.
+          </p>
+          {getExportProfile(project.exportProfile).source && (
+            <a
+              className="format-source"
+              href={getExportProfile(project.exportProfile).source}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Store size requirements ↗{" "}
+              <span>Checked {PROFILE_REVIEW_DATE}</span>
+            </a>
+          )}
+        </section>
+        <section className="property-section">
+          <h3>Device frame</h3>
+          <div
+            className="device-options"
+            role="group"
+            aria-label="Device family"
+          >
+            {Object.entries(deviceNames).map(([device, name]) => (
+              <button
+                type="button"
+                key={device}
+                aria-pressed={style.device === device}
+                onClick={() => setStyle({ device: device as Style["device"] })}
+              >
+                <span className={`device-glyph ${device}`} />
+                {name}
+              </button>
+            ))}
+          </div>
+          {style.device !== "monitor" && style.device !== "laptop" && (
+            <div
+              className="segmented"
+              role="group"
+              aria-label="Device orientation"
+            >
+              {(["portrait", "landscape"] as const).map((orientation) => (
+                <button
+                  type="button"
+                  key={orientation}
+                  aria-pressed={style.deviceOrientation === orientation}
+                  onClick={() => setStyle({ deviceOrientation: orientation })}
+                >
+                  {orientation === "portrait" ? "Portrait" : "Landscape"}
+                </button>
+              ))}
+            </div>
+          )}
+          <label className="check-field">
+            <input
+              type="checkbox"
+              checked={style.frame}
+              onChange={(event) => setStyle({ frame: event.target.checked })}
+            />{" "}
+            Show device frame
+          </label>
+          <label className="check-field">
+            <input
+              type="checkbox"
+              checked={style.camera}
+              onChange={(event) => setStyle({ camera: event.target.checked })}
+            />{" "}
+            Add camera cutout
+          </label>
+          <p className="field-help">
+            Original status and navigation bars stay in your screenshot. Keep
+            the cutout off if one is already visible.
+          </p>
+          <label className="field">
+            Screenshot fit
+            <select
+              value={style.fit}
+              onChange={(event) =>
+                setStyle({ fit: event.target.value as Style["fit"] })
+              }
+            >
+              <option value="contain">Fit entire screenshot</option>
+              <option value="cover">Fill screen · crop edges</option>
+            </select>
+          </label>
+          <button type="button" className="text-button" onClick={onReplace}>
+            <Icon name="image" />
+            Replace screenshot
+          </button>
+        </section>
         <section className="property-section template-property">
           <div>
             <span className="eyebrow">TEMPLATE</span>
@@ -324,67 +477,6 @@ export function Inspector({
           </label>
         </section>
         <section className="property-section">
-          <h3>Device frame</h3>
-          <div
-            className="segmented device-options"
-            role="group"
-            aria-label="Device family"
-          >
-            <button
-              type="button"
-              aria-pressed={style.device === "android"}
-              onClick={() => setStyle({ device: "android" })}
-            >
-              <span className="device-glyph android" />
-              Android
-            </button>
-            <button
-              type="button"
-              aria-pressed={style.device === "ios"}
-              onClick={() => setStyle({ device: "ios" })}
-            >
-              <span className="device-glyph ios" />
-              iOS
-            </button>
-          </div>
-          <label className="check-field">
-            <input
-              type="checkbox"
-              checked={style.frame}
-              onChange={(event) => setStyle({ frame: event.target.checked })}
-            />{" "}
-            Show device frame
-          </label>
-          <label className="check-field">
-            <input
-              type="checkbox"
-              checked={style.camera}
-              onChange={(event) => setStyle({ camera: event.target.checked })}
-            />{" "}
-            Add camera cutout
-          </label>
-          <p className="field-help">
-            Original status and navigation bars stay in your screenshot. Keep
-            the cutout off if one is already visible.
-          </p>
-          <label className="field">
-            Screenshot fit
-            <select
-              value={style.fit}
-              onChange={(event) =>
-                setStyle({ fit: event.target.value as Style["fit"] })
-              }
-            >
-              <option value="contain">Fit entire screenshot</option>
-              <option value="cover">Fill screen · crop edges</option>
-            </select>
-          </label>
-          <button type="button" className="text-button" onClick={onReplace}>
-            <Icon name="image" />
-            Replace screenshot
-          </button>
-        </section>
-        <section className="property-section">
           <div className="section-heading">
             <h3>Composition</h3>
             <button
@@ -392,26 +484,41 @@ export function Inspector({
               className="text-button"
               onClick={() =>
                 updateShot((shot) => {
-                  shot.phone = { ...getTemplate(style.template).phone };
+                  resetComposition(project, shot);
                 })
               }
             >
               Reset
             </button>
           </div>
-          {range("Phone width", "width", 320, 900)}
-          {range("Horizontal position", "x", -200, 900)}
-          {range("Vertical position", "y", 100, 1500)}
-          {range("Phone rotation", "rotation", -20, 20)}
+          {range(
+            "Device width",
+            "width",
+            PLACEMENT_LIMITS.width.min,
+            PLACEMENT_LIMITS.width.max,
+          )}
+          {range(
+            "Horizontal position",
+            "x",
+            PLACEMENT_LIMITS.x.min,
+            PLACEMENT_LIMITS.x.max,
+          )}
+          {range(
+            "Vertical position",
+            "y",
+            PLACEMENT_LIMITS.y.min,
+            PLACEMENT_LIMITS.y.max,
+          )}
+          {range("Device rotation", "rotation", -20, 20)}
           <p className="field-help">
-            You can also drag the phone on the canvas.
+            You can also drag the device on the canvas.
           </p>
         </section>
         <section className="property-section series-style">
           <h3>Keep the series together</h3>
           <p className="field-help">
             Use these colors, typography and frame across every screenshot.
-            Templates, words and positions stay as they are.
+            Templates and words stay. Devices that change shape are refitted.
           </p>
           <button
             type="button"
@@ -419,11 +526,21 @@ export function Inspector({
             onClick={() =>
               edit((project) => {
                 const { template: _template, ...shared } = style;
+                const previous = project.shots.map((item) =>
+                  resolveStyle(project, item),
+                );
                 Object.assign(project.style, shared);
-                project.shots.forEach((shot) => {
+                project.shots.forEach((shot, index) => {
                   shot.style = shot.style.template
                     ? { template: shot.style.template }
                     : {};
+                  if (
+                    previous[index].device !== shared.device ||
+                    previous[index].deviceOrientation !==
+                      shared.deviceOrientation ||
+                    previous[index].frame !== shared.frame
+                  )
+                    resetComposition(project, shot);
                 });
               })
             }
@@ -439,6 +556,7 @@ export function Inspector({
                   shot.style = shot.style.template
                     ? { template: shot.style.template }
                     : {};
+                  resetComposition(project, shot);
                 })
               }
             >

@@ -59,8 +59,11 @@ async function changedBackup(
 describe("portable project backups", () => {
   it("round-trips original image bytes and styles, remaps every ID, and omits undo-only assets", async () => {
     const original = document();
+    original.exportProfile = "apple-mac";
     original.style = {
       ...original.style,
+      device: "laptop",
+      deviceOrientation: "landscape",
       template: "spotlight",
       backgroundMode: "gradient",
       backgroundEnd: "#ABCDEF",
@@ -70,7 +73,8 @@ describe("portable project backups", () => {
       titleSize: 108,
     };
     original.shots[1].style = {
-      device: "ios",
+      device: "ipad",
+      deviceOrientation: "portrait",
       fit: "cover",
       template: "tilt",
       backgroundMode: "solid",
@@ -95,10 +99,11 @@ describe("portable project backups", () => {
         unzipSync(new Uint8Array(await blob.arrayBuffer()))["project.json"],
       ),
     );
-    expect(archived.schemaVersion).toBe(2);
-    expect(archived.project.schemaVersion).toBe(2);
-    expect(restored.project.schemaVersion).toBe(2);
+    expect(archived.schemaVersion).toBe(3);
+    expect(archived.project.schemaVersion).toBe(3);
+    expect(restored.project.schemaVersion).toBe(3);
     expect(restored.project.style).toEqual(original.style);
+    expect(restored.project.exportProfile).toBe("apple-mac");
     expect(restored.project.id).not.toBe(original.id);
     expect(restored.assets).toHaveLength(1);
     expect(restored.assets[0].id).not.toBe("original-asset");
@@ -123,6 +128,8 @@ describe("portable project backups", () => {
   it("restores a version 1 backup with classic defaults while preserving its original composition and image bytes", async () => {
     const file = await changedBackup((value) => {
       value.schemaVersion = value.project.schemaVersion = 1;
+      delete value.project.exportProfile;
+      delete value.project.style.deviceOrientation;
       for (const key of [
         "template",
         "backgroundMode",
@@ -143,7 +150,7 @@ describe("portable project backups", () => {
       delete value.project.shots[1].phone.rotation;
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(2);
+    expect(restored.project.schemaVersion).toBe(3);
     expect(restored.project.style).toEqual({
       ...defaultStyle,
       background: "#ACBD12",
@@ -166,14 +173,127 @@ describe("portable project backups", () => {
         unzipSync(new Uint8Array(await upgraded.arrayBuffer()))["project.json"],
       ),
     );
-    expect(upgradedMetadata.schemaVersion).toBe(2);
+    expect(upgradedMetadata.schemaVersion).toBe(3);
     expect(upgradedMetadata.project).toEqual(restored.project);
   });
+  it("migrates a version 2 backup without changing templates, rotation, text, overrides or image bytes", async () => {
+    let original: any;
+    const file = await changedBackup((value) => {
+      value.schemaVersion = value.project.schemaVersion = 2;
+      delete value.project.exportProfile;
+      delete value.project.style.deviceOrientation;
+      value.project.style.template = "editorial";
+      value.project.style.backgroundMode = "gradient";
+      value.project.shots[0].style = {
+        device: "ios",
+        template: "tilt",
+        titleSize: 112,
+      };
+      value.project.shots[0].phone = {
+        x: 179,
+        y: 638,
+        width: 741,
+        rotation: -9.25,
+      };
+      original = structuredClone(value.project);
+    });
+    const restored = await importProject(file);
+    expect(restored.project.schemaVersion).toBe(3);
+    expect(restored.project.exportProfile).toBe("play-phone-portrait");
+    expect(restored.project.style).toEqual({
+      ...original.style,
+      deviceOrientation: "portrait",
+    });
+    expect(
+      restored.project.shots.map(
+        ({ id: _id, assetId: _asset, ...shot }) => shot,
+      ),
+    ).toEqual(
+      original.shots.map(({ id: _id, assetId: _asset, ...shot }: any) => shot),
+    );
+    expect(new Uint8Array(await restored.assets[0].blob.arrayBuffer())).toEqual(
+      imageBytes,
+    );
+    const updated = await exportProject(restored.project, restored.assets);
+    const reopened = await importProject(
+      new File([updated], "migrated.henscreenshots"),
+    );
+    expect(reopened.project.exportProfile).toBe("play-phone-portrait");
+    expect(reopened.project.style).toEqual(restored.project.style);
+  });
+  it.each([1, 2])(
+    "retains schema %s device and placement limits before migration",
+    async (version) => {
+      for (const mutate of [
+        (value: any) => {
+          value.style.device = "ipad";
+        },
+        (value: any) => {
+          value.style.deviceOrientation = "landscape";
+        },
+        (value: any) => {
+          value.exportProfile = "apple-mac";
+        },
+        (value: any) => {
+          value.shots[0].phone.width = 901;
+        },
+        (value: any) => {
+          value.shots[0].phone.width = 319;
+        },
+        (value: any) => {
+          value.shots[0].phone.x = -201;
+        },
+        (value: any) => {
+          value.shots[0].phone.x = 901;
+        },
+        (value: any) => {
+          value.shots[0].phone.y = 99;
+        },
+        (value: any) => {
+          value.shots[0].phone.y = 1501;
+        },
+      ]) {
+        const file = await changedBackup((value) => {
+          value.schemaVersion = value.project.schemaVersion = version;
+          delete value.project.exportProfile;
+          delete value.project.style.deviceOrientation;
+          if (version === 1) {
+            for (const key of [
+              "template",
+              "backgroundMode",
+              "backgroundEnd",
+              "accentColor",
+              "texture",
+              "accentTitle",
+              "titleSize",
+            ])
+              delete value.project.style[key];
+            for (const shot of value.project.shots) delete shot.phone.rotation;
+          }
+          mutate(value.project);
+        });
+        await expect(importProject(file)).rejects.toThrow();
+      }
+      expect(URL.createObjectURL).not.toHaveBeenCalled();
+    },
+  );
+  it.each([undefined, "", "apple-watch", { width: 2880, height: 1800 }])(
+    "rejects missing or unsupported export preset %j",
+    async (exportProfile) => {
+      const file = await changedBackup((value) => {
+        value.project.exportProfile = exportProfile;
+      });
+      await expect(importProject(file)).rejects.toThrow();
+      expect(URL.createObjectURL).not.toHaveBeenCalled();
+    },
+  );
   it.each(["template", "rotation", "missing background"])(
     "still validates the original schema before migrating version 1 backups: %s",
     async (problem) => {
       const file = await changedBackup((value) => {
         value.schemaVersion = value.project.schemaVersion = 1;
+        delete value.project.exportProfile;
+        delete value.project.style.deviceOrientation;
         for (const key of [
           "template",
           "backgroundMode",
@@ -199,13 +319,13 @@ describe("portable project backups", () => {
     [
       "unsupported version",
       (value: any) => {
-        value.schemaVersion = 3;
+        value.schemaVersion = 4;
       },
     ],
     [
       "future project version",
       (value: any) => {
-        value.project.schemaVersion = 3;
+        value.project.schemaVersion = 4;
       },
     ],
     [
@@ -215,7 +335,7 @@ describe("portable project backups", () => {
       },
     ],
     [
-      "legacy project under a version 2 envelope",
+      "legacy project under a version 3 envelope",
       (value: any) => {
         value.project.schemaVersion = 1;
       },
@@ -245,6 +365,12 @@ describe("portable project backups", () => {
       },
     ],
     [
+      "empty project name",
+      (value: any) => {
+        value.project.name = "";
+      },
+    ],
+    [
       "oversized headline",
       (value: any) => {
         value.project.shots[0].title = "x".repeat(101);
@@ -259,37 +385,37 @@ describe("portable project backups", () => {
     [
       "phone below width slider range",
       (value: any) => {
-        value.project.shots[0].phone.width = 319;
+        value.project.shots[0].phone.width = 159;
       },
     ],
     [
       "phone above width slider range",
       (value: any) => {
-        value.project.shots[0].phone.width = 901;
+        value.project.shots[0].phone.width = 2161;
       },
     ],
     [
       "phone left of position slider range",
       (value: any) => {
-        value.project.shots[0].phone.x = -201;
+        value.project.shots[0].phone.x = -1081;
       },
     ],
     [
       "phone right of position slider range",
       (value: any) => {
-        value.project.shots[0].phone.x = 901;
+        value.project.shots[0].phone.x = 2161;
       },
     ],
     [
       "phone above vertical slider range",
       (value: any) => {
-        value.project.shots[0].phone.y = 99;
+        value.project.shots[0].phone.y = -2161;
       },
     ],
     [
       "phone below vertical slider range",
       (value: any) => {
-        value.project.shots[0].phone.y = 1501;
+        value.project.shots[0].phone.y = 4097;
       },
     ],
     [
@@ -309,6 +435,9 @@ describe("portable project backups", () => {
     expect(URL.createObjectURL).not.toHaveBeenCalled();
   });
   it.each([
+    ["device", "watch"],
+    ["deviceOrientation", "diagonal"],
+    ["deviceOrientation", null],
     ["template", "unrecognized"],
     ["template", ""],
     ["backgroundMode", "radial"],
@@ -347,7 +476,8 @@ describe("portable project backups", () => {
     "texture",
     "accentTitle",
     "titleSize",
-  ])("requires %s in version 2 project styles", async (key) => {
+    "deviceOrientation",
+  ])("requires %s in version 3 project styles", async (key) => {
     const file = await changedBackup((value) => {
       delete value.project.style[key];
     });
@@ -369,8 +499,8 @@ describe("portable project backups", () => {
     original.name = "N".repeat(80);
     original.shots[0].title = "T".repeat(100);
     original.shots[0].subtitle = "S".repeat(150);
-    original.shots[0].phone = { width: 320, x: -200, y: 100, rotation: -20 };
-    original.shots[1].phone = { width: 900, x: 900, y: 1500, rotation: 20 };
+    original.shots[0].phone = { width: 160, x: -1080, y: -2160, rotation: -20 };
+    original.shots[1].phone = { width: 2160, x: 2160, y: 4096, rotation: 20 };
     original.style.titleSize = 48;
     original.shots[1].style.titleSize = 132;
     const restored = await importProject(

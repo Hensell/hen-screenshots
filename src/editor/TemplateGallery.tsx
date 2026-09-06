@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Project, Shot, TemplateId } from "../core/model";
+import { canonicalCanvas } from "../core/export-profiles";
 import { resolveStyle } from "../core/model";
 import { getTemplate, templates, templatePreview } from "../core/templates";
 import { Preview } from "./Preview";
@@ -39,7 +40,7 @@ export function TemplateGallery({
   return (
     <dialog
       ref={ref}
-      className="template-dialog"
+      className={`template-dialog ${canonicalCanvas(project).height <= 1080 ? "template-dialog-wide" : ""}`}
       aria-labelledby="template-heading"
       onCancel={(event) => {
         event.preventDefault();
@@ -50,7 +51,7 @@ export function TemplateGallery({
         <div>
           <p className="eyebrow">A NEW POINT OF VIEW</p>
           <h2 id="template-heading">Find your app’s look.</h2>
-          <p>Four compositions. Your screenshots, already in the picture.</p>
+          <p>Four compositions, adapted to your device and export size.</p>
         </div>
         <button
           type="button"

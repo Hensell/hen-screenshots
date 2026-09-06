@@ -1786,3 +1786,144 @@ svg {
     width: min(100%, 130px);
   }
 }
+
+/* Export aspect ratio drives both the canvas and its surrounding controls. */
+.canvas-surround .main-artboard,
+.canvas-surround .canvas-label {
+  width: min(
+    100%,
+    var(--preview-max, 470px),
+    max(200px, calc((100dvh - 275px) * var(--canvas-ratio, 0.5625)))
+  );
+}
+.export-format .field select {
+  font-size: 11px;
+  width: 100%;
+}
+.format-dimensions {
+  font-size: 18px;
+  font-weight: 750;
+  margin: 15px 0 8px;
+  letter-spacing: -0.5px;
+}
+.format-dimensions span {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--brand-muted);
+}
+.format-source {
+  display: block;
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--brand-ink);
+  text-underline-offset: 3px;
+}
+.format-source span {
+  display: block;
+  color: var(--brand-muted);
+  font-size: 9px;
+  margin-top: 5px;
+}
+.device-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.device-options button {
+  min-height: 64px;
+  padding: 10px 5px;
+  border: 1px solid #d4d9ce;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 10px;
+  background: #eeeee6;
+}
+.device-options button[aria-pressed="true"] {
+  background: #f9f6ec;
+  border-color: var(--brand-clay);
+  box-shadow: inset 0 0 0 1px var(--brand-clay);
+}
+.device-glyph.ipad,
+.device-glyph.android-tablet {
+  width: 21px;
+  height: 26px;
+  border-radius: 4px;
+}
+.device-glyph.monitor,
+.device-glyph.laptop {
+  width: 30px;
+  height: 19px;
+  border-radius: 2px;
+  margin-bottom: 4px;
+}
+.device-glyph.monitor::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 2px;
+  left: 6px;
+  bottom: -6px;
+  background: currentColor;
+}
+.device-glyph.monitor::before {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 5px;
+  left: 12px;
+  bottom: -5px;
+  background: currentColor;
+}
+.device-glyph.laptop::after {
+  content: "";
+  position: absolute;
+  width: 36px;
+  height: 3px;
+  left: -5px;
+  bottom: -5px;
+  border-radius: 0 0 3px 3px;
+  background: currentColor;
+}
+.export-guidance {
+  background: #eeeee5;
+  padding: 12px;
+  border-radius: 5px;
+  line-height: 1.7;
+}
+.export-guidance strong {
+  display: block;
+  margin-top: 6px;
+}
+.export-guidance a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+.template-dialog-wide .template-art .artboard {
+  width: 100%;
+}
+.template-dialog-wide .template-gallery {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.export-preview {
+  height: auto;
+  object-fit: contain;
+}
+@media (max-width: 700px) {
+  .canvas-surround .main-artboard,
+  .canvas-surround .canvas-label {
+    width: min(100%, var(--preview-max, 470px));
+  }
+}
+@media (max-width: 450px) {
+  .template-dialog-wide .template-gallery {
+    grid-template-columns: 1fr;
+  }
+}

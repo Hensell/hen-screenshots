@@ -4,6 +4,7 @@ import { errorMessage } from "../core/model";
 import type { Project, Shot } from "../core/model";
 import { ensureManrope } from "./fonts";
 import { previewDimensions } from "./geometry";
+import { canonicalCanvas } from "../core/export-profiles";
 import { createScene } from "./scene";
 
 export interface ArtboardProps {
@@ -24,7 +25,7 @@ export function Artboard({
   const container = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
-  const dimensions = previewDimensions(width);
+  const dimensions = previewDimensions(width, canonicalCanvas(project));
 
   useEffect(() => {
     let disposed = false;
@@ -34,7 +35,7 @@ export function Artboard({
     void ensureManrope()
       .then(() => {
         if (disposed || !container.current) return;
-        const size = previewDimensions(width);
+        const size = previewDimensions(width, canonicalCanvas(project));
         stage = new Konva.Stage({
           container: container.current,
           width: size.width,
@@ -63,7 +64,7 @@ export function Artboard({
       aria-label={`Screenshot preview: ${shot.title || "Untitled screenshot"}`}
       aria-description={
         onMove
-          ? "Drag the phone to move it, or use arrow keys. Hold Shift for larger steps."
+          ? "Drag the device to move it, or use arrow keys. Hold Shift for larger steps."
           : undefined
       }
       aria-busy={!ready && !error}

@@ -1,8 +1,10 @@
 import Konva from "konva";
-import { CANVAS, resolveStyle } from "../core/model";
+import { resolveStyle } from "../core/model";
 import type { Project, Shot } from "../core/model";
 import { deviceGeometry, fitImage } from "./geometry";
-import { getTemplate } from "../core/templates";
+import { templateLayout } from "../core/templates";
+import { canonicalCanvas } from "../core/export-profiles";
+import { drawDeviceFrame } from "./device-frame";
 
 interface SceneOptions {
   onMove?: (x: number, y: number) => void;
@@ -64,7 +66,7 @@ function addText(
   }
 }
 
-/** Shared by Artboard and PNG export. All coordinates are the 1080 × 1920 document. */
+/** Shared by Artboard and PNG export. Coordinates use a 1080-wide document at the selected export aspect ratio. */
 export function createScene(
   project: Project,
   shot: Shot,
@@ -72,25 +74,31 @@ export function createScene(
   options: SceneOptions = {},
 ): Konva.Layer {
   const style = resolveStyle(project, shot);
-  const template = getTemplate(style.template);
+  const template = templateLayout(project, style);
+  const canvas = canonicalCanvas(project);
   const imageWidth = image.naturalWidth;
   const imageHeight = image.naturalHeight;
   if (!image.complete || imageWidth <= 0 || imageHeight <= 0)
     throw new Error("The screenshot has not finished loading.");
   if (!Number.isFinite(shot.phone.x) || !Number.isFinite(shot.phone.y))
-    throw new Error("The phone position is invalid.");
-  const device = deviceGeometry(style.device, shot.phone.width, style.frame);
+    throw new Error("The device position is invalid.");
+  const device = deviceGeometry(
+    style.device,
+    shot.phone.width,
+    style.frame,
+    style.deviceOrientation,
+  );
   const layer = new Konva.Layer({ listening: Boolean(options.onMove) });
   try {
     // The base remains opaque even if a restored project contains a translucent color.
-    layer.add(new Konva.Rect({ ...CANVAS, fill: "#F4F1E9", listening: false }));
+    layer.add(new Konva.Rect({ ...canvas, fill: "#F4F1E9", listening: false }));
     layer.add(
       new Konva.Rect({
-        ...CANVAS,
+        ...canvas,
         ...(style.backgroundMode === "gradient"
           ? {
               fillLinearGradientStartPoint: { x: 0, y: 0 },
-              fillLinearGradientEndPoint: { x: 880, y: CANVAS.height },
+              fillLinearGradientEndPoint: { x: 880, y: canvas.height },
               fillLinearGradientColorStops: [
                 0,
                 style.background,
@@ -110,8 +118,8 @@ export function createScene(
           opacity: 0.1,
           sceneFunc(context, shape) {
             context.beginPath();
-            for (let x = 28; x < CANVAS.width; x += 44) {
-              for (let y = 26; y < CANVAS.height; y += 44) {
+            for (let x = 28; x < canvas.width; x += 44) {
+              for (let y = 26; y < canvas.height; y += 44) {
                 context.moveTo(x + 1.8, y);
                 context.arc(x, y, 1.8, 0, Math.PI * 2);
               }
@@ -123,7 +131,16 @@ export function createScene(
     if (style.template === "tilt")
       layer.add(
         new Konva.Line({
-          points: [-90, 1200, 1170, 940, 1170, 1540, -90, 1800],
+          points: [
+            -90,
+            canvas.height * 0.625,
+            1170,
+            canvas.height * (940 / 1920),
+            1170,
+            canvas.height * (1540 / 1920),
+            -90,
+            canvas.height * 0.9375,
+          ],
           closed: true,
           fill: style.accentColor,
           opacity: 0.09,
@@ -133,11 +150,13 @@ export function createScene(
     if (style.template === "editorial")
       layer.add(
         new Konva.Rect({
-          x: 48,
-          y: 52,
-          width: 984,
-          height: 1332,
-          cornerRadius: [160, 160, 32, 32],
+          ...template.panel,
+          cornerRadius: [
+            Math.min(160, canvas.height * 0.1),
+            Math.min(160, canvas.height * 0.1),
+            32,
+            32,
+          ],
           fill: style.backgroundEnd,
           listening: false,
         }),
@@ -154,36 +173,7 @@ export function createScene(
       draggable: Boolean(options.onMove),
       name: "phone",
     });
-    phone.add(
-      new Konva.Rect({
-        width: device.width,
-        height: device.height,
-        cornerRadius: device.radius,
-        fill: style.frame ? "#252A29" : "#FFFFFF",
-        stroke: style.frame ? "#626967" : undefined,
-        strokeWidth: style.frame ? 1.5 : 0,
-        shadowColor: "#18251F",
-        shadowBlur: device.width * 0.065,
-        shadowOffsetX: 0,
-        shadowOffsetY: device.width * 0.042,
-        shadowOpacity: 0.2,
-      }),
-    );
-    if (style.frame) {
-      phone.add(
-        new Konva.Rect({
-          x: 3,
-          y: 3,
-          width: device.width - 6,
-          height: device.height - 6,
-          cornerRadius: device.radius - 3,
-          stroke: "#FFFFFF",
-          strokeWidth: 1,
-          opacity: 0.13,
-          listening: false,
-        }),
-      );
-    }
+    drawDeviceFrame(phone, device);
 
     const screen = new Konva.Group({
       clipFunc(context) {
@@ -249,7 +239,7 @@ export function createScene(
     // Captions remain above a deliberately enlarged/rotated device.
     addText(layer, shot.title, {
       ...template.title,
-      fontSize: style.titleSize,
+      fontSize: style.titleSize * template.fontScale,
       weight: style.template === "classic" ? "700" : "800",
       lineHeight: template.lineHeight,
       color: style.textColor,
@@ -258,7 +248,7 @@ export function createScene(
     });
     addText(layer, shot.subtitle, {
       ...template.subtitle,
-      fontSize: 34,
+      fontSize: template.subtitleSize,
       weight: "400",
       color: style.textColor,
       align: style.align,

@@ -1,6 +1,8 @@
 # Marcos y layouts de dispositivos
 
-Estado: alcance acordado para la primera versión de Hen Screenshots. Fecha: 6 de septiembre de 2026.
+Estado: propuesta original para la primera versión. Fecha: 6 de septiembre de 2026.
+
+**Implementación actual:** consultar [dispositivos y exportación v0.3](devices-and-exports-v0.3.md). Ya hay teléfonos, tablets, monitor y laptop, orientación y destinos de ambas tiendas. Las barras generadas y áreas seguras descritas abajo siguen siendo propuestas; actualmente se conservan los píxeles de la captura. En v0.3 cambiar familia u orientación reajusta explícitamente el dispositivo y puede deshacerse.
 
 Hen Screenshots tendrá **dos familias: iOS y Android**, disponibles desde el primer editor. Esta decisión complementa la [arquitectura](architecture.md); el producto mantiene React, TypeScript y Vite con despliegue en Cloudflare.
 

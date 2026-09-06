@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Project, Shot } from "../core/model";
+import { canonicalCanvas } from "../core/export-profiles";
 import { Artboard } from "../rendering/Artboard";
 
 export function Preview({
@@ -29,6 +30,7 @@ export function Preview({
     <div
       ref={ref}
       className={`artboard ${small ? "artboard-small" : ""}`}
+      style={{ aspectRatio: `1080 / ${canonicalCanvas(project).height}` }}
       role="img"
       aria-label={`${shot.title.replace(/\n/g, " ")} — ${shot.subtitle}`}
     >

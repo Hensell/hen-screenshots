@@ -2,7 +2,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { zip } from "fflate";
 import mark from "../../brand/mark.svg";
-import { createProject, createShot, errorMessage, LIMITS } from "../core/model";
+import {
+  createProject,
+  createShot,
+  errorMessage,
+  LIMITS,
+  PLACEMENT_LIMITS,
+} from "../core/model";
 import type { LoadedProject, Project } from "../core/model";
 import { importImages, loadImage } from "../assets/import";
 import { listProjects, loadProject } from "../storage/repository";
@@ -12,10 +18,15 @@ import { download, filename } from "../platform/download";
 import { saveNow, useEditor } from "../editor/store";
 import { useImages } from "../editor/useImages";
 import { Preview } from "../editor/Preview";
-import { Inspector } from "../editor/Inspector";
+import { Inspector, deviceNames } from "../editor/Inspector";
 import { TemplateGallery } from "../editor/TemplateGallery";
-import { applyTemplate, getTemplate } from "../core/templates";
+import {
+  applyTemplate,
+  getTemplate,
+  resetComposition,
+} from "../core/templates";
 import { Icon } from "./Icon";
+import { getExportProfile, type ExportProfile } from "../core/export-profiles";
 
 type Notice = { message: string; error?: boolean };
 type ReadyFile = { url: string; name: string; image: boolean };
@@ -229,7 +240,7 @@ export function App() {
         } else {
           incoming.forEach((asset) => {
             const next = createShot(asset.id, project.shots.length);
-            next.phone = { ...getTemplate(project.style.template).phone };
+            resetComposition(project, next);
             firstId ??= next.id;
             project.shots.push(next);
           });
@@ -289,6 +300,11 @@ export function App() {
     cancelExport.current = false;
     setBusy("Preparing export…");
     try {
+      const profile = getExportProfile(snapshot.exportProfile);
+      if (all && shots.length > profile.maxCount)
+        throw new Error(
+          `This destination accepts at most ${profile.maxCount} screenshots per device slot. Export individual screenshots or reduce the series.`,
+        );
       const files: Record<string, Uint8Array> = {};
       let png: Blob | undefined;
       for (const [index, item] of shots.entries()) {
@@ -316,12 +332,12 @@ export function App() {
         if (cancelExport.current) return;
         offerFile(
           new Blob([new Uint8Array(archive)], { type: "application/zip" }),
-          `${filename(snapshot.name)}-screenshots.zip`,
+          `${filename(snapshot.name)}-${snapshot.exportProfile}.zip`,
         );
       } else if (png)
         offerFile(
           png,
-          `${filename(snapshot.name)}-${String(project.shots.findIndex((s) => s.id === shot.id) + 1).padStart(2, "0")}.png`,
+          `${filename(snapshot.name)}-${snapshot.exportProfile}-${String(project.shots.findIndex((s) => s.id === shot.id) + 1).padStart(2, "0")}.png`,
         );
       setNotice({
         message: `${all ? "Your screenshot series is" : "Your PNG is"} ready. Check your downloads.`,
@@ -718,7 +734,14 @@ export function App() {
                   </button>
                 )}
                 <span className="canvas-size">
-                  Portrait <span>1080 × 1920</span>
+                  {getExportProfile(project.exportProfile).width >
+                  getExportProfile(project.exportProfile).height
+                    ? "Landscape"
+                    : "Portrait"}{" "}
+                  <span>
+                    {getExportProfile(project.exportProfile).width} ×{" "}
+                    {getExportProfile(project.exportProfile).height}
+                  </span>
                 </span>
               </div>
               <div className="history-actions">
@@ -742,7 +765,21 @@ export function App() {
                 </button>
               </div>
             </div>
-            <div className="canvas-surround">
+            <div
+              className="canvas-surround"
+              style={
+                {
+                  "--canvas-ratio":
+                    getExportProfile(project.exportProfile).width /
+                    getExportProfile(project.exportProfile).height,
+                  "--preview-max":
+                    getExportProfile(project.exportProfile).width >
+                    getExportProfile(project.exportProfile).height
+                      ? "900px"
+                      : "470px",
+                } as React.CSSProperties
+              }
+            >
               {shot ? (
                 <>
                   <div className="canvas-label">
@@ -751,9 +788,7 @@ export function App() {
                       {String(project.shots.length).padStart(2, "0")}
                     </span>
                     <span>
-                      {(shot.style.device ?? project.style.device) === "ios"
-                        ? "iOS"
-                        : "Android"}{" "}
+                      {deviceNames[shot.style.device ?? project.style.device]}{" "}
                       frame
                     </span>
                   </div>
@@ -772,12 +807,12 @@ export function App() {
                                 );
                                 if (target) {
                                   target.phone.x = Math.max(
-                                    -200,
-                                    Math.min(900, x),
+                                    PLACEMENT_LIMITS.x.min,
+                                    Math.min(PLACEMENT_LIMITS.x.max, x),
                                   );
                                   target.phone.y = Math.max(
-                                    100,
-                                    Math.min(1500, y),
+                                    PLACEMENT_LIMITS.y.min,
+                                    Math.min(PLACEMENT_LIMITS.y.max, y),
                                   );
                                 }
                               })
@@ -901,7 +936,10 @@ export function App() {
                   <span>02</span>
                   <div>
                     <strong>Find your look</strong>
-                    <p>iOS and Android frames, your colors, your words.</p>
+                    <p>
+                      Phones, tablets and desktop frames. Your colors, your
+                      words.
+                    </p>
                   </div>
                 </li>
                 <li>
@@ -939,6 +977,7 @@ export function App() {
       {exportOpen && project && (
         <ExportDialog
           count={project.shots.length}
+          profile={getExportProfile(project.exportProfile)}
           busy={busy}
           file={readyFile}
           onClose={() => {
@@ -975,6 +1014,7 @@ export function App() {
 
 function ExportDialog({
   count,
+  profile,
   busy,
   file,
   onClose,
@@ -982,6 +1022,7 @@ function ExportDialog({
   onCancel,
 }: {
   count: number;
+  profile: ExportProfile;
   busy: string | null;
   file: ReadyFile | null;
   onClose: () => void;
@@ -1028,9 +1069,10 @@ function ExportDialog({
         )}
       </h2>
       <p className="dialog-copy">
-        Full-resolution PNGs. 1080 × 1920 pixels.
+        {profile.width} × {profile.height} pixels · RGB PNG without
+        transparency.
         <br />
-        Exactly the composition you see on your canvas.
+        {profile.name}
       </p>
       {busy ? (
         <div className="export-progress">
@@ -1049,8 +1091,8 @@ function ExportDialog({
               className="export-preview"
               src={file.url}
               alt="Exported screenshot"
-              width={1080}
-              height={1920}
+              width={profile.width}
+              height={profile.height}
             />
           )}
           <a
@@ -1076,12 +1118,37 @@ function ExportDialog({
           </button>
           <button
             className="button secondary full"
+            disabled={count > profile.maxCount}
             onClick={() => void onExport(true)}
           >
             <Icon name="download" />
             Export all {count} screenshots<span>ZIP</span>
           </button>
         </div>
+      )}
+      {!file && (
+        <p className="field-help export-guidance">
+          {profile.note}{" "}
+          {count > profile.maxCount && (
+            <strong>
+              This series has {count} screenshots; the selected destination
+              allows {profile.maxCount}. Export one at a time or reduce the
+              series.
+            </strong>
+          )}
+          {profile.source && (
+            <>
+              {" "}
+              <a
+                href={profile.source}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View store requirements ↗
+              </a>
+            </>
+          )}
+        </p>
       )}
       <p className="field-help">
         Your source images and saved project stay editable.

@@ -31,6 +31,43 @@ afterEach(async () => {
 });
 
 describe("local project persistence", () => {
+  it.each(["", "   "])(
+    "normalizes a temporarily blank name %j on save without mutating the input",
+    async (name) => {
+      const original = { ...project(), name };
+      const before = structuredClone(original);
+      expect(await saveProject(original, [asset()], 0)).toBe(1);
+      expect(original).toEqual(before);
+      const loaded = await loadProject(original.id);
+      expect(loaded.project).toEqual({ ...before, name: "Untitled app" });
+      expect(loaded.revision).toBe(1);
+      expect(loaded.assets).toHaveLength(1);
+      expect((await listProjects())[0].project.name).toBe("Untitled app");
+    },
+  );
+  it("normalizes a previously stored blank name on reads and subsequent saves", async () => {
+    const original = project();
+    await saveProject(original, [asset()], 0);
+    const inspector = new Dexie("hen-screenshots");
+    await inspector.open();
+    try {
+      await inspector
+        .table("projects")
+        .update(original.id, { project: { ...original, name: "" } });
+      expect((await loadProject(original.id)).project.name).toBe(
+        "Untitled app",
+      );
+      expect((await listProjects())[0].project.name).toBe("Untitled app");
+      expect(
+        await saveProject({ ...original, name: "Recovered name" }, [], 1),
+      ).toBe(2);
+      expect((await loadProject(original.id)).project.name).toBe(
+        "Recovered name",
+      );
+    } finally {
+      inspector.close();
+    }
+  });
   it("retains original image bytes and unused images for undo, with project-scoped IDs", async () => {
     const first = project();
     const second = { ...project(), updatedAt: first.updatedAt + 100 };
@@ -117,6 +154,49 @@ describe("local project persistence", () => {
       expect(await inspector.table("assets").count()).toBe(0);
     } finally {
       inspector.close();
+    }
+  });
+  it("rejects invalid export profiles, device families and orientations before writing assets or revisions", async () => {
+    const original = project();
+    await saveProject(original, [asset()], 0);
+    for (const changed of [
+      { ...original, exportProfile: "unknown-preset" },
+      { ...original, style: { ...original.style, device: "watch" } },
+      {
+        ...original,
+        style: { ...original.style, deviceOrientation: "diagonal" },
+      },
+    ]) {
+      await expect(
+        saveProject(changed as typeof original, [asset("new-image")], 1),
+      ).rejects.toThrow("invalid");
+    }
+    const loaded = await loadProject(original.id);
+    expect(loaded.project).toEqual(original);
+    expect(loaded.revision).toBe(1);
+    expect(loaded.assets.map(({ id }) => id)).toEqual(["image-a"]);
+  });
+  it("refuses malformed schema 3 database rows instead of silently rendering a fallback", async () => {
+    const original = project();
+    await saveProject(original, [asset()], 0);
+    const inspector = new Dexie("hen-screenshots");
+    await inspector.open();
+    try {
+      await inspector.table("projects").update(original.id, {
+        project: { ...original, exportProfile: "unknown-preset" },
+      });
+      await expect(loadProject(original.id)).rejects.toThrow("invalid");
+      await expect(listProjects()).rejects.toThrow("invalid");
+      await expect(
+        saveProject(original, [asset("new-image")], 1),
+      ).rejects.toThrow("invalid");
+      expect(
+        (await inspector.table("projects").get(original.id)).revision,
+      ).toBe(1);
+      expect(await inspector.table("assets").count()).toBe(1);
+    } finally {
+      inspector.close();
+      await deleteProject(original.id);
     }
   });
 });

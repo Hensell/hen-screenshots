@@ -38,7 +38,8 @@ describe("version 1 project migration", () => {
     expect(original).toEqual(legacyProject);
     expect(migrated).toEqual({
       ...legacyProject,
-      schemaVersion: 2,
+      schemaVersion: 3,
+      exportProfile: "play-phone-portrait",
       style: { ...defaultStyle, ...legacyProject.style },
       shots: [
         {
@@ -49,7 +50,7 @@ describe("version 1 project migration", () => {
     });
     expect(migrateProject(migrated)).toBe(migrated);
     expect(() =>
-      migrateProject({ ...migrated, schemaVersion: 3 } as unknown as Project),
+      migrateProject({ ...migrated, schemaVersion: 4 } as unknown as Project),
     ).toThrow("unsupported project version");
   });
 
@@ -108,7 +109,7 @@ describe("version 1 project migration", () => {
     const inspector = new Dexie("hen-screenshots");
     await inspector.open();
     try {
-      expect(inspector.verno).toBe(2);
+      expect(inspector.verno).toBe(3);
       expect(await inspector.table("projects").get(legacyProject.id)).toEqual({
         id: legacyProject.id,
         updatedAt: legacyProject.updatedAt,
@@ -122,7 +123,7 @@ describe("version 1 project migration", () => {
       expect(await inspector.table("assets").count()).toBe(1);
 
       await inspector.table("projects").update(legacyProject.id, {
-        project: { ...expected, schemaVersion: 3 },
+        project: { ...expected, schemaVersion: 4 },
       });
       await expect(loadProject(legacyProject.id)).rejects.toThrow(
         "unsupported project version",
@@ -136,7 +137,7 @@ describe("version 1 project migration", () => {
       expect(
         (await inspector.table("projects").get(legacyProject.id)).project
           .schemaVersion,
-      ).toBe(3);
+      ).toBe(4);
     } finally {
       inspector.close();
       await deleteProject(legacyProject.id);

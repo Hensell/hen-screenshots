@@ -6,16 +6,26 @@ import type {
   LegacyProject,
   LoadedProject,
   Project,
+  V2Project,
 } from "../core/model";
 
 interface ProjectRow {
   id: string;
   updatedAt: number;
   revision: number;
-  project: Project | LegacyProject;
+  project: Project | V2Project | LegacyProject;
 }
 interface AssetRow extends Asset {
   projectId: string;
+}
+
+/** The name input can autosave while empty; normalize only the stored copy. */
+function storedProject(project: ProjectRow["project"]): Project {
+  const document =
+    project && typeof project.name === "string" && !project.name.trim()
+      ? { ...project, name: "Untitled app" }
+      : project;
+  return migrateProject(document);
 }
 
 class ProjectDatabase extends Dexie {
@@ -27,7 +37,11 @@ class ProjectDatabase extends Dexie {
       projects: "id, updatedAt",
       assets: "[projectId+id], projectId",
     });
-    this.version(2)
+    this.version(2).stores({
+      projects: "id, updatedAt",
+      assets: "[projectId+id], projectId",
+    });
+    this.version(3)
       .stores({
         projects: "id, updatedAt",
         assets: "[projectId+id], projectId",
@@ -37,7 +51,7 @@ class ProjectDatabase extends Dexie {
           .table<ProjectRow, string>("projects")
           .toCollection()
           .modify((row) => {
-            row.project = migrateProject(row.project);
+            row.project = storedProject(row.project);
           }),
       );
   }
@@ -55,7 +69,7 @@ export async function listProjects(): Promise<
   { project: Project; revision: number }[]
 > {
   return (await db.projects.orderBy("updatedAt").reverse().toArray()).map(
-    ({ project, revision }) => ({ project: migrateProject(project), revision }),
+    ({ project, revision }) => ({ project: storedProject(project), revision }),
   );
 }
 
@@ -70,7 +84,7 @@ export async function loadProject(id: string): Promise<LoadedProject> {
       await db.assets.where("projectId").equals(id).toArray()
     ).map(({ projectId: _owner, ...asset }) => asset);
     return {
-      project: migrateProject(row.project),
+      project: storedProject(row.project),
       revision: row.revision,
       assets,
     };
@@ -83,7 +97,7 @@ export async function saveProject(
   assets: Asset[],
   expectedRevision: number,
 ): Promise<number> {
-  project = migrateProject(project);
+  project = storedProject(project);
   if (!Number.isSafeInteger(expectedRevision) || expectedRevision < 0)
     throw new Error("Invalid project revision.");
   if (new Set(assets.map((asset) => asset.id)).size !== assets.length)
@@ -92,7 +106,7 @@ export async function saveProject(
     const current = await db.projects.get(project.id);
     if ((current?.revision ?? 0) !== expectedRevision)
       throw new ConflictError();
-    if (current) migrateProject(current.project);
+    if (current) storedProject(current.project);
     if (assets.length)
       await db.assets.bulkPut(
         assets.map((asset) => ({ ...asset, projectId: project.id })),
