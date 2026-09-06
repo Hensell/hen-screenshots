@@ -1,13 +1,27 @@
 import Konva from "konva";
-import { resolveStyle } from "../core/model";
+import { legacyTemplateIds, resolveStyle } from "../core/model";
 import type { Project, Shot } from "../core/model";
 import { deviceGeometry, fitImage } from "./geometry";
 import { templateLayout } from "../core/templates";
 import { canonicalCanvas } from "../core/export-profiles";
 import { drawDeviceFrame } from "./device-frame";
+import { drawTemplateDecoration } from "./template-decoration";
 
 interface SceneOptions {
   onMove?: (x: number, y: number) => void;
+}
+
+/** Keep punctuation with its word while allowing natural breaks in unspaced scripts. */
+export function captionWords(text: string): string[] {
+  const words: string[] = [];
+  for (const part of new Intl.Segmenter(undefined, {
+    granularity: "word",
+  }).segment(text)) {
+    if (part.isWordLike) words.push(part.segment);
+    else if (part.segment.trim() && words.length)
+      words[words.length - 1] += part.segment;
+  }
+  return words;
 }
 
 function addText(
@@ -25,6 +39,7 @@ function addText(
     opacity?: number;
     lineHeight?: number;
     accent?: string;
+    fitWords?: boolean;
   },
 ): void {
   if (!text.trim()) return;
@@ -50,9 +65,14 @@ function addText(
   );
   // Measure the complete text with its final font; never silently truncate a caption.
   const height = () => nodes.reduce((sum, node) => sum + node.height(), 0);
-  while (height() > options.height && nodes[0].fontSize() > 8)
+  // New templates fit long words before wrapping; historical exports keep their typography.
+  const words = options.fitWords ? captionWords(text) : [];
+  const fits = () =>
+    height() <= options.height &&
+    words.every((word) => nodes[0].measureSize(word).width <= options.width);
+  while (!fits() && nodes[0].fontSize() > 8)
     nodes.forEach((node) => node.fontSize(node.fontSize() - 1));
-  if (height() > options.height) {
+  if (!fits()) {
     nodes.forEach((node) => node.destroy());
     throw new Error(
       "This caption is too long to fit. Shorten it before exporting.",
@@ -74,6 +94,7 @@ export function createScene(
   options: SceneOptions = {},
 ): Konva.Layer {
   const style = resolveStyle(project, shot);
+  const fitWords = !legacyTemplateIds.some((id) => id === style.template);
   const template = templateLayout(project, style);
   const canvas = canonicalCanvas(project);
   const imageWidth = image.naturalWidth;
@@ -162,6 +183,8 @@ export function createScene(
         }),
       );
 
+    drawTemplateDecoration(layer, style, canvas, template.panel);
+
     const phone = new Konva.Group({
       x: shot.phone.x + device.width / 2,
       y: shot.phone.y + device.height / 2,
@@ -239,6 +262,7 @@ export function createScene(
     // Captions remain above a deliberately enlarged/rotated device.
     addText(layer, shot.title, {
       ...template.title,
+      fitWords,
       fontSize: style.titleSize * template.fontScale,
       weight: style.template === "classic" ? "700" : "800",
       lineHeight: template.lineHeight,
@@ -248,6 +272,7 @@ export function createScene(
     });
     addText(layer, shot.subtitle, {
       ...template.subtitle,
+      fitWords,
       fontSize: template.subtitleSize,
       weight: "400",
       color: style.textColor,

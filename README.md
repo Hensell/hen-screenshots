@@ -1,94 +1,96 @@
 # Hen Screenshots
 
-Aplicación web para crear screenshots elegantes para tiendas de apps, portfolios y páginas web. Incluye tarjetas simples y marcos de teléfonos, tablets, monitores y laptops.
+A web app for creating polished screenshots for app stores, portfolios, and websites. Includes simple cards and frames for phones, tablets, monitors, and laptops.
 
-Nombre público confirmado por el usuario: **Hen Screenshots**.
+Public name: **Hen Screenshots**.
 
-Repositorio: [Hensell/hen-screenshots](https://github.com/Hensell/hen-screenshots).
+Repository: [Hensell/hen-screenshots](https://github.com/Hensell/hen-screenshots).
 
 **App screenshot studio** — _Your app. Beautifully presented._
 
-Consultar la [identidad pública](docs/brand-identity.md), la [muestra visual](brand/index.html) y la [revisión inicial de nombres](docs/name-check.md).
+See the [brand identity](docs/brand-identity.md), [visual showcase](brand/index.html), and [initial name research](docs/name-check.md).
 
-La [arquitectura propuesta](docs/architecture.md) define el modelo del editor, la persistencia, la exportación y el orden de implementación.
+The [proposed architecture](docs/architecture.md) defines the editor model, persistence, export pipeline, and implementation sequence.
 
-El editor incluye **iPhone, Android, iPad, tablet Android, monitor y laptop**. La [especificación de dispositivos](docs/device-frames.md) define ambas familias y la dirección del catálogo. El [alcance de v0.1](docs/editor-v0.1.md) distingue lo implementado de las siguientes iteraciones.
+The editor includes **iPhone, Android phone, iPad, Android tablet, monitor, and laptop** frames. The [device specification](docs/device-frames.md) defines the iOS and Android families and the direction of the catalog. The [v0.1 scope](docs/editor-v0.1.md) separates implemented features from later iterations.
 
-La [iteración de plantillas v0.2](docs/templates-v0.2.md) añade **Classic, Spotlight, Tilt y Editorial**, con vista previa usando tus capturas, aplicación individual o en serie, degradados, textura, acento tipográfico y rotación. Los proyectos y respaldos anteriores siguen siendo compatibles.
+The [v0.2 template iteration](docs/templates-v0.2.md) adds **Classic, Spotlight, Tilt, and Editorial**, with previews using your screenshots, individual or series-wide application, gradients, texture, accent typography, and rotation. Earlier projects and backups remain compatible.
 
-La [iteración v0.3](docs/devices-and-exports-v0.3.md) adapta las cuatro plantillas a desktop y tablets y añade **15 presets de exportación** para App Store, Google Play y presentación web. Verifica las dimensiones y el formato RGB sin transparencia del PNG generado.
+The [v0.3 iteration](docs/devices-and-exports-v0.3.md) adapts all four templates to desktop and tablet devices and adds **15 export presets** for the App Store, Google Play, and web presentations. It verifies the dimensions and opaque RGB format of each generated PNG.
 
-La [iteración de portfolio v0.4](docs/portfolio-v0.4.md) añade tarjetas **4:3, cuadradas y verticales**, tamaño personalizado y un marco simple con bordes redondeados. En **Canvas → Portfolio** se elige el formato para una portada de proyecto o una tarjeta de tu web.
+The [v0.4 portfolio iteration](docs/portfolio-v0.4.md) adds **4:3, square, and portrait cards**, custom dimensions, and a simple frame with rounded corners. Choose a format for a project cover or website card under **Canvas → Portfolio**.
 
-## Ejecutar el editor
+The [v0.5 template collection](docs/catalog-v0.5.md) adds **Studio, Split, Halo, and Gallery**, plus search, style filters, and previews of the whole series using your own screenshots.
 
-Requiere Node.js 22.12 o posterior.
+## Run the editor
+
+Requires Node.js 22.12 or later.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Abrir [el estudio local](http://127.0.0.1:5174/). Crear un proyecto e importar PNG, JPEG o WebP. Cada captura recibe su propio lienzo; los originales se conservan en el navegador.
+Open the [local studio](http://127.0.0.1:5174/). Create a project and import PNG, JPEG, or WebP images. Each screenshot gets its own canvas; original images are kept in the browser.
 
 ```sh
-npm run check         # Pruebas, TypeScript y build de producción
-npm run preview       # Servir el build localmente, con el servidor dev detenido
-npm run deploy:check  # Build y validación de Wrangler sin publicar
-npm run deploy        # Publicar en Cloudflare con la sesión autorizada de Wrangler
+npm run check         # Run tests, TypeScript checks, and the production build
+npm run preview       # Serve the build locally with the dev server stopped
+npm run deploy:check  # Build and validate with Wrangler without deploying
+npm run deploy        # Deploy to Cloudflare using an authenticated Wrangler session
 ```
 
-El plugin oficial genera `dist/wrangler.json` y prepara el frontend para **Cloudflare Workers Static Assets**, sin Worker de negocio ni bindings. No se ha desplegado todavía. `dist/` contiene solo los recursos de la aplicación; las capturas locales, bases de datos y herramientas de FrogHappy quedan fuera.
+The official plugin generates `dist/wrangler.json` and prepares the frontend for **Cloudflare Workers Static Assets**, without backend Worker logic or bindings. The app has not been deployed yet. `dist/` contains only application assets; local screenshots, databases, and FrogHappy tools are excluded.
 
-El guardado es por navegador y origen. Usar **Project file** para descargar un `.henscreenshots` y **Open project file** para restaurarlo como copia en otro navegador, dominio o equipo. Borrar los datos del sitio también borra sus proyectos locales.
+Projects are stored per browser and origin. Use **Project file** to download a `.henscreenshots` file and **Open project file** to restore it as a copy in another browser, domain, or computer. Clearing site data also deletes its local projects.
 
-## Usuario y dirección del producto
+## Audience and product direction
 
-- El primer usuario será el creador del proyecto, para preparar screenshots de sus propias apps.
-- La primera versión se validará con ese uso real y se pulirá antes de compartirla con otras personas.
-- Se contempla publicarla gratis y como código abierto más adelante. La publicación y la licencia todavía no están decididas.
+- The project's creator is its first user, preparing screenshots for his own apps.
+- The first version will be validated through that real-world use and polished before being shared with others.
+- A free, open-source release is being considered for the future. Release plans and licensing have not been decided yet.
 
-## Decisiones del proyecto
+## Project decisions
 
-- El despliegue será en **Cloudflare**, según la indicación del usuario.
-- Base implementada: **React + TypeScript + Vite** como aplicación de una sola página (SPA).
-- Editor implementado: **Konva** con un componente React y una escena compartida entre vista previa y exportación en el navegador.
-- Dos familias de dispositivo desde el inicio: **iOS y Android**, con presets de composición propios. La familia del marco se elige por separado del destino y las dimensiones de exportación.
-- Primera versión con guardado local mediante IndexedDB.
-- Posible versión de escritorio posterior con Tauri, reutilizando el editor web.
+- Deployment target: **Cloudflare**.
+- Implemented foundation: **React + TypeScript + Vite** as a single-page application (SPA).
+- Implemented editor: **Konva** with a React component and a shared scene for browser preview and export.
+- Two device families supported from the start: **iOS and Android**, each with its own composition presets. The frame family is selected independently of the export destination and dimensions.
+- Local storage through IndexedDB in the first version.
+- A possible desktop version using Tauri later, reusing the web editor.
 
-## Primera versión propuesta
+## Proposed first version
 
-Objetivo: crear, guardar, reabrir y exportar una serie coherente de imágenes promocionales de una app propia.
+Goal: create, save, reopen, and export a consistent series of promotional images for your own app.
 
-1. Crear un proyecto e importar varias capturas.
-2. Elegir una plantilla, su variante iOS o Android y personalizar colores, tipografía, fondo y marco del teléfono para toda la serie.
-3. Editar los textos y la composición de cada imagen, con opciones para duplicar, ordenar y deshacer cambios.
-4. Guardar automáticamente en el navegador y permitir descargar e importar el proyecto con sus imágenes para respaldo y traslado.
-5. Exportar una imagen como PNG o la serie como ZIP, con las dimensiones elegidas.
+1. Create a project and import multiple screenshots.
+2. Choose a template and its iOS or Android variant, then customize colors, typography, background, and phone frame for the whole series.
+3. Edit each image's text and composition, with options to duplicate, reorder, and undo changes.
+4. Save automatically in the browser, with project download and import—including source images—for backup and transfer.
+5. Export a single image as PNG or the series as ZIP at the selected dimensions.
 
-El alcance inicial propuesto deja cuentas, sincronización, colaboración, pagos, generación con IA y escenas 3D para evaluaciones posteriores.
+The proposed initial scope leaves accounts, synchronization, collaboration, payments, AI generation, and 3D scenes for later consideration.
 
-Validación inicial: usar capturas reales de una app del creador, preparar una serie, cerrar y reabrir el proyecto, comprobar la restauración desde un respaldo y verificar visualmente la exportación y sus dimensiones. Comprobar ambas familias de marcos, sin deformar capturas ni duplicar barras de estado, navegación o recortes de cámara.
+Initial validation: use real screenshots from one of the creator's apps, prepare a series, close and reopen the project, restore it from a backup, and visually verify the export and its dimensions. Check both frame families without distorting screenshots or duplicating status bars, navigation bars, or camera cutouts.
 
-El recorrido mínimo y la edición de series están implementados. Las siguientes iteraciones ampliarán el catálogo de composiciones y los perfiles de tamaño, a partir del uso real con FrogHappy.
+The core workflow and series editing are implemented. Future iterations will expand the composition catalog and size profiles based on real-world use with FrogHappy.
 
-## Despliegue previsto
+## Planned deployment
 
-Se recomienda Cloudflare Workers con Static Assets y el plugin oficial de Cloudflare para Vite. Esta base permite servir el frontend y añadir una API cuando el producto la necesite. Cloudflare Pages también es compatible con React + Vite.
+The planned setup uses Cloudflare Workers with Static Assets and the official Cloudflare Vite plugin. This foundation serves the frontend and allows an API to be added when the product needs one. Cloudflare Pages also supports React + Vite.
 
-El procesamiento de las capturas y la exportación del editor se diseñarán para ejecutarse en el navegador. El guardado local no implica sincronización entre dispositivos.
+Screenshot processing and editor export are designed to run in the browser. Local storage does not provide synchronization across devices.
 
-Referencias oficiales:
+Official references:
 
-- [React + Vite en Cloudflare Workers](https://developers.cloudflare.com/workers/framework-guides/web-apps/react/)
-- [Plugin de Cloudflare para Vite](https://developers.cloudflare.com/workers/vite-plugin/)
-- [React en Cloudflare Pages](https://developers.cloudflare.com/pages/framework-guides/deploy-a-react-site/)
+- [React + Vite on Cloudflare Workers](https://developers.cloudflare.com/workers/framework-guides/web-apps/react/)
+- [Cloudflare Vite plugin](https://developers.cloudflare.com/workers/vite-plugin/)
+- [React on Cloudflare Pages](https://developers.cloudflare.com/pages/framework-guides/deploy-a-react-site/)
 
-## Estado
+## Status
 
-Editor funcional para uso personal: proyectos locales, hasta 20 capturas, cuatro plantillas adaptables, seis dispositivos y tarjetas simples, orientación, colores, textos, composición editable, deshacer/rehacer, respaldo/restauración y exportación PNG/ZIP según el preset elegido. Todavía no se ha desplegado la aplicación.
+A working editor for personal use: local projects, up to 20 screenshots, eight adaptive templates, six device frames and simple cards, orientation, colors, text, editable composition, undo/redo, backup/restore, and PNG/ZIP export using the selected preset. The app has not been deployed yet.
 
-v0.4 guarda documentos con esquema 4 y migra proyectos y backups v1/v2/v3. Galería, editor y exportación mantienen la misma escena. Los límites por tienda son 8 imágenes por tipo de dispositivo en Play y 10 por slot de Apple; la aplicación impide exportar un ZIP que supere el límite del destino.
+v0.5 saves documents using schema 4 and migrates v1/v2/v3 projects and backups. The gallery, editor, and export share the same scene. Store limits are 8 images per device type on Google Play and 10 per Apple screenshot slot; the app prevents ZIP exports that exceed the destination's limit.
 
-La [primera sesión de capturas reales de FrogHappy](docs/capture-session.md) proporciona cinco imágenes Android con datos de muestra y un flujo reproducible para validar el editor.
+The [first FrogHappy capture session](docs/capture-session.md) provides five Android images with sample data and a reproducible workflow for validating the editor.

@@ -37,6 +37,11 @@ export function Inspector({
 }) {
   const { edit, endGroup } = useEditor();
   const style = resolveStyle(project, shot);
+  const surfaceLabel = getTemplate(style.template).surfaceLabel;
+  const secondaryLabel =
+    style.backgroundMode === "solid" && surfaceLabel
+      ? surfaceLabel
+      : "Gradient end";
   function updateShot(recipe: (draft: Shot) => void, group?: string) {
     edit(
       (project) => {
@@ -369,23 +374,14 @@ export function Inspector({
           </div>
           <div className="color-fields">
             <label>
-              {style.template === "editorial" &&
-              style.backgroundMode === "solid"
-                ? "Panel"
-                : "Gradient end"}
+              {secondaryLabel}
               <input
                 type="color"
-                aria-label={
-                  style.template === "editorial" &&
-                  style.backgroundMode === "solid"
-                    ? "Panel color"
-                    : "Gradient end color"
-                }
+                aria-label={`${secondaryLabel} color`}
                 value={style.backgroundEnd}
                 disabled={
                   disabled ||
-                  (style.backgroundMode === "solid" &&
-                    style.template !== "editorial")
+                  (style.backgroundMode === "solid" && !surfaceLabel)
                 }
                 onChange={(event) =>
                   updateShot((shot) => {

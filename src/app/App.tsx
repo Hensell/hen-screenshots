@@ -1001,7 +1001,7 @@ export function App() {
         <TemplateGallery
           project={project}
           shot={shot}
-          image={images.get(shot.assetId)}
+          images={images}
           onClose={() => setTemplatesOpen(false)}
           onApply={(id, all, keepColors) => {
             state.edit((draft) =>

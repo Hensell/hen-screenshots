@@ -1986,3 +1986,206 @@ svg {
   border-radius: 3px;
   box-shadow: 2px 3px 0 #64715c24;
 }
+
+/* Catalog browsing keeps preview scope and application scope together. */
+.template-browse-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 28px;
+  padding: 0 30px 12px;
+  flex-shrink: 0;
+}
+.template-search {
+  margin: 0;
+}
+.template-search input {
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #cdd3c6;
+  border-radius: 5px;
+  background: #fbfaf6;
+  color: var(--brand-ink);
+  font: inherit;
+  font-size: 12px;
+  padding: 10px 12px;
+}
+.template-scope > span {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 10px;
+  font-weight: 650;
+  color: var(--brand-muted);
+}
+.template-scope .segmented button {
+  min-height: 38px;
+}
+.template-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 30px;
+  flex-shrink: 0;
+}
+.template-filters button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-bottom: 2px solid transparent;
+  font-size: 12px;
+  color: var(--brand-muted);
+}
+.template-filters button span {
+  font-size: 10px;
+}
+.template-filters button[aria-pressed="true"] {
+  border-color: var(--brand-clay);
+  color: var(--brand-clay);
+  font-weight: 750;
+}
+.template-results-bar {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 30px;
+  flex-shrink: 0;
+  color: var(--brand-muted);
+  font-size: 10px;
+}
+.template-series-navigation {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.template-series-navigation .icon-button {
+  width: 44px;
+  height: 44px;
+}
+.template-dialog .template-art {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.template-preview-slot {
+  width: min(100%, calc(230px * var(--template-ratio)));
+  min-width: 0;
+}
+.template-dialog .template-art .artboard {
+  width: 100%;
+}
+.template-dialog-series .template-gallery {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.template-art-series .template-preview-slot {
+  width: min(calc((100% - 12px) / 3), calc(230px * var(--template-ratio)));
+}
+.template-category {
+  font-size: 9px;
+  color: var(--brand-muted);
+  margin-left: auto;
+}
+.template-check {
+  width: 18px;
+  height: 18px;
+}
+.template-target {
+  color: var(--brand-muted);
+  font-size: 11px;
+}
+.template-empty {
+  grid-column: 1 / -1;
+  padding: 28px 12px;
+  text-align: center;
+}
+.template-empty h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+.template-empty p {
+  font-size: 12px;
+  color: var(--brand-muted);
+  margin-bottom: 18px;
+}
+.template-empty .button {
+  margin-inline: auto;
+}
+.template-apply {
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (max-width: 760px) {
+  .template-browse-controls {
+    padding-inline: 20px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 14px;
+  }
+  .template-filters,
+  .template-results-bar {
+    padding-inline: 20px;
+  }
+  .template-scope .segmented button {
+    min-height: 44px;
+  }
+  .template-footer {
+    grid-template-columns: minmax(0, 1fr) 200px;
+    gap: 18px;
+  }
+  .template-dialog-series .template-gallery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .template-browse-controls {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding-inline: 16px;
+  }
+  .template-filters,
+  .template-results-bar {
+    padding-inline: 16px;
+  }
+  .template-filters {
+    gap: 0;
+  }
+  .template-filters button {
+    flex: 1;
+    justify-content: center;
+    gap: 5px;
+    padding-inline: 5px;
+    font-size: 11px;
+  }
+  .template-category {
+    display: none;
+  }
+  .template-check {
+    margin-left: auto;
+  }
+  .template-footer {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .template-note {
+    display: none;
+  }
+  .template-settings {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .template-settings .field-help {
+    max-width: 180px;
+  }
+  .template-settings .check-field {
+    flex-shrink: 0;
+  }
+  .template-apply {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+  .template-target {
+    font-size: 10px;
+  }
+}

@@ -15,6 +15,7 @@ import {
   PLACEMENT_LIMITS,
   resolveStyle,
   validateProject,
+  legacyTemplateIds,
   type DeviceFamily,
 } from "./model";
 import {
@@ -143,6 +144,7 @@ describe("adaptive compositions", () => {
               ).not.toThrow();
               const canvas = canonicalCanvas(project);
               const legacy =
+                legacyTemplateIds.some((id) => id === template.id) &&
                 canvas.height === 1920 &&
                 ["android", "ios"].includes(device) &&
                 orientation === "portrait";

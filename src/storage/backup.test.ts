@@ -3,6 +3,7 @@ import { strToU8, unzipSync, zipSync } from "fflate";
 import { createProject, createShot, defaultStyle, LIMITS } from "../core/model";
 import type { Asset } from "../core/model";
 import { exportProject, importProject } from "./backup";
+import { applyTemplate } from "../core/templates";
 
 const imageBytes = Uint8Array.from(
   atob(
@@ -57,6 +58,40 @@ async function changedBackup(
 }
 
 describe("portable project backups", () => {
+  it.each(["studio", "split", "halo", "gallery"] as const)(
+    "round-trips the %s template with its exact style and composition",
+    async (id) => {
+      const project = document();
+      applyTemplate(project, project.shots[0].id, id, true);
+      const blob = await exportProject(project, [image()]);
+      const restored = await importProject(
+        new File([blob], "catalog.henscreenshots"),
+      );
+      expect(restored.project.style).toEqual(project.style);
+      expect(restored.project.shots.map((shot) => shot.phone)).toEqual(
+        project.shots.map((shot) => shot.phone),
+      );
+      expect(restored.project.shots.map((shot) => shot.style)).toEqual(
+        project.shots.map((shot) => shot.style),
+      );
+    },
+  );
+
+  it.each([2, 3])(
+    "rejects new catalog IDs falsely labeled as schema %s",
+    async (version) => {
+      const file = await changedBackup((value) => {
+        value.schemaVersion = value.project.schemaVersion = version;
+        delete value.project.customSize;
+        if (version === 2) {
+          delete value.project.exportProfile;
+          delete value.project.style.deviceOrientation;
+        }
+        value.project.style.template = "halo";
+      });
+      await expect(importProject(file)).rejects.toThrow(/invalid|unsupported/i);
+    },
+  );
   it("round-trips original image bytes and styles, remaps every ID, and omits undo-only assets", async () => {
     const original = document();
     original.exportProfile = "apple-mac";

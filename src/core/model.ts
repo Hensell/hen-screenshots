@@ -23,7 +23,20 @@ export const LIMITS = {
 export type DeviceFamily =
   "android" | "ios" | "ipad" | "android-tablet" | "monitor" | "laptop" | "card";
 export type DeviceOrientation = "portrait" | "landscape";
-export type TemplateId = "classic" | "spotlight" | "tilt" | "editorial";
+export const legacyTemplateIds = [
+  "classic",
+  "spotlight",
+  "tilt",
+  "editorial",
+] as const;
+export const templateIds = [
+  ...legacyTemplateIds,
+  "studio",
+  "split",
+  "halo",
+  "gallery",
+] as const;
+export type TemplateId = (typeof templateIds)[number];
 export interface Style {
   background: string;
   textColor: string;
@@ -107,7 +120,8 @@ const v3ExportProfiles = [
   "apple-mac",
   "desktop-web",
 ] as const;
-export type V3Style = Omit<Style, "device"> & {
+export type V3Style = Omit<Style, "device" | "template"> & {
+  template: (typeof legacyTemplateIds)[number];
   device: "android" | "ios" | "ipad" | "android-tablet" | "monitor" | "laptop";
 };
 export interface V3Project extends Omit<
@@ -119,7 +133,7 @@ export interface V3Project extends Omit<
   style: V3Style;
   shots: (Omit<Shot, "style"> & { style: Partial<V3Style> })[];
 }
-export type V2Style = Omit<Style, "deviceOrientation" | "device"> & {
+export type V2Style = Omit<V3Style, "deviceOrientation" | "device"> & {
   device: "android" | "ios";
 };
 export interface V2Project extends Omit<
@@ -324,7 +338,7 @@ function validateStyle(
         deviceOrientation: ["portrait", "landscape"],
         fit: ["contain", "cover"],
         align: ["left", "center"],
-        template: ["classic", "spotlight", "tilt", "editorial"],
+        template: [...(version >= 4 ? templateIds : legacyTemplateIds)],
         backgroundMode: ["solid", "gradient"],
         texture: ["none", "dots"],
       };

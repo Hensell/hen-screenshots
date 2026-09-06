@@ -1,5 +1,6 @@
 import {
   resolveStyle,
+  legacyTemplateIds,
   type Project,
   type Shot,
   type Style,
@@ -18,11 +19,20 @@ interface TextBox {
   width: number;
   height: number;
 }
+export const templateCategories = [
+  "All",
+  "Minimal",
+  "Bold",
+  "Editorial",
+] as const;
+export type TemplateCategory = (typeof templateCategories)[number];
 export interface Template {
   id: TemplateId;
   name: string;
   description: string;
   note: string;
+  category: Exclude<TemplateCategory, "All">;
+  surfaceLabel?: string;
   style: Pick<
     Style,
     | "template"
@@ -47,6 +57,7 @@ export const templates: readonly Template[] = [
   {
     id: "classic",
     name: "Classic",
+    category: "Minimal",
     description: "A little framing. Plenty of breathing room.",
     note: "The original Hen look, with your full screenshot in view.",
     style: {
@@ -69,6 +80,7 @@ export const templates: readonly Template[] = [
   {
     id: "spotlight",
     name: "Spotlight",
+    category: "Bold",
     description: "Big words. A closer look at your app.",
     note: "A generous product view with a bold headline.",
     style: {
@@ -91,6 +103,7 @@ export const templates: readonly Template[] = [
   {
     id: "tilt",
     name: "Tilt",
+    category: "Bold",
     description: "An unexpected angle. A confident entrance.",
     note: "A considered angle and an oversized headline.",
     style: {
@@ -113,6 +126,8 @@ export const templates: readonly Template[] = [
   {
     id: "editorial",
     name: "Editorial",
+    surfaceLabel: "Panel",
+    category: "Editorial",
     description: "Let your product lead. Then make your point.",
     note: "A framed product view and an editorial headline.",
     style: {
@@ -132,7 +147,119 @@ export const templates: readonly Template[] = [
     subtitle: { x: 88, y: 1740, width: 904, height: 100 },
     lineHeight: 1.05,
   },
+  {
+    id: "studio",
+    name: "Studio",
+    surfaceLabel: "Stage",
+    category: "Minimal",
+    description: "Quiet space. A product worth looking at.",
+    note: "A fine border and generous margins let your interface speak.",
+    style: {
+      template: "studio",
+      background: "#F5F3EC",
+      backgroundEnd: "#E6E9DF",
+      backgroundMode: "solid",
+      textColor: "#27382E",
+      accentColor: "#687D64",
+      texture: "none",
+      accentTitle: false,
+      align: "left",
+      titleSize: 78,
+    },
+    phone: { x: 250, y: 500, width: 580, rotation: 0 },
+    title: { x: 92, y: 126, width: 896, height: 226 },
+    subtitle: { x: 92, y: 375, width: 896, height: 80 },
+    lineHeight: 1.12,
+  },
+  {
+    id: "split",
+    name: "Split",
+    surfaceLabel: "Color block",
+    category: "Bold",
+    description: "Two tones. One confident statement.",
+    note: "A crisp color block puts a bold headline beside your product.",
+    style: {
+      template: "split",
+      background: "#F3D879",
+      backgroundEnd: "#B94E37",
+      backgroundMode: "solid",
+      textColor: "#342A22",
+      accentColor: "#79422B",
+      texture: "none",
+      accentTitle: false,
+      align: "left",
+      titleSize: 118,
+    },
+    phone: { x: 245, y: 660, width: 590, rotation: 0 },
+    title: { x: 80, y: 100, width: 920, height: 340 },
+    subtitle: { x: 84, y: 466, width: 900, height: 88 },
+    lineHeight: 1.02,
+  },
+  {
+    id: "halo",
+    name: "Halo",
+    surfaceLabel: "Halo",
+    category: "Bold",
+    description: "A circular stage. A moment in the spotlight.",
+    note: "A warm halo frames your device against a deep ink background.",
+    style: {
+      template: "halo",
+      background: "#202E35",
+      backgroundEnd: "#B9684F",
+      backgroundMode: "solid",
+      textColor: "#F5EADD",
+      accentColor: "#F4C99B",
+      texture: "none",
+      accentTitle: true,
+      align: "center",
+      titleSize: 104,
+    },
+    phone: { x: 240, y: 620, width: 600, rotation: 0 },
+    title: { x: 84, y: 120, width: 912, height: 290 },
+    subtitle: { x: 90, y: 460, width: 900, height: 90 },
+    lineHeight: 1.06,
+  },
+  {
+    id: "gallery",
+    name: "Gallery",
+    surfaceLabel: "Mat",
+    category: "Editorial",
+    description: "The work comes first. The story follows.",
+    note: "An image-led composition with a caption beneath, made for a closer look.",
+    style: {
+      template: "gallery",
+      background: "#E9E4DA",
+      backgroundEnd: "#D5D9D0",
+      backgroundMode: "solid",
+      textColor: "#333C35",
+      accentColor: "#8E4D35",
+      texture: "none",
+      accentTitle: false,
+      align: "left",
+      titleSize: 82,
+    },
+    phone: { x: 250, y: 120, width: 580, rotation: 0 },
+    title: { x: 84, y: 1500, width: 912, height: 220 },
+    subtitle: { x: 88, y: 1750, width: 904, height: 90 },
+    lineHeight: 1.1,
+  },
 ];
+
+export function filterTemplates(
+  query: string,
+  category: TemplateCategory,
+): readonly Template[] {
+  const words = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
+  return templates.filter(
+    (template) =>
+      (category === "All" || template.category === category) &&
+      words.every((word) =>
+        `${template.name} ${template.description} ${template.note} ${template.category}`
+          .toLocaleLowerCase()
+          .includes(word),
+      ),
+  );
+}
 
 export function getTemplate(id: TemplateId): Template {
   const template = templates.find((item) => item.id === id);
@@ -144,6 +271,8 @@ export function getTemplate(id: TemplateId): Template {
 export function templateLayout(project: Project, style: Style) {
   const template = getTemplate(style.template);
   const canvas = canonicalCanvas(project);
+  if (!legacyTemplateIds.some((id) => id === style.template))
+    return collectionLayout(project, style, template);
   const legacy =
     canvas.height === 1920 &&
     (style.device === "android" || style.device === "ios") &&
@@ -233,6 +362,66 @@ export function templateLayout(project: Project, style: Style) {
       width: area.width + 32,
       height: area.height + 40,
     },
+  };
+}
+
+/** New catalog entries use their own geometry, leaving the original four untouched. */
+function collectionLayout(project: Project, style: Style, template: Template) {
+  const { height: h } = canonicalCanvas(project);
+  const wide = h <= 1080;
+  let title: Rect, subtitle: Rect, area: Rect;
+  if (style.template === "gallery") {
+    area = { x: 76, y: h * 0.065, width: 928, height: h * 0.63 };
+    title = {
+      x: 80,
+      y: h * 0.765,
+      width: wide ? 526 : 920,
+      height: h * (wide ? 0.18 : 0.12),
+    };
+    subtitle = {
+      x: wide ? 650 : 84,
+      y: h * (wide ? 0.78 : 0.905),
+      width: wide ? 350 : 912,
+      height: h * (wide ? 0.15 : 0.06),
+    };
+  } else if (wide) {
+    const reverse = style.template === "halo";
+    title = { x: reverse ? 690 : 72, y: h * 0.18, width: 320, height: h * 0.4 };
+    subtitle = { x: title.x, y: h * 0.67, width: 320, height: h * 0.19 };
+    area = { x: reverse ? 64 : 444, y: h * 0.1, width: 570, height: h * 0.8 };
+  } else {
+    title = { x: 84, y: h * 0.07, width: 912, height: h * 0.16 };
+    subtitle = { x: 88, y: h * 0.25, width: 904, height: h * 0.065 };
+    area = { x: 100, y: h * 0.355, width: 880, height: h * 0.575 };
+  }
+  const unit = deviceGeometry(
+    style.device,
+    1000,
+    style.frame,
+    style.deviceOrientation,
+  );
+  const width = Math.floor(
+    Math.min(area.width, (area.height / unit.height) * 1000),
+  );
+  const height = deviceGeometry(
+    style.device,
+    width,
+    style.frame,
+    style.deviceOrientation,
+  ).height;
+  return {
+    ...template,
+    title,
+    subtitle,
+    phone: {
+      x: Math.round(area.x + (area.width - width) / 2),
+      y: Math.round(area.y + (area.height - height) / 2),
+      width,
+      rotation: 0,
+    },
+    fontScale: wide ? 0.62 : 0.96,
+    subtitleSize: wide ? 23 : 32,
+    panel: area,
   };
 }
 

@@ -7,6 +7,8 @@ import {
   changeCustomSize,
   getTemplate,
   templatePreview,
+  templates,
+  filterTemplates,
 } from "./templates";
 import { useEditor } from "../editor/store";
 
@@ -33,6 +35,46 @@ function fixture() {
 }
 beforeEach(() => useEditor.getState().close());
 describe("template application", () => {
+  it.each(templates)(
+    "keeps $name series previews identical to application, including per-shot colors and frames",
+    (template) => {
+      for (const keepColors of [true, false]) {
+        const project = fixture();
+        const before = structuredClone(project);
+        const previews = project.shots.map((shot) =>
+          templatePreview(project, shot, template.id, keepColors),
+        );
+        expect(project).toEqual(before);
+        applyTemplate(
+          project,
+          project.shots[0].id,
+          template.id,
+          true,
+          keepColors,
+        );
+        project.shots.forEach((shot, index) => {
+          expect(shot.phone).toEqual(previews[index].phone);
+          expect(resolveStyle(project, shot)).toEqual(
+            resolveStyle(before, previews[index]),
+          );
+          expect(shot.assetId).toBe(before.shots[index].assetId);
+          expect(shot.title).toBe(before.shots[index].title);
+        });
+      }
+    },
+  );
+
+  it("combines case-insensitive search terms with category filters", () => {
+    expect(
+      filterTemplates("  stUDIO  ", "Minimal").map((item) => item.id),
+    ).toEqual(["studio"]);
+    expect(filterTemplates("studio", "Bold")).toEqual([]);
+    expect(
+      filterTemplates("circular stage", "All").map((item) => item.id),
+    ).toEqual(["halo"]);
+    expect(filterTemplates("no-such-template", "All")).toEqual([]);
+    expect(filterTemplates("  ", "All")).toEqual(templates);
+  });
   it("changes one composition while retaining its identity, content, source and device settings", () => {
     const project = fixture();
     const original = structuredClone(project);
