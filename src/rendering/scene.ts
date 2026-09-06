@@ -4,6 +4,7 @@ import type { Project, Shot } from "../core/model";
 import { deviceGeometry, fitImage } from "./geometry";
 import { templateLayout } from "../core/templates";
 import { canonicalCanvas } from "../core/export-profiles";
+import { isPanoramaTemplate } from "../core/panorama";
 import { drawDeviceFrame } from "./device-frame";
 import { drawTemplateDecoration } from "./template-decoration";
 
@@ -97,6 +98,9 @@ export function createScene(
   const fitWords = !legacyTemplateIds.some((id) => id === style.template);
   const template = templateLayout(project, style);
   const canvas = canonicalCanvas(project);
+  const panoramic = isPanoramaTemplate(style.template);
+  const cropOffset = style.template === "panorama-end" ? canvas.width : 0;
+  const spreadWidth = panoramic ? canvas.width * 2 : canvas.width;
   const imageWidth = image.naturalWidth;
   const imageHeight = image.naturalHeight;
   if (!image.complete || imageWidth <= 0 || imageHeight <= 0)
@@ -116,10 +120,15 @@ export function createScene(
     layer.add(
       new Konva.Rect({
         ...canvas,
+        x: -cropOffset,
+        width: spreadWidth,
         ...(style.backgroundMode === "gradient"
           ? {
               fillLinearGradientStartPoint: { x: 0, y: 0 },
-              fillLinearGradientEndPoint: { x: 880, y: canvas.height },
+              fillLinearGradientEndPoint: {
+                x: panoramic ? spreadWidth : 880,
+                y: canvas.height,
+              },
               fillLinearGradientColorStops: [
                 0,
                 style.background,
@@ -136,10 +145,11 @@ export function createScene(
         new Konva.Shape({
           listening: false,
           fill: style.textColor,
+          x: -cropOffset,
           opacity: 0.1,
           sceneFunc(context, shape) {
             context.beginPath();
-            for (let x = 28; x < canvas.width; x += 44) {
+            for (let x = 28; x < spreadWidth; x += 44) {
               for (let y = 26; y < canvas.height; y += 44) {
                 context.moveTo(x + 1.8, y);
                 context.arc(x, y, 1.8, 0, Math.PI * 2);
@@ -183,10 +193,45 @@ export function createScene(
         }),
       );
 
+    if (panoramic) {
+      layer.add(
+        new Konva.Line({
+          x: -cropOffset,
+          points: [
+            -120,
+            canvas.height * 0.72,
+            2280,
+            canvas.height * 0.2,
+            2280,
+            canvas.height * 0.45,
+            -120,
+            canvas.height * 0.97,
+          ],
+          closed: true,
+          fill: style.backgroundEnd,
+          listening: false,
+        }),
+      );
+      layer.add(
+        new Konva.Line({
+          x: -cropOffset,
+          points: [
+            -120,
+            canvas.height * 0.72 - 24,
+            2280,
+            canvas.height * 0.2 - 24,
+          ],
+          stroke: style.accentColor,
+          strokeWidth: 2,
+          opacity: 0.4,
+          listening: false,
+        }),
+      );
+    }
     drawTemplateDecoration(layer, style, canvas, template.panel);
 
     const phone = new Konva.Group({
-      x: shot.phone.x + device.width / 2,
+      x: shot.phone.x + device.width / 2 - cropOffset,
       y: shot.phone.y + device.height / 2,
       offsetX: device.width / 2,
       offsetY: device.height / 2,
@@ -237,7 +282,7 @@ export function createScene(
     if (options.onMove) {
       phone.on("dragend", () =>
         options.onMove?.(
-          Math.round(phone.x() - device.width / 2),
+          Math.round(phone.x() - device.width / 2 + cropOffset),
           Math.round(phone.y() - device.height / 2),
         ),
       );

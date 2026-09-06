@@ -35,7 +35,7 @@ function fixture() {
 }
 beforeEach(() => useEditor.getState().close());
 describe("template application", () => {
-  it.each(templates)(
+  it.each(templates.filter((item) => item.id !== "panorama"))(
     "keeps $name series previews identical to application, including per-shot colors and frames",
     (template) => {
       for (const keepColors of [true, false]) {

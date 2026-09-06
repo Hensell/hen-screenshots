@@ -18,9 +18,11 @@ The [v0.2 template iteration](docs/templates-v0.2.md) adds **Classic, Spotlight,
 
 The [v0.3 iteration](docs/devices-and-exports-v0.3.md) adapts all four templates to desktop and tablet devices and adds **15 export presets** for the App Store, Google Play, and web presentations. It verifies the dimensions and opaque RGB format of each generated PNG.
 
-The [v0.4 portfolio iteration](docs/portfolio-v0.4.md) adds **4:3, square, and portrait cards**, custom dimensions, and a simple frame with rounded corners. Choose a format for a project cover or website card under **Canvas → Portfolio**.
+The [v0.4 portfolio iteration](docs/portfolio-v0.4.md) adds **4:3, square, and portrait cards**, custom dimensions, and a simple frame with rounded corners. Create a **Portfolio** project to choose a format for a project cover or website card.
 
 The [v0.5 template collection](docs/catalog-v0.5.md) adds **Studio, Split, Halo, and Gallery**, plus search, style filters, and previews of the whole series using your own screenshots.
+
+The [v0.6 panorama iteration](docs/panorama-and-workspaces-v0.6.md) adds a continuous **two-slide Panorama** and separate **App stores / Portfolio** project workflows, each with its own format and orientation controls.
 
 ## Run the editor
 
@@ -31,7 +33,7 @@ npm ci
 npm run dev
 ```
 
-Open the [local studio](http://127.0.0.1:5174/). Create a project and import PNG, JPEG, or WebP images. Each screenshot gets its own canvas; original images are kept in the browser.
+Open the [local studio](http://127.0.0.1:5174/). Create an **App stores** or **Portfolio** project and import PNG, JPEG, or WebP images. Each screenshot gets its own canvas; original images are kept in the browser.
 
 ```sh
 npm run check         # Run tests, TypeScript checks, and the production build
@@ -63,11 +65,11 @@ Projects are stored per browser and origin. Use **Project file** to download a `
 
 Goal: create, save, reopen, and export a consistent series of promotional images for your own app.
 
-1. Create a project and import multiple screenshots.
+1. Choose an App stores or Portfolio project, select its canvas size and orientation, and import multiple screenshots.
 2. Choose a template and its iOS or Android variant, then customize colors, typography, background, and phone frame for the whole series.
 3. Edit each image's text and composition, with options to duplicate, reorder, and undo changes.
 4. Save automatically in the browser, with project download and import—including source images—for backup and transfer.
-5. Export a single image as PNG or the series as ZIP at the selected dimensions.
+5. Export a single image as PNG, a linked panorama as two PNGs in a ZIP, or the series as ZIP at the selected dimensions.
 
 The proposed initial scope leaves accounts, synchronization, collaboration, payments, AI generation, and 3D scenes for later consideration.
 
@@ -89,8 +91,8 @@ Official references:
 
 ## Status
 
-A working editor for personal use: local projects, up to 20 screenshots, eight adaptive templates, six device frames and simple cards, orientation, colors, text, editable composition, undo/redo, backup/restore, and PNG/ZIP export using the selected preset. The app has not been deployed yet.
+A working editor for personal use: local projects, up to 20 screenshots, nine adaptive templates, including a two-slide panorama, six device frames and simple cards, orientation, colors, text, editable composition, undo/redo, backup/restore, and PNG/ZIP export using the selected preset. The app has not been deployed yet.
 
-v0.5 saves documents using schema 4 and migrates v1/v2/v3 projects and backups. The gallery, editor, and export share the same scene. Store limits are 8 images per device type on Google Play and 10 per Apple screenshot slot; the app prevents ZIP exports that exceed the destination's limit.
+v0.6 saves documents using schema 4 and migrates v1/v2/v3 projects and backups. The gallery, editor, and export share the same scene. Store limits are 8 images per device type on Google Play and 10 per Apple screenshot slot; the app prevents ZIP exports that exceed the destination's limit.
 
 The [first FrogHappy capture session](docs/capture-session.md) provides five Android images with sample data and a reproducible workflow for validating the editor.

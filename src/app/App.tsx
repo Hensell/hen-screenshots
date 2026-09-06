@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { FormEvent } from "react";
 import { zip } from "fflate";
 import mark from "../../brand/mark.svg";
 import {
@@ -25,6 +24,18 @@ import {
   getTemplate,
   resetComposition,
 } from "../core/templates";
+import { CanvasSettings } from "../editor/CanvasSettings";
+import { projectPurpose, type ProjectPurpose } from "../core/canvas-formats";
+import { NewProjectDialog } from "./NewProjectDialog";
+import {
+  duplicateUnit,
+  editLinkedShots,
+  linkedShots,
+  moveUnit,
+  panoramaPair,
+  removeUnit,
+  shotCapacity,
+} from "../core/panorama";
 import { Icon } from "./Icon";
 import {
   resolveExportProfile,
@@ -59,6 +70,9 @@ export function App() {
   const state = useEditor();
   const { project, assets, selectedId, status, saveError, change } = state;
   const [projects, setProjects] = useState<Project[]>([]);
+  const [newProjectOpen, setNewProjectOpen] = useState(false);
+  const [libraryPurpose, setLibraryPurpose] =
+    useState<ProjectPurpose>("stores");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
@@ -74,6 +88,10 @@ export function App() {
   const { images, error: imageError } = useImages(assets);
   const shot = project?.shots.find((shot) => shot.id === selectedId);
 
+  const pair = project && shot ? panoramaPair(project, shot.id) : null;
+  const visibleProjects = projects.filter(
+    (item) => projectPurpose(item) === libraryPurpose,
+  );
   useEffect(
     () => () => {
       if (readyFile) URL.revokeObjectURL(readyFile.url);
@@ -180,6 +198,7 @@ export function App() {
     if (busy) return;
     setBusy("Saving project…");
     if (await saveNow()) {
+      if (project) setLibraryPurpose(projectPurpose(project));
       state.close();
       const url = new URL(window.location.href);
       url.searchParams.delete("project");
@@ -198,9 +217,19 @@ export function App() {
       setBusy(null);
     }
   }
-  function newProject(event?: FormEvent) {
-    event?.preventDefault();
-    open({ project: createProject(), assets: [], revision: 0 });
+  function newProject(purpose: ProjectPurpose) {
+    const project = createProject(
+      purpose === "portfolio" ? "Untitled portfolio" : "Untitled app",
+    );
+    if (purpose === "portfolio") {
+      project.exportProfile = "portfolio-card";
+      project.style.device = "card";
+      project.style.deviceOrientation = "landscape";
+      project.style.template = "studio";
+    }
+    setLibraryPurpose(purpose);
+    setNewProjectOpen(false);
+    open({ project, assets: [], revision: 0 });
   }
   function chooseImages(replace = false) {
     replaceId.current = replace ? (shot?.id ?? null) : null;
@@ -221,8 +250,15 @@ export function App() {
         );
       if (replacement && files.length !== 1)
         throw new Error("Choose one image to replace this screenshot.");
+      const replacedIds = new Set(
+        replacement
+          ? linkedShots(project, replacement).map((shot) => shot.id)
+          : [],
+      );
       const usedIds = new Set(
-        project.shots.filter((s) => s.id !== replacement).map((s) => s.assetId),
+        project.shots
+          .filter((s) => !replacedIds.has(s.id))
+          .map((s) => s.assetId),
       );
       const existingBytes = assets
         .filter((asset) => usedIds.has(asset.id))
@@ -239,8 +275,9 @@ export function App() {
       let firstId: string | undefined;
       state.edit((project) => {
         if (replacement) {
-          const target = project.shots.find((s) => s.id === replacement);
-          if (target) target.assetId = incoming[0].id;
+          editLinkedShots(project, replacement, (target) => {
+            target.assetId = incoming[0].id;
+          });
         } else {
           incoming.forEach((asset) => {
             const next = createShot(asset.id, project.shots.length);
@@ -298,9 +335,8 @@ export function App() {
   async function exportImages(all: boolean) {
     if (!project || !shot || busy) return;
     const snapshot = structuredClone(project);
-    const shots = all
-      ? snapshot.shots
-      : snapshot.shots.filter((item) => item.id === shot.id);
+    const shots = all ? snapshot.shots : linkedShots(snapshot, shot.id);
+    const multiple = all || shots.length > 1;
     cancelExport.current = false;
     setBusy("Preparing export…");
     try {
@@ -326,7 +362,7 @@ export function App() {
         ] = new Uint8Array(await png.arrayBuffer());
       }
       if (cancelExport.current) return;
-      if (all) {
+      if (multiple) {
         setBusy("Packaging screenshots…");
         const archive = await new Promise<Uint8Array>((resolve, reject) =>
           zip(files, { level: 0 }, (error, result) =>
@@ -336,7 +372,7 @@ export function App() {
         if (cancelExport.current) return;
         offerFile(
           new Blob([new Uint8Array(archive)], { type: "application/zip" }),
-          `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}.zip`,
+          `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}${!all ? "-panorama" : ""}.zip`,
         );
       } else if (png)
         offerFile(
@@ -344,7 +380,7 @@ export function App() {
           `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}-${String(project.shots.findIndex((s) => s.id === shot.id) + 1).padStart(2, "0")}.png`,
         );
       setNotice({
-        message: `${all ? "Your screenshot series is" : "Your PNG is"} ready. Check your downloads.`,
+        message: `${multiple ? "Your screenshots are" : "Your PNG is"} ready. Check your downloads.`,
       });
     } catch (error) {
       setNotice({
@@ -357,29 +393,16 @@ export function App() {
     }
   }
   function duplicate() {
-    if (!shot || !project || project.shots.length >= LIMITS.shots) return;
-    const copy = structuredClone(shot);
-    copy.id = crypto.randomUUID();
+    if (!shot || !project) return;
+    let id: string | undefined;
     state.edit((project) => {
-      project.shots.splice(
-        project.shots.findIndex((s) => s.id === shot.id) + 1,
-        0,
-        copy,
-      );
+      id = duplicateUnit(project, shot.id);
     });
-    state.select(copy.id);
+    if (id) state.select(id);
   }
   function reorder(direction: number) {
     if (!shot) return;
-    state.edit((project) => {
-      const index = project.shots.findIndex((s) => s.id === shot.id),
-        next = index + direction;
-      if (next >= 0 && next < project.shots.length)
-        [project.shots[index], project.shots[next]] = [
-          project.shots[next],
-          project.shots[index],
-        ];
-    });
+    state.edit((project) => moveUnit(project, shot.id, direction));
   }
   const selectedIndex =
     project?.shots.findIndex((s) => s.id === selectedId) ?? -1;
@@ -583,7 +606,7 @@ export function App() {
               <button
                 className="button primary"
                 disabled={!!busy}
-                onClick={() => newProject()}
+                onClick={() => setNewProjectOpen(true)}
               >
                 <Icon name="plus" />
                 New project
@@ -604,11 +627,35 @@ export function App() {
           <section className="projects-section" aria-label="Saved projects">
             <div className="section-heading">
               <h2>Your projects</h2>
-              <span className="muted">{projects.length} on this device</span>
+              <span className="muted">
+                {visibleProjects.length} in this workspace
+              </span>
             </div>
-            {projects.length ? (
+            <div
+              className="library-purpose"
+              role="group"
+              aria-label="Project workspace"
+            >
+              {(["stores", "portfolio"] as const).map((purpose) => (
+                <button
+                  key={purpose}
+                  aria-pressed={libraryPurpose === purpose}
+                  onClick={() => setLibraryPurpose(purpose)}
+                >
+                  {purpose === "stores" ? "App stores" : "Portfolio"}
+                  <span>
+                    {
+                      projects.filter(
+                        (item) => projectPurpose(item) === purpose,
+                      ).length
+                    }
+                  </span>
+                </button>
+              ))}
+            </div>
+            {visibleProjects.length ? (
               <div className="project-grid">
-                {projects.map((item) => (
+                {visibleProjects.map((item) => (
                   <button
                     className="project-card"
                     key={item.id}
@@ -647,7 +694,11 @@ export function App() {
               <div className="empty-library">
                 <Icon name="folder" size={28} />
                 <div>
-                  <h3>A place for your next launch.</h3>
+                  <h3>
+                    {libraryPurpose === "stores"
+                      ? "A place for your next launch."
+                      : "A place for your best work."}
+                  </h3>
                   <p>
                     Your projects will appear here, ready to pick up where you
                     left off.
@@ -737,6 +788,11 @@ export function App() {
                     Templates
                   </button>
                 )}
+                <span className="workspace-purpose">
+                  {projectPurpose(project) === "stores"
+                    ? "App stores"
+                    : "Portfolio"}
+                </span>
                 <span className="canvas-size">
                   {resolveExportProfile(project).width >
                   resolveExportProfile(project).height
@@ -777,11 +833,12 @@ export function App() {
               style={
                 {
                   "--canvas-ratio":
-                    resolveExportProfile(project).width /
+                    ((pair ? 2 : 1) * resolveExportProfile(project).width) /
                     resolveExportProfile(project).height,
                   "--preview-max":
+                    pair ||
                     resolveExportProfile(project).width >
-                    resolveExportProfile(project).height
+                      resolveExportProfile(project).height
                       ? "900px"
                       : "470px",
                 } as React.CSSProperties
@@ -791,45 +848,82 @@ export function App() {
                 <>
                   <div className="canvas-label">
                     <span>
-                      {String(selectedIndex + 1).padStart(2, "0")} /{" "}
-                      {String(project.shots.length).padStart(2, "0")}
+                      {pair
+                        ? `${String(project.shots.indexOf(pair[0]) + 1).padStart(2, "0")}–${String(project.shots.indexOf(pair[1]) + 1).padStart(2, "0")}`
+                        : String(selectedIndex + 1).padStart(2, "0")}{" "}
+                      / {String(project.shots.length).padStart(2, "0")}
                     </span>
                     <span>
-                      {deviceNames[shot.style.device ?? project.style.device]}{" "}
-                      frame
+                      {pair
+                        ? "Panorama · 2 linked slides"
+                        : `${deviceNames[shot.style.device ?? project.style.device]} frame`}
                     </span>
                   </div>
-                  <div className="main-artboard">
-                    <Preview
-                      project={project}
-                      shot={shot}
-                      image={images.get(shot.assetId)}
-                      onMove={
-                        busy
-                          ? undefined
-                          : (x, y) =>
-                              state.edit((project) => {
-                                const target = project.shots.find(
-                                  (item) => item.id === shot.id,
-                                );
-                                if (target) {
-                                  target.phone.x = Math.max(
-                                    PLACEMENT_LIMITS.x.min,
-                                    Math.min(PLACEMENT_LIMITS.x.max, x),
+                  <div
+                    className={`main-artboard ${pair ? "panorama-board" : ""}`}
+                  >
+                    {(pair ?? [shot]).map((item) => (
+                      <Preview
+                        key={item.id}
+                        project={project}
+                        shot={item}
+                        image={images.get(item.assetId)}
+                        onMove={
+                          busy
+                            ? undefined
+                            : (x, y) =>
+                                state.edit((project) => {
+                                  editLinkedShots(
+                                    project,
+                                    shot.id,
+                                    (target) => {
+                                      target.phone.x = Math.max(
+                                        PLACEMENT_LIMITS.x.min,
+                                        Math.min(PLACEMENT_LIMITS.x.max, x),
+                                      );
+                                      target.phone.y = Math.max(
+                                        PLACEMENT_LIMITS.y.min,
+                                        Math.min(PLACEMENT_LIMITS.y.max, y),
+                                      );
+                                    },
                                   );
-                                  target.phone.y = Math.max(
-                                    PLACEMENT_LIMITS.y.min,
-                                    Math.min(PLACEMENT_LIMITS.y.max, y),
-                                  );
-                                }
-                              })
-                      }
-                    />
+                                })
+                        }
+                      />
+                    ))}
                   </div>
+                  {pair && (
+                    <div
+                      className="panorama-selection"
+                      role="group"
+                      aria-label="Edit panorama captions"
+                    >
+                      {pair.map((item, index) => (
+                        <button
+                          key={item.id}
+                          aria-pressed={item.id === shot.id}
+                          disabled={!!busy}
+                          onClick={() => state.select(item.id)}
+                        >
+                          Edit {index === 0 ? "left" : "right"} slide{" "}
+                          <span>
+                            {String(project.shots.indexOf(item) + 1).padStart(
+                              2,
+                              "0",
+                            )}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                   <div className="shot-actions">
                     <button
                       className="icon-button"
-                      disabled={selectedIndex === 0 || !!busy}
+                      disabled={
+                        (pair
+                          ? project.shots.indexOf(pair[0])
+                          : selectedIndex) === 0 || !!busy
+                      }
                       aria-label="Move screenshot earlier"
                       onClick={() => reorder(-1)}
                     >
@@ -837,25 +931,28 @@ export function App() {
                     </button>
                     <button
                       className="button quiet"
-                      disabled={!!busy || project.shots.length >= LIMITS.shots}
+                      disabled={
+                        !!busy ||
+                        project.shots.length + (pair ? 2 : 1) >
+                          shotCapacity(project)
+                      }
                       onClick={duplicate}
                     >
                       <Icon name="copy" />
-                      Duplicate
+                      {pair ? "Duplicate panorama" : "Duplicate"}
                     </button>
                     <button
                       className="icon-button"
                       disabled={!!busy}
-                      aria-label="Remove screenshot"
+                      aria-label={
+                        pair ? "Remove panorama" : "Remove screenshot"
+                      }
                       onClick={() => {
                         state.edit((project) => {
-                          project.shots = project.shots.filter(
-                            (item) => item.id !== shot.id,
-                          );
+                          removeUnit(project, shot.id);
                         });
                         setNotice({
-                          message:
-                            "Screenshot removed. Use Undo to bring it back.",
+                          message: `${pair ? "Panorama" : "Screenshot"} removed. Use Undo to bring it back.`,
                         });
                       }}
                     >
@@ -864,7 +961,10 @@ export function App() {
                     <button
                       className="icon-button"
                       disabled={
-                        selectedIndex === project.shots.length - 1 || !!busy
+                        (pair
+                          ? project.shots.indexOf(pair[1])
+                          : selectedIndex) ===
+                          project.shots.length - 1 || !!busy
                       }
                       aria-label="Move screenshot later"
                       onClick={() => reorder(1)}
@@ -925,38 +1025,9 @@ export function App() {
             />
           ) : (
             <aside className="inspector inspector-empty">
-              <p className="eyebrow">FROM CAPTURE TO CANVAS</p>
-              <h2>
-                The details make
-                <br />
-                the difference.
-              </h2>
-              <ol>
-                <li>
-                  <span>01</span>
-                  <div>
-                    <strong>Bring your screenshots</strong>
-                    <p>One screen or a whole series.</p>
-                  </div>
-                </li>
-                <li>
-                  <span>02</span>
-                  <div>
-                    <strong>Find your look</strong>
-                    <p>
-                      Phones, tablets and desktop frames. Your colors, your
-                      words.
-                    </p>
-                  </div>
-                </li>
-                <li>
-                  <span>03</span>
-                  <div>
-                    <strong>Ready for your launch</strong>
-                    <p>Export a PNG or your entire series.</p>
-                  </div>
-                </li>
-              </ol>
+              <fieldset disabled={!!busy} className="inspector-fields">
+                <CanvasSettings project={project} />
+              </fieldset>
               <div className="privacy-note">
                 <Icon name="folder" />
                 <p>
@@ -984,6 +1055,7 @@ export function App() {
       {exportOpen && project && (
         <ExportDialog
           count={project.shots.length}
+          pair={!!pair}
           profile={resolveExportProfile(project)}
           busy={busy}
           file={readyFile}
@@ -995,6 +1067,12 @@ export function App() {
             cancelExport.current = true;
             setExportOpen(false);
           }}
+        />
+      )}
+      {newProjectOpen && (
+        <NewProjectDialog
+          onCreate={newProject}
+          onClose={() => setNewProjectOpen(false)}
         />
       )}
       {templatesOpen && project && shot && (
@@ -1010,7 +1088,10 @@ export function App() {
             setTemplatesOpen(false);
             setReadyFile(null);
             setNotice({
-              message: `${getTemplate(id).name} applied to ${all ? `all ${project.shots.length} screenshots` : "this screenshot"}. You can undo this change.`,
+              message:
+                id === "panorama"
+                  ? "Panorama ready. Edit each caption and export the two slides together."
+                  : `${getTemplate(id).name} applied to ${all ? `all ${project.shots.length} screenshots` : pair ? "both slides" : "this screenshot"}. You can undo this change.`,
             });
           }}
         />
@@ -1021,6 +1102,7 @@ export function App() {
 
 function ExportDialog({
   count,
+  pair,
   profile,
   busy,
   file,
@@ -1029,6 +1111,7 @@ function ExportDialog({
   onCancel,
 }: {
   count: number;
+  pair: boolean;
   profile: ExportProfile;
   busy: string | null;
   file: ReadyFile | null;
@@ -1121,7 +1204,8 @@ function ExportDialog({
             onClick={() => void onExport(false)}
           >
             <Icon name="image" />
-            Export this screenshot<span>PNG</span>
+            {pair ? "Export this panorama" : "Export this screenshot"}
+            <span>{pair ? "ZIP · 2 PNGs" : "PNG"}</span>
           </button>
           <button
             className="button secondary full"

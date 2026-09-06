@@ -35,6 +35,8 @@ export const templateIds = [
   "split",
   "halo",
   "gallery",
+  "panorama",
+  "panorama-end",
 ] as const;
 export type TemplateId = (typeof templateIds)[number];
 export interface Style {
@@ -428,5 +430,35 @@ export function validateProject(
     for (const key of ["x", "y", "width"] as const)
       numeric(phone[key], bounds[key].min, bounds[key].max);
     if (version !== 1) numeric(phone.rotation, -20, 20);
+  }
+  if (version === 4) {
+    const project = value as Project;
+    if (
+      project.style.template === "panorama" ||
+      project.style.template === "panorama-end"
+    )
+      invalid();
+    for (let index = 0; index < project.shots.length; index++) {
+      const left = project.shots[index];
+      const style = resolveStyle(project, left);
+      if (style.template === "panorama-end") invalid();
+      if (style.template !== "panorama") continue;
+      const right = project.shots[++index];
+      if (!right) invalid();
+      const other = resolveStyle(project, right);
+      if (
+        other.template !== "panorama-end" ||
+        left.assetId !== right.assetId ||
+        (styleKeys as (keyof Style)[]).some(
+          (key) => key !== "template" && style[key] !== other[key],
+        ) ||
+        (["x", "y", "width", "rotation"] as const).some(
+          (key) => left.phone[key] !== right.phone[key],
+        )
+      )
+        throw new Error(
+          "This panorama has disconnected slides. Restore a complete linked pair.",
+        );
+    }
   }
 }

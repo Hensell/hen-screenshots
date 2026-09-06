@@ -1,29 +1,38 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { errorMessage, type Project } from "../core/model";
 import { changeCustomSize, changeExportProfile } from "../core/templates";
 import {
   CUSTOM_SIZE_LIMITS,
-  exportProfiles,
   getExportProfile,
   PROFILE_REVIEW_DATE,
   resolveExportProfile,
   type ExportProfileId,
 } from "../core/export-profiles";
+import {
+  canvasOrientation,
+  customSizeForOrientation,
+  portfolioFormatForProfile,
+  portfolioFormats,
+  profileForOrientation,
+  profileForPortfolioFormat,
+  profileForSlot,
+  profileForStore,
+  projectPurpose,
+  storeSlotForProfile,
+  storeSlots,
+  type CanvasOrientation,
+  type Store,
+} from "../core/canvas-formats";
 import { useEditor } from "./store";
-
-const portfolioNames: Partial<Record<ExportProfileId, string>> = {
-  "portfolio-card": "Project card · 4:3",
-  "portfolio-square": "Square · 1:1",
-  "portfolio-portrait": "Portrait card · 4:5",
-  "desktop-web": "Widescreen · 16:9",
-  "portfolio-custom": "Custom size",
-};
+import "./canvas-settings.css";
 
 function CustomSize({ project }: { project: Project }) {
   const edit = useEditor((state) => state.edit);
   const [width, setWidth] = useState(String(project.customSize.width));
   const [height, setHeight] = useState(String(project.customSize.height));
   const [error, setError] = useState<string | null>(null);
+  const errorId = useId();
+  const helpId = useId();
   const unchanged =
     Number(width) === project.customSize.width &&
     Number(height) === project.customSize.height;
@@ -52,6 +61,8 @@ function CustomSize({ project }: { project: Project }) {
             <input
               type="number"
               aria-label="Canvas width"
+              aria-describedby={`${helpId}${error ? ` ${errorId}` : ""}`}
+              aria-invalid={error ? true : undefined}
               required
               min={CUSTOM_SIZE_LIMITS.min}
               max={CUSTOM_SIZE_LIMITS.max}
@@ -71,6 +82,8 @@ function CustomSize({ project }: { project: Project }) {
             <input
               type="number"
               aria-label="Canvas height"
+              aria-describedby={`${helpId}${error ? ` ${errorId}` : ""}`}
+              aria-invalid={error ? true : undefined}
               required
               min={CUSTOM_SIZE_LIMITS.min}
               max={CUSTOM_SIZE_LIMITS.max}
@@ -86,7 +99,7 @@ function CustomSize({ project }: { project: Project }) {
         </label>
       </div>
       {error && (
-        <p role="alert" className="size-error">
+        <p id={errorId} role="alert" className="size-error">
           {error}
         </p>
       )}
@@ -97,87 +110,149 @@ function CustomSize({ project }: { project: Project }) {
       >
         Apply size
       </button>
-      <p className="field-help">
+      <p id={helpId} className="field-help">
         256–4096 px per side. Up to 4:1 in either direction.
       </p>
     </form>
   );
 }
 
+function OrientationSettings({ project }: { project: Project }) {
+  const edit = useEditor((state) => state.edit);
+  const orientation = canvasOrientation(project);
+  const custom = project.exportProfile === "portfolio-custom";
+  if (orientation === "square")
+    return (
+      <div className="canvas-square-note">
+        <span className="canvas-shape square" aria-hidden="true" />
+        <span>
+          Square canvas <small>Both sides are equal</small>
+        </span>
+      </div>
+    );
+  const landscapeOnly =
+    !custom && !profileForOrientation(project.exportProfile, "portrait");
+  function setOrientation(next: Exclude<CanvasOrientation, "square">) {
+    if (next === orientation) return;
+    if (custom) {
+      edit((draft) =>
+        changeCustomSize(
+          draft,
+          customSizeForOrientation(draft.customSize, next),
+        ),
+      );
+    } else {
+      const id = profileForOrientation(project.exportProfile, next);
+      if (id) edit((draft) => changeExportProfile(draft, id));
+    }
+  }
+  return (
+    <fieldset className="canvas-orientation">
+      <legend>Canvas orientation</legend>
+      <div className="canvas-orientation-options">
+        {(["portrait", "landscape"] as const).map((value) => {
+          const id = profileForOrientation(project.exportProfile, value);
+          const size = custom
+            ? customSizeForOrientation(project.customSize, value)
+            : id
+              ? getExportProfile(id)
+              : undefined;
+          const label = value === "portrait" ? "Portrait" : "Landscape";
+          return (
+            <button
+              key={value}
+              type="button"
+              aria-label={`${label} canvas`}
+              aria-pressed={orientation === value}
+              disabled={!size}
+              onClick={() => setOrientation(value)}
+            >
+              <span className={`canvas-shape ${value}`} aria-hidden="true" />
+              <span>
+                {label}
+                <small>
+                  {size ? `${size.width} × ${size.height}` : "Unavailable"}
+                </small>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      {landscapeOnly && (
+        <p className="field-help">This device uses landscape screenshots.</p>
+      )}
+    </fieldset>
+  );
+}
+
 export function CanvasSettings({ project }: { project: Project }) {
   const edit = useEditor((state) => state.edit);
   const profile = resolveExportProfile(project);
-  const portfolio = profile.store === "presentation";
+  const portfolio = projectPurpose(project) === "portfolio";
+  const orientation = canvasOrientation(project);
+  const slot = storeSlotForProfile(project.exportProfile);
+  const format = portfolioFormatForProfile(project.exportProfile);
   function select(id: ExportProfileId) {
     edit((draft) => changeExportProfile(draft, id));
   }
   return (
-    <section className="property-section export-format">
-      <h3>Canvas</h3>
-      <div
-        className="segmented canvas-purpose"
-        role="group"
-        aria-label="Canvas purpose"
-      >
-        <button
-          type="button"
-          aria-pressed={!portfolio}
-          onClick={() => {
-            if (portfolio) select("play-phone-portrait");
-          }}
-        >
-          App stores
-        </button>
-        <button
-          type="button"
-          aria-pressed={portfolio}
-          onClick={() => {
-            if (!portfolio) select("portfolio-card");
-          }}
-        >
-          Portfolio
-        </button>
-      </div>
-      <label className="field">
-        {portfolio ? "Canvas format" : "Store & size"}
-        <select
-          value={project.exportProfile}
-          onChange={(event) => select(event.target.value as ExportProfileId)}
-        >
-          {portfolio
-            ? Object.entries(portfolioNames).map(([id, label]) => {
-                const preset = getExportProfile(id as ExportProfileId);
-                return (
-                  <option key={id} value={id}>
-                    {label}
-                    {id !== "portfolio-custom"
-                      ? ` · ${preset.width} × ${preset.height}`
-                      : ""}
+    <section className="property-section export-format canvas-settings">
+      <h3>{portfolio ? "Portfolio canvas" : "Store screenshots"}</h3>
+      {portfolio ? (
+        <label className="field">
+          Canvas format
+          <select
+            value={format?.id}
+            onChange={(event) =>
+              select(profileForPortfolioFormat(event.target.value, orientation))
+            }
+          >
+            {portfolioFormats.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : (
+        <>
+          <label className="field">
+            Store
+            <select
+              value={profile.store}
+              onChange={(event) =>
+                select(
+                  profileForStore(
+                    project.exportProfile,
+                    event.target.value as Store,
+                  ),
+                )
+              }
+            >
+              <option value="apple">Apple App Store</option>
+              <option value="google">Google Play</option>
+            </select>
+          </label>
+          <label className="field">
+            Device size
+            <select
+              value={slot?.id}
+              onChange={(event) =>
+                select(profileForSlot(event.target.value, orientation))
+              }
+            >
+              {storeSlots
+                .filter((item) => item.store === profile.store)
+                .map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
                   </option>
-                );
-              })
-            : (["apple", "google"] as const).map((store) => (
-                <optgroup
-                  key={store}
-                  label={store === "apple" ? "Apple App Store" : "Google Play"}
-                >
-                  {exportProfiles
-                    .filter((item) => item.store === store)
-                    .map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name} · {item.width} × {item.height}
-                      </option>
-                    ))}
-                </optgroup>
-              ))}
-        </select>
-      </label>
-      {portfolio && (
-        <p className="field-help">
-          A canvas for your website, portfolio or case study. Pair it with any
-          frame.
-        </p>
+                ))}
+            </select>
+          </label>
+        </>
       )}
+      <OrientationSettings project={project} />
       {profile.id === "portfolio-custom" && (
         <CustomSize
           key={`${project.id}:${project.customSize.width}:${project.customSize.height}`}
@@ -189,7 +264,7 @@ export function CanvasSettings({ project }: { project: Project }) {
         <span>RGB PNG · No transparency</span>
       </p>
       <p className="field-help">
-        Applies to the whole series and refits each layout. Undo anytime.
+        Size changes refit the whole series. Undo anytime.
       </p>
       {profile.source && (
         <a

@@ -13,6 +13,14 @@ import {
 } from "./export-profiles";
 import { deviceGeometry, type Rect } from "../rendering/geometry";
 
+import {
+  applyPanorama,
+  isPanoramaTemplate,
+  linkedShots,
+  panoramaLayout,
+  panoramaStyle,
+} from "./panorama";
+
 interface TextBox {
   x: number;
   y: number;
@@ -243,6 +251,19 @@ export const templates: readonly Template[] = [
     subtitle: { x: 88, y: 1750, width: 904, height: 90 },
     lineHeight: 1.1,
   },
+  {
+    id: "panorama",
+    name: "Panorama",
+    category: "Editorial",
+    surfaceLabel: "Ribbon",
+    description: "One scene. A story across two slides.",
+    note: "A continuous backdrop and one shared device, split into two consecutive slides.",
+    style: panoramaStyle,
+    phone: { x: 700, y: 150, width: 760, rotation: -8 },
+    title: { x: 70, y: 160, width: 450, height: 450 },
+    subtitle: { x: 74, y: 670, width: 446, height: 160 },
+    lineHeight: 1.07,
+  },
 ];
 
 export function filterTemplates(
@@ -262,7 +283,9 @@ export function filterTemplates(
 }
 
 export function getTemplate(id: TemplateId): Template {
-  const template = templates.find((item) => item.id === id);
+  const template = templates.find(
+    (item) => item.id === (id === "panorama-end" ? "panorama" : id),
+  );
   if (!template) throw new Error("This template is not supported.");
   return template;
 }
@@ -271,6 +294,8 @@ export function getTemplate(id: TemplateId): Template {
 export function templateLayout(project: Project, style: Style) {
   const template = getTemplate(style.template);
   const canvas = canonicalCanvas(project);
+  if (isPanoramaTemplate(style.template))
+    return { ...template, ...panoramaLayout(project, style) };
   if (!legacyTemplateIds.some((id) => id === style.template))
     return collectionLayout(project, style, template);
   const legacy =
@@ -481,10 +506,16 @@ export function applyTemplate(
   keepColors = false,
 ): void {
   if (!project.shots.some((shot) => shot.id === shotId)) return;
+  if (isPanoramaTemplate(id)) {
+    if (all) throw new Error("Apply Panorama to one screenshot at a time.");
+    applyPanorama(project, shotId, keepColors);
+    return;
+  }
+  const targets = new Set(linkedShots(project, shotId).map((shot) => shot.id));
   const patch = templateStyle(id, keepColors);
   if (all) Object.assign(project.style, patch);
   for (const shot of project.shots) {
-    if (!all && shot.id !== shotId) continue;
+    if (!all && !targets.has(shot.id)) continue;
     if (all) {
       for (const key of Object.keys(patch) as (keyof Style)[])
         delete shot.style[key];

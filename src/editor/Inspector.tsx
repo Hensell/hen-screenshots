@@ -2,7 +2,12 @@ import { resolveStyle, PLACEMENT_LIMITS } from "../core/model";
 import type { Project, Shot, Style } from "../core/model";
 import { useEditor } from "./store";
 import { Icon } from "../app/Icon";
-import { getTemplate, resetComposition } from "../core/templates";
+import {
+  applyTemplate,
+  getTemplate,
+  resetComposition,
+} from "../core/templates";
+import { linkedShots, panoramaPair } from "../core/panorama";
 import { CanvasSettings } from "./CanvasSettings";
 
 export const deviceNames = {
@@ -37,16 +42,23 @@ export function Inspector({
 }) {
   const { edit, endGroup } = useEditor();
   const style = resolveStyle(project, shot);
+  const pair = panoramaPair(project, shot.id);
   const surfaceLabel = getTemplate(style.template).surfaceLabel;
   const secondaryLabel =
     style.backgroundMode === "solid" && surfaceLabel
       ? surfaceLabel
       : "Gradient end";
-  function updateShot(recipe: (draft: Shot) => void, group?: string) {
+  function updateShot(
+    recipe: (draft: Shot) => void,
+    group?: string,
+    shared = true,
+  ) {
     edit(
       (project) => {
-        const selected = project.shots.find((item) => item.id === shot.id);
-        if (selected) recipe(selected);
+        const targets = shared
+          ? linkedShots(project, shot.id)
+          : project.shots.filter((item) => item.id === shot.id);
+        targets.forEach(recipe);
       },
       group && `${shot.id}:${group}`,
     );
@@ -54,7 +66,11 @@ export function Inspector({
   function setStyle(patch: Partial<Style>) {
     updateShot((shot) => {
       Object.assign(shot.style, patch);
-      if (patch.device || patch.deviceOrientation)
+      if (
+        patch.device ||
+        patch.deviceOrientation ||
+        (pair && patch.frame !== undefined)
+      )
         resetComposition(project, shot);
     });
   }
@@ -103,6 +119,29 @@ export function Inspector({
       </div>
       <fieldset disabled={disabled} className="inspector-fields">
         <CanvasSettings project={project} />
+        {pair && (
+          <section className="property-section panorama-info">
+            <h3>Two slides, one scene</h3>
+            <p className="field-help">
+              Image, frame, colors and position are shared. Words belong to the
+              selected slide.
+            </p>
+            <button
+              type="button"
+              className="text-button"
+              onClick={() =>
+                edit((draft) =>
+                  applyTemplate(draft, shot.id, "studio", false, true),
+                )
+              }
+            >
+              Separate slides
+            </button>
+            <p className="field-help">
+              Returns both slides to Studio. Undo anytime.
+            </p>
+          </section>
+        )}
         <section className="property-section">
           <h3>Device frame</h3>
           <div
@@ -130,22 +169,25 @@ export function Inspector({
             ))}
           </div>
           {style.device !== "monitor" && style.device !== "laptop" && (
-            <div
-              className="segmented"
-              role="group"
-              aria-label="Device orientation"
-            >
-              {(["portrait", "landscape"] as const).map((orientation) => (
-                <button
-                  type="button"
-                  key={orientation}
-                  aria-pressed={style.deviceOrientation === orientation}
-                  onClick={() => setStyle({ deviceOrientation: orientation })}
-                >
-                  {orientation === "portrait" ? "Portrait" : "Landscape"}
-                </button>
-              ))}
-            </div>
+            <>
+              <p className="field-help">Frame orientation</p>
+              <div
+                className="segmented"
+                role="group"
+                aria-label="Frame orientation"
+              >
+                {(["portrait", "landscape"] as const).map((orientation) => (
+                  <button
+                    type="button"
+                    key={orientation}
+                    aria-pressed={style.deviceOrientation === orientation}
+                    onClick={() => setStyle({ deviceOrientation: orientation })}
+                  >
+                    {orientation === "portrait" ? "Portrait" : "Landscape"}
+                  </button>
+                ))}
+              </div>
+            </>
           )}
           <label className="check-field">
             <input
@@ -210,9 +252,13 @@ export function Inspector({
               rows={3}
               value={shot.title}
               onChange={(event) =>
-                updateShot((shot) => {
-                  shot.title = event.target.value;
-                }, "title")
+                updateShot(
+                  (shot) => {
+                    shot.title = event.target.value;
+                  },
+                  "title",
+                  false,
+                )
               }
               onBlur={endGroup}
             />
@@ -224,9 +270,13 @@ export function Inspector({
               rows={2}
               value={shot.subtitle}
               onChange={(event) =>
-                updateShot((shot) => {
-                  shot.subtitle = event.target.value;
-                }, "subtitle")
+                updateShot(
+                  (shot) => {
+                    shot.subtitle = event.target.value;
+                  },
+                  "subtitle",
+                  false,
+                )
               }
               onBlur={endGroup}
             />

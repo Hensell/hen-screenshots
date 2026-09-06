@@ -126,7 +126,9 @@ describe("adaptive compositions", () => {
       for (const orientation of ["portrait", "landscape"] as const)
         for (const frame of [true, false])
           for (const profile of exportProfiles)
-            for (const template of templates) {
+            for (const template of templates.filter(
+              (item) => item.id !== "panorama",
+            )) {
               const project = createProject();
               project.exportProfile = profile.id;
               Object.assign(project.style, {
@@ -279,7 +281,9 @@ describe("custom portfolio sizes", () => {
         "laptop",
       ] as DeviceFamily[])
         for (const orientation of ["portrait", "landscape"] as const)
-          for (const template of templates) {
+          for (const template of templates.filter(
+            (item) => item.id !== "panorama",
+          )) {
             const project = createProject();
             project.exportProfile = "portfolio-custom";
             project.customSize = { ...size };

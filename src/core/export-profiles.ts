@@ -245,6 +245,36 @@ export const exportProfiles = [
     maxCount: 20,
     note: "Your own canvas size for a portfolio, project card or website. No store slot is selected.",
   },
+  {
+    id: "portfolio-card-portrait",
+    name: "Portfolio · Card · Portrait",
+    store: "presentation",
+    category: "desktop",
+    width: 1200,
+    height: 1600,
+    maxCount: 20,
+    note: "A portrait project card for your portfolio or case study.",
+  },
+  {
+    id: "portfolio-landscape",
+    name: "Portfolio · Editorial · Landscape",
+    store: "presentation",
+    category: "desktop",
+    width: 1500,
+    height: 1200,
+    maxCount: 20,
+    note: "A landscape editorial canvas with room for your product and its story.",
+  },
+  {
+    id: "desktop-web-portrait",
+    name: "Portfolio · Wide · Portrait",
+    store: "presentation",
+    category: "desktop",
+    width: 1080,
+    height: 1920,
+    maxCount: 20,
+    note: "A tall composition for your website or portfolio.",
+  },
 ] as const satisfies readonly ProfileDefinition[];
 export type ExportProfileId = (typeof exportProfiles)[number]["id"];
 export type ExportProfile = ProfileDefinition & { id: ExportProfileId };

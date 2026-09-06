@@ -8,6 +8,13 @@ import {
 } from "react";
 import type { Project, Shot, TemplateId } from "../core/model";
 import { canonicalCanvas } from "../core/export-profiles";
+import {
+  isPanoramaTemplate,
+  linkedShots,
+  panoramaPair,
+  panoramaPreview,
+  shotCapacity,
+} from "../core/panorama";
 import { resolveStyle } from "../core/model";
 import {
   filterTemplates,
@@ -25,6 +32,7 @@ const TemplateCard = memo(function TemplateCard({
   template,
   project,
   shots,
+  focusShot,
   images,
   keepColors,
   selected,
@@ -34,6 +42,7 @@ const TemplateCard = memo(function TemplateCard({
   template: Template;
   project: Project;
   shots: Shot[];
+  focusShot: Shot;
   images: Map<string, HTMLImageElement>;
   keepColors: boolean;
   selected: boolean;
@@ -52,10 +61,12 @@ const TemplateCard = memo(function TemplateCard({
   }, []);
   const previews = useMemo(
     () =>
-      shots.map((shot) =>
-        templatePreview(project, shot, template.id, keepColors),
-      ),
-    [project, shots, template.id, keepColors],
+      template.id === "panorama"
+        ? panoramaPreview(project, focusShot, keepColors)
+        : shots.map((shot) =>
+            templatePreview(project, shot, template.id, keepColors),
+          ),
+    [project, shots, focusShot, template.id, keepColors],
   );
   return (
     <button
@@ -66,7 +77,9 @@ const TemplateCard = memo(function TemplateCard({
       onClick={() => onSelect(template.id)}
       aria-label={`${template.name} template`}
     >
-      <div className={`template-art ${series ? "template-art-series" : ""}`}>
+      <div
+        className={`template-art ${template.id === "panorama" ? "template-art-panorama" : series ? "template-art-series" : ""}`}
+      >
         {previews.map((preview) => (
           <div className="template-preview-slot" key={preview.id}>
             {visible ? (
@@ -115,7 +128,7 @@ export function TemplateGallery({
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [selected, setSelected] = useState<TemplateId>(
-    resolveStyle(project, shot).template,
+    getTemplate(resolveStyle(project, shot).template).id,
   );
   const [all, setAll] = useState(false);
   const [keepColors, setKeepColors] = useState(false);
@@ -129,12 +142,19 @@ export function TemplateGallery({
       ) / 3,
     ),
   );
+  const pair = panoramaPair(project, shot.id);
+  const panoramic = isPanoramaTemplate(selected);
+  const full =
+    panoramic && !pair && project.shots.length >= shotCapacity(project);
   const matches = filterTemplates(query, category);
   const selectionVisible = matches.some((item) => item.id === selected);
   const start = page * 3;
   const shownShots = useMemo(
-    () => (all ? project.shots.slice(start, start + 3) : [shot]),
-    [all, project.shots, shot, start],
+    () =>
+      all
+        ? project.shots.slice(start, start + 3)
+        : linkedShots(project, shot.id),
+    [all, project, shot, start],
   );
   const ready = (all ? project.shots : [shot]).every((item) =>
     images.has(item.assetId),
@@ -206,11 +226,12 @@ export function TemplateGallery({
               aria-pressed={!all}
               onClick={() => setAll(false)}
             >
-              This screenshot
+              {pair ? "This pair (2 slides)" : "This screenshot"}
             </button>
             <button
               type="button"
               aria-pressed={all}
+              disabled={panoramic}
               onClick={() => setAll(true)}
             >
               Whole series ({project.shots.length})
@@ -281,11 +302,15 @@ export function TemplateGallery({
             template={template}
             project={project}
             shots={shownShots}
+            focusShot={shot}
             images={images}
             keepColors={keepColors}
             selected={selected === template.id}
-            onSelect={setSelected}
-            series={all}
+            onSelect={(id) => {
+              setSelected(id);
+              if (isPanoramaTemplate(id)) setAll(false);
+            }}
+            series={all || !!pair}
           />
         ))}
         {matches.length === 0 && (
@@ -321,23 +346,37 @@ export function TemplateGallery({
             Keep my colors
           </label>
           <p className="field-help">
-            Layout resets. Words, images and frames stay. Undo anytime.
+            {panoramic
+              ? "One shared screenshot, two separate captions. Exported as consecutive PNGs."
+              : pair
+                ? "Both slides get this layout and become independent. Words and images stay."
+                : "Layout resets. Words, images and frames stay. Undo anytime."}
           </p>
         </div>
         <div className="template-apply">
           <p className="template-target">
-            {all
-              ? `Applies to all ${project.shots.length} screenshots`
-              : "Applies to this screenshot"}
+            {full
+              ? `Needs one free slide · ${shotCapacity(project)} allowed for this format`
+              : panoramic
+                ? pair
+                  ? "Updates this panorama"
+                  : "Adds one slide to create a linked pair"
+                : all
+                  ? `Applies to all ${project.shots.length} screenshots`
+                  : pair
+                    ? "Applies to both slides"
+                    : "Applies to this screenshot"}
           </p>
           <button
             type="button"
             className="button primary"
-            disabled={!ready || !selectionVisible}
+            disabled={!ready || !selectionVisible || full}
             onClick={() => onApply(selected, all, keepColors)}
           >
             {selectionVisible
-              ? `Apply ${getTemplate(selected).name}`
+              ? panoramic && !pair
+                ? "Create 2-slide panorama"
+                : `Apply ${getTemplate(selected).name}`
               : "Choose a template"}
             <Icon name="arrow" size={16} />
           </button>

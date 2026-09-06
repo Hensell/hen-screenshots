@@ -1,0 +1,97 @@
+.canvas-settings .canvas-orientation {
+  padding: 0;
+  margin: 18px 0 0;
+  border: 0;
+  min-width: 0;
+}
+.canvas-orientation legend {
+  padding: 0;
+  margin-bottom: 8px;
+  color: var(--brand-muted);
+  font-size: 10px;
+  font-weight: 650;
+}
+.canvas-orientation-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+.canvas-orientation-options button {
+  min-height: 78px;
+  padding: 12px 5px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid #cdd3c6;
+  border-radius: 6px;
+  color: var(--brand-muted);
+  background: #fbfaf6;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.4;
+}
+.canvas-orientation-options button[aria-pressed="true"] {
+  border-color: var(--brand-ink);
+  background: #e8eddd;
+  color: var(--brand-ink);
+  box-shadow: inset 0 0 0 1px var(--brand-ink);
+}
+.canvas-orientation-options
+  button:hover:not(:disabled):not([aria-pressed="true"]) {
+  border-color: #929d87;
+  color: var(--brand-ink);
+}
+.canvas-orientation-options button:focus-visible {
+  outline: 2px solid var(--brand-ink);
+  outline-offset: 3px;
+}
+.canvas-orientation-options button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+.canvas-orientation-options small,
+.canvas-square-note small {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  font-weight: 450;
+  white-space: nowrap;
+}
+.canvas-shape {
+  display: inline-block;
+  flex-shrink: 0;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+}
+.canvas-shape.portrait {
+  width: 15px;
+  height: 21px;
+}
+.canvas-shape.landscape {
+  width: 25px;
+  height: 16px;
+  margin-top: 3px;
+  margin-bottom: 2px;
+}
+.canvas-shape.square {
+  width: 19px;
+  height: 19px;
+}
+.canvas-square-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  margin-top: 16px;
+  padding: 12px;
+  background: #e9ece3;
+  border-radius: 5px;
+  color: var(--brand-ink);
+  font-size: 11px;
+  font-weight: 650;
+}
+.canvas-square-note small {
+  color: var(--brand-muted);
+}
