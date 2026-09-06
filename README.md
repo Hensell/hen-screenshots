@@ -14,6 +14,8 @@ La [arquitectura propuesta](docs/architecture.md) define el modelo del editor, l
 
 El primer editor ya incluye **marcos para iOS y Android**. La [especificación de dispositivos](docs/device-frames.md) define ambas familias y la dirección del catálogo. El [alcance de v0.1](docs/editor-v0.1.md) distingue lo implementado de las siguientes iteraciones.
 
+La [iteración de plantillas v0.2](docs/templates-v0.2.md) añade **Classic, Spotlight, Tilt y Editorial**, con vista previa usando tus capturas, aplicación individual o en serie, degradados, textura, acento tipográfico y rotación. Los proyectos y respaldos anteriores siguen siendo compatibles.
+
 ## Ejecutar el editor
 
 Requiere Node.js 22.12 o posterior.
@@ -82,5 +84,7 @@ Referencias oficiales:
 ## Estado
 
 Primer editor funcional para uso personal: proyectos locales, hasta 20 capturas, textos, paletas, marcos iOS/Android, posición y tamaño del teléfono, duplicación, orden, deshacer/rehacer, respaldo/restauración y exportación PNG/ZIP a 1080 × 1920. Identidad pública confirmada. Todavía no se ha desplegado la aplicación.
+
+v0.2 incorpora cuatro plantillas y documentos con esquema 2. Las plantillas mantienen la misma escena entre galería, editor y exportación.
 
 La [primera sesión de capturas reales de FrogHappy](docs/capture-session.md) proporciona cinco imágenes Android con datos de muestra y un flujo reproducible para validar el editor.

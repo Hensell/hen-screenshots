@@ -1,7 +1,7 @@
 import { strToU8, unzipSync, zipSync } from "fflate";
 import type { UnzipFileInfo } from "fflate";
 import { importImages } from "../assets/import";
-import { LIMITS, SCHEMA_VERSION } from "../core/model";
+import { LIMITS, SCHEMA_VERSION, defaultStyle } from "../core/model";
 import type { Asset, LoadedProject, Project, Shot, Style } from "../core/model";
 
 const MANIFEST_LIMIT = 256 * 1024;
@@ -23,7 +23,7 @@ interface AssetInfo {
 }
 interface Manifest {
   format: "hen-screenshots";
-  schemaVersion: 1;
+  schemaVersion: 2;
   project: Project;
   assets: AssetInfo[];
 }
@@ -74,7 +74,7 @@ function number(
     fail();
   return value;
 }
-const styleKeys = [
+const legacyStyleKeys = [
   "background",
   "textColor",
   "device",
@@ -83,26 +83,51 @@ const styleKeys = [
   "fit",
   "align",
 ];
-function style(value: unknown, partial = false): Partial<Style> {
-  const result = record(value, styleKeys, partial ? [] : styleKeys);
+const styleKeys = [
+  ...legacyStyleKeys,
+  "template",
+  "backgroundMode",
+  "backgroundEnd",
+  "accentColor",
+  "texture",
+  "accentTitle",
+  "titleSize",
+];
+function style(
+  value: unknown,
+  version: 1 | 2,
+  partial = false,
+): Partial<Style> {
+  const keys = version === 1 ? legacyStyleKeys : styleKeys;
+  const result = record(value, keys, partial ? [] : keys);
   for (const [key, item] of Object.entries(result)) {
-    if (key === "background" || key === "textColor") {
+    if (
+      ["background", "textColor", "backgroundEnd", "accentColor"].includes(key)
+    ) {
       if (typeof item !== "string" || !/^#[\da-f]{6}$/i.test(item)) fail();
-    } else if (key === "frame" || key === "camera") {
+    } else if (["frame", "camera", "accentTitle"].includes(key)) {
       if (typeof item !== "boolean") fail();
+    } else if (key === "titleSize") {
+      number(item, 48, 132);
     } else {
       const allowed =
         key === "device"
           ? ["android", "ios"]
           : key === "fit"
             ? ["contain", "cover"]
-            : ["left", "center"];
+            : key === "align"
+              ? ["left", "center"]
+              : key === "template"
+                ? ["classic", "spotlight", "tilt", "editorial"]
+                : key === "backgroundMode"
+                  ? ["solid", "gradient"]
+                  : ["none", "dots"];
       if (typeof item !== "string" || !allowed.includes(item)) fail();
     }
   }
   return result as Partial<Style>;
 }
-function project(value: unknown): Project {
+function project(value: unknown, version: 1 | 2): Project {
   const raw = record(value, [
     "schemaVersion",
     "id",
@@ -112,8 +137,8 @@ function project(value: unknown): Project {
     "style",
     "shots",
   ]);
-  if (raw.schemaVersion !== SCHEMA_VERSION)
-    fail("This backup uses an unsupported project version.");
+  if (raw.schemaVersion !== version)
+    fail("The backup and project versions do not match.");
   if (!Array.isArray(raw.shots) || raw.shots.length > LIMITS.shots)
     fail("A project can contain up to 20 screenshots.");
   const shots: Shot[] = raw.shots.map((value) => {
@@ -125,17 +150,21 @@ function project(value: unknown): Project {
       "style",
       "phone",
     ]);
-    const phone = record(shot.phone, ["x", "y", "width"]);
+    const phone = record(
+      shot.phone,
+      version === 1 ? ["x", "y", "width"] : ["x", "y", "width", "rotation"],
+    );
     return {
       id: id(shot.id),
       assetId: id(shot.assetId),
       title: string(shot.title, 100),
       subtitle: string(shot.subtitle, 150),
-      style: style(shot.style, true),
+      style: style(shot.style, version, true),
       phone: {
         x: number(phone.x, -200, 900),
         y: number(phone.y, 100, 1500),
         width: number(phone.width, 320, 900),
+        rotation: version === 1 ? 0 : number(phone.rotation, -20, 20),
       },
     };
   });
@@ -147,15 +176,18 @@ function project(value: unknown): Project {
     name: string(raw.name, 80, 1),
     createdAt: number(raw.createdAt, 0, Number.MAX_SAFE_INTEGER, true),
     updatedAt: number(raw.updatedAt, 0, Number.MAX_SAFE_INTEGER, true),
-    style: style(raw.style) as Style,
+    style: { ...defaultStyle, ...style(raw.style, version) },
     shots,
   };
 }
 function manifest(value: unknown): Manifest {
   const raw = record(value, ["format", "schemaVersion", "project", "assets"]);
-  if (raw.format !== "hen-screenshots" || raw.schemaVersion !== SCHEMA_VERSION)
+  if (
+    raw.format !== "hen-screenshots" ||
+    (raw.schemaVersion !== 1 && raw.schemaVersion !== SCHEMA_VERSION)
+  )
     fail("This backup uses an unsupported project version.");
-  const document = project(raw.project);
+  const document = project(raw.project, raw.schemaVersion);
   if (!Array.isArray(raw.assets) || raw.assets.length > LIMITS.shots) fail();
   const assets: AssetInfo[] = raw.assets.map((value) => {
     const entry = record(value, [

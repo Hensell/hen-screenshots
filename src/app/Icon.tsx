@@ -13,8 +13,10 @@ type Name =
   | "image"
   | "close"
   | "folder"
+  | "layout"
   | "phone";
 const paths: Record<Name, string> = {
+  layout: "M3 3h7v18H3zM14 3h7v7h-7zM14 14h7v7h-7z",
   plus: "M12 5v14M5 12h14",
   arrow: "M5 12h14m-5-5 5 5-5 5",
   download: "M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5",

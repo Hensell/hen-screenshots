@@ -1,12 +1,18 @@
 import Dexie from "dexie";
 import type { Table } from "dexie";
-import type { Asset, LoadedProject, Project } from "../core/model";
+import { migrateProject } from "../core/model";
+import type {
+  Asset,
+  LegacyProject,
+  LoadedProject,
+  Project,
+} from "../core/model";
 
 interface ProjectRow {
   id: string;
   updatedAt: number;
   revision: number;
-  project: Project;
+  project: Project | LegacyProject;
 }
 interface AssetRow extends Asset {
   projectId: string;
@@ -21,6 +27,19 @@ class ProjectDatabase extends Dexie {
       projects: "id, updatedAt",
       assets: "[projectId+id], projectId",
     });
+    this.version(2)
+      .stores({
+        projects: "id, updatedAt",
+        assets: "[projectId+id], projectId",
+      })
+      .upgrade((transaction) =>
+        transaction
+          .table<ProjectRow, string>("projects")
+          .toCollection()
+          .modify((row) => {
+            row.project = migrateProject(row.project);
+          }),
+      );
   }
 }
 const db = new ProjectDatabase();
@@ -36,7 +55,7 @@ export async function listProjects(): Promise<
   { project: Project; revision: number }[]
 > {
   return (await db.projects.orderBy("updatedAt").reverse().toArray()).map(
-    ({ project, revision }) => ({ project, revision }),
+    ({ project, revision }) => ({ project: migrateProject(project), revision }),
   );
 }
 
@@ -50,7 +69,11 @@ export async function loadProject(id: string): Promise<LoadedProject> {
     const assets = (
       await db.assets.where("projectId").equals(id).toArray()
     ).map(({ projectId: _owner, ...asset }) => asset);
-    return { project: row.project, revision: row.revision, assets };
+    return {
+      project: migrateProject(row.project),
+      revision: row.revision,
+      assets,
+    };
   });
 }
 
@@ -60,6 +83,7 @@ export async function saveProject(
   assets: Asset[],
   expectedRevision: number,
 ): Promise<number> {
+  project = migrateProject(project);
   if (!Number.isSafeInteger(expectedRevision) || expectedRevision < 0)
     throw new Error("Invalid project revision.");
   if (new Set(assets.map((asset) => asset.id)).size !== assets.length)
@@ -68,6 +92,7 @@ export async function saveProject(
     const current = await db.projects.get(project.id);
     if ((current?.revision ?? 0) !== expectedRevision)
       throw new ConflictError();
+    if (current) migrateProject(current.project);
     if (assets.length)
       await db.assets.bulkPut(
         assets.map((asset) => ({ ...asset, projectId: project.id })),

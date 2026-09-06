@@ -1,5 +1,7 @@
 # Primer editor de Hen Screenshots
 
+Este documento describe la primera entrega. La evolución actual del catálogo y la migración al esquema 2 están en [Plantillas v0.2](templates-v0.2.md).
+
 ## Alcance implementado
 
 - React, TypeScript y Vite, con el plugin oficial de Cloudflare para publicar archivos estáticos en Workers. Sin API, cuentas ni almacenamiento remoto.

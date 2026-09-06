@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { strToU8, unzipSync, zipSync } from "fflate";
-import { createProject, createShot, LIMITS } from "../core/model";
+import { createProject, createShot, defaultStyle, LIMITS } from "../core/model";
 import type { Asset } from "../core/model";
 import { exportProject, importProject } from "./backup";
 
@@ -59,7 +59,29 @@ async function changedBackup(
 describe("portable project backups", () => {
   it("round-trips original image bytes and styles, remaps every ID, and omits undo-only assets", async () => {
     const original = document();
-    original.shots[1].style = { device: "ios", fit: "cover" };
+    original.style = {
+      ...original.style,
+      template: "spotlight",
+      backgroundMode: "gradient",
+      backgroundEnd: "#ABCDEF",
+      accentColor: "#123456",
+      texture: "dots",
+      accentTitle: true,
+      titleSize: 108,
+    };
+    original.shots[1].style = {
+      device: "ios",
+      fit: "cover",
+      template: "tilt",
+      backgroundMode: "solid",
+      backgroundEnd: "#FEDCBA",
+      accentColor: "#654321",
+      texture: "none",
+      accentTitle: false,
+      titleSize: 60,
+    };
+    original.shots[0].phone.rotation = -11.5;
+    original.shots[1].phone.rotation = 18;
     const blob = await exportProject(original, [
       image(),
       { ...image(), id: "unused-image" },
@@ -68,6 +90,15 @@ describe("portable project backups", () => {
       new File([blob], "app.henscreenshots"),
     );
     expect(restored.revision).toBe(0);
+    const archived = JSON.parse(
+      new TextDecoder().decode(
+        unzipSync(new Uint8Array(await blob.arrayBuffer()))["project.json"],
+      ),
+    );
+    expect(archived.schemaVersion).toBe(2);
+    expect(archived.project.schemaVersion).toBe(2);
+    expect(restored.project.schemaVersion).toBe(2);
+    expect(restored.project.style).toEqual(original.style);
     expect(restored.project.id).not.toBe(original.id);
     expect(restored.assets).toHaveLength(1);
     expect(restored.assets[0].id).not.toBe("original-asset");
@@ -80,20 +111,113 @@ describe("portable project backups", () => {
         (shot, index) => shot.id !== original.shots[index].id,
       ),
     ).toBe(true);
-    expect(restored.project.shots[1].style).toEqual({
-      device: "ios",
-      fit: "cover",
-    });
+    expect(restored.project.shots[1].style).toEqual(original.shots[1].style);
+    expect(restored.project.shots.map((shot) => shot.phone)).toEqual(
+      original.shots.map((shot) => shot.phone),
+    );
     expect(new Uint8Array(await restored.assets[0].blob.arrayBuffer())).toEqual(
       imageBytes,
     );
     expect(restored.project.name).toBe(original.name);
   });
+  it("restores a version 1 backup with classic defaults while preserving its original composition and image bytes", async () => {
+    const file = await changedBackup((value) => {
+      value.schemaVersion = value.project.schemaVersion = 1;
+      for (const key of [
+        "template",
+        "backgroundMode",
+        "backgroundEnd",
+        "accentColor",
+        "texture",
+        "accentTitle",
+        "titleSize",
+      ])
+        delete value.project.style[key];
+      value.project.style.background = "#ACBD12";
+      value.project.style.textColor = "#192837";
+      value.project.style.align = "left";
+      value.project.shots[0].title = "Keep my exact\noriginal headline";
+      value.project.shots[0].subtitle = "Keep my original subtitle.";
+      value.project.shots[0].style = { device: "ios", background: "#765432" };
+      value.project.shots[0].phone = { x: 317, y: 603, width: 701 };
+      delete value.project.shots[1].phone.rotation;
+    });
+    const restored = await importProject(file);
+    expect(restored.project.schemaVersion).toBe(2);
+    expect(restored.project.style).toEqual({
+      ...defaultStyle,
+      background: "#ACBD12",
+      textColor: "#192837",
+      align: "left",
+    });
+    expect(restored.project.shots[0]).toMatchObject({
+      title: "Keep my exact\noriginal headline",
+      subtitle: "Keep my original subtitle.",
+      style: { device: "ios", background: "#765432" },
+      phone: { x: 317, y: 603, width: 701, rotation: 0 },
+    });
+    expect(restored.project.shots[1].phone.rotation).toBe(0);
+    expect(new Uint8Array(await restored.assets[0].blob.arrayBuffer())).toEqual(
+      imageBytes,
+    );
+    const upgraded = await exportProject(restored.project, restored.assets);
+    const upgradedMetadata = JSON.parse(
+      new TextDecoder().decode(
+        unzipSync(new Uint8Array(await upgraded.arrayBuffer()))["project.json"],
+      ),
+    );
+    expect(upgradedMetadata.schemaVersion).toBe(2);
+    expect(upgradedMetadata.project).toEqual(restored.project);
+  });
+  it.each(["template", "rotation", "missing background"])(
+    "still validates the original schema before migrating version 1 backups: %s",
+    async (problem) => {
+      const file = await changedBackup((value) => {
+        value.schemaVersion = value.project.schemaVersion = 1;
+        for (const key of [
+          "template",
+          "backgroundMode",
+          "backgroundEnd",
+          "accentColor",
+          "texture",
+          "accentTitle",
+          "titleSize",
+        ])
+          delete value.project.style[key];
+        for (const shot of value.project.shots) delete shot.phone.rotation;
+        if (problem === "template")
+          value.project.shots[0].style.template = "spotlight";
+        else if (problem === "rotation")
+          value.project.shots[0].phone.rotation = 0;
+        else delete value.project.style.background;
+      });
+      await expect(importProject(file)).rejects.toThrow();
+      expect(URL.createObjectURL).not.toHaveBeenCalled();
+    },
+  );
   it.each([
     [
       "unsupported version",
       (value: any) => {
-        value.schemaVersion = 2;
+        value.schemaVersion = 3;
+      },
+    ],
+    [
+      "future project version",
+      (value: any) => {
+        value.project.schemaVersion = 3;
+      },
+    ],
+    [
+      "mismatched envelope and project versions",
+      (value: any) => {
+        value.schemaVersion = 1;
+      },
+    ],
+    [
+      "legacy project under a version 2 envelope",
+      (value: any) => {
+        value.project.schemaVersion = 1;
       },
     ],
     [
@@ -184,13 +308,71 @@ describe("portable project backups", () => {
     await expect(importProject(await changedBackup(mutate))).rejects.toThrow();
     expect(URL.createObjectURL).not.toHaveBeenCalled();
   });
+  it.each([
+    ["template", "unrecognized"],
+    ["template", ""],
+    ["backgroundMode", "radial"],
+    ["backgroundEnd", "#FFF"],
+    ["backgroundEnd", "red"],
+    ["accentColor", "#12345678"],
+    ["accentColor", "#GGGGGG"],
+    ["texture", "noise"],
+    ["accentTitle", 1],
+    ["accentTitle", "true"],
+    ["titleSize", 47.9],
+    ["titleSize", 132.1],
+    ["titleSize", "84"],
+    ["titleSize", null],
+  ])(
+    "rejects invalid template field %s = %j in full styles and overrides",
+    async (key, invalid) => {
+      for (const target of ["project", "shot"]) {
+        const file = await changedBackup((value) => {
+          const style =
+            target === "project"
+              ? value.project.style
+              : value.project.shots[0].style;
+          style[String(key)] = invalid;
+        });
+        await expect(importProject(file)).rejects.toThrow();
+      }
+      expect(URL.createObjectURL).not.toHaveBeenCalled();
+    },
+  );
+  it.each([
+    "template",
+    "backgroundMode",
+    "backgroundEnd",
+    "accentColor",
+    "texture",
+    "accentTitle",
+    "titleSize",
+  ])("requires %s in version 2 project styles", async (key) => {
+    const file = await changedBackup((value) => {
+      delete value.project.style[key];
+    });
+    await expect(importProject(file)).rejects.toThrow();
+    expect(URL.createObjectURL).not.toHaveBeenCalled();
+  });
+  it.each([-20.1, 20.1, "0", null, undefined])(
+    "rejects invalid or missing rotation %j",
+    async (rotation) => {
+      const file = await changedBackup((value) => {
+        value.project.shots[0].phone.rotation = rotation;
+      });
+      await expect(importProject(file)).rejects.toThrow();
+      expect(URL.createObjectURL).not.toHaveBeenCalled();
+    },
+  );
   it("accepts the exact text and phone bounds exposed by the editor", async () => {
     const original = document();
     original.name = "N".repeat(80);
     original.shots[0].title = "T".repeat(100);
     original.shots[0].subtitle = "S".repeat(150);
-    original.shots[0].phone = { width: 320, x: -200, y: 100 };
-    original.shots[1].phone = { width: 900, x: 900, y: 1500 };
+    original.shots[0].phone = { width: 320, x: -200, y: 100, rotation: -20 };
+    original.shots[1].phone = { width: 900, x: 900, y: 1500, rotation: 20 };
+    original.style.titleSize = 48;
+    original.shots[1].style.titleSize = 132;
     const restored = await importProject(
       new File(
         [await exportProject(original, [image()])],

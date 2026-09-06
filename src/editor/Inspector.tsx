@@ -2,6 +2,7 @@ import { resolveStyle } from "../core/model";
 import type { Project, Shot, Style } from "../core/model";
 import { useEditor } from "./store";
 import { Icon } from "../app/Icon";
+import { getTemplate } from "../core/templates";
 
 const palettes = [
   { name: "Sage", background: "#E3E8DE", textColor: "#202725" },
@@ -15,11 +16,13 @@ export function Inspector({
   shot,
   disabled,
   onReplace,
+  onTemplates,
 }: {
   project: Project;
   shot: Shot;
   disabled: boolean;
   onReplace: () => void;
+  onTemplates: () => void;
 }) {
   const { edit, endGroup } = useEditor();
   const style = resolveStyle(project, shot);
@@ -39,7 +42,7 @@ export function Inspector({
   }
   function range(
     label: string,
-    key: "x" | "y" | "width",
+    key: "x" | "y" | "width" | "rotation",
     min: number,
     max: number,
   ) {
@@ -49,7 +52,7 @@ export function Inspector({
           {label}
           <output>
             {Math.round(shot.phone[key])}
-            <span className="unit"> px</span>
+            <span className="unit">{key === "rotation" ? "°" : " px"}</span>
           </output>
         </span>
         <input
@@ -81,6 +84,20 @@ export function Inspector({
         </span>
       </div>
       <fieldset disabled={disabled} className="inspector-fields">
+        <section className="property-section template-property">
+          <div>
+            <span className="eyebrow">TEMPLATE</span>
+            <h3>{getTemplate(style.template).name}</h3>
+          </div>
+          <button
+            type="button"
+            className="button secondary"
+            onClick={onTemplates}
+          >
+            Change
+            <Icon name="layout" size={15} />
+          </button>
+        </section>
         <section className="property-section">
           <h3>Words</h3>
           <label className="field">
@@ -127,9 +144,67 @@ export function Inspector({
               Centered
             </button>
           </div>
+          <label className="range-field">
+            <span>
+              Headline size
+              <output>
+                {style.titleSize}
+                <span className="unit"> px</span>
+              </output>
+            </span>
+            <input
+              type="range"
+              aria-label="Headline size"
+              min={48}
+              max={132}
+              step={1}
+              value={style.titleSize}
+              onChange={(event) =>
+                updateShot((shot) => {
+                  shot.style.titleSize = Number(event.target.value);
+                }, "titleSize")
+              }
+              onPointerUp={endGroup}
+              onBlur={endGroup}
+            />
+          </label>
+          <label className="check-field">
+            <input
+              type="checkbox"
+              checked={style.accentTitle}
+              onChange={(event) =>
+                setStyle({ accentTitle: event.target.checked })
+              }
+            />
+            Accent the last headline line
+          </label>
+          <p className="field-help">
+            Add a line break to choose where the accent begins. Long headlines
+            fit down automatically.
+          </p>
         </section>
         <section className="property-section">
           <h3>Color story</h3>
+          <div
+            className="segmented"
+            role="group"
+            aria-label="Background finish"
+          >
+            <button
+              type="button"
+              aria-pressed={style.backgroundMode === "solid"}
+              onClick={() => setStyle({ backgroundMode: "solid" })}
+            >
+              Solid
+            </button>
+            <button
+              type="button"
+              aria-pressed={style.backgroundMode === "gradient"}
+              onClick={() => setStyle({ backgroundMode: "gradient" })}
+            >
+              Gradient
+            </button>
+          </div>
           <div className="swatches" role="group" aria-label="Color palettes">
             {palettes.map((palette) => (
               <button
@@ -149,6 +224,9 @@ export function Inspector({
                   setStyle({
                     background: palette.background,
                     textColor: palette.textColor,
+                    backgroundEnd: palette.background,
+                    backgroundMode: "solid",
+                    accentColor: palette.textColor,
                   })
                 }
               >
@@ -191,6 +269,59 @@ export function Inspector({
               />
             </label>
           </div>
+          <div className="color-fields">
+            <label>
+              {style.template === "editorial" &&
+              style.backgroundMode === "solid"
+                ? "Panel"
+                : "Gradient end"}
+              <input
+                type="color"
+                aria-label={
+                  style.template === "editorial" &&
+                  style.backgroundMode === "solid"
+                    ? "Panel color"
+                    : "Gradient end color"
+                }
+                value={style.backgroundEnd}
+                disabled={
+                  disabled ||
+                  (style.backgroundMode === "solid" &&
+                    style.template !== "editorial")
+                }
+                onChange={(event) =>
+                  updateShot((shot) => {
+                    shot.style.backgroundEnd = event.target.value;
+                  }, "backgroundEnd")
+                }
+                onBlur={endGroup}
+              />
+            </label>
+            <label>
+              Accent
+              <input
+                type="color"
+                aria-label="Accent color"
+                value={style.accentColor}
+                onChange={(event) =>
+                  updateShot((shot) => {
+                    shot.style.accentColor = event.target.value;
+                  }, "accentColor")
+                }
+                onBlur={endGroup}
+              />
+            </label>
+          </div>
+          <label className="check-field">
+            <input
+              type="checkbox"
+              checked={style.texture === "dots"}
+              onChange={(event) =>
+                setStyle({ texture: event.target.checked ? "dots" : "none" })
+              }
+            />
+            Subtle dot texture
+          </label>
         </section>
         <section className="property-section">
           <h3>Device frame</h3>
@@ -261,7 +392,7 @@ export function Inspector({
               className="text-button"
               onClick={() =>
                 updateShot((shot) => {
-                  shot.phone = { x: 230, y: 485, width: 620 };
+                  shot.phone = { ...getTemplate(style.template).phone };
                 })
               }
             >
@@ -271,6 +402,7 @@ export function Inspector({
           {range("Phone width", "width", 320, 900)}
           {range("Horizontal position", "x", -200, 900)}
           {range("Vertical position", "y", 100, 1500)}
+          {range("Phone rotation", "rotation", -20, 20)}
           <p className="field-help">
             You can also drag the phone on the canvas.
           </p>
@@ -278,30 +410,35 @@ export function Inspector({
         <section className="property-section series-style">
           <h3>Keep the series together</h3>
           <p className="field-help">
-            Use these colors, alignment and frame across every screenshot. Words
-            and positions stay as they are.
+            Use these colors, typography and frame across every screenshot.
+            Templates, words and positions stay as they are.
           </p>
           <button
             type="button"
             className="button secondary full"
             onClick={() =>
               edit((project) => {
-                project.style = style;
+                const { template: _template, ...shared } = style;
+                Object.assign(project.style, shared);
                 project.shots.forEach((shot) => {
-                  shot.style = {};
+                  shot.style = shot.style.template
+                    ? { template: shot.style.template }
+                    : {};
                 });
               })
             }
           >
             Apply style to all {project.shots.length}
           </button>
-          {Object.keys(shot.style).length > 0 && (
+          {Object.keys(shot.style).some((key) => key !== "template") && (
             <button
               type="button"
               className="text-button"
               onClick={() =>
                 updateShot((shot) => {
-                  shot.style = {};
+                  shot.style = shot.style.template
+                    ? { template: shot.style.template }
+                    : {};
                 })
               }
             >

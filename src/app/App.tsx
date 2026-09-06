@@ -13,6 +13,8 @@ import { saveNow, useEditor } from "../editor/store";
 import { useImages } from "../editor/useImages";
 import { Preview } from "../editor/Preview";
 import { Inspector } from "../editor/Inspector";
+import { TemplateGallery } from "../editor/TemplateGallery";
+import { applyTemplate, getTemplate } from "../core/templates";
 import { Icon } from "./Icon";
 
 type Notice = { message: string; error?: boolean };
@@ -46,6 +48,7 @@ export function App() {
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
+  const [templatesOpen, setTemplatesOpen] = useState(false);
   const [readyFile, setReadyFile] = useState<ReadyFile | null>(null);
   const [dragging, setDragging] = useState(false);
   const imageInput = useRef<HTMLInputElement>(null);
@@ -143,7 +146,8 @@ export function App() {
 
   useEffect(() => {
     function keyboard(event: KeyboardEvent) {
-      if (!useEditor.getState().project || busy || exportOpen) return;
+      if (!useEditor.getState().project || busy || exportOpen || templatesOpen)
+        return;
       const target = event.target as HTMLElement;
       if (target.closest('input, textarea, select, [contenteditable="true"]'))
         return;
@@ -155,7 +159,7 @@ export function App() {
     }
     window.addEventListener("keydown", keyboard);
     return () => window.removeEventListener("keydown", keyboard);
-  }, [busy, exportOpen]);
+  }, [busy, exportOpen, templatesOpen]);
 
   async function backToProjects() {
     if (busy) return;
@@ -225,6 +229,7 @@ export function App() {
         } else {
           incoming.forEach((asset) => {
             const next = createShot(asset.id, project.shots.length);
+            next.phone = { ...getTemplate(project.style.template).phone };
             firstId ??= next.id;
             project.shots.push(next);
           });
@@ -700,9 +705,22 @@ export function App() {
           </aside>
           <section className="workspace" aria-label="Composition canvas">
             <div className="canvas-toolbar">
-              <span className="canvas-size">
-                Portrait <span>1080 × 1920</span>
-              </span>
+              <div className="canvas-tools">
+                {shot && (
+                  <button
+                    type="button"
+                    className="button secondary templates-button"
+                    disabled={!!busy || !images.get(shot.assetId)}
+                    onClick={() => setTemplatesOpen(true)}
+                  >
+                    <Icon name="layout" size={16} />
+                    Templates
+                  </button>
+                )}
+                <span className="canvas-size">
+                  Portrait <span>1080 × 1920</span>
+                </span>
+              </div>
               <div className="history-actions">
                 <button
                   className="icon-button"
@@ -861,6 +879,7 @@ export function App() {
               shot={shot}
               disabled={!!busy}
               onReplace={() => chooseImages(true)}
+              onTemplates={() => setTemplatesOpen(true)}
             />
           ) : (
             <aside className="inspector inspector-empty">
@@ -929,6 +948,24 @@ export function App() {
           onCancel={() => {
             cancelExport.current = true;
             setExportOpen(false);
+          }}
+        />
+      )}
+      {templatesOpen && project && shot && (
+        <TemplateGallery
+          project={project}
+          shot={shot}
+          image={images.get(shot.assetId)}
+          onClose={() => setTemplatesOpen(false)}
+          onApply={(id, all, keepColors) => {
+            state.edit((draft) =>
+              applyTemplate(draft, shot.id, id, all, keepColors),
+            );
+            setTemplatesOpen(false);
+            setReadyFile(null);
+            setNotice({
+              message: `${getTemplate(id).name} applied to ${all ? `all ${project.shots.length} screenshots` : "this screenshot"}. You can undo this change.`,
+            });
           }}
         />
       )}

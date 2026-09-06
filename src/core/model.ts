@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 1 as const;
+export const SCHEMA_VERSION = 2 as const;
 export const CANVAS = { width: 1080, height: 1920 } as const;
 export const LIMITS = {
   shots: 20,
@@ -8,6 +8,7 @@ export const LIMITS = {
 } as const;
 
 export type DeviceFamily = "android" | "ios";
+export type TemplateId = "classic" | "spotlight" | "tilt" | "editorial";
 export interface Style {
   background: string;
   textColor: string;
@@ -16,6 +17,13 @@ export interface Style {
   camera: boolean;
   fit: "contain" | "cover";
   align: "left" | "center";
+  template: TemplateId;
+  backgroundMode: "solid" | "gradient";
+  backgroundEnd: string;
+  accentColor: string;
+  texture: "none" | "dots";
+  accentTitle: boolean;
+  titleSize: number;
 }
 export interface Shot {
   id: string;
@@ -23,10 +31,10 @@ export interface Shot {
   title: string;
   subtitle: string;
   style: Partial<Style>;
-  phone: { x: number; y: number; width: number };
+  phone: { x: number; y: number; width: number; rotation: number };
 }
 export interface Project {
-  schemaVersion: 1;
+  schemaVersion: 2;
   id: string;
   name: string;
   createdAt: number;
@@ -55,7 +63,52 @@ export const defaultStyle: Style = {
   camera: false,
   fit: "contain",
   align: "center",
+  template: "classic",
+  backgroundMode: "solid",
+  backgroundEnd: "#E3E8DE",
+  accentColor: "#47755B",
+  texture: "none",
+  accentTitle: false,
+  titleSize: 84,
 };
+export type LegacyStyle = Omit<
+  Style,
+  | "template"
+  | "backgroundMode"
+  | "backgroundEnd"
+  | "accentColor"
+  | "texture"
+  | "accentTitle"
+  | "titleSize"
+>;
+export interface LegacyProject extends Omit<
+  Project,
+  "schemaVersion" | "style" | "shots"
+> {
+  schemaVersion: 1;
+  style: LegacyStyle;
+  shots: (Omit<Shot, "style" | "phone"> & {
+    style: Partial<LegacyStyle>;
+    phone: Omit<Shot["phone"], "rotation">;
+  })[];
+}
+
+/** Add presentation defaults without changing an existing project's content or identity. */
+export function migrateProject(project: Project | LegacyProject): Project {
+  if (project.schemaVersion === SCHEMA_VERSION) return project;
+  if (project.schemaVersion !== 1)
+    throw new Error("This project uses an unsupported project version.");
+  return {
+    ...project,
+    schemaVersion: SCHEMA_VERSION,
+    style: { ...defaultStyle, ...project.style },
+    shots: project.shots.map((shot) => ({
+      ...shot,
+      style: { ...shot.style },
+      phone: { ...shot.phone, rotation: 0 },
+    })),
+  };
+}
 export function createProject(name = "Untitled app"): Project {
   const now = Date.now();
   return {
@@ -78,7 +131,7 @@ export function createShot(assetId: string, index: number): Shot {
         : "Make every detail count.",
     subtitle: "A little more to love, every day.",
     style: {},
-    phone: { x: 230, y: 485, width: 620 },
+    phone: { x: 230, y: 485, width: 620, rotation: 0 },
   };
 }
 export function resolveStyle(project: Project, shot: Shot): Style {

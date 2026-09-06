@@ -2,6 +2,7 @@ import Konva from "konva";
 import { CANVAS, resolveStyle } from "../core/model";
 import type { Project, Shot } from "../core/model";
 import { deviceGeometry, fitImage } from "./geometry";
+import { getTemplate } from "../core/templates";
 
 interface SceneOptions {
   onMove?: (x: number, y: number) => void;
@@ -11,41 +12,56 @@ function addText(
   layer: Konva.Layer,
   text: string,
   options: {
+    x: number;
     y: number;
+    width: number;
     height: number;
     fontSize: number;
     weight: string;
     color: string;
     align: "left" | "center";
     opacity?: number;
+    lineHeight?: number;
+    accent?: string;
   },
 ): void {
   if (!text.trim()) return;
-  const node = new Konva.Text({
-    x: 92,
-    y: options.y,
-    width: CANVAS.width - 184,
-    text,
-    fontFamily: "Manrope",
-    fontStyle: options.weight,
-    fontSize: options.fontSize,
-    lineHeight: 1.15,
-    fill: options.color,
-    align: options.align,
-    opacity: options.opacity ?? 1,
-    wrap: "word",
-    listening: false,
-  });
+  const lines = text.split("\n");
+  let last = lines.length - 1;
+  while (last > 0 && !lines[last].trim()) last--;
+  const nodes = lines.map(
+    (line, index) =>
+      new Konva.Text({
+        x: options.x,
+        width: options.width,
+        text: line || " ",
+        fontFamily: "Manrope",
+        fontStyle: options.weight,
+        fontSize: options.fontSize,
+        lineHeight: options.lineHeight ?? 1.15,
+        fill: index === last && options.accent ? options.accent : options.color,
+        align: options.align,
+        opacity: options.opacity ?? 1,
+        wrap: "word",
+        listening: false,
+      }),
+  );
   // Measure the complete text with its final font; never silently truncate a caption.
-  while (node.height() > options.height && node.fontSize() > 8)
-    node.fontSize(node.fontSize() - 1);
-  if (node.height() > options.height) {
-    node.destroy();
+  const height = () => nodes.reduce((sum, node) => sum + node.height(), 0);
+  while (height() > options.height && nodes[0].fontSize() > 8)
+    nodes.forEach((node) => node.fontSize(node.fontSize() - 1));
+  if (height() > options.height) {
+    nodes.forEach((node) => node.destroy());
     throw new Error(
       "This caption is too long to fit. Shorten it before exporting.",
     );
   }
-  layer.add(node);
+  let y = options.y;
+  for (const node of nodes) {
+    node.y(y);
+    y += node.height();
+    layer.add(node);
+  }
 }
 
 /** Shared by Artboard and PNG export. All coordinates are the 1080 × 1920 document. */
@@ -56,6 +72,7 @@ export function createScene(
   options: SceneOptions = {},
 ): Konva.Layer {
   const style = resolveStyle(project, shot);
+  const template = getTemplate(style.template);
   const imageWidth = image.naturalWidth;
   const imageHeight = image.naturalHeight;
   if (!image.complete || imageWidth <= 0 || imageHeight <= 0)
@@ -68,29 +85,70 @@ export function createScene(
     // The base remains opaque even if a restored project contains a translucent color.
     layer.add(new Konva.Rect({ ...CANVAS, fill: "#F4F1E9", listening: false }));
     layer.add(
-      new Konva.Rect({ ...CANVAS, fill: style.background, listening: false }),
+      new Konva.Rect({
+        ...CANVAS,
+        ...(style.backgroundMode === "gradient"
+          ? {
+              fillLinearGradientStartPoint: { x: 0, y: 0 },
+              fillLinearGradientEndPoint: { x: 880, y: CANVAS.height },
+              fillLinearGradientColorStops: [
+                0,
+                style.background,
+                1,
+                style.backgroundEnd,
+              ],
+            }
+          : { fill: style.background }),
+        listening: false,
+      }),
     );
-    addText(layer, shot.title, {
-      y: 126,
-      height: 226,
-      fontSize: 84,
-      weight: "700",
-      color: style.textColor,
-      align: style.align,
-    });
-    addText(layer, shot.subtitle, {
-      y: 375,
-      height: 80,
-      fontSize: 34,
-      weight: "400",
-      color: style.textColor,
-      align: style.align,
-      opacity: 0.78,
-    });
+    if (style.texture === "dots")
+      layer.add(
+        new Konva.Shape({
+          listening: false,
+          fill: style.textColor,
+          opacity: 0.1,
+          sceneFunc(context, shape) {
+            context.beginPath();
+            for (let x = 28; x < CANVAS.width; x += 44) {
+              for (let y = 26; y < CANVAS.height; y += 44) {
+                context.moveTo(x + 1.8, y);
+                context.arc(x, y, 1.8, 0, Math.PI * 2);
+              }
+            }
+            context.fillStrokeShape(shape);
+          },
+        }),
+      );
+    if (style.template === "tilt")
+      layer.add(
+        new Konva.Line({
+          points: [-90, 1200, 1170, 940, 1170, 1540, -90, 1800],
+          closed: true,
+          fill: style.accentColor,
+          opacity: 0.09,
+          listening: false,
+        }),
+      );
+    if (style.template === "editorial")
+      layer.add(
+        new Konva.Rect({
+          x: 48,
+          y: 52,
+          width: 984,
+          height: 1332,
+          cornerRadius: [160, 160, 32, 32],
+          fill: style.backgroundEnd,
+          listening: false,
+        }),
+      );
 
     const phone = new Konva.Group({
-      x: shot.phone.x,
-      y: shot.phone.y,
+      x: shot.phone.x + device.width / 2,
+      y: shot.phone.y + device.height / 2,
+      offsetX: device.width / 2,
+      offsetY: device.height / 2,
+      rotation: shot.phone.rotation,
       width: device.width,
       height: device.height,
       draggable: Boolean(options.onMove),
@@ -165,7 +223,10 @@ export function createScene(
     }
     if (options.onMove) {
       phone.on("dragend", () =>
-        options.onMove?.(Math.round(phone.x()), Math.round(phone.y())),
+        options.onMove?.(
+          Math.round(phone.x() - device.width / 2),
+          Math.round(phone.y() - device.height / 2),
+        ),
       );
       phone.on("mouseenter", () => {
         const container = phone.getStage()?.container();
@@ -185,6 +246,25 @@ export function createScene(
       });
     }
     layer.add(phone);
+    // Captions remain above a deliberately enlarged/rotated device.
+    addText(layer, shot.title, {
+      ...template.title,
+      fontSize: style.titleSize,
+      weight: style.template === "classic" ? "700" : "800",
+      lineHeight: template.lineHeight,
+      color: style.textColor,
+      accent: style.accentTitle ? style.accentColor : undefined,
+      align: style.align,
+    });
+    addText(layer, shot.subtitle, {
+      ...template.subtitle,
+      fontSize: 34,
+      weight: "400",
+      color: style.textColor,
+      align: style.align,
+      opacity: style.template === "classic" ? 0.78 : 0.88,
+    });
+    if (style.template === "classic") phone.moveToTop();
     return layer;
   } catch (error) {
     layer.destroy();
