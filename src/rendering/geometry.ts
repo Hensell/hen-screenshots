@@ -95,6 +95,20 @@ export function deviceGeometry(
   orientation: "portrait" | "landscape" = "portrait",
 ): DeviceGeometry {
   positive(width, "Device width");
+  if (family === "card") {
+    const height = width * (orientation === "landscape" ? 3 / 4 : 4 / 3);
+    const radius = frame ? Math.min(width, height) * 0.035 : 0;
+    return {
+      version: 1,
+      family,
+      frame,
+      width,
+      height,
+      radius,
+      screen: { x: 0, y: 0, width, height, radius },
+      camera: { x: 0, y: 0, width: 0, height: 0, radius: 0 },
+    };
+  }
   if (family === "monitor" || family === "laptop") {
     const ratio = family === "monitor" ? 16 / 9 : 16 / 10;
     if (!frame) {

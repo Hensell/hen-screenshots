@@ -7,13 +7,14 @@ import type {
   LoadedProject,
   Project,
   V2Project,
+  V3Project,
 } from "../core/model";
 
 interface ProjectRow {
   id: string;
   updatedAt: number;
   revision: number;
-  project: Project | V2Project | LegacyProject;
+  project: Project | V3Project | V2Project | LegacyProject;
 }
 interface AssetRow extends Asset {
   projectId: string;
@@ -41,7 +42,11 @@ class ProjectDatabase extends Dexie {
       projects: "id, updatedAt",
       assets: "[projectId+id], projectId",
     });
-    this.version(3)
+    this.version(3).stores({
+      projects: "id, updatedAt",
+      assets: "[projectId+id], projectId",
+    });
+    this.version(4)
       .stores({
         projects: "id, updatedAt",
         assets: "[projectId+id], projectId",

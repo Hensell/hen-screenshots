@@ -6,6 +6,7 @@ import type { V2Project } from "../core/model";
 
 const {
   exportProfile: _profile,
+  customSize: _customSize,
   style: currentStyle,
   ...project
 } = createProject("Template collection");
@@ -30,7 +31,8 @@ describe("version 2 project migration", () => {
     expect(source).toEqual(existing);
     expect(migrated).toEqual({
       ...existing,
-      schemaVersion: 3,
+      schemaVersion: 4,
+      customSize: { width: 1600, height: 1200 },
       exportProfile: "play-phone-portrait",
       style: { ...existing.style, deviceOrientation: "portrait" },
     });
@@ -58,14 +60,12 @@ describe("version 2 project migration", () => {
       name: "",
       shots: [],
     };
-    await old
-      .table("projects")
-      .put({
-        id: blankName.id,
-        updatedAt: blankName.updatedAt,
-        revision: 3,
-        project: blankName,
-      });
+    await old.table("projects").put({
+      id: blankName.id,
+      updatedAt: blankName.updatedAt,
+      revision: 3,
+      project: blankName,
+    });
     await old.table("assets").put({
       id: "existing-asset",
       projectId: existing.id,
@@ -88,7 +88,7 @@ describe("version 2 project migration", () => {
     );
     expect(await loadProject(blankName.id)).toMatchObject({
       revision: 3,
-      project: { id: blankName.id, name: "Untitled app", schemaVersion: 3 },
+      project: { id: blankName.id, name: "Untitled app", schemaVersion: 4 },
     });
     expect(
       (await listProjects()).find(({ project }) => project.id === blankName.id)
@@ -98,7 +98,7 @@ describe("version 2 project migration", () => {
     const inspector = new Dexie("hen-screenshots");
     await inspector.open();
     try {
-      expect(inspector.verno).toBe(3);
+      expect(inspector.verno).toBe(4);
       expect(
         (await inspector.table("projects").get(blankName.id)).project.name,
       ).toBe("Untitled app");

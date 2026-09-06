@@ -666,6 +666,7 @@ svg {
   color: var(--brand-muted);
   margin-bottom: 13px;
 }
+.field input[type="number"],
 .field textarea,
 .field select {
   border: 1px solid #cdd3c6;
@@ -683,6 +684,7 @@ svg {
   min-height: 64px;
   max-height: 230px;
 }
+.field input[type="number"],
 .field select {
   min-height: 44px;
 }
@@ -1926,4 +1928,61 @@ svg {
   .template-dialog-wide .template-gallery {
     grid-template-columns: 1fr;
   }
+}
+
+.canvas-purpose {
+  margin-bottom: 18px;
+}
+.custom-size {
+  margin-top: 16px;
+}
+.custom-size-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.custom-size-fields .field {
+  min-width: 0;
+}
+.input-unit {
+  position: relative;
+  display: block;
+}
+.input-unit input {
+  appearance: textfield;
+  width: 100%;
+  min-width: 0;
+  padding-right: 30px;
+}
+.input-unit input::-webkit-inner-spin-button,
+.input-unit input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.input-unit > span {
+  position: absolute;
+  top: 50%;
+  right: 11px;
+  transform: translateY(-50%);
+  color: var(--brand-muted);
+  font-size: 10px;
+  pointer-events: none;
+}
+.size-error {
+  color: #8c3926;
+  font-size: 11px;
+  line-height: 1.6;
+  margin: 8px 0 12px;
+}
+.device-options button:has(.device-glyph.card) {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  min-height: 47px;
+  gap: 12px;
+}
+.device-glyph.card {
+  width: 29px;
+  height: 21px;
+  border-radius: 3px;
+  box-shadow: 2px 3px 0 #64715c24;
 }

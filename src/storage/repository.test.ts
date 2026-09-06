@@ -176,7 +176,7 @@ describe("local project persistence", () => {
     expect(loaded.revision).toBe(1);
     expect(loaded.assets.map(({ id }) => id)).toEqual(["image-a"]);
   });
-  it("refuses malformed schema 3 database rows instead of silently rendering a fallback", async () => {
+  it("refuses malformed schema 4 database rows instead of silently rendering a fallback", async () => {
     const original = project();
     await saveProject(original, [asset()], 0);
     const inspector = new Dexie("hen-screenshots");
@@ -198,5 +198,26 @@ describe("local project persistence", () => {
       inspector.close();
       await deleteProject(original.id);
     }
+  });
+  it("rejects malformed custom sizes without replacing the saved project or adding assets", async () => {
+    const original = {
+      ...project(),
+      exportProfile: "portfolio-custom" as const,
+      customSize: { width: 4096, height: 1024 },
+    };
+    await saveProject(original, [asset()], 0);
+    for (const size of [
+      { width: 4097, height: 1024 },
+      { width: 256, height: 1025 },
+      { width: 1600.5, height: 1200 },
+    ]) {
+      await expect(
+        saveProject({ ...original, customSize: size }, [asset("new-image")], 1),
+      ).rejects.toThrow();
+    }
+    const loaded = await loadProject(original.id);
+    expect(loaded.project).toEqual(original);
+    expect(loaded.revision).toBe(1);
+    expect(loaded.assets.map(({ id }) => id)).toEqual(["image-a"]);
   });
 });

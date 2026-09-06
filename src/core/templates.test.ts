@@ -4,6 +4,7 @@ import { createProject, createShot, resolveStyle } from "./model";
 import {
   applyTemplate,
   changeExportProfile,
+  changeCustomSize,
   getTemplate,
   templatePreview,
 } from "./templates";
@@ -163,6 +164,31 @@ describe("template application", () => {
     expect(useEditor.getState().project!.exportProfile).toBe(
       "apple-ipad13-landscape",
     );
+  });
+
+  it("commits a complete custom size and its reflow as one undo step", () => {
+    const project = fixture();
+    project.exportProfile = "portfolio-custom";
+    const original = structuredClone(project);
+    useEditor.getState().open({ project, assets: [], revision: 1 });
+    useEditor
+      .getState()
+      .edit((draft) => changeCustomSize(draft, { width: 1400, height: 1000 }));
+    expect(useEditor.getState().past).toHaveLength(1);
+    expect(useEditor.getState().project!.customSize).toEqual({
+      width: 1400,
+      height: 1000,
+    });
+    useEditor.getState().undo();
+    expect({
+      ...useEditor.getState().project,
+      updatedAt: original.updatedAt,
+    }).toEqual(original);
+    useEditor.getState().redo();
+    expect(useEditor.getState().project!.customSize).toEqual({
+      width: 1400,
+      height: 1000,
+    });
   });
 
   it("ignores a stale selected screenshot rather than restyling another project", () => {

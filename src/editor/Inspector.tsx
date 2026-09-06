@@ -2,20 +2,11 @@ import { resolveStyle, PLACEMENT_LIMITS } from "../core/model";
 import type { Project, Shot, Style } from "../core/model";
 import { useEditor } from "./store";
 import { Icon } from "../app/Icon";
-import {
-  getTemplate,
-  resetComposition,
-  changeExportProfile,
-} from "../core/templates";
-
-import {
-  exportProfiles,
-  getExportProfile,
-  PROFILE_REVIEW_DATE,
-  type ExportProfileId,
-} from "../core/export-profiles";
+import { getTemplate, resetComposition } from "../core/templates";
+import { CanvasSettings } from "./CanvasSettings";
 
 export const deviceNames = {
+  card: "Screenshot card",
   android: "Android phone",
   ios: "iPhone",
   ipad: "iPad",
@@ -106,63 +97,7 @@ export function Inspector({
         </span>
       </div>
       <fieldset disabled={disabled} className="inspector-fields">
-        <section className="property-section export-format">
-          <h3>Export destination</h3>
-          <label className="field">
-            Store &amp; size
-            <select
-              value={project.exportProfile}
-              onChange={(event) =>
-                edit((draft) =>
-                  changeExportProfile(
-                    draft,
-                    event.target.value as ExportProfileId,
-                  ),
-                )
-              }
-            >
-              {(["apple", "google", "presentation"] as const).map((store) => (
-                <optgroup
-                  key={store}
-                  label={
-                    store === "apple"
-                      ? "Apple App Store"
-                      : store === "google"
-                        ? "Google Play"
-                        : "Website & portfolio"
-                  }
-                >
-                  {exportProfiles
-                    .filter((profile) => profile.store === store)
-                    .map((profile) => (
-                      <option key={profile.id} value={profile.id}>
-                        {profile.name} · {profile.width} × {profile.height}
-                      </option>
-                    ))}
-                </optgroup>
-              ))}
-            </select>
-          </label>
-          <p className="format-dimensions">
-            {getExportProfile(project.exportProfile).width} ×{" "}
-            {getExportProfile(project.exportProfile).height}
-            <span>RGB PNG · No transparency</span>
-          </p>
-          <p className="field-help">
-            Applies to the whole series and refits each layout. Undo anytime.
-          </p>
-          {getExportProfile(project.exportProfile).source && (
-            <a
-              className="format-source"
-              href={getExportProfile(project.exportProfile).source}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Store size requirements ↗{" "}
-              <span>Checked {PROFILE_REVIEW_DATE}</span>
-            </a>
-          )}
-        </section>
+        <CanvasSettings project={project} />
         <section className="property-section">
           <h3>Device frame</h3>
           <div
@@ -175,7 +110,14 @@ export function Inspector({
                 type="button"
                 key={device}
                 aria-pressed={style.device === device}
-                onClick={() => setStyle({ device: device as Style["device"] })}
+                onClick={() =>
+                  setStyle({
+                    device: device as Style["device"],
+                    ...(device === "card" && style.device !== "card"
+                      ? { deviceOrientation: "landscape" as const }
+                      : {}),
+                  })
+                }
               >
                 <span className={`device-glyph ${device}`} />
                 {name}
@@ -206,19 +148,22 @@ export function Inspector({
               checked={style.frame}
               onChange={(event) => setStyle({ frame: event.target.checked })}
             />{" "}
-            Show device frame
+            {style.device === "card" ? "Rounded corners" : "Show device frame"}
           </label>
-          <label className="check-field">
-            <input
-              type="checkbox"
-              checked={style.camera}
-              onChange={(event) => setStyle({ camera: event.target.checked })}
-            />{" "}
-            Add camera cutout
-          </label>
+          {style.device !== "card" && (
+            <label className="check-field">
+              <input
+                type="checkbox"
+                checked={style.camera}
+                onChange={(event) => setStyle({ camera: event.target.checked })}
+              />{" "}
+              Add camera cutout
+            </label>
+          )}
           <p className="field-help">
-            Original status and navigation bars stay in your screenshot. Keep
-            the cutout off if one is already visible.
+            {style.device === "card"
+              ? "A simple 4:3 card with a soft shadow. Switch orientation for a vertical card."
+              : "Original status and navigation bars stay in your screenshot. Keep the cutout off if one is already visible."}
           </p>
           <label className="field">
             Screenshot fit

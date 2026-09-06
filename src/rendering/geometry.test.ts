@@ -94,7 +94,21 @@ describe("capture geometry", () => {
     },
   );
 
+  it("makes a simple card with no hardware or camera and optional rounded corners", () => {
+    const card = deviceGeometry("card", 800, true, "landscape");
+    expect(card.height).toBe(600);
+    expect(card.screen).toMatchObject({ x: 0, y: 0, width: 800, height: 600 });
+    expect(card.screen.radius).toBeGreaterThan(0);
+    expect(card.body).toBeUndefined();
+    expect(card.base).toBeUndefined();
+    expect(card.camera.width).toBe(0);
+    expect(deviceGeometry("card", 800, false, "landscape").screen.radius).toBe(
+      0,
+    );
+  });
+
   const screenRatios: Record<DeviceFamily, number> = {
+    card: 3 / 4,
     android: 9 / 20,
     ios: 9 / 19.5,
     ipad: 3 / 4,
@@ -106,7 +120,7 @@ describe("capture geometry", () => {
   it.each(Object.keys(screenRatios) as DeviceFamily[])(
     "keeps every %s part in bounds and scales without distorting the screen",
     (family) => {
-      for (const width of [160, 620, 2160]) {
+      for (const width of [32, 160, 620, 2160]) {
         for (const frame of [true, false]) {
           for (const orientation of ["portrait", "landscape"] as const) {
             const geometry = deviceGeometry(family, width, frame, orientation);
@@ -121,7 +135,7 @@ describe("capture geometry", () => {
             );
             for (const part of [
               geometry.screen,
-              geometry.camera,
+              family === "card" ? undefined : geometry.camera,
               geometry.body,
               geometry.stand,
               geometry.base,

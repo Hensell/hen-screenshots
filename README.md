@@ -1,6 +1,6 @@
 # Hen Screenshots
 
-Aplicación web para crear screenshots elegantes con marcos de teléfonos, tablets, monitores y laptops para presentar tus apps.
+Aplicación web para crear screenshots elegantes para tiendas de apps, portfolios y páginas web. Incluye tarjetas simples y marcos de teléfonos, tablets, monitores y laptops.
 
 Nombre público confirmado por el usuario: **Hen Screenshots**.
 
@@ -17,6 +17,8 @@ El editor incluye **iPhone, Android, iPad, tablet Android, monitor y laptop**. L
 La [iteración de plantillas v0.2](docs/templates-v0.2.md) añade **Classic, Spotlight, Tilt y Editorial**, con vista previa usando tus capturas, aplicación individual o en serie, degradados, textura, acento tipográfico y rotación. Los proyectos y respaldos anteriores siguen siendo compatibles.
 
 La [iteración v0.3](docs/devices-and-exports-v0.3.md) adapta las cuatro plantillas a desktop y tablets y añade **15 presets de exportación** para App Store, Google Play y presentación web. Verifica las dimensiones y el formato RGB sin transparencia del PNG generado.
+
+La [iteración de portfolio v0.4](docs/portfolio-v0.4.md) añade tarjetas **4:3, cuadradas y verticales**, tamaño personalizado y un marco simple con bordes redondeados. En **Canvas → Portfolio** se elige el formato para una portada de proyecto o una tarjeta de tu web.
 
 ## Ejecutar el editor
 
@@ -85,8 +87,8 @@ Referencias oficiales:
 
 ## Estado
 
-Editor funcional para uso personal: proyectos locales, hasta 20 capturas, cuatro plantillas adaptables, seis dispositivos, orientación, colores, textos, composición editable, deshacer/rehacer, respaldo/restauración y exportación PNG/ZIP según el preset elegido. Todavía no se ha desplegado la aplicación.
+Editor funcional para uso personal: proyectos locales, hasta 20 capturas, cuatro plantillas adaptables, seis dispositivos y tarjetas simples, orientación, colores, textos, composición editable, deshacer/rehacer, respaldo/restauración y exportación PNG/ZIP según el preset elegido. Todavía no se ha desplegado la aplicación.
 
-v0.3 guarda documentos con esquema 3 y migra proyectos y backups v1/v2. Galería, editor y exportación mantienen la misma escena. Los límites por tienda son 8 imágenes por tipo de dispositivo en Play y 10 por slot de Apple; la aplicación impide exportar un ZIP que supere el límite del destino.
+v0.4 guarda documentos con esquema 4 y migra proyectos y backups v1/v2/v3. Galería, editor y exportación mantienen la misma escena. Los límites por tienda son 8 imágenes por tipo de dispositivo en Play y 10 por slot de Apple; la aplicación impide exportar un ZIP que supere el límite del destino.
 
 La [primera sesión de capturas reales de FrogHappy](docs/capture-session.md) proporciona cinco imágenes Android con datos de muestra y un flujo reproducible para validar el editor.

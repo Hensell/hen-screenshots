@@ -198,7 +198,7 @@ export function createScene(
     phone.add(screen);
 
     // Imported status/navigation bars stay in their original pixels. No synthetic bars.
-    if (style.camera) {
+    if (style.camera && style.device !== "card") {
       phone.add(
         new Konva.Rect({
           x: device.camera.x,

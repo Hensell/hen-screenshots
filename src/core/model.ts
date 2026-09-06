@@ -1,12 +1,17 @@
-import { DEFAULT_EXPORT_PROFILE, exportProfiles } from "./export-profiles";
+import {
+  DEFAULT_CUSTOM_SIZE,
+  DEFAULT_EXPORT_PROFILE,
+  exportProfiles,
+  validateCustomSize,
+} from "./export-profiles";
 import type { ExportProfileId } from "./export-profiles";
 
-export const SCHEMA_VERSION = 3 as const;
+export const SCHEMA_VERSION = 4 as const;
 export const CANVAS = { width: 1080, height: 1920 } as const;
 export const PLACEMENT_LIMITS = {
   x: { min: -1080, max: 2160 },
   y: { min: -2160, max: 4096 },
-  width: { min: 160, max: 2160 },
+  width: { min: 32, max: 2160 },
 } as const;
 export const LIMITS = {
   shots: 20,
@@ -16,7 +21,7 @@ export const LIMITS = {
 } as const;
 
 export type DeviceFamily =
-  "android" | "ios" | "ipad" | "android-tablet" | "monitor" | "laptop";
+  "android" | "ios" | "ipad" | "android-tablet" | "monitor" | "laptop" | "card";
 export type DeviceOrientation = "portrait" | "landscape";
 export type TemplateId = "classic" | "spotlight" | "tilt" | "editorial";
 export interface Style {
@@ -45,8 +50,9 @@ export interface Shot {
   phone: { x: number; y: number; width: number; rotation: number };
 }
 export interface Project {
-  schemaVersion: 3;
+  schemaVersion: 4;
   exportProfile: ExportProfileId;
+  customSize: { width: number; height: number };
   id: string;
   name: string;
   createdAt: number;
@@ -84,12 +90,41 @@ export const defaultStyle: Style = {
   accentTitle: false,
   titleSize: 84,
 };
+const v3ExportProfiles = [
+  "play-phone-portrait",
+  "play-phone-landscape",
+  "play-tablet7-portrait",
+  "play-tablet7-landscape",
+  "play-tablet10-portrait",
+  "play-tablet10-landscape",
+  "play-chromebook",
+  "apple-iphone69-portrait",
+  "apple-iphone69-landscape",
+  "apple-iphone65-portrait",
+  "apple-iphone65-landscape",
+  "apple-ipad13-portrait",
+  "apple-ipad13-landscape",
+  "apple-mac",
+  "desktop-web",
+] as const;
+export type V3Style = Omit<Style, "device"> & {
+  device: "android" | "ios" | "ipad" | "android-tablet" | "monitor" | "laptop";
+};
+export interface V3Project extends Omit<
+  Project,
+  "schemaVersion" | "customSize" | "exportProfile" | "style" | "shots"
+> {
+  schemaVersion: 3;
+  exportProfile: (typeof v3ExportProfiles)[number];
+  style: V3Style;
+  shots: (Omit<Shot, "style"> & { style: Partial<V3Style> })[];
+}
 export type V2Style = Omit<Style, "deviceOrientation" | "device"> & {
   device: "android" | "ios";
 };
 export interface V2Project extends Omit<
   Project,
-  "schemaVersion" | "exportProfile" | "style" | "shots"
+  "schemaVersion" | "customSize" | "exportProfile" | "style" | "shots"
 > {
   schemaVersion: 2;
   style: V2Style;
@@ -107,7 +142,7 @@ export type LegacyStyle = Omit<
 >;
 export interface LegacyProject extends Omit<
   Project,
-  "schemaVersion" | "exportProfile" | "style" | "shots"
+  "schemaVersion" | "customSize" | "exportProfile" | "style" | "shots"
 > {
   schemaVersion: 1;
   style: LegacyStyle;
@@ -119,14 +154,18 @@ export interface LegacyProject extends Omit<
 
 /** Add presentation defaults without changing an existing project's content or identity. */
 export function migrateProject(
-  project: Project | V2Project | LegacyProject,
+  project: Project | V3Project | V2Project | LegacyProject,
 ): Project {
   validateProject(project);
   if (project.schemaVersion === SCHEMA_VERSION) return project;
   return {
     ...project,
     schemaVersion: SCHEMA_VERSION,
-    exportProfile: DEFAULT_EXPORT_PROFILE,
+    exportProfile:
+      project.schemaVersion === 3
+        ? project.exportProfile
+        : DEFAULT_EXPORT_PROFILE,
+    customSize: { ...DEFAULT_CUSTOM_SIZE },
     style: { ...defaultStyle, ...project.style },
     shots: project.shots.map((shot) => ({
       ...shot,
@@ -143,6 +182,7 @@ export function createProject(name = "Untitled app"): Project {
   return {
     schemaVersion: SCHEMA_VERSION,
     exportProfile: DEFAULT_EXPORT_PROFILE,
+    customSize: { ...DEFAULT_CUSTOM_SIZE },
     id: crypto.randomUUID(),
     name,
     createdAt: now,
@@ -193,7 +233,7 @@ const v2StyleKeys = [
   "titleSize",
 ];
 const styleKeys = [...v2StyleKeys, "deviceOrientation"];
-type StoredProject = Project | V2Project | LegacyProject;
+type StoredProject = Project | V3Project | V2Project | LegacyProject;
 type RecordValue = Record<string, unknown>;
 
 function invalid(): never {
@@ -241,7 +281,7 @@ function numeric(
 }
 function validateStyle(
   value: unknown,
-  version: 1 | 2 | 3,
+  version: 1 | 2 | 3 | 4,
   partial = false,
 ): void {
   const entries = object(
@@ -261,9 +301,26 @@ function validateStyle(
     } else {
       const allowed: Record<string, string[]> = {
         device:
-          version === 3
-            ? ["android", "ios", "ipad", "android-tablet", "monitor", "laptop"]
-            : ["android", "ios"],
+          version === 4
+            ? [
+                "android",
+                "ios",
+                "ipad",
+                "android-tablet",
+                "monitor",
+                "laptop",
+                "card",
+              ]
+            : version === 3
+              ? [
+                  "android",
+                  "ios",
+                  "ipad",
+                  "android-tablet",
+                  "monitor",
+                  "laptop",
+                ]
+              : ["android", "ios"],
         deviceOrientation: ["portrait", "landscape"],
         fit: ["contain", "cover"],
         align: ["left", "center"],
@@ -282,7 +339,12 @@ export function validateProject(
 ): asserts value is StoredProject {
   if (!value || typeof value !== "object" || Array.isArray(value)) invalid();
   const version = (value as RecordValue).schemaVersion;
-  if (version !== 1 && version !== 2 && version !== SCHEMA_VERSION)
+  if (
+    version !== 1 &&
+    version !== 2 &&
+    version !== 3 &&
+    version !== SCHEMA_VERSION
+  )
     throw new Error("This project uses an unsupported project version.");
   const raw = object(value, [
     "schemaVersion",
@@ -292,17 +354,29 @@ export function validateProject(
     "updatedAt",
     "style",
     "shots",
-    ...(version === 3 ? ["exportProfile"] : []),
+    ...(version >= 3 ? ["exportProfile"] : []),
+    ...(version === 4 ? ["customSize"] : []),
   ]);
   identifier(raw.id);
   textValue(raw.name, 80, 1);
   numeric(raw.createdAt, 0, Number.MAX_SAFE_INTEGER, true);
   numeric(raw.updatedAt, 0, Number.MAX_SAFE_INTEGER, true);
   if (
-    version === 3 &&
-    !exportProfiles.some((profile) => profile.id === raw.exportProfile)
+    version >= 3 &&
+    !(
+      version === 3
+        ? v3ExportProfiles
+        : exportProfiles.map((profile) => profile.id)
+    ).some((profile) => profile === raw.exportProfile)
   )
     invalid();
+  if (version === 4) {
+    const size = object(raw.customSize, ["width", "height"]);
+    validateCustomSize({
+      width: size.width as number,
+      height: size.height as number,
+    });
+  }
   validateStyle(raw.style, version);
   if (!Array.isArray(raw.shots) || raw.shots.length > LIMITS.shots) invalid();
   const ids = new Set<string>();
@@ -328,13 +402,15 @@ export function validateProject(
       version === 1 ? ["x", "y", "width"] : ["x", "y", "width", "rotation"],
     );
     const bounds =
-      version === 3
+      version === 4
         ? PLACEMENT_LIMITS
-        : {
-            x: { min: -200, max: 900 },
-            y: { min: 100, max: 1500 },
-            width: { min: 320, max: 900 },
-          };
+        : version === 3
+          ? { ...PLACEMENT_LIMITS, width: { min: 160, max: 2160 } }
+          : {
+              x: { min: -200, max: 900 },
+              y: { min: 100, max: 1500 },
+              width: { min: 320, max: 900 },
+            };
     for (const key of ["x", "y", "width"] as const)
       numeric(phone[key], bounds[key].min, bounds[key].max);
     if (version !== 1) numeric(phone.rotation, -20, 20);

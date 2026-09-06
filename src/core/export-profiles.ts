@@ -17,6 +17,29 @@ interface ProfileDefinition {
   source?: string;
 }
 
+export const DEFAULT_CUSTOM_SIZE = { width: 1600, height: 1200 } as const;
+export const CUSTOM_SIZE_LIMITS = { min: 256, max: 4096, maxRatio: 4 } as const;
+export function validateCustomSize(size: {
+  width: number;
+  height: number;
+}): void {
+  if (
+    !size ||
+    !Number.isInteger(size.width) ||
+    !Number.isInteger(size.height) ||
+    Math.min(size.width, size.height) < CUSTOM_SIZE_LIMITS.min ||
+    Math.max(size.width, size.height) > CUSTOM_SIZE_LIMITS.max
+  )
+    throw new Error("Use whole numbers from 256 to 4096 pixels for each side.");
+  if (
+    Math.max(size.width, size.height) >
+    Math.min(size.width, size.height) * CUSTOM_SIZE_LIMITS.maxRatio
+  )
+    throw new Error(
+      "Keep the longest side within four times the shortest side (up to 4:1).",
+    );
+}
+
 // Fixed, dated store presets. IDs include their device slot, not just an aspect ratio.
 export const exportProfiles = [
   {
@@ -183,6 +206,45 @@ export const exportProfiles = [
     maxCount: 20,
     note: "A widescreen composition for your website or portfolio. No store slot is selected.",
   },
+  {
+    id: "portfolio-card",
+    name: "Portfolio · Card",
+    store: "presentation",
+    category: "desktop",
+    width: 1600,
+    height: 1200,
+    maxCount: 20,
+    note: "A 4:3 project card for a portfolio grid or case study. Use any device or a simple screenshot card.",
+  },
+  {
+    id: "portfolio-square",
+    name: "Portfolio · Square",
+    store: "presentation",
+    category: "desktop",
+    width: 1600,
+    height: 1600,
+    maxCount: 20,
+    note: "A square canvas for project covers and portfolio tiles.",
+  },
+  {
+    id: "portfolio-portrait",
+    name: "Portfolio · Portrait",
+    store: "presentation",
+    category: "desktop",
+    width: 1200,
+    height: 1500,
+    maxCount: 20,
+    note: "A 4:5 canvas with room for your product and its story.",
+  },
+  {
+    id: "portfolio-custom",
+    name: "Portfolio · Custom",
+    store: "presentation",
+    category: "desktop",
+    ...DEFAULT_CUSTOM_SIZE,
+    maxCount: 20,
+    note: "Your own canvas size for a portfolio, project card or website. No store slot is selected.",
+  },
 ] as const satisfies readonly ProfileDefinition[];
 export type ExportProfileId = (typeof exportProfiles)[number]["id"];
 export type ExportProfile = ProfileDefinition & { id: ExportProfileId };
@@ -192,8 +254,25 @@ export function getExportProfile(id: ExportProfileId): ExportProfile {
   if (!profile) throw new Error("This export preset is not supported.");
   return profile;
 }
-export function canonicalCanvas(project: Project) {
+/** Every project consumer resolves custom dimensions through this same boundary. */
+export function resolveExportProfile(project: Project): ExportProfile {
   const profile = getExportProfile(project.exportProfile);
+  if (profile.id !== "portfolio-custom") return profile;
+  validateCustomSize(project.customSize);
+  return {
+    ...profile,
+    width: project.customSize.width,
+    height: project.customSize.height,
+  };
+}
+export function exportProfileSuffix(project: Project): string {
+  const profile = resolveExportProfile(project);
+  return profile.id === "portfolio-custom"
+    ? `${profile.id}-${profile.width}x${profile.height}`
+    : profile.id;
+}
+export function canonicalCanvas(project: Project) {
+  const profile = resolveExportProfile(project);
   return { width: 1080, height: (1080 * profile.height) / profile.width };
 }
 
@@ -212,6 +291,7 @@ export function validateDimensions(
     throw new Error(
       "The exported image does not match the selected preset dimensions.",
     );
+  if (profile.store === "presentation") validateCustomSize({ width, height });
   if (profile.store === "google") {
     const short = Math.min(width, height),
       long = Math.max(width, height);

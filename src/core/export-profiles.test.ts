@@ -3,6 +3,9 @@ import {
   canonicalCanvas,
   exportProfiles,
   getExportProfile,
+  resolveExportProfile,
+  exportProfileSuffix,
+  validateCustomSize,
   validateDimensions,
   validateExportPng,
 } from "./export-profiles";
@@ -16,6 +19,7 @@ import {
 } from "./model";
 import {
   changeExportProfile,
+  changeCustomSize,
   resetComposition,
   templateLayout,
   templatePreview,
@@ -110,6 +114,7 @@ describe("store export profiles", () => {
 describe("adaptive compositions", () => {
   it("fits rotated devices in the canvas for every new device, template, orientation and export size", () => {
     for (const device of [
+      "card",
       "android",
       "ios",
       "ipad",
@@ -197,5 +202,110 @@ describe("adaptive compositions", () => {
     const after = structuredClone(project);
     changeExportProfile(project, "apple-mac");
     expect(project).toEqual(after);
+  });
+});
+
+describe("custom portfolio sizes", () => {
+  it("resolves custom dimensions everywhere while leaving store presets exact", () => {
+    const project = createProject();
+    project.exportProfile = "portfolio-custom";
+    project.customSize = { width: 1537, height: 1103 };
+    const profile = resolveExportProfile(project);
+    expect(profile).toMatchObject({
+      width: 1537,
+      height: 1103,
+      store: "presentation",
+    });
+    expect(canonicalCanvas(project)).toEqual({
+      width: 1080,
+      height: (1080 * 1103) / 1537,
+    });
+    expect(exportProfileSuffix(project)).toBe("portfolio-custom-1537x1103");
+    project.exportProfile = "apple-mac";
+    expect(resolveExportProfile(project)).toMatchObject({
+      width: 2880,
+      height: 1800,
+      store: "apple",
+    });
+  });
+
+  it.each([
+    { width: 0, height: 1000 },
+    { width: 255, height: 1000 },
+    { width: 4097, height: 2000 },
+    { width: 800.5, height: 1000 },
+    { width: NaN, height: 1000 },
+    { width: 1000, height: Infinity },
+    { width: 256, height: 4096 },
+  ])("rejects invalid or excessive size %j", (size) => {
+    expect(() => validateCustomSize(size)).toThrow();
+    const project = createProject();
+    project.exportProfile = "portfolio-custom";
+    const before = structuredClone(project);
+    expect(() => changeCustomSize(project, size)).toThrow();
+    expect(project).toEqual(before);
+  });
+
+  it("checks the encoded PNG against the chosen custom size", async () => {
+    const project = createProject();
+    project.exportProfile = "portfolio-custom";
+    project.customSize = { width: 1537, height: 1103 };
+    const profile = resolveExportProfile(project);
+    await expect(
+      validateExportPng(pngHeader(1537, 1103), profile),
+    ).resolves.toBeUndefined();
+    await expect(
+      validateExportPng(pngHeader(1600, 1200), profile),
+    ).rejects.toThrow(/dimensions/);
+  });
+
+  it("refits every template and device even at the supported aspect ratio extremes", () => {
+    for (const size of [
+      { width: 4096, height: 1024 },
+      { width: 1024, height: 4096 },
+      { width: 256, height: 256 },
+      { width: 4096, height: 4096 },
+      { width: 1537, height: 1103 },
+    ])
+      for (const device of [
+        "card",
+        "ios",
+        "android",
+        "ipad",
+        "android-tablet",
+        "monitor",
+        "laptop",
+      ] as DeviceFamily[])
+        for (const orientation of ["portrait", "landscape"] as const)
+          for (const template of templates) {
+            const project = createProject();
+            project.exportProfile = "portfolio-custom";
+            project.customSize = { ...size };
+            Object.assign(project.style, {
+              device,
+              deviceOrientation: orientation,
+              template: template.id,
+            });
+            const shot = createShot("image", 0);
+            project.shots = [shot];
+            resetComposition(project, shot);
+            expect(
+              () => validateProject(project),
+              `${JSON.stringify(size)}/${device}/${orientation}/${template.id}`,
+            ).not.toThrow();
+            const canvas = canonicalCanvas(project),
+              geo = deviceGeometry(device, shot.phone.width, true, orientation),
+              radians = (Math.abs(shot.phone.rotation) * Math.PI) / 180;
+            const w =
+                geo.width * Math.cos(radians) + geo.height * Math.sin(radians),
+              h =
+                geo.height * Math.cos(radians) + geo.width * Math.sin(radians);
+            const x = shot.phone.x + geo.width / 2,
+              y = shot.phone.y + geo.height / 2;
+            expect(x - w / 2).toBeGreaterThanOrEqual(-1);
+            expect(x + w / 2).toBeLessThanOrEqual(canvas.width + 1);
+            expect(y - h / 2).toBeGreaterThanOrEqual(-1);
+            expect(y + h / 2).toBeLessThanOrEqual(canvas.height + 1);
+          }
   });
 });

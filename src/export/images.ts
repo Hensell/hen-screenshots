@@ -1,6 +1,6 @@
 import Konva from "konva";
 import {
-  getExportProfile,
+  resolveExportProfile,
   validateDimensions,
   validateExportPng,
 } from "../core/export-profiles";
@@ -16,7 +16,7 @@ export async function renderShot(
 ): Promise<Blob> {
   // Freeze the requested revision before font loading or PNG encoding can yield.
   const snapshot = structuredClone({ project, shot });
-  const profile = getExportProfile(snapshot.project.exportProfile);
+  const profile = resolveExportProfile(snapshot.project);
   const dimensions = { width: profile.width, height: profile.height };
   validateDimensions(profile, dimensions.width, dimensions.height);
   await ensureManrope();

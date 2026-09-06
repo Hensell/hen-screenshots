@@ -5,7 +5,11 @@ import {
   type Style,
   type TemplateId,
 } from "./model";
-import { canonicalCanvas, type ExportProfileId } from "./export-profiles";
+import {
+  canonicalCanvas,
+  validateCustomSize,
+  type ExportProfileId,
+} from "./export-profiles";
 import { deviceGeometry, type Rect } from "../rendering/geometry";
 
 interface TextBox {
@@ -245,6 +249,22 @@ export function changeExportProfile(
 ): void {
   if (project.exportProfile === id) return;
   project.exportProfile = id;
+  for (const shot of project.shots) resetComposition(project, shot);
+}
+
+/** Commit a complete size, never partially typed input, and reflow once. */
+export function changeCustomSize(
+  project: Project,
+  size: { width: number; height: number },
+): void {
+  validateCustomSize(size);
+  if (project.exportProfile !== "portfolio-custom") return;
+  if (
+    project.customSize.width === size.width &&
+    project.customSize.height === size.height
+  )
+    return;
+  project.customSize = { ...size };
   for (const shot of project.shots) resetComposition(project, shot);
 }
 

@@ -28,7 +28,7 @@ interface AssetInfo {
 }
 interface Manifest {
   format: "hen-screenshots";
-  schemaVersion: 3;
+  schemaVersion: 4;
   project: Project;
   assets: AssetInfo[];
 }
@@ -85,6 +85,7 @@ function manifest(value: unknown): Manifest {
     raw.format !== "hen-screenshots" ||
     (raw.schemaVersion !== 1 &&
       raw.schemaVersion !== 2 &&
+      raw.schemaVersion !== 3 &&
       raw.schemaVersion !== SCHEMA_VERSION)
   )
     fail("This backup uses an unsupported project version.");

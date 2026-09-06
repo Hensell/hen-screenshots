@@ -26,7 +26,11 @@ import {
   resetComposition,
 } from "../core/templates";
 import { Icon } from "./Icon";
-import { getExportProfile, type ExportProfile } from "../core/export-profiles";
+import {
+  resolveExportProfile,
+  exportProfileSuffix,
+  type ExportProfile,
+} from "../core/export-profiles";
 
 type Notice = { message: string; error?: boolean };
 type ReadyFile = { url: string; name: string; image: boolean };
@@ -300,7 +304,7 @@ export function App() {
     cancelExport.current = false;
     setBusy("Preparing export…");
     try {
-      const profile = getExportProfile(snapshot.exportProfile);
+      const profile = resolveExportProfile(snapshot);
       if (all && shots.length > profile.maxCount)
         throw new Error(
           `This destination accepts at most ${profile.maxCount} screenshots per device slot. Export individual screenshots or reduce the series.`,
@@ -332,12 +336,12 @@ export function App() {
         if (cancelExport.current) return;
         offerFile(
           new Blob([new Uint8Array(archive)], { type: "application/zip" }),
-          `${filename(snapshot.name)}-${snapshot.exportProfile}.zip`,
+          `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}.zip`,
         );
       } else if (png)
         offerFile(
           png,
-          `${filename(snapshot.name)}-${snapshot.exportProfile}-${String(project.shots.findIndex((s) => s.id === shot.id) + 1).padStart(2, "0")}.png`,
+          `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}-${String(project.shots.findIndex((s) => s.id === shot.id) + 1).padStart(2, "0")}.png`,
         );
       setNotice({
         message: `${all ? "Your screenshot series is" : "Your PNG is"} ready. Check your downloads.`,
@@ -734,13 +738,16 @@ export function App() {
                   </button>
                 )}
                 <span className="canvas-size">
-                  {getExportProfile(project.exportProfile).width >
-                  getExportProfile(project.exportProfile).height
+                  {resolveExportProfile(project).width >
+                  resolveExportProfile(project).height
                     ? "Landscape"
-                    : "Portrait"}{" "}
+                    : resolveExportProfile(project).width ===
+                        resolveExportProfile(project).height
+                      ? "Square"
+                      : "Portrait"}{" "}
                   <span>
-                    {getExportProfile(project.exportProfile).width} ×{" "}
-                    {getExportProfile(project.exportProfile).height}
+                    {resolveExportProfile(project).width} ×{" "}
+                    {resolveExportProfile(project).height}
                   </span>
                 </span>
               </div>
@@ -770,11 +777,11 @@ export function App() {
               style={
                 {
                   "--canvas-ratio":
-                    getExportProfile(project.exportProfile).width /
-                    getExportProfile(project.exportProfile).height,
+                    resolveExportProfile(project).width /
+                    resolveExportProfile(project).height,
                   "--preview-max":
-                    getExportProfile(project.exportProfile).width >
-                    getExportProfile(project.exportProfile).height
+                    resolveExportProfile(project).width >
+                    resolveExportProfile(project).height
                       ? "900px"
                       : "470px",
                 } as React.CSSProperties
@@ -977,7 +984,7 @@ export function App() {
       {exportOpen && project && (
         <ExportDialog
           count={project.shots.length}
-          profile={getExportProfile(project.exportProfile)}
+          profile={resolveExportProfile(project)}
           busy={busy}
           file={readyFile}
           onClose={() => {
