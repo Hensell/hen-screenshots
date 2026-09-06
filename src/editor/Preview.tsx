@@ -1,0 +1,50 @@
+import { useEffect, useRef, useState } from "react";
+import type { Project, Shot } from "../core/model";
+import { Artboard } from "../rendering/Artboard";
+
+export function Preview({
+  project,
+  shot,
+  image,
+  onMove,
+  small = false,
+}: {
+  project: Project;
+  shot: Shot;
+  image?: HTMLImageElement;
+  onMove?: (x: number, y: number) => void;
+  small?: boolean;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const element = ref.current!;
+    const observer = new ResizeObserver(([entry]) =>
+      setWidth(Math.floor(entry.contentRect.width)),
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <div
+      ref={ref}
+      className={`artboard ${small ? "artboard-small" : ""}`}
+      role="img"
+      aria-label={`${shot.title.replace(/\n/g, " ")} — ${shot.subtitle}`}
+    >
+      {width > 0 && image ? (
+        <Artboard
+          project={project}
+          shot={shot}
+          image={image}
+          width={width}
+          onMove={onMove}
+        />
+      ) : (
+        <div className="preview-loading">
+          {small ? "" : "Loading screenshot…"}
+        </div>
+      )}
+    </div>
+  );
+}

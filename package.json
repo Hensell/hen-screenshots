@@ -1,0 +1,39 @@
+{
+  "name": "hen-screenshots",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5174 --strictPort",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5174 --strictPort",
+    "test": "vitest run --config vitest.config.ts",
+    "check": "npm run test && npm run build",
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:check": "npm run build && wrangler deploy --dry-run"
+  },
+  "dependencies": {
+    "dexie": "4.4.5",
+    "fflate": "0.8.3",
+    "konva": "10.3.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zustand": "5.0.15"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.54.4",
+    "@types/node": "26.4.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@vitejs/plugin-react": "6.1.1",
+    "fake-indexeddb": "6.2.5",
+    "prettier": "3.9.6",
+    "typescript": "7.0.2",
+    "vite": "8.2.2",
+    "vitest": "5.0.0",
+    "wrangler": "4.129.0"
+  }
+}

@@ -1,6 +1,6 @@
 # Arquitectura propuesta de Hen Screenshots
 
-Estado: propuesta para la primera implementación. Fecha: 6 de septiembre de 2026.
+Estado: arquitectura de referencia. Fecha: 6 de septiembre de 2026. El [alcance implementado en v0.1](editor-v0.1.md) documenta el primer editor y las partes pendientes de esta propuesta.
 
 ## Objetivo
 
@@ -28,30 +28,30 @@ El documento del proyecto es la fuente de verdad. Konva representa ese documento
 
 ## Tecnologías
 
-| Responsabilidad | Elección propuesta | Motivo |
-| --- | --- | --- |
-| Interfaz y compilación | React + TypeScript + Vite | Base acordada, compatible con Cloudflare y un futuro frontend de Tauri |
-| Estado del editor | Zustand | Suscripciones por partes del estado; las acciones de edición se organizan fuera de los componentes |
-| Lienzo | Konva + react-konva | Composición, selección, transformaciones y renderizado |
-| Persistencia local | IndexedDB mediante Dexie | Proyectos, imágenes binarias y operaciones transaccionales |
-| Archivos ZIP | fflate | Exportación de series y empaquetado de proyectos |
-| Apariencia | CSS con las variables de la identidad | Reutilizar la paleta, Manrope y el símbolo existentes |
-| Despliegue | Cloudflare Workers con Static Assets | Servir el frontend y permitir una API futura en Cloudflare |
+| Responsabilidad        | Elección propuesta                    | Motivo                                                                                             |
+| ---------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Interfaz y compilación | React + TypeScript + Vite             | Base acordada, compatible con Cloudflare y un futuro frontend de Tauri                             |
+| Estado del editor      | Zustand                               | Suscripciones por partes del estado; las acciones de edición se organizan fuera de los componentes |
+| Lienzo                 | Konva en un componente React          | Escena compartida entre composición y exportación                                                  |
+| Persistencia local     | IndexedDB mediante Dexie              | Proyectos, imágenes binarias y operaciones transaccionales                                         |
+| Archivos ZIP           | fflate                                | Exportación de series y empaquetado de proyectos                                                   |
+| Apariencia             | CSS con las variables de la identidad | Reutilizar la paleta, Manrope y el símbolo existentes                                              |
+| Despliegue             | Cloudflare Workers con Static Assets  | Servir el frontend y permitir una API futura en Cloudflare                                         |
 
-Las versiones se fijarán en el archivo de dependencias y su lockfile al iniciar el código. No se ha instalado este stack todavía.
+Las versiones están fijadas en `package.json` y `package-lock.json`. El primer editor usa una escena Konva común para vista previa y exportación, sin necesitar `react-konva`.
 
 ## Modelo del proyecto
 
-| Entidad | Contenido |
-| --- | --- |
-| Project | ID, nombre, versión del esquema, revisión de guardado, fechas, estilo compartido, dispositivo predeterminado y serie ordenada |
-| Artboard | ID, nombre, perfil y dimensiones de exportación, fondo, elementos ordenados y personalizaciones del dispositivo |
-| Element | ID, tipo, posición, tamaño, rotación, visibilidad y propiedades del contenido |
-| Asset | ID, tipo MIME, dimensiones originales, nombre de origen y archivo binario |
-| Template | ID y versión de una composición inicial, con presets iOS y Android; se materializa en datos editables al aplicarla |
-| DeviceFrame | ID, versión, familia iOS o Android, geometría del marco y pantalla, recortes opcionales y áreas seguras |
-| CapturePresentation | Referencia al asset, recorte no destructivo, ajuste proporcional y tratamiento de barras de sistema y recorte de cámara |
-| ExportProfile | ID y versión, destino, dimensiones y reglas de archivo; independiente del dispositivo |
+| Entidad             | Contenido                                                                                                                     |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Project             | ID, nombre, versión del esquema, revisión de guardado, fechas, estilo compartido, dispositivo predeterminado y serie ordenada |
+| Artboard            | ID, nombre, perfil y dimensiones de exportación, fondo, elementos ordenados y personalizaciones del dispositivo               |
+| Element             | ID, tipo, posición, tamaño, rotación, visibilidad y propiedades del contenido                                                 |
+| Asset               | ID, tipo MIME, dimensiones originales, nombre de origen y archivo binario                                                     |
+| Template            | ID y versión de una composición inicial, con presets iOS y Android; se materializa en datos editables al aplicarla            |
+| DeviceFrame         | ID, versión, familia iOS o Android, geometría del marco y pantalla, recortes opcionales y áreas seguras                       |
+| CapturePresentation | Referencia al asset, recorte no destructivo, ajuste proporcional y tratamiento de barras de sistema y recorte de cámara       |
+| ExportProfile       | ID y versión, destino, dimensiones y reglas de archivo; independiente del dispositivo                                         |
 
 Tipos iniciales de elemento: **texto**, **captura con marco opcional** y **forma simple**. Cada artboard corresponde a una pieza exportable de la serie.
 

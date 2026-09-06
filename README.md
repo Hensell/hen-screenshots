@@ -1,18 +1,40 @@
 # Hen Screenshots
 
-Aplicación web para crear screenshots elegantes con estilo mockup para Google Play.
+Aplicación web para crear screenshots elegantes con marcos iOS y Android para presentar tus apps.
 
 Nombre público confirmado por el usuario: **Hen Screenshots**.
 
 Repositorio: [Hensell/hen-screenshots](https://github.com/Hensell/hen-screenshots).
 
-**App screenshot studio** — *Your app. Beautifully presented.*
+**App screenshot studio** — _Your app. Beautifully presented._
 
 Consultar la [identidad pública](docs/brand-identity.md), la [muestra visual](brand/index.html) y la [revisión inicial de nombres](docs/name-check.md).
 
 La [arquitectura propuesta](docs/architecture.md) define el modelo del editor, la persistencia, la exportación y el orden de implementación.
 
-La primera versión tendrá **layouts y marcos para iOS y Android**. La [especificación de dispositivos](docs/device-frames.md) define ambas familias, las áreas seguras y el tratamiento de las barras de sistema.
+El primer editor ya incluye **marcos para iOS y Android**. La [especificación de dispositivos](docs/device-frames.md) define ambas familias y la dirección del catálogo. El [alcance de v0.1](docs/editor-v0.1.md) distingue lo implementado de las siguientes iteraciones.
+
+## Ejecutar el editor
+
+Requiere Node.js 22.12 o posterior.
+
+```sh
+npm ci
+npm run dev
+```
+
+Abrir [el estudio local](http://127.0.0.1:5174/). Crear un proyecto e importar PNG, JPEG o WebP. Cada captura recibe su propio lienzo; los originales se conservan en el navegador.
+
+```sh
+npm run check         # Pruebas, TypeScript y build de producción
+npm run preview       # Servir el build localmente, con el servidor dev detenido
+npm run deploy:check  # Build y validación de Wrangler sin publicar
+npm run deploy        # Publicar en Cloudflare con la sesión autorizada de Wrangler
+```
+
+El plugin oficial genera `dist/wrangler.json` y prepara el frontend para **Cloudflare Workers Static Assets**, sin Worker de negocio ni bindings. No se ha desplegado todavía. `dist/` contiene solo los recursos de la aplicación; las capturas locales, bases de datos y herramientas de FrogHappy quedan fuera.
+
+El guardado es por navegador y origen. Usar **Project file** para descargar un `.henscreenshots` y **Open project file** para restaurarlo como copia en otro navegador, dominio o equipo. Borrar los datos del sitio también borra sus proyectos locales.
 
 ## Usuario y dirección del producto
 
@@ -23,8 +45,8 @@ La primera versión tendrá **layouts y marcos para iOS y Android**. La [especif
 ## Decisiones del proyecto
 
 - El despliegue será en **Cloudflare**, según la indicación del usuario.
-- Base propuesta: **React + TypeScript + Vite** como aplicación de una sola página (SPA).
-- Editor propuesto: **Konva + react-konva**, con composición y exportación de imágenes en el navegador.
+- Base implementada: **React + TypeScript + Vite** como aplicación de una sola página (SPA).
+- Editor implementado: **Konva** con un componente React y una escena compartida entre vista previa y exportación en el navegador.
 - Dos familias de dispositivo desde el inicio: **iOS y Android**, con presets de composición propios. La familia del marco se elige por separado del destino y las dimensiones de exportación.
 - Primera versión con guardado local mediante IndexedDB.
 - Posible versión de escritorio posterior con Tauri, reutilizando el editor web.
@@ -43,7 +65,7 @@ El alcance inicial propuesto deja cuentas, sincronización, colaboración, pagos
 
 Validación inicial: usar capturas reales de una app del creador, preparar una serie, cerrar y reabrir el proyecto, comprobar la restauración desde un respaldo y verificar visualmente la exportación y sus dimensiones. Comprobar ambas familias de marcos, sin deformar capturas ni duplicar barras de estado, navegación o recortes de cámara.
 
-Siguiente paso: concretar las pantallas Projects y Editor a partir de la arquitectura propuesta, e iniciar el recorrido mínimo de importar, editar, guardar, reabrir y exportar una pieza.
+El recorrido mínimo y la edición de series están implementados. Las siguientes iteraciones ampliarán el catálogo de composiciones y los perfiles de tamaño, a partir del uso real con FrogHappy.
 
 ## Despliegue previsto
 
@@ -59,6 +81,6 @@ Referencias oficiales:
 
 ## Estado
 
-Proyecto en definición inicial, con nombre público confirmado y primera dirección de identidad documentada. Todavía no se ha implementado ni desplegado la aplicación.
+Primer editor funcional para uso personal: proyectos locales, hasta 20 capturas, textos, paletas, marcos iOS/Android, posición y tamaño del teléfono, duplicación, orden, deshacer/rehacer, respaldo/restauración y exportación PNG/ZIP a 1080 × 1920. Identidad pública confirmada. Todavía no se ha desplegado la aplicación.
 
 La [primera sesión de capturas reales de FrogHappy](docs/capture-session.md) proporciona cinco imágenes Android con datos de muestra y un flujo reproducible para validar el editor.
