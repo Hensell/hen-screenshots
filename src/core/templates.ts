@@ -1,3 +1,4 @@
+import { resetText } from "./text-placement";
 import { panoramaStart } from "./panorama-families";
 import {
   resolveStyle,
@@ -557,7 +558,10 @@ export function changeExportProfile(
 ): void {
   if (project.exportProfile === id) return;
   project.exportProfile = id;
-  for (const shot of project.shots) resetComposition(project, shot);
+  for (const shot of project.shots) {
+    resetComposition(project, shot);
+    resetText(shot);
+  }
 }
 
 /** Commit a complete size, never partially typed input, and reflow once. */
@@ -573,7 +577,10 @@ export function changeCustomSize(
   )
     return;
   project.customSize = { ...size };
-  for (const shot of project.shots) resetComposition(project, shot);
+  for (const shot of project.shots) {
+    resetComposition(project, shot);
+    resetText(shot);
+  }
 }
 
 const colorKeys = [
@@ -616,6 +623,7 @@ export function applyTemplate(
         delete shot.style[key];
     } else Object.assign(shot.style, patch);
     resetComposition(project, shot);
+    resetText(shot);
   }
 }
 
@@ -635,5 +643,6 @@ export function templatePreview(
     phone: { ...shot.phone },
   };
   resetComposition(project, preview);
+  resetText(preview);
   return preview;
 }

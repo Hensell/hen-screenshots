@@ -192,15 +192,18 @@ export function panoramaPreview(
       delete patch[key];
   const shared = { ...resolveStyle(project, left), ...patch };
   const phone = panoramaLayout(project, shared).phone;
-  return [left, right].map((source, index) => ({
-    ...source,
-    assetId: left.assetId,
-    style: {
-      ...shared,
-      template: index === 0 ? family : panoramaFamilies[family],
-    },
-    phone: { ...phone },
-  })) as [Shot, Shot];
+  return [left, right].map((source, index) => {
+    const { textOffsets: _offsets, ...content } = source;
+    return {
+      ...content,
+      assetId: left.assetId,
+      style: {
+        ...shared,
+        template: index === 0 ? family : panoramaFamilies[family],
+      },
+      phone: { ...phone },
+    };
+  }) as [Shot, Shot];
 }
 export function applyPanorama(
   project: Project,

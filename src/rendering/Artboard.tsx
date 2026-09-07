@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import Konva from "konva";
 import { errorMessage } from "../core/model";
-import type { Project, Shot } from "../core/model";
+import type { Project, Shot, TextElement, CanvasElement } from "../core/model";
+import { textOffset } from "../core/text-placement";
 import { ensureSceneFonts } from "./fonts";
 import { previewDimensions } from "./geometry";
 import { canonicalCanvas } from "../core/export-profiles";
-import { createScene } from "./scene";
+import { createScene, selectSceneElement } from "./scene";
 
 export interface ArtboardProps {
   project: Project;
@@ -13,6 +14,12 @@ export interface ArtboardProps {
   image: HTMLImageElement;
   width: number;
   onMove?: (x: number, y: number) => void;
+  onTextMove?: (
+    element: TextElement,
+    x: number,
+    y: number,
+    shotId: string,
+  ) => void;
 }
 
 export function Artboard({
@@ -21,10 +28,29 @@ export function Artboard({
   image,
   width,
   onMove,
+  onTextMove,
 }: ArtboardProps) {
   const container = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const selectedElement = useRef<CanvasElement>("device");
+  const layerRef = useRef<Konva.Layer | null>(null);
+  const selectedShotId = useRef(shot.id);
+  const [selectedLabel, setSelectedLabel] = useState("Device");
+  const editable = Boolean(onMove || onTextMove);
+  function selectElement(element: CanvasElement, ownerId = shot.id) {
+    selectedElement.current = element;
+    selectedShotId.current = ownerId;
+    setSelectedLabel(
+      element === "title"
+        ? "Headline"
+        : element === "subtitle"
+          ? "Supporting text"
+          : "Device",
+    );
+    if (layerRef.current)
+      selectSceneElement(layerRef.current, element, ownerId);
+  }
   const dimensions = previewDimensions(width, canonicalCanvas(project));
 
   useEffect(() => {
@@ -43,7 +69,26 @@ export function Artboard({
           scaleX: size.scale,
           scaleY: size.scale,
         });
-        stage.add(createScene(project, shot, image, { onMove }));
+        const layer = createScene(project, shot, image, {
+          onMove,
+          onTextMove,
+          onSelectElement: selectElement,
+        });
+        stage.add(layer);
+        layerRef.current = layer;
+        if (
+          selectedElement.current !== "device" &&
+          !project.shots
+            .find((owner) => owner.id === selectedShotId.current)
+            ?.[selectedElement.current].trim()
+        )
+          selectElement("device");
+        if (container.current.parentElement === document.activeElement)
+          selectSceneElement(
+            layer,
+            selectedElement.current,
+            selectedShotId.current,
+          );
         stage.draw();
         setReady(true);
       })
@@ -55,23 +100,53 @@ export function Artboard({
     return () => {
       disposed = true;
       stage?.destroy();
+      layerRef.current = null;
     };
-  }, [project, shot, image, width, onMove]);
+  }, [project, shot, image, width, onMove, onTextMove]);
 
   return (
     <div
       role="group"
       aria-label={`Screenshot preview: ${shot.title || "Untitled screenshot"}`}
       aria-description={
-        onMove
-          ? "Drag the device to move it, or use arrow keys. Hold Shift for larger steps."
+        editable
+          ? `${selectedLabel} selected. Drag the device or text. Enter switches objects. Arrow keys move the selected object. Hold Shift for larger steps.`
           : undefined
       }
       aria-busy={!ready && !error}
-      tabIndex={onMove ? 0 : undefined}
+      tabIndex={editable ? 0 : undefined}
+      onFocus={
+        editable
+          ? () => selectElement(selectedElement.current, selectedShotId.current)
+          : undefined
+      }
+      onBlur={
+        editable
+          ? () =>
+              layerRef.current
+                ?.find(".selection-outline")
+                .forEach((node) => node.hide())
+          : undefined
+      }
       onKeyDown={
-        onMove
+        editable
           ? (event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                const elements: CanvasElement[] = [
+                  "device",
+                  ...(["title", "subtitle"] as const).filter((element) =>
+                    shot[element].trim(),
+                  ),
+                ];
+                selectElement(
+                  elements[
+                    (elements.indexOf(selectedElement.current) + 1) %
+                      elements.length
+                  ],
+                );
+                return;
+              }
               const directions: Record<string, [number, number]> = {
                 ArrowLeft: [-1, 0],
                 ArrowRight: [1, 0],
@@ -82,10 +157,25 @@ export function Artboard({
               if (!direction) return;
               event.preventDefault();
               const step = event.shiftKey ? 10 : 1;
-              onMove(
-                shot.phone.x + direction[0] * step,
-                shot.phone.y + direction[1] * step,
-              );
+              const element = selectedElement.current;
+              if (element === "device")
+                onMove?.(
+                  shot.phone.x + direction[0] * step,
+                  shot.phone.y + direction[1] * step,
+                );
+              else {
+                const owner =
+                  project.shots.find(
+                    (item) => item.id === selectedShotId.current,
+                  ) ?? shot;
+                const offset = textOffset(owner, element);
+                onTextMove?.(
+                  element,
+                  offset.x + direction[0] * step,
+                  offset.y + direction[1] * step,
+                  owner.id,
+                );
+              }
             }
           : undefined
       }

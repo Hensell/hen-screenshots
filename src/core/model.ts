@@ -12,7 +12,7 @@ import {
 } from "./export-profiles";
 import type { ExportProfileId } from "./export-profiles";
 
-export const SCHEMA_VERSION = 4 as const;
+export const SCHEMA_VERSION = 5 as const;
 export const CANVAS = { width: 1080, height: 1920 } as const;
 export const PLACEMENT_LIMITS = {
   x: { min: -1080, max: 2160 },
@@ -51,6 +51,9 @@ export const templateIds = [
   "punch",
 ] as const;
 export type TemplateId = (typeof templateIds)[number];
+export type TextElement = "title" | "subtitle";
+export type CanvasElement = "device" | TextElement;
+export const TEXT_OFFSET_LIMITS = { x: 2160, y: 4320 } as const;
 export interface Style {
   background: string;
   textColor: string;
@@ -75,9 +78,10 @@ export interface Shot {
   subtitle: string;
   style: Partial<Style>;
   phone: { x: number; y: number; width: number; rotation: number };
+  textOffsets?: Partial<Record<TextElement, { x: number; y: number }>>;
 }
 export interface Project {
-  schemaVersion: 4;
+  schemaVersion: 5;
   exportProfile: ExportProfileId;
   customSize: { width: number; height: number };
   id: string;
@@ -138,6 +142,10 @@ export type V3Style = Omit<Style, "device" | "template"> & {
   template: (typeof legacyTemplateIds)[number];
   device: "android" | "ios" | "ipad" | "android-tablet" | "monitor" | "laptop";
 };
+export interface V4Project extends Omit<Project, "schemaVersion" | "shots"> {
+  schemaVersion: 4;
+  shots: Omit<Shot, "textOffsets">[];
+}
 export interface V3Project extends Omit<
   Project,
   "schemaVersion" | "customSize" | "exportProfile" | "style" | "shots"
@@ -182,10 +190,12 @@ export interface LegacyProject extends Omit<
 
 /** Add presentation defaults without changing an existing project's content or identity. */
 export function migrateProject(
-  project: Project | V3Project | V2Project | LegacyProject,
+  project: Project | V4Project | V3Project | V2Project | LegacyProject,
 ): Project {
   validateProject(project);
   if (project.schemaVersion === SCHEMA_VERSION) return project;
+  if (project.schemaVersion === 4)
+    return { ...structuredClone(project), schemaVersion: SCHEMA_VERSION };
   return {
     ...project,
     schemaVersion: SCHEMA_VERSION,
@@ -261,7 +271,8 @@ const v2StyleKeys = [
   "titleSize",
 ];
 const styleKeys = [...v2StyleKeys, "deviceOrientation"];
-type StoredProject = Project | V3Project | V2Project | LegacyProject;
+type StoredProject =
+  Project | V4Project | V3Project | V2Project | LegacyProject;
 type RecordValue = Record<string, unknown>;
 
 function invalid(): never {
@@ -309,7 +320,7 @@ function numeric(
 }
 function validateStyle(
   value: unknown,
-  version: 1 | 2 | 3 | 4,
+  version: 1 | 2 | 3 | 4 | 5,
   partial = false,
 ): void {
   const entries = object(
@@ -329,7 +340,7 @@ function validateStyle(
     } else {
       const allowed: Record<string, string[]> = {
         device:
-          version === 4
+          version >= 4
             ? [
                 "android",
                 "ios",
@@ -371,6 +382,7 @@ export function validateProject(
     version !== 1 &&
     version !== 2 &&
     version !== 3 &&
+    version !== 4 &&
     version !== SCHEMA_VERSION
   )
     throw new Error("This project uses an unsupported project version.");
@@ -383,7 +395,7 @@ export function validateProject(
     "style",
     "shots",
     ...(version >= 3 ? ["exportProfile"] : []),
-    ...(version === 4 ? ["customSize"] : []),
+    ...(version >= 4 ? ["customSize"] : []),
   ]);
   identifier(raw.id);
   textValue(raw.name, 80, 1);
@@ -398,7 +410,7 @@ export function validateProject(
     ).some((profile) => profile === raw.exportProfile)
   )
     invalid();
-  if (version === 4) {
+  if (version >= 4) {
     const size = object(raw.customSize, ["width", "height"]);
     validateCustomSize({
       width: size.width as number,
@@ -416,7 +428,25 @@ export function validateProject(
       "subtitle",
       "style",
       "phone",
+      ...(version === 5 &&
+      value &&
+      typeof value === "object" &&
+      Object.hasOwn(value, "textOffsets")
+        ? ["textOffsets"]
+        : []),
     ]);
+    if (Object.hasOwn(shot, "textOffsets")) {
+      const offsets = object(shot.textOffsets, ["title", "subtitle"], true);
+      for (const offset of Object.values(offsets)) {
+        const position = object(offset, ["x", "y"]);
+        for (const key of ["x", "y"] as const)
+          numeric(
+            position[key],
+            -TEXT_OFFSET_LIMITS[key],
+            TEXT_OFFSET_LIMITS[key],
+          );
+      }
+    }
     const shotId = identifier(shot.id);
     if (ids.has(shotId))
       throw new Error("The project has duplicate screenshot IDs.");
@@ -430,7 +460,7 @@ export function validateProject(
       version === 1 ? ["x", "y", "width"] : ["x", "y", "width", "rotation"],
     );
     const bounds =
-      version === 4
+      version >= 4
         ? PLACEMENT_LIMITS
         : version === 3
           ? { ...PLACEMENT_LIMITS, width: { min: 160, max: 2160 } }
@@ -443,7 +473,7 @@ export function validateProject(
       numeric(phone[key], bounds[key].min, bounds[key].max);
     if (version !== 1) numeric(phone.rotation, -20, 20);
   }
-  if (version === 4) {
+  if (version >= 4) {
     const project = value as Project;
     if (isPanoramaTemplate(project.style.template)) invalid();
     for (let index = 0; index < project.shots.length; index++) {

@@ -2601,3 +2601,24 @@ svg {
     min-height: 230px;
   }
 }
+
+.text-position-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  margin: -4px 0 5px;
+}
+.text-position-actions .text-button {
+  min-height: 44px;
+  text-align: left;
+}
+.canvas-edit-help {
+  max-width: 520px;
+  margin: 12px auto 0;
+  padding-inline: 12px;
+  color: var(--brand-muted);
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.5;
+}

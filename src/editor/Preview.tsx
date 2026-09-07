@@ -5,7 +5,7 @@ import {
   type MouseEventHandler,
   type KeyboardEventHandler,
 } from "react";
-import type { Project, Shot } from "../core/model";
+import type { Project, Shot, TextElement } from "../core/model";
 import { canonicalCanvas } from "../core/export-profiles";
 import { Artboard } from "../rendering/Artboard";
 
@@ -14,6 +14,7 @@ export function Preview({
   shot,
   image,
   onMove,
+  onTextMove,
   small = false,
   onContextMenu,
   onKeyDown,
@@ -22,6 +23,12 @@ export function Preview({
   shot: Shot;
   image?: HTMLImageElement;
   onMove?: (x: number, y: number) => void;
+  onTextMove?: (
+    element: TextElement,
+    x: number,
+    y: number,
+    shotId: string,
+  ) => void;
   small?: boolean;
   onContextMenu?: MouseEventHandler<HTMLDivElement>;
   onKeyDown?: KeyboardEventHandler<HTMLDivElement>;
@@ -42,7 +49,7 @@ export function Preview({
       ref={ref}
       className={`artboard ${small ? "artboard-small" : ""}`}
       style={{ aspectRatio: `1080 / ${canonicalCanvas(project).height}` }}
-      role="img"
+      role={onMove || onTextMove ? "group" : "img"}
       onContextMenu={onContextMenu}
       onKeyDown={onKeyDown}
       aria-label={`${shot.title.replace(/\n/g, " ")} — ${shot.subtitle}`}
@@ -54,6 +61,7 @@ export function Preview({
           image={image}
           width={width}
           onMove={onMove}
+          onTextMove={onTextMove}
         />
       ) : (
         <div className="preview-loading">

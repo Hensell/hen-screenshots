@@ -8,13 +8,14 @@ import type {
   Project,
   V2Project,
   V3Project,
+  V4Project,
 } from "../core/model";
 
 interface ProjectRow {
   id: string;
   updatedAt: number;
   revision: number;
-  project: Project | V3Project | V2Project | LegacyProject;
+  project: Project | V4Project | V3Project | V2Project | LegacyProject;
 }
 interface AssetRow extends Asset {
   projectId: string;

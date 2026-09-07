@@ -70,6 +70,10 @@ const TemplateCard = memo(function TemplateCard({
           ),
     [project, shots, focusShot, template.id, keepColors, family],
   );
+  const previewProject = useMemo(
+    () => ({ ...project, shots: previews }),
+    [project, previews],
+  );
   return (
     <button
       ref={ref}
@@ -87,7 +91,7 @@ const TemplateCard = memo(function TemplateCard({
           <div className="template-preview-slot" key={preview.id}>
             {visible ? (
               <Preview
-                project={project}
+                project={previewProject}
                 shot={preview}
                 image={images.get(preview.assetId)}
                 small

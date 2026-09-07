@@ -108,3 +108,9 @@ The [first FrogHappy capture session](docs/capture-session.md) provides five And
 Panorama pairs share one image and composition while keeping independent captions. Switching between panorama styles preserves the pair; applying a single-slide template separates both slides. Existing templates and version 4 project files remain supported.
 
 The editor bundles a static Fraunces 600 headline face (optical size 48, generated from the upstream variable font) from [Fraunces](https://github.com/google/fonts/tree/main/ofl/fraunces) for editorial headlines under the [SIL Open Font License](brand/fonts/OFL-Fraunces.txt), alongside Manrope. Fonts load locally before measuring captions or exporting; no external font service is required.
+
+### Move text on the canvas
+
+Drag a headline or supporting text to position it independently of the device. In a panorama, text can also cross the slide boundary while retaining its own reset control. The **Words** panel has **Reset headline position** and **Reset supporting text position** buttons; each returns only that text to its template position. Undo and redo include text movement and resets.
+
+For keyboard editing, focus the canvas, press **Enter** to choose an object, and move it with the arrow keys (**Shift** moves it farther). Positions persist locally, in project backups, and in PNG exports. Applying a template or changing the canvas format restores the template's text placement; replacing an image preserves it. Version 5 project files store text offsets and automatically upgrade earlier documents without changing their saved composition.

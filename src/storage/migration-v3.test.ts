@@ -29,7 +29,7 @@ describe("version 3 project migration", () => {
     const source = structuredClone(existing);
     expect(migrateProject(source)).toEqual({
       ...existing,
-      schemaVersion: 4,
+      schemaVersion: 5,
       customSize: { width: 1600, height: 1200 },
     });
     expect(source).toEqual(existing);
@@ -37,35 +37,29 @@ describe("version 3 project migration", () => {
 
   it("upgrades an installed schema 3 database and retains custom sizes across preset changes", async () => {
     const old = new Dexie("hen-screenshots");
-    old
-      .version(3)
-      .stores({
-        projects: "id, updatedAt",
-        assets: "[projectId+id], projectId",
-      });
+    old.version(3).stores({
+      projects: "id, updatedAt",
+      assets: "[projectId+id], projectId",
+    });
     const blob = new Blob([new Uint8Array([3, 5, 11, 23])], {
       type: "image/png",
     });
     await old.open();
-    await old
-      .table("projects")
-      .put({
-        id: existing.id,
-        updatedAt: existing.updatedAt,
-        revision: 6,
-        project: existing,
-      });
-    await old
-      .table("assets")
-      .put({
-        id: "existing-asset",
-        projectId: existing.id,
-        name: "source.png",
-        mime: "image/png",
-        width: 12,
-        height: 24,
-        blob,
-      });
+    await old.table("projects").put({
+      id: existing.id,
+      updatedAt: existing.updatedAt,
+      revision: 6,
+      project: existing,
+    });
+    await old.table("assets").put({
+      id: "existing-asset",
+      projectId: existing.id,
+      name: "source.png",
+      mime: "image/png",
+      width: 12,
+      height: 24,
+      blob,
+    });
     old.close();
 
     const { loadProject, saveProject, deleteProject } =

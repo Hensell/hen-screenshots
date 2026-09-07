@@ -10,6 +10,7 @@ import {
 } from "../core/templates";
 import { linkedShots, panoramaPair } from "../core/panorama";
 import { CanvasSettings } from "./CanvasSettings";
+import { resetText } from "../core/text-placement";
 
 export const deviceNames = {
   card: "Screenshot card",
@@ -321,6 +322,40 @@ export function Inspector({
               onBlur={endGroup}
             />
           </label>
+          <div className="text-position-actions">
+            <button
+              type="button"
+              className="text-button"
+              disabled={!shot.textOffsets?.title}
+              onClick={() =>
+                updateShot(
+                  (target) => resetText(target, "title"),
+                  undefined,
+                  false,
+                )
+              }
+            >
+              Reset headline position
+            </button>
+            <button
+              type="button"
+              className="text-button"
+              disabled={!shot.textOffsets?.subtitle}
+              onClick={() =>
+                updateShot(
+                  (target) => resetText(target, "subtitle"),
+                  undefined,
+                  false,
+                )
+              }
+            >
+              Reset supporting text position
+            </button>
+          </div>
+          <p className="field-help">
+            Drag either text on the canvas. Each reset restores its template
+            position on this slide.
+          </p>
           <div className="segmented" role="group" aria-label="Text alignment">
             <button
               type="button"

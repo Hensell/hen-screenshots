@@ -1,16 +1,79 @@
 import { isPanoramaEnd, panoramaStart } from "../core/panorama-families";
 import Konva from "konva";
 import { legacyTemplateIds, resolveStyle } from "../core/model";
-import type { Project, Shot } from "../core/model";
+import type { Project, Shot, TextElement, CanvasElement } from "../core/model";
+import { textOffset } from "../core/text-placement";
 import { deviceGeometry, fitImage } from "./geometry";
 import { templateLayout } from "../core/templates";
 import { canonicalCanvas } from "../core/export-profiles";
-import { isPanoramaTemplate } from "../core/panorama";
+import { isPanoramaTemplate, panoramaPair } from "../core/panorama";
 import { drawDeviceFrame, drawDeviceDetails } from "./device-frame";
 import { drawTemplateDecoration } from "./template-decoration";
 
 interface SceneOptions {
   onMove?: (x: number, y: number) => void;
+  onTextMove?: (
+    element: TextElement,
+    x: number,
+    y: number,
+    shotId: string,
+  ) => void;
+  onSelectElement?: (element: CanvasElement, shotId?: string) => void;
+}
+
+/** Selection is editor-only; export scenes contain no outlines or event handlers. */
+export function selectSceneElement(
+  layer: Konva.Layer,
+  element: CanvasElement,
+  shotId?: string,
+) {
+  layer.setAttr("selectedElement", element);
+  layer.setAttr("selectedShotId", shotId);
+  layer
+    .find(".selection-outline")
+    .forEach((node) =>
+      node.visible(
+        node.getAttr("element") === element &&
+          node.getAttr("shotId") === shotId,
+      ),
+    );
+  layer.batchDraw();
+}
+
+function makeMovable(
+  group: Konva.Group,
+  element: CanvasElement,
+  options: SceneOptions,
+  shotId?: string,
+) {
+  group.draggable(true);
+  group.on("mouseenter", () => {
+    const container = group.getStage()?.container();
+    if (container) container.style.cursor = "grab";
+    group.findOne(".selection-outline")?.show();
+  });
+  group.on("mousedown touchstart", () => {
+    selectSceneElement(group.getLayer()!, element, shotId);
+    options.onSelectElement?.(element, shotId);
+    const container = group.getStage()?.container();
+    if (container) {
+      container.style.cursor = "grabbing";
+      container.parentElement?.focus({ preventScroll: true });
+    }
+  });
+  group.on("mouseup touchend", () => {
+    const container = group.getStage()?.container();
+    if (container) container.style.cursor = "grab";
+  });
+  group.on("mouseleave", () => {
+    const container = group.getStage()?.container();
+    if (container) container.style.cursor = "";
+    if (
+      group.getLayer()?.getAttr("selectedElement") !== element ||
+      group.getLayer()?.getAttr("selectedShotId") !== shotId
+    )
+      group.findOne(".selection-outline")?.hide();
+  });
 }
 
 /** Keep punctuation with its word while allowing natural breaks in unspaced scripts. */
@@ -43,6 +106,10 @@ function addText(
     lineHeight?: number;
     accent?: string;
     fitWords?: boolean;
+    element: TextElement;
+    shotId: string;
+    offset: { x: number; y: number };
+    interaction: SceneOptions;
   },
 ): void {
   if (!text.trim()) return;
@@ -52,7 +119,7 @@ function addText(
   const nodes = lines.map(
     (line, index) =>
       new Konva.Text({
-        x: options.x,
+        x: 0,
         width: options.width,
         text: line || " ",
         fontFamily: options.fontFamily ?? "Manrope",
@@ -63,7 +130,7 @@ function addText(
         align: options.align,
         opacity: options.opacity ?? 1,
         wrap: "word",
-        listening: false,
+        listening: Boolean(options.interaction.onTextMove),
       }),
   );
   // Measure the complete text with its final font; never silently truncate a caption.
@@ -81,12 +148,47 @@ function addText(
       "This caption is too long to fit. Shorten it before exporting.",
     );
   }
-  let y = options.y;
+  const group = new Konva.Group({
+    x: options.x + options.offset.x,
+    y: options.y + options.offset.y,
+    name: `caption-${options.element}`,
+    shotId: options.shotId,
+  });
+  let y = 0;
   for (const node of nodes) {
     node.y(y);
     y += node.height();
-    layer.add(node);
+    group.add(node);
   }
+  if (options.interaction.onTextMove) {
+    group.add(
+      new Konva.Rect({
+        x: -8,
+        y: -8,
+        width: options.width + 16,
+        height: height() + 16,
+        stroke: "#547449",
+        strokeWidth: 2,
+        strokeScaleEnabled: false,
+        dash: [7, 5],
+        listening: false,
+        visible: false,
+        name: "selection-outline",
+        element: options.element,
+        shotId: options.shotId,
+      }),
+    );
+    makeMovable(group, options.element, options.interaction, options.shotId);
+    group.on("dragend", () =>
+      options.interaction.onTextMove?.(
+        options.element,
+        group.x() - options.x,
+        group.y() - options.y,
+        options.shotId,
+      ),
+    );
+  }
+  layer.add(group);
 }
 
 /** Shared by Artboard and PNG export. Coordinates use a 1080-wide document at the selected export aspect ratio. */
@@ -115,7 +217,9 @@ export function createScene(
     style.frame,
     style.deviceOrientation,
   );
-  const layer = new Konva.Layer({ listening: Boolean(options.onMove) });
+  const layer = new Konva.Layer({
+    listening: Boolean(options.onMove || options.onTextMove),
+  });
   try {
     // The base remains opaque even if a restored project contains a translucent color.
     layer.add(new Konva.Rect({ ...canvas, fill: "#F4F1E9", listening: false }));
@@ -270,53 +374,63 @@ export function createScene(
     // Imported status/navigation bars stay in their original pixels. No synthetic bars.
     drawDeviceDetails(phone, device, style.camera);
     if (options.onMove) {
+      makeMovable(phone, "device", options);
       phone.on("dragend", () =>
         options.onMove?.(
           Math.round(phone.x() - device.width / 2 + cropOffset),
           Math.round(phone.y() - device.height / 2),
         ),
       );
-      phone.on("mouseenter", () => {
-        const container = phone.getStage()?.container();
-        if (container) container.style.cursor = "grab";
-      });
-      phone.on("mousedown touchstart", () => {
-        const container = phone.getStage()?.container();
-        if (container) container.style.cursor = "grabbing";
-      });
-      phone.on("mouseup touchend", () => {
-        const container = phone.getStage()?.container();
-        if (container) container.style.cursor = "grab";
-      });
-      phone.on("mouseleave", () => {
-        const container = phone.getStage()?.container();
-        if (container) container.style.cursor = "";
-      });
     }
     layer.add(phone);
-    // Captions remain above a deliberately enlarged/rotated device.
-    addText(layer, shot.title, {
-      ...template.title,
-      fitWords,
-      fontSize: style.titleSize * template.fontScale,
-      weight:
-        template.titleWeight ?? (style.template === "classic" ? "700" : "800"),
-      fontFamily: template.titleFont,
-      lineHeight: template.lineHeight,
-      color: style.textColor,
-      accent: style.accentTitle ? style.accentColor : undefined,
-      align: style.align,
-    });
-    addText(layer, shot.subtitle, {
-      ...template.subtitle,
-      fitWords,
-      fontSize: template.subtitleSize,
-      weight: "400",
-      color: style.textColor,
-      align: style.align,
-      opacity: style.template === "classic" ? 0.78 : 0.88,
-    });
-    if (style.template === "classic") phone.moveToTop();
+    // Both crops draw the same captions, so freely moved text can cross the join.
+    for (const owner of (panoramic ? panoramaPair(project, shot.id) : null) ?? [
+      shot,
+    ]) {
+      const ownerStyle = resolveStyle(project, owner);
+      const ownerOrigin = isPanoramaEnd(ownerStyle.template) ? canvas.width : 0;
+      const captionLayout = templateLayout(project, ownerStyle);
+      // Captions remain above a deliberately enlarged/rotated device.
+      addText(layer, owner.title, {
+        ...captionLayout.title,
+        x: captionLayout.title.x + ownerOrigin - cropOffset,
+        shotId: owner.id,
+        element: "title",
+        offset: textOffset(owner, "title"),
+        interaction: options,
+        fitWords,
+        fontSize: style.titleSize * template.fontScale,
+        weight:
+          template.titleWeight ??
+          (style.template === "classic" ? "700" : "800"),
+        fontFamily: template.titleFont,
+        lineHeight: template.lineHeight,
+        color: style.textColor,
+        accent: style.accentTitle ? style.accentColor : undefined,
+        align: style.align,
+      });
+      addText(layer, owner.subtitle, {
+        ...captionLayout.subtitle,
+        x: captionLayout.subtitle.x + ownerOrigin - cropOffset,
+        shotId: owner.id,
+        element: "subtitle",
+        offset: textOffset(owner, "subtitle"),
+        interaction: options,
+        fitWords,
+        fontSize: template.subtitleSize,
+        weight: "400",
+        color: style.textColor,
+        align: style.align,
+        opacity: style.template === "classic" ? 0.78 : 0.88,
+      });
+    }
+    if (style.template === "classic") {
+      phone.moveToTop();
+      // Keep historical layering until the author explicitly repositions text.
+      for (const element of ["title", "subtitle"] as const)
+        if (shot.textOffsets?.[element])
+          layer.findOne(`.caption-${element}`)?.moveToTop();
+    }
     return layer;
   } catch (error) {
     layer.destroy();

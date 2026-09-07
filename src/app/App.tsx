@@ -1,4 +1,5 @@
 import { isPanoramaTemplate } from "../core/panorama-families";
+import { moveText } from "../core/text-placement";
 import {
   useCallback,
   useEffect,
@@ -981,6 +982,19 @@ export function App() {
                         image={images.get(item.assetId)}
                         onContextMenu={(event) => contextMenu(event, item.id)}
                         onKeyDown={(event) => menuKeyboard(event, item.id)}
+                        onTextMove={
+                          busy
+                            ? undefined
+                            : (element, x, y, ownerId) => {
+                                state.edit((draft) => {
+                                  const target = draft.shots.find(
+                                    (candidate) => candidate.id === ownerId,
+                                  );
+                                  if (target) moveText(target, element, x, y);
+                                });
+                                state.select(ownerId);
+                              }
+                        }
                         onMove={
                           busy
                             ? undefined
@@ -1005,6 +1019,10 @@ export function App() {
                       />
                     ))}
                   </div>
+                  <p className="canvas-edit-help">
+                    Drag the device or text. Enter selects an object; arrow keys
+                    move it.
+                  </p>
                   <button
                     type="button"
                     className="button secondary replace-image-button"
