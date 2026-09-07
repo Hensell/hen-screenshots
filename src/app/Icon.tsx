@@ -6,6 +6,7 @@ type Name =
   | "undo"
   | "redo"
   | "copy"
+  | "more"
   | "trash"
   | "left"
   | "right"
@@ -24,6 +25,7 @@ const paths: Record<Name, string> = {
   undo: "M8 5 3 10l5 5M3 10h11a6 6 0 0 1 0 12",
   redo: "m16 5 5 5-5 5M21 10H10a6 6 0 0 0 0 12",
   copy: "M8 8h12v13H8zM16 8V3H3v13h5",
+  more: "M5 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2M19 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2",
   trash: "M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7",
   left: "m14 5-7 7 7 7",
   right: "m10 5 7 7-7 7",

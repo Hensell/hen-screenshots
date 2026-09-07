@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from "react";
 import { zip } from "fflate";
 import mark from "../../brand/mark.svg";
 import {
@@ -28,6 +35,7 @@ import { CanvasSettings } from "../editor/CanvasSettings";
 import { projectPurpose, type ProjectPurpose } from "../core/canvas-formats";
 import { NewProjectDialog } from "./NewProjectDialog";
 import { DeleteSlidesDialog } from "./DeleteSlidesDialog";
+import { SlideActionsMenu, type SlideMenuTarget } from "./SlideActionsMenu";
 import {
   duplicateUnit,
   editLinkedShots,
@@ -79,6 +87,7 @@ export function App() {
   const [notice, setNotice] = useState<Notice | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [slideMenu, setSlideMenu] = useState<SlideMenuTarget | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{
     projectId: string;
     shotId: string;
@@ -99,6 +108,18 @@ export function App() {
     project && deleteTarget?.projectId === project.id
       ? linkedShots(project, deleteTarget.shotId)
       : [];
+  const menuShots =
+    project && slideMenu?.projectId === project.id
+      ? linkedShots(project, slideMenu.shotId)
+      : [];
+  const closeSlideMenu = useCallback(
+    (restoreFocus = true) => {
+      if (restoreFocus && slideMenu?.opener.isConnected)
+        slideMenu.opener.focus({ preventScroll: true });
+      setSlideMenu(null);
+    },
+    [slideMenu],
+  );
   const visibleProjects = projects.filter(
     (item) => projectPurpose(item) === libraryPurpose,
   );
@@ -194,7 +215,8 @@ export function App() {
         busy ||
         exportOpen ||
         templatesOpen ||
-        deleteTarget
+        deleteTarget ||
+        slideMenu
       )
         return;
       const target = event.target as HTMLElement;
@@ -208,7 +230,7 @@ export function App() {
     }
     window.addEventListener("keydown", keyboard);
     return () => window.removeEventListener("keydown", keyboard);
-  }, [busy, exportOpen, templatesOpen, deleteTarget]);
+  }, [busy, exportOpen, templatesOpen, deleteTarget, slideMenu]);
 
   async function backToProjects() {
     if (busy) return;
@@ -408,11 +430,43 @@ export function App() {
       setBusy(null);
     }
   }
-  function duplicate() {
-    if (!shot || !project) return;
+  function showSlideMenu(
+    shotId: string,
+    opener: HTMLElement,
+    point?: { x: number; y: number },
+  ) {
+    if (!project || busy || deleteTarget || templatesOpen || exportOpen) return;
+    const bounds = opener.getBoundingClientRect();
+    setSlideMenu({
+      projectId: project.id,
+      shotId,
+      opener,
+      x: point?.x ?? bounds.left,
+      y: point?.y ?? bounds.bottom + 4,
+    });
+  }
+  function contextMenu(event: MouseEvent<HTMLElement>, shotId: string) {
+    event.preventDefault();
+    const opener =
+      event.currentTarget.querySelector<HTMLElement>(
+        '.shot-options, [tabindex="0"]',
+      ) ?? event.currentTarget;
+    showSlideMenu(shotId, opener, { x: event.clientX, y: event.clientY });
+  }
+  function menuKeyboard(
+    event: ReactKeyboardEvent<HTMLElement>,
+    shotId: string,
+  ) {
+    if (event.key !== "ContextMenu" && !(event.shiftKey && event.key === "F10"))
+      return;
+    event.preventDefault();
+    showSlideMenu(shotId, event.target as HTMLElement);
+  }
+  function duplicate(shotId: string) {
+    if (!project || busy) return;
     let id: string | undefined;
     state.edit((project) => {
-      id = duplicateUnit(project, shot.id);
+      id = duplicateUnit(project, shotId);
     });
     if (id) state.select(id);
   }
@@ -769,22 +823,49 @@ export function App() {
             </div>
             <div className="shot-list">
               {project.shots.map((item, index) => (
-                <button
-                  className={`shot-thumbnail ${item.id === selectedId ? "selected" : ""}`}
-                  aria-label={`Select screenshot ${index + 1}: ${item.title.replace(/\n/g, " ")}`}
-                  aria-current={item.id === selectedId ? "true" : undefined}
+                <div
+                  className={`shot-item ${item.id === selectedId ? "selected" : ""}`}
                   key={item.id}
-                  disabled={!!busy}
-                  onClick={() => state.select(item.id)}
+                  onContextMenu={(event) => contextMenu(event, item.id)}
+                  onKeyDown={(event) => menuKeyboard(event, item.id)}
                 >
-                  <Preview
-                    project={project}
-                    shot={item}
-                    image={images.get(item.assetId)}
-                    small
-                  />
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                </button>
+                  <button
+                    className="shot-thumbnail"
+                    aria-label={`Select screenshot ${index + 1}: ${item.title.replace(/\n/g, " ")}`}
+                    aria-current={item.id === selectedId ? "true" : undefined}
+                    disabled={!!busy}
+                    onClick={() => state.select(item.id)}
+                  >
+                    <Preview
+                      project={project}
+                      shot={item}
+                      image={images.get(item.assetId)}
+                      small
+                    />
+                  </button>
+                  <div className="shot-item-meta">
+                    <span aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <button
+                      className="shot-options icon-button"
+                      aria-label={`Actions for slide ${index + 1}`}
+                      aria-haspopup="menu"
+                      aria-expanded={slideMenu?.shotId === item.id}
+                      aria-controls={
+                        slideMenu?.shotId === item.id
+                          ? "slide-actions-menu"
+                          : undefined
+                      }
+                      disabled={!!busy}
+                      onClick={(event) =>
+                        showSlideMenu(item.id, event.currentTarget)
+                      }
+                    >
+                      <Icon name="more" />
+                    </button>
+                  </div>
+                </div>
               ))}
               <button
                 className="add-shot"
@@ -895,6 +976,8 @@ export function App() {
                         project={project}
                         shot={item}
                         image={images.get(item.assetId)}
+                        onContextMenu={(event) => contextMenu(event, item.id)}
+                        onKeyDown={(event) => menuKeyboard(event, item.id)}
                         onMove={
                           busy
                             ? undefined
@@ -963,7 +1046,7 @@ export function App() {
                         project.shots.length + (pair ? 2 : 1) >
                           shotCapacity(project)
                       }
-                      onClick={duplicate}
+                      onClick={() => duplicate(shot.id)}
                     >
                       <Icon name="copy" />
                       {pair ? "Duplicate panorama" : "Duplicate"}
@@ -1100,6 +1183,31 @@ export function App() {
           onClose={() => setNewProjectOpen(false)}
         />
       )}
+      {slideMenu &&
+        project &&
+        menuShots.length > 0 &&
+        !busy &&
+        !deleteTarget &&
+        !templatesOpen &&
+        !exportOpen && (
+          <SlideActionsMenu
+            target={slideMenu}
+            label={`${menuShots.length === 2 ? "Slides" : "Slide"} ${menuShots.map((item) => String(project.shots.indexOf(item) + 1).padStart(2, "0")).join("–")}`}
+            panorama={menuShots.length === 2}
+            canDuplicate={
+              project.shots.length + menuShots.length <= shotCapacity(project)
+            }
+            capacity={shotCapacity(project)}
+            onClose={closeSlideMenu}
+            onDuplicate={() => duplicate(slideMenu.shotId)}
+            onDelete={() =>
+              setDeleteTarget({
+                projectId: project.id,
+                shotId: slideMenu.shotId,
+              })
+            }
+          />
+        )}
       {deleteTarget && project && deletingShots.length > 0 && (
         <DeleteSlidesDialog
           slides={deletingShots.map((item) => ({

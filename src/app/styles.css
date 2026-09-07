@@ -478,32 +478,91 @@ svg {
   flex-direction: column;
   gap: 18px;
 }
-.shot-thumbnail {
+.shot-item {
   position: relative;
   padding: 4px;
   width: 100%;
   border-radius: 4px;
   border: 2px solid transparent;
 }
+.shot-thumbnail {
+  display: block;
+  width: 100%;
+  padding: 0;
+}
 .shot-thumbnail > .artboard {
   pointer-events: none;
 }
-.shot-thumbnail > span {
-  display: block;
-  text-align: center;
+.shot-item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.shot-item-meta > span {
   font-size: 10px;
-  padding: 5px 0 0;
+  padding-left: 4px;
   font-weight: 700;
   color: var(--brand-muted);
 }
-.shot-thumbnail:hover {
+.shot-item:hover {
   border-color: #b6c1ad;
 }
-.shot-thumbnail.selected {
+.shot-item.selected {
   border-color: var(--brand-clay);
 }
-.shot-thumbnail.selected > span {
+.shot-item.selected .shot-item-meta > span {
   color: var(--brand-clay);
+}
+.shot-options:hover,
+.shot-options[aria-expanded="true"] {
+  background: #e1e5d7;
+}
+.slide-actions-menu {
+  position: fixed;
+  z-index: 100;
+  width: 240px;
+  max-width: calc(100% - 16px);
+  max-height: calc(100dvh - 16px);
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid var(--brand-border);
+  border-radius: 9px;
+  background: var(--brand-paper);
+  box-shadow: 0 8px 28px #202b2324;
+}
+.slide-menu-label {
+  padding: 6px 10px;
+  color: var(--brand-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+.slide-actions-menu > button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: left;
+  font-weight: 650;
+  outline-offset: -2px;
+}
+.slide-actions-menu > button:hover,
+.slide-actions-menu > button:focus-visible {
+  background: #e8eadd;
+}
+.slide-actions-menu > button[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.slide-menu-delete {
+  color: var(--brand-clay);
+}
+.slide-menu-hint {
+  padding: 0 10px 8px;
+  font-size: 11px;
+  color: var(--brand-muted);
 }
 .artboard {
   width: 100%;
@@ -1260,14 +1319,13 @@ svg {
     min-width: 0;
     align-items: center;
   }
-  .shot-thumbnail {
-    width: 59px;
+  .shot-item {
+    width: 68px;
     flex-shrink: 0;
     padding: 3px;
   }
-  .shot-thumbnail > span {
+  .shot-item-meta > span {
     font-size: 8px;
-    padding-top: 3px;
   }
   .add-shot {
     width: 75px;

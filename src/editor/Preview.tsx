@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type MouseEventHandler,
+  type KeyboardEventHandler,
+} from "react";
 import type { Project, Shot } from "../core/model";
 import { canonicalCanvas } from "../core/export-profiles";
 import { Artboard } from "../rendering/Artboard";
@@ -9,12 +15,16 @@ export function Preview({
   image,
   onMove,
   small = false,
+  onContextMenu,
+  onKeyDown,
 }: {
   project: Project;
   shot: Shot;
   image?: HTMLImageElement;
   onMove?: (x: number, y: number) => void;
   small?: boolean;
+  onContextMenu?: MouseEventHandler<HTMLDivElement>;
+  onKeyDown?: KeyboardEventHandler<HTMLDivElement>;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
@@ -33,6 +43,8 @@ export function Preview({
       className={`artboard ${small ? "artboard-small" : ""}`}
       style={{ aspectRatio: `1080 / ${canonicalCanvas(project).height}` }}
       role="img"
+      onContextMenu={onContextMenu}
+      onKeyDown={onKeyDown}
       aria-label={`${shot.title.replace(/\n/g, " ")} — ${shot.subtitle}`}
     >
       {width > 0 && image ? (
