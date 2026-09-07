@@ -17,7 +17,12 @@ import {
   LIMITS,
   PLACEMENT_LIMITS,
 } from "../core/model";
-import type { LoadedProject, Project } from "../core/model";
+import type {
+  CanvasElement,
+  LoadedProject,
+  Project,
+  TextElement,
+} from "../core/model";
 import { importImages, loadImage } from "../assets/import";
 import { listProjects, loadProject } from "../storage/repository";
 import { exportProject, importProject } from "../storage/backup";
@@ -26,7 +31,7 @@ import { download, filename } from "../platform/download";
 import { saveNow, useEditor } from "../editor/store";
 import { useImages } from "../editor/useImages";
 import { Preview } from "../editor/Preview";
-import { Inspector, deviceNames } from "../editor/Inspector";
+import { Inspector, deviceNames, type InspectorTab } from "../editor/Inspector";
 import { TemplateGallery } from "../editor/TemplateGallery";
 import {
   applyTemplate,
@@ -89,6 +94,59 @@ export function App() {
   const [notice, setNotice] = useState<Notice | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [inspectorTab, setInspectorTab] = useState<InspectorTab>("design");
+  const [selectedCanvasElement, setSelectedCanvasElement] =
+    useState<CanvasElement | null>(null);
+  function openInspector(tab: InspectorTab) {
+    setInspectorTab(tab);
+    requestAnimationFrame(() => {
+      const inspector = document.getElementById("slide-inspector");
+      inspector
+        ?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
+        ?.focus({ preventScroll: true });
+      if (window.matchMedia("(max-width: 800px)").matches)
+        inspector?.scrollIntoView({ block: "start" });
+    });
+  }
+  // Stable callbacks keep opening an inspector tab from interrupting a canvas drag.
+  const selectCanvasElement = useCallback(
+    (element: CanvasElement, ownerId: string) => {
+      setSelectedCanvasElement(element);
+      setInspectorTab(element === "device" ? "device" : "text");
+      const editor = useEditor.getState();
+      if (editor.selectedId !== ownerId) editor.select(ownerId);
+    },
+    [],
+  );
+  const moveCanvasText = useCallback(
+    (element: TextElement, x: number, y: number, ownerId: string) => {
+      const editor = useEditor.getState();
+      editor.edit((draft) => {
+        const target = draft.shots.find(
+          (candidate) => candidate.id === ownerId,
+        );
+        if (target) moveText(target, element, x, y);
+      });
+      if (editor.selectedId !== ownerId) editor.select(ownerId);
+    },
+    [],
+  );
+  const moveCanvasDevice = useCallback((x: number, y: number) => {
+    const editor = useEditor.getState();
+    if (!editor.selectedId) return;
+    editor.edit((draft) =>
+      editLinkedShots(draft, editor.selectedId!, (target) => {
+        target.phone.x = Math.max(
+          PLACEMENT_LIMITS.x.min,
+          Math.min(PLACEMENT_LIMITS.x.max, x),
+        );
+        target.phone.y = Math.max(
+          PLACEMENT_LIMITS.y.min,
+          Math.min(PLACEMENT_LIMITS.y.max, y),
+        );
+      }),
+    );
+  }, []);
   const [slideMenu, setSlideMenu] = useState<SlideMenuTarget | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{
     projectId: string;
@@ -147,6 +205,8 @@ export function App() {
     window.history.replaceState(null, "", url);
     setNotice(null);
     setReadyFile(null);
+    setInspectorTab("design");
+    setSelectedCanvasElement(null);
   }, []);
 
   useEffect(() => {
@@ -814,13 +874,99 @@ export function App() {
             void addImages(Array.from(event.dataTransfer.files));
           }}
         >
+          <div className="studio-toolbar" aria-label="Project tools">
+            <div className="toolbar-group">
+              <button
+                type="button"
+                className="toolbar-button"
+                disabled={!shot || !!busy || !images.get(shot.assetId)}
+                onClick={() => setTemplatesOpen(true)}
+              >
+                <Icon name="layout" size={18} /> Templates
+              </button>
+              <button
+                type="button"
+                className="toolbar-button"
+                disabled={!shot || !!busy}
+                onClick={() => shot && chooseImages(shot.id)}
+                title="Replace the image and keep your design"
+              >
+                <Icon name="image" size={18} /> Replace image
+              </button>
+              <button
+                type="button"
+                className="toolbar-button toolbar-duplicate"
+                disabled={
+                  !shot ||
+                  !!busy ||
+                  project.shots.length + (pair ? 2 : 1) > shotCapacity(project)
+                }
+                onClick={() => shot && duplicate(shot.id)}
+                aria-label={pair ? "Duplicate panorama" : "Duplicate slide"}
+              >
+                <Icon name="copy" size={18} /> Duplicate
+              </button>
+            </div>
+            <button
+              type="button"
+              className="canvas-format-button"
+              onClick={() => openInspector("canvas")}
+              disabled={!!busy || !shot}
+            >
+              <Icon name="canvas" size={16} />
+              <span>
+                {projectPurpose(project) === "stores"
+                  ? "App stores"
+                  : "Portfolio"}
+                <strong>
+                  {resolveExportProfile(project).width} ×{" "}
+                  {resolveExportProfile(project).height}
+                </strong>
+              </span>
+              <Icon name="down" size={13} />
+            </button>
+            <div
+              className="history-actions"
+              role="group"
+              aria-label="Edit history"
+            >
+              <button
+                className="icon-button"
+                aria-label="Undo"
+                ref={undoButton}
+                title="Undo (⌘/Ctrl Z)"
+                disabled={!state.past.length || !!busy}
+                onClick={state.undo}
+              >
+                <Icon name="undo" />
+              </button>
+              <button
+                className="icon-button"
+                aria-label="Redo"
+                title="Redo (⌘/Ctrl Shift Z)"
+                disabled={!state.future.length || !!busy}
+                onClick={state.redo}
+              >
+                <Icon name="redo" />
+              </button>
+            </div>
+            {shot && (
+              <button
+                type="button"
+                className="toolbar-button mobile-edit-link"
+                onClick={() => openInspector(inspectorTab)}
+              >
+                <Icon name="text" size={17} /> Edit slide
+              </button>
+            )}
+          </div>
           <aside
             className="filmstrip"
             aria-label="Screenshot series"
             tabIndex={0}
           >
             <div className="filmstrip-heading">
-              <h2>Series</h2>
+              <h2>Slides</h2>
               <span>
                 {project.shots.length}/{LIMITS.shots}
               </span>
@@ -882,68 +1028,16 @@ export function App() {
             </div>
           </aside>
           <section
+            id="composition-canvas"
             className="workspace"
             aria-label="Composition canvas"
             tabIndex={0}
           >
-            <div className="canvas-toolbar">
-              <div className="canvas-tools">
-                {shot && (
-                  <button
-                    type="button"
-                    className="button secondary templates-button"
-                    disabled={!!busy || !images.get(shot.assetId)}
-                    onClick={() => setTemplatesOpen(true)}
-                  >
-                    <Icon name="layout" size={16} />
-                    Templates
-                  </button>
-                )}
-                <span className="workspace-purpose">
-                  {projectPurpose(project) === "stores"
-                    ? "App stores"
-                    : "Portfolio"}
-                </span>
-                <span className="canvas-size">
-                  {resolveExportProfile(project).width >
-                  resolveExportProfile(project).height
-                    ? "Landscape"
-                    : resolveExportProfile(project).width ===
-                        resolveExportProfile(project).height
-                      ? "Square"
-                      : "Portrait"}{" "}
-                  <span>
-                    {resolveExportProfile(project).width} ×{" "}
-                    {resolveExportProfile(project).height}
-                  </span>
-                </span>
-              </div>
-              <div className="history-actions">
-                <button
-                  className="icon-button"
-                  aria-label="Undo"
-                  ref={undoButton}
-                  title="Undo (⌘/Ctrl Z)"
-                  disabled={!state.past.length || !!busy}
-                  onClick={state.undo}
-                >
-                  <Icon name="undo" />
-                </button>
-                <button
-                  className="icon-button"
-                  aria-label="Redo"
-                  title="Redo (⌘/Ctrl Shift Z)"
-                  disabled={!state.future.length || !!busy}
-                  onClick={state.redo}
-                >
-                  <Icon name="redo" />
-                </button>
-              </div>
-            </div>
             <div
               className="canvas-surround"
               style={
                 {
+                  "--preview-chrome": pair ? "390px" : "335px",
                   "--canvas-ratio":
                     ((pair ? 2 : 1) * resolveExportProfile(project).width) /
                     resolveExportProfile(project).height,
@@ -982,57 +1076,16 @@ export function App() {
                         image={images.get(item.assetId)}
                         onContextMenu={(event) => contextMenu(event, item.id)}
                         onKeyDown={(event) => menuKeyboard(event, item.id)}
-                        onTextMove={
-                          busy
-                            ? undefined
-                            : (element, x, y, ownerId) => {
-                                state.edit((draft) => {
-                                  const target = draft.shots.find(
-                                    (candidate) => candidate.id === ownerId,
-                                  );
-                                  if (target) moveText(target, element, x, y);
-                                });
-                                state.select(ownerId);
-                              }
-                        }
-                        onMove={
-                          busy
-                            ? undefined
-                            : (x, y) =>
-                                state.edit((project) => {
-                                  editLinkedShots(
-                                    project,
-                                    shot.id,
-                                    (target) => {
-                                      target.phone.x = Math.max(
-                                        PLACEMENT_LIMITS.x.min,
-                                        Math.min(PLACEMENT_LIMITS.x.max, x),
-                                      );
-                                      target.phone.y = Math.max(
-                                        PLACEMENT_LIMITS.y.min,
-                                        Math.min(PLACEMENT_LIMITS.y.max, y),
-                                      );
-                                    },
-                                  );
-                                })
-                        }
+                        onSelectElement={busy ? undefined : selectCanvasElement}
+                        onTextMove={busy ? undefined : moveCanvasText}
+                        onMove={busy ? undefined : moveCanvasDevice}
                       />
                     ))}
                   </div>
                   <p className="canvas-edit-help">
-                    Drag the device or text. Enter selects an object; arrow keys
-                    move it.
+                    Click an object to edit it. Drag to move. Enter selects ·
+                    Arrow keys nudge.
                   </p>
-                  <button
-                    type="button"
-                    className="button secondary replace-image-button"
-                    disabled={!!busy}
-                    title="Choose a new image. Keep your text, frame, colors and placement."
-                    onClick={() => chooseImages(shot.id)}
-                  >
-                    <Icon name="image" />
-                    {pair ? "Replace panorama image" : "Replace image"}
-                  </button>
                   {pair && (
                     <div
                       className="panorama-selection"
@@ -1161,6 +1214,17 @@ export function App() {
               disabled={!!busy}
               onReplace={() => chooseImages(shot.id)}
               onTemplates={() => setTemplatesOpen(true)}
+              tab={inspectorTab}
+              onTabChange={(tab) => {
+                state.endGroup();
+                setInspectorTab(tab);
+              }}
+              selectedElement={selectedCanvasElement}
+              onPreview={() => {
+                const workspace = document.getElementById("composition-canvas");
+                workspace?.scrollIntoView({ block: "start" });
+                workspace?.focus({ preventScroll: true });
+              }}
             />
           ) : (
             <aside className="inspector inspector-empty">

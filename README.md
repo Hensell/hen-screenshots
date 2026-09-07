@@ -111,6 +111,8 @@ The editor bundles a static Fraunces 600 headline face (optical size 48, generat
 
 ### Move text on the canvas
 
-Drag a headline or supporting text to position it independently of the device. In a panorama, text can also cross the slide boundary while retaining its own reset control. The **Words** panel has **Reset headline position** and **Reset supporting text position** buttons; each returns only that text to its template position. Undo and redo include text movement and resets.
+The editor keeps templates, image replacement, duplication, canvas size, and undo/redo in a top toolbar. The inspector has four tabs: **Design** for templates and colors, **Text** for captions and typography, **Device** for frames and placement, and **Canvas** for export sizes and orientation. Selecting an object on the canvas opens its tools. Canvas and frame orientation remain together, with their slide/series scope labeled. On smaller screens, **Edit slide** and **Preview** move between the canvas and tools.
+
+Drag a headline or supporting text to position it independently of the device. In a panorama, text can also cross the slide boundary while retaining its own reset control. The **Text** tab has a **Reset position** button below each text field; each returns only that text to its template position. Undo and redo include text movement and resets.
 
 For keyboard editing, focus the canvas, press **Enter** to choose an object, and move it with the arrow keys (**Shift** moves it farther). Positions persist locally, in project backups, and in PNG exports. Applying a template or changing the canvas format restores the template's text placement; replacing an image preserves it. Version 5 project files store text offsets and automatically upgrade earlier documents without changing their saved composition.

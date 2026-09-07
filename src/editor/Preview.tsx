@@ -5,7 +5,7 @@ import {
   type MouseEventHandler,
   type KeyboardEventHandler,
 } from "react";
-import type { Project, Shot, TextElement } from "../core/model";
+import type { Project, Shot, TextElement, CanvasElement } from "../core/model";
 import { canonicalCanvas } from "../core/export-profiles";
 import { Artboard } from "../rendering/Artboard";
 
@@ -15,6 +15,7 @@ export function Preview({
   image,
   onMove,
   onTextMove,
+  onSelectElement,
   small = false,
   onContextMenu,
   onKeyDown,
@@ -23,6 +24,7 @@ export function Preview({
   shot: Shot;
   image?: HTMLImageElement;
   onMove?: (x: number, y: number) => void;
+  onSelectElement?: (element: CanvasElement, shotId: string) => void;
   onTextMove?: (
     element: TextElement,
     x: number,
@@ -62,6 +64,7 @@ export function Preview({
           width={width}
           onMove={onMove}
           onTextMove={onTextMove}
+          onSelectElement={onSelectElement}
         />
       ) : (
         <div className="preview-loading">

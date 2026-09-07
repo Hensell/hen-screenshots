@@ -14,6 +14,7 @@ export interface ArtboardProps {
   image: HTMLImageElement;
   width: number;
   onMove?: (x: number, y: number) => void;
+  onSelectElement?: (element: CanvasElement, shotId: string) => void;
   onTextMove?: (
     element: TextElement,
     x: number,
@@ -29,6 +30,7 @@ export function Artboard({
   width,
   onMove,
   onTextMove,
+  onSelectElement,
 }: ArtboardProps) {
   const container = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +40,13 @@ export function Artboard({
   const selectedShotId = useRef(shot.id);
   const [selectedLabel, setSelectedLabel] = useState("Device");
   const editable = Boolean(onMove || onTextMove);
-  function selectElement(element: CanvasElement, ownerId = shot.id) {
+  const selectionCallback = useRef(onSelectElement);
+  selectionCallback.current = onSelectElement;
+  function selectElement(
+    element: CanvasElement,
+    ownerId = shot.id,
+    notify = true,
+  ) {
     selectedElement.current = element;
     selectedShotId.current = ownerId;
     setSelectedLabel(
@@ -50,6 +58,7 @@ export function Artboard({
     );
     if (layerRef.current)
       selectSceneElement(layerRef.current, element, ownerId);
+    if (notify) selectionCallback.current?.(element, ownerId);
   }
   const dimensions = previewDimensions(width, canonicalCanvas(project));
 
@@ -82,7 +91,7 @@ export function Artboard({
             .find((owner) => owner.id === selectedShotId.current)
             ?.[selectedElement.current].trim()
         )
-          selectElement("device");
+          selectElement("device", shot.id, false);
         if (container.current.parentElement === document.activeElement)
           selectSceneElement(
             layer,
@@ -117,7 +126,12 @@ export function Artboard({
       tabIndex={editable ? 0 : undefined}
       onFocus={
         editable
-          ? () => selectElement(selectedElement.current, selectedShotId.current)
+          ? () =>
+              selectElement(
+                selectedElement.current,
+                selectedShotId.current,
+                false,
+              )
           : undefined
       }
       onBlur={

@@ -611,26 +611,6 @@ svg {
   position: sticky;
   top: 0;
 }
-.canvas-toolbar {
-  min-height: 64px;
-  padding: 10px 26px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-bottom: 1px solid #d4dace;
-  background: #eaece5;
-}
-.canvas-size {
-  font-weight: 700;
-  font-size: 11px;
-}
-.canvas-size span {
-  color: var(--brand-muted);
-  margin-left: 10px;
-  font-size: 10px;
-  font-weight: 500;
-}
 .history-actions {
   display: flex;
 }
@@ -664,10 +644,6 @@ svg {
   box-shadow:
     0 12px 35px #27362314,
     0 1px 3px #27362320;
-}
-.replace-image-button {
-  margin-top: 14px;
-  max-width: 100%;
 }
 .shot-actions {
   display: flex;
@@ -1262,17 +1238,6 @@ svg {
   .canvas-surround {
     padding-inline: 24px;
   }
-  .canvas-toolbar {
-    padding-inline: 16px;
-  }
-  .canvas-size {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .canvas-size span {
-    margin-left: 0;
-  }
   .inspector-empty {
     padding-inline: 21px;
   }
@@ -1440,15 +1405,6 @@ svg {
     width: 100%;
     position: static;
     min-height: 0;
-  }
-  .canvas-toolbar {
-    min-height: 56px;
-    padding: 7px 20px;
-  }
-  .canvas-size {
-    flex-direction: row;
-    gap: 12px;
-    align-items: center;
   }
   .history-actions .icon-button {
     min-height: 44px;
@@ -1635,18 +1591,6 @@ svg {
     transition: none !important;
   }
 }
-
-/* Template selection shares the actual renderer with the finished export. */
-.canvas-tools {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  min-width: 0;
-}
-.templates-button {
-  padding: 8px 12px;
-  white-space: nowrap;
-}
 .template-property {
   display: flex;
   align-items: center;
@@ -1810,9 +1754,6 @@ svg {
   padding-inline: 17px;
 }
 @media (max-width: 1100px) {
-  .canvas-tools .canvas-size {
-    display: none;
-  }
 }
 @media (max-width: 760px) {
   .template-dialog {
@@ -2448,14 +2389,6 @@ svg {
   border-radius: 4px;
   padding: 2px 5px;
 }
-.workspace-purpose {
-  font-size: 10px;
-  font-weight: 750;
-  color: var(--brand-muted);
-  padding-right: 10px;
-  border-right: 1px solid #c9d0c1;
-  white-space: nowrap;
-}
 .inspector-empty:has(.canvas-settings) {
   padding-top: 0;
 }
@@ -2526,9 +2459,6 @@ svg {
   .purpose-options p {
     margin-bottom: 8px;
   }
-  .workspace-purpose {
-    display: none;
-  }
   .panorama-selection {
     gap: 6px;
   }
@@ -2563,12 +2493,10 @@ svg {
   .workspace {
     position: relative;
   }
-  .canvas-toolbar,
   .canvas-surround,
   .workspace-footer {
     flex-shrink: 0;
   }
-  .canvas-toolbar,
   .inspector > .panel-heading {
     position: sticky;
     top: 0;
@@ -2600,18 +2528,6 @@ svg {
   .template-dialog .template-art {
     min-height: 230px;
   }
-}
-
-.text-position-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0;
-  margin: -4px 0 5px;
-}
-.text-position-actions .text-button {
-  min-height: 44px;
-  text-align: left;
 }
 .canvas-edit-help {
   max-width: 520px;
