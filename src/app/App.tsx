@@ -738,7 +738,11 @@ export function App() {
             void addImages(Array.from(event.dataTransfer.files));
           }}
         >
-          <aside className="filmstrip" aria-label="Screenshot series">
+          <aside
+            className="filmstrip"
+            aria-label="Screenshot series"
+            tabIndex={0}
+          >
             <div className="filmstrip-heading">
               <h2>Series</h2>
               <span>
@@ -774,7 +778,11 @@ export function App() {
               </button>
             </div>
           </aside>
-          <section className="workspace" aria-label="Composition canvas">
+          <section
+            className="workspace"
+            aria-label="Composition canvas"
+            tabIndex={0}
+          >
             <div className="canvas-toolbar">
               <div className="canvas-tools">
                 {shot && (

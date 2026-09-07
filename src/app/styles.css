@@ -2416,3 +2416,62 @@ svg {
     gap: 6px;
   }
 }
+
+/* Keep editor columns inside the available viewport, including any notice rows. */
+@media (min-width: 591px) {
+  #root:has(> .studio) {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+  }
+  #root:has(> .studio) > .topbar,
+  #root:has(> .studio) > .notice,
+  #root:has(> .studio) > .save-error {
+    flex-shrink: 0;
+  }
+  .studio {
+    flex: 1;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .filmstrip,
+  .inspector,
+  .workspace {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  .workspace {
+    position: relative;
+  }
+  .canvas-toolbar,
+  .canvas-surround,
+  .workspace-footer {
+    flex-shrink: 0;
+  }
+  .canvas-toolbar,
+  .inspector > .panel-heading {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .inspector > .panel-heading {
+    background: var(--brand-paper);
+  }
+  .studio > [tabindex]:focus-visible {
+    outline-offset: -3px;
+  }
+}
+@media (min-width: 591px) and (max-width: 800px) {
+  .studio {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .filmstrip {
+    overflow-y: visible;
+  }
+  .shot-list {
+    overscroll-behavior-x: contain;
+  }
+}

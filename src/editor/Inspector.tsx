@@ -108,7 +108,11 @@ export function Inspector({
     );
   }
   return (
-    <aside className="inspector" aria-label="Screenshot properties">
+    <aside
+      className="inspector"
+      aria-label="Screenshot properties"
+      tabIndex={0}
+    >
       <div className="panel-heading">
         <h2>Make it yours</h2>
         <span>
