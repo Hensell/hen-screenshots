@@ -1,3 +1,4 @@
+import { panoramaStart } from "./panorama-families";
 import {
   resolveStyle,
   legacyTemplateIds,
@@ -19,6 +20,7 @@ import {
   linkedShots,
   panoramaLayout,
   panoramaStyle,
+  panoramaStyles,
 } from "./panorama";
 
 interface TextBox {
@@ -41,6 +43,8 @@ export interface Template {
   note: string;
   category: Exclude<TemplateCategory, "All">;
   surfaceLabel?: string;
+  titleFont?: "Fraunces";
+  titleWeight?: string;
   style: Pick<
     Style,
     | "template"
@@ -62,6 +66,84 @@ export interface Template {
 
 /** IDs and geometry are part of document v2. Add new IDs for incompatible designs. */
 export const templates: readonly Template[] = [
+  {
+    id: "daybreak",
+    name: "Daybreak",
+    category: "Bold",
+    surfaceLabel: "Color waves · 2 slides",
+    description: "Warm light. Rolling color. One connected story.",
+    note: "A tilted device bridges two slides over continuous, editable color waves.",
+    style: panoramaStyles.daybreak,
+    phone: { x: 700, y: 150, width: 760, rotation: 16 },
+    title: { x: 80, y: 125, width: 520, height: 480 },
+    subtitle: { x: 84, y: 634, width: 490, height: 125 },
+    lineHeight: 1.04,
+  },
+  {
+    id: "tidal",
+    name: "Tidal",
+    category: "Editorial",
+    surfaceLabel: "Flowing lines · 2 slides",
+    description: "Deep blue, sculpted waves and expressive serif type.",
+    note: "An editorial panorama with one shared device and flowing lines that meet at the seam.",
+    style: panoramaStyles.tidal,
+    titleFont: "Fraunces",
+    titleWeight: "600",
+    phone: { x: 700, y: 150, width: 760, rotation: -10 },
+    title: { x: 80, y: 125, width: 520, height: 480 },
+    subtitle: { x: 84, y: 634, width: 490, height: 125 },
+    lineHeight: 1.06,
+  },
+  {
+    id: "bloom",
+    name: "Bloom",
+    category: "Editorial",
+    surfaceLabel: "Botanical",
+    description: "Leaf silhouettes, soft paper and a little room to grow.",
+    note: "An open arch frames your screenshot; a serif headline brings a quieter, editorial rhythm.",
+    style: {
+      template: "bloom",
+      background: "#F2F0E3",
+      backgroundEnd: "#D8E2C7",
+      textColor: "#294638",
+      accentColor: "#708763",
+      backgroundMode: "solid",
+      texture: "none",
+      accentTitle: false,
+      align: "center",
+      titleSize: 112,
+    },
+    titleFont: "Fraunces",
+    titleWeight: "600",
+    phone: { x: 250, y: 653, width: 580, rotation: 0 },
+    title: { x: 80, y: 115, width: 920, height: 300 },
+    subtitle: { x: 100, y: 460, width: 880, height: 100 },
+    lineHeight: 1.04,
+  },
+  {
+    id: "punch",
+    name: "Punch",
+    category: "Bold",
+    surfaceLabel: "Coral poster",
+    description: "Big words. A bold arch. Your app takes the stage.",
+    note: "A coral poster with oversized typography and a tilted device on a contrasting stage.",
+    style: {
+      template: "punch",
+      background: "#C34836",
+      backgroundEnd: "#F6AE88",
+      textColor: "#FFF6E8",
+      accentColor: "#843628",
+      backgroundMode: "solid",
+      texture: "none",
+      accentTitle: false,
+      align: "left",
+      titleSize: 132,
+    },
+    phone: { x: 250, y: 653, width: 580, rotation: -6 },
+    title: { x: 80, y: 115, width: 920, height: 300 },
+    subtitle: { x: 84, y: 460, width: 900, height: 100 },
+    lineHeight: 1.01,
+  },
   {
     id: "classic",
     name: "Classic",
@@ -284,7 +366,7 @@ export function filterTemplates(
 
 export function getTemplate(id: TemplateId): Template {
   const template = templates.find(
-    (item) => item.id === (id === "panorama-end" ? "panorama" : id),
+    (item) => item.id === (panoramaStart(id) ?? id),
   );
   if (!template) throw new Error("This template is not supported.");
   return template;
@@ -395,7 +477,11 @@ function collectionLayout(project: Project, style: Style, template: Template) {
   const { height: h } = canonicalCanvas(project);
   const wide = h <= 1080;
   let title: Rect, subtitle: Rect, area: Rect;
-  if (style.template === "gallery") {
+  if ((style.template === "bloom" || style.template === "punch") && !wide) {
+    title = { x: 80, y: h * 0.06, width: 920, height: h * 0.155 };
+    subtitle = { x: 84, y: h * 0.24, width: 912, height: h * 0.06 };
+    area = { x: 70, y: h * 0.34, width: 940, height: h * 0.62 };
+  } else if (style.template === "gallery") {
     area = { x: 76, y: h * 0.065, width: 928, height: h * 0.63 };
     title = {
       x: 80,
@@ -425,8 +511,16 @@ function collectionLayout(project: Project, style: Style, template: Template) {
     style.frame,
     style.deviceOrientation,
   );
+  const rotation = style.template === "punch" ? -6 : 0;
+  const radians = (Math.abs(rotation) * Math.PI) / 180;
+  const boundW =
+    Math.cos(radians) * unit.width + Math.sin(radians) * unit.height;
+  const boundH =
+    Math.sin(radians) * unit.width + Math.cos(radians) * unit.height;
   const width = Math.floor(
-    Math.min(area.width, (area.height / unit.height) * 1000),
+    rotation === 0
+      ? Math.min(area.width, (area.height / unit.height) * 1000)
+      : 1000 * Math.min(area.width / boundW, area.height / boundH),
   );
   const height = deviceGeometry(
     style.device,
@@ -442,7 +536,7 @@ function collectionLayout(project: Project, style: Style, template: Template) {
       x: Math.round(area.x + (area.width - width) / 2),
       y: Math.round(area.y + (area.height - height) / 2),
       width,
-      rotation: 0,
+      rotation,
     },
     fontScale: wide ? 0.62 : 0.96,
     subtitleSize: wide ? 23 : 32,
@@ -506,9 +600,10 @@ export function applyTemplate(
   keepColors = false,
 ): void {
   if (!project.shots.some((shot) => shot.id === shotId)) return;
-  if (isPanoramaTemplate(id)) {
+  const family = panoramaStart(id);
+  if (family) {
     if (all) throw new Error("Apply Panorama to one screenshot at a time.");
-    applyPanorama(project, shotId, keepColors);
+    applyPanorama(project, shotId, keepColors, family);
     return;
   }
   const targets = new Set(linkedShots(project, shotId).map((shot) => shot.id));

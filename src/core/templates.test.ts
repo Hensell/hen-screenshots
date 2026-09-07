@@ -1,3 +1,4 @@
+import { isPanoramaTemplate } from "./panorama-families";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("../storage/repository", () => ({ saveProject: vi.fn(async () => 1) }));
 import { createProject, createShot, resolveStyle } from "./model";
@@ -35,7 +36,7 @@ function fixture() {
 }
 beforeEach(() => useEditor.getState().close());
 describe("template application", () => {
-  it.each(templates.filter((item) => item.id !== "panorama"))(
+  it.each(templates.filter((item) => !isPanoramaTemplate(item.id)))(
     "keeps $name series previews identical to application, including per-shot colors and frames",
     (template) => {
       for (const keepColors of [true, false]) {

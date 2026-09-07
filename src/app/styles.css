@@ -1709,7 +1709,7 @@ svg {
 }
 .template-gallery {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
   gap: 18px;
   padding: 8px 30px 24px;
@@ -2179,12 +2179,13 @@ svg {
   height: 44px;
 }
 .template-dialog .template-art {
+  min-height: 280px;
   display: flex;
   justify-content: center;
   gap: 6px;
 }
 .template-preview-slot {
-  width: min(100%, calc(230px * var(--template-ratio)));
+  width: min(100%, calc(260px * var(--template-ratio)));
   min-width: 0;
 }
 .template-dialog .template-art .artboard {
@@ -2194,7 +2195,10 @@ svg {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .template-art-series .template-preview-slot {
-  width: min(calc((100% - 12px) / 3), calc(230px * var(--template-ratio)));
+  width: min(
+    calc((100% - (var(--template-count) - 1) * 6px) / var(--template-count)),
+    calc(260px * var(--template-ratio))
+  );
 }
 .template-category {
   font-size: 9px;
@@ -2500,7 +2504,7 @@ svg {
   gap: 0;
 }
 .template-art-panorama .template-preview-slot {
-  width: min(50%, calc(230px * var(--template-ratio)));
+  width: min(50%, calc(260px * var(--template-ratio)));
 }
 .template-art-panorama .artboard {
   border-radius: 0;
@@ -2586,5 +2590,14 @@ svg {
   }
   .shot-list {
     overscroll-behavior-x: contain;
+  }
+}
+
+@media (max-width: 760px) {
+  .template-gallery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .template-dialog .template-art {
+    min-height: 230px;
   }
 }

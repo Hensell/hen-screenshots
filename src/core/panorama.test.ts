@@ -1,3 +1,4 @@
+import { panoramaFamilies, type PanoramaId } from "./panorama-families";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { unzipSync } from "fflate";
 import {
@@ -56,14 +57,18 @@ function projectWithShots(
   return project;
 }
 
-function assertPair(project: Project, id: string): [Shot, Shot] {
+function assertPair(
+  project: Project,
+  id: string,
+  family: PanoramaId = "panorama",
+): [Shot, Shot] {
   const pair = panoramaPair(project, id);
   expect(pair).not.toBeNull();
   const [left, right] = pair!;
   const leftStyle = resolveStyle(project, left);
   const rightStyle = resolveStyle(project, right);
-  expect(leftStyle.template).toBe("panorama");
-  expect(rightStyle.template).toBe("panorama-end");
+  expect(leftStyle.template).toBe(family);
+  expect(rightStyle.template).toBe(panoramaFamilies[family]);
   expect({ ...leftStyle, template: "same" }).toEqual({
     ...rightStyle,
     template: "same",
@@ -240,75 +245,82 @@ describe("panorama document invariants", () => {
 });
 
 describe("panorama spread geometry", () => {
-  it("keeps every device within the 2160-wide scene across profiles and custom extremes", () => {
-    const scenarios: {
-      profile: ExportProfileId;
-      custom?: { width: number; height: number };
-    }[] = [
-      ...exportProfiles.map((profile) => ({ profile: profile.id })),
-      ...[
-        { width: 4096, height: 1024 },
-        { width: 1024, height: 4096 },
-        { width: 256, height: 256 },
-        { width: 4096, height: 4096 },
-        { width: 1537, height: 1103 },
-      ].map((custom) => ({ profile: "portfolio-custom" as const, custom })),
-    ];
-    for (const scenario of scenarios)
-      for (const device of [
-        "android",
-        "ios",
-        "ipad",
-        "android-tablet",
-        "monitor",
-        "laptop",
-        "card",
-      ] as DeviceFamily[])
-        for (const deviceOrientation of ["portrait", "landscape"] as const)
-          for (const frame of [true, false]) {
-            const project = projectWithShots(1, scenario.profile);
-            if (scenario.custom) project.customSize = scenario.custom;
-            Object.assign(project.style, { device, deviceOrientation, frame });
-            applyPanorama(project, project.shots[0].id);
-            const pair = assertPair(project, project.shots[0].id);
-            const { height } = canonicalCanvas(project);
-            const phone = pair[0].phone;
-            const geometry = deviceGeometry(
-              device,
-              phone.width,
-              frame,
-              deviceOrientation,
-            );
-            const radians = (Math.abs(phone.rotation) * Math.PI) / 180;
-            const boundWidth =
-              Math.cos(radians) * geometry.width +
-              Math.sin(radians) * geometry.height;
-            const boundHeight =
-              Math.sin(radians) * geometry.width +
-              Math.cos(radians) * geometry.height;
-            const centerX = phone.x + geometry.width / 2;
-            const centerY = phone.y + geometry.height / 2;
-            expect(centerX - boundWidth / 2).toBeGreaterThanOrEqual(0);
-            expect(centerX + boundWidth / 2).toBeLessThanOrEqual(2160);
-            expect(centerY - boundHeight / 2).toBeGreaterThanOrEqual(0);
-            expect(centerY + boundHeight / 2).toBeLessThanOrEqual(height);
-            // The same device crosses the join, so both output slides contain it.
-            expect(centerX - boundWidth / 2).toBeLessThan(1080);
-            expect(centerX + boundWidth / 2).toBeGreaterThan(1080);
-            for (const shot of pair) {
-              const layout = templateLayout(
-                project,
-                resolveStyle(project, shot),
+  it.each(["panorama", "daybreak", "tidal"] as const)(
+    "keeps %s devices within the spread across profiles and custom extremes",
+    (family) => {
+      const scenarios: {
+        profile: ExportProfileId;
+        custom?: { width: number; height: number };
+      }[] = [
+        ...exportProfiles.map((profile) => ({ profile: profile.id })),
+        ...[
+          { width: 4096, height: 1024 },
+          { width: 1024, height: 4096 },
+          { width: 256, height: 256 },
+          { width: 4096, height: 4096 },
+          { width: 1537, height: 1103 },
+        ].map((custom) => ({ profile: "portfolio-custom" as const, custom })),
+      ];
+      for (const scenario of scenarios)
+        for (const device of [
+          "android",
+          "ios",
+          "ipad",
+          "android-tablet",
+          "monitor",
+          "laptop",
+          "card",
+        ] as DeviceFamily[])
+          for (const deviceOrientation of ["portrait", "landscape"] as const)
+            for (const frame of [true, false]) {
+              const project = projectWithShots(1, scenario.profile);
+              if (scenario.custom) project.customSize = scenario.custom;
+              Object.assign(project.style, {
+                device,
+                deviceOrientation,
+                frame,
+              });
+              applyPanorama(project, project.shots[0].id, false, family);
+              const pair = assertPair(project, project.shots[0].id, family);
+              const { height } = canonicalCanvas(project);
+              const phone = pair[0].phone;
+              const geometry = deviceGeometry(
+                device,
+                phone.width,
+                frame,
+                deviceOrientation,
               );
-              for (const text of [layout.title, layout.subtitle]) {
-                expect(text.x).toBeGreaterThanOrEqual(0);
-                expect(text.x + text.width).toBeLessThanOrEqual(1080);
-                expect(text.y).toBeGreaterThanOrEqual(0);
-                expect(text.y + text.height).toBeLessThanOrEqual(height);
+              const radians = (Math.abs(phone.rotation) * Math.PI) / 180;
+              const boundWidth =
+                Math.cos(radians) * geometry.width +
+                Math.sin(radians) * geometry.height;
+              const boundHeight =
+                Math.sin(radians) * geometry.width +
+                Math.cos(radians) * geometry.height;
+              const centerX = phone.x + geometry.width / 2;
+              const centerY = phone.y + geometry.height / 2;
+              expect(centerX - boundWidth / 2).toBeGreaterThanOrEqual(0);
+              expect(centerX + boundWidth / 2).toBeLessThanOrEqual(2160);
+              expect(centerY - boundHeight / 2).toBeGreaterThanOrEqual(0);
+              expect(centerY + boundHeight / 2).toBeLessThanOrEqual(height);
+              // The same device crosses the join, so both output slides contain it.
+              expect(centerX - boundWidth / 2).toBeLessThan(1080);
+              expect(centerX + boundWidth / 2).toBeGreaterThan(1080);
+              for (const shot of pair) {
+                const layout = templateLayout(
+                  project,
+                  resolveStyle(project, shot),
+                );
+                for (const text of [layout.title, layout.subtitle]) {
+                  expect(text.x).toBeGreaterThanOrEqual(0);
+                  expect(text.x + text.width).toBeLessThanOrEqual(1080);
+                  expect(text.y).toBeGreaterThanOrEqual(0);
+                  expect(text.y + text.height).toBeLessThanOrEqual(height);
+                }
               }
             }
-          }
-  });
+    },
+  );
 });
 
 describe("panorama units in a series", () => {
@@ -501,57 +513,128 @@ describe("panorama template changes and undo", () => {
 });
 
 describe("panorama backup", () => {
-  it("round-trips both roles, independent text and shared original image bytes", async () => {
-    const imageBytes = Uint8Array.from(
-      atob(
-        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=",
-      ),
-      (character) => character.charCodeAt(0),
-    );
-    class FakeImage {
-      naturalWidth = 1;
-      naturalHeight = 1;
-      decoding = "";
-      onload: ((event: Event) => void) | null = null;
-      onerror: ((event: Event) => void) | null = null;
-      set src(_value: string) {
-        queueMicrotask(() => this.onload?.(new Event("load")));
+  it.each(["panorama", "daybreak", "tidal"] as const)(
+    "round-trips %s roles, text and original image bytes",
+    async (family) => {
+      const imageBytes = Uint8Array.from(
+        atob(
+          "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=",
+        ),
+        (character) => character.charCodeAt(0),
+      );
+      class FakeImage {
+        naturalWidth = 1;
+        naturalHeight = 1;
+        decoding = "";
+        onload: ((event: Event) => void) | null = null;
+        onerror: ((event: Event) => void) | null = null;
+        set src(_value: string) {
+          queueMicrotask(() => this.onload?.(new Event("load")));
+        }
       }
-    }
-    vi.stubGlobal("Image", FakeImage);
-    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:test");
-    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => undefined);
-    const project = projectWithShots(1, "portfolio-card-portrait");
-    applyPanorama(project, project.shots[0].id);
-    project.shots[0].title = "One continuous scene";
-    project.shots[1].title = "Two individual slides";
-    const asset: Asset = {
-      id: "asset-0",
-      name: "screen.png",
-      mime: "image/png",
-      width: 1,
-      height: 1,
-      blob: new Blob([imageBytes], { type: "image/png" }),
-    };
-    const backup = await exportProject(project, [asset]);
-    const files = unzipSync(new Uint8Array(await backup.arrayBuffer()));
-    expect(Object.keys(files)).toEqual(["project.json", "assets/asset-0.png"]);
-    const restored = await importProject(
-      new File([backup], "panorama.henscreenshots"),
-    );
-    const pair = assertPair(restored.project, restored.project.shots[1].id);
-    expect(restored.project.exportProfile).toBe(project.exportProfile);
-    expect(restored.project.id).not.toBe(project.id);
-    expect(restored.assets).toHaveLength(1);
-    expect(new Uint8Array(await restored.assets[0].blob.arrayBuffer())).toEqual(
-      imageBytes,
-    );
-    for (let index = 0; index < 2; index++) {
-      expect(pair[index].id).not.toBe(project.shots[index].id);
-      expect(pair[index].assetId).toBe(restored.assets[0].id);
-      expect(pair[index].style).toEqual(project.shots[index].style);
-      expect(pair[index].phone).toEqual(project.shots[index].phone);
-      expect(pair[index].title).toBe(project.shots[index].title);
-    }
-  });
+      vi.stubGlobal("Image", FakeImage);
+      vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:test");
+      vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => undefined);
+      const project = projectWithShots(1, "portfolio-card-portrait");
+      applyPanorama(project, project.shots[0].id, false, family);
+      project.shots[0].title = "One continuous scene";
+      project.shots[1].title = "Two individual slides";
+      const asset: Asset = {
+        id: "asset-0",
+        name: "screen.png",
+        mime: "image/png",
+        width: 1,
+        height: 1,
+        blob: new Blob([imageBytes], { type: "image/png" }),
+      };
+      const backup = await exportProject(project, [asset]);
+      const files = unzipSync(new Uint8Array(await backup.arrayBuffer()));
+      expect(Object.keys(files)).toEqual([
+        "project.json",
+        "assets/asset-0.png",
+      ]);
+      const restored = await importProject(
+        new File([backup], "panorama.henscreenshots"),
+      );
+      const pair = assertPair(
+        restored.project,
+        restored.project.shots[1].id,
+        family,
+      );
+      expect(restored.project.exportProfile).toBe(project.exportProfile);
+      expect(restored.project.id).not.toBe(project.id);
+      expect(restored.assets).toHaveLength(1);
+      expect(
+        new Uint8Array(await restored.assets[0].blob.arrayBuffer()),
+      ).toEqual(imageBytes);
+      for (let index = 0; index < 2; index++) {
+        expect(pair[index].id).not.toBe(project.shots[index].id);
+        expect(pair[index].assetId).toBe(restored.assets[0].id);
+        expect(pair[index].style).toEqual(project.shots[index].style);
+        expect(pair[index].phone).toEqual(project.shots[index].phone);
+        expect(pair[index].title).toBe(project.shots[index].title);
+      }
+    },
+  );
 });
+
+describe.each(["daybreak", "tidal"] as const)(
+  "%s panorama families",
+  (family) => {
+    it.each([false, true])(
+      "keeps previews identical to application and preserves both captions (keep colors: %s)",
+      (keepColors) => {
+        const project = projectWithShots(2);
+        applyPanorama(project, project.shots[0].id);
+        const original = structuredClone(project);
+        const pair = panoramaPair(project, project.shots[0].id)!;
+        const previews = panoramaPreview(project, pair[1], keepColors, family);
+        expect(project).toEqual(original);
+        applyTemplate(project, pair[1].id, family, false, keepColors);
+        expect(project.shots).toEqual([...previews, original.shots[2]]);
+        assertPair(project, pair[1].id, family);
+        if (keepColors)
+          for (const key of [
+            "background",
+            "backgroundEnd",
+            "accentColor",
+            "textColor",
+          ] as const)
+            expect(resolveStyle(project, project.shots[0])[key]).toBe(
+              resolveStyle(original, original.shots[0])[key],
+            );
+        expect(
+          project.shots.map((s) => [s.id, s.title, s.subtitle, s.assetId]),
+        ).toEqual(
+          original.shots.map((s) => [s.id, s.title, s.subtitle, s.assetId]),
+        );
+      },
+    );
+    it("duplicates, moves, removes and separates the complete pair", () => {
+      const project = projectWithShots(2);
+      applyTemplate(project, project.shots[0].id, family);
+      const pair = assertPair(project, project.shots[1].id, family);
+      const copy = duplicateUnit(project, pair[1].id)!;
+      assertPair(project, copy, family);
+      moveUnit(project, pair[1].id, 1);
+      expect(project.shots[0].id).toBe(copy);
+      removeUnit(project, pair[1].id);
+      expect(project.shots).toHaveLength(3);
+      applyTemplate(project, copy, "bloom");
+      expect(panoramaPair(project, copy)).toBeNull();
+      expect(
+        project.shots.slice(0, 2).map((s) => resolveStyle(project, s).template),
+      ).toEqual(["bloom", "bloom"]);
+      validateProject(project);
+    });
+    it("rejects a right half from a different family and an orphaned right half", () => {
+      const project = projectWithShots(1);
+      applyTemplate(project, project.shots[0].id, family);
+      project.shots[1].style.template =
+        family === "daybreak" ? "tidal-end" : "daybreak-end";
+      expect(() => validateProject(project)).toThrow();
+      project.shots.shift();
+      expect(() => validateProject(project)).toThrow();
+    });
+  },
+);

@@ -1,4 +1,10 @@
 import {
+  isPanoramaTemplate,
+  isPanoramaEnd,
+  panoramaStart,
+  panoramaFamilies,
+} from "./panorama-families";
+import {
   DEFAULT_CUSTOM_SIZE,
   DEFAULT_EXPORT_PROFILE,
   exportProfiles,
@@ -37,6 +43,12 @@ export const templateIds = [
   "gallery",
   "panorama",
   "panorama-end",
+  "daybreak",
+  "daybreak-end",
+  "tidal",
+  "tidal-end",
+  "bloom",
+  "punch",
 ] as const;
 export type TemplateId = (typeof templateIds)[number];
 export interface Style {
@@ -433,21 +445,18 @@ export function validateProject(
   }
   if (version === 4) {
     const project = value as Project;
-    if (
-      project.style.template === "panorama" ||
-      project.style.template === "panorama-end"
-    )
-      invalid();
+    if (isPanoramaTemplate(project.style.template)) invalid();
     for (let index = 0; index < project.shots.length; index++) {
       const left = project.shots[index];
       const style = resolveStyle(project, left);
-      if (style.template === "panorama-end") invalid();
-      if (style.template !== "panorama") continue;
+      if (isPanoramaEnd(style.template)) invalid();
+      const start = panoramaStart(style.template);
+      if (!start) continue;
       const right = project.shots[++index];
       if (!right) invalid();
       const other = resolveStyle(project, right);
       if (
-        other.template !== "panorama-end" ||
+        other.template !== panoramaFamilies[start] ||
         left.assetId !== right.assetId ||
         (styleKeys as (keyof Style)[]).some(
           (key) => key !== "template" && style[key] !== other[key],

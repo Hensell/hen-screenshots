@@ -4,14 +4,17 @@ import {
   type Project,
   type Shot,
   type Style,
-  type TemplateId,
 } from "./model";
 import { canonicalCanvas, resolveExportProfile } from "./export-profiles";
 import { deviceGeometry } from "../rendering/geometry";
 
-export function isPanoramaTemplate(id: TemplateId): boolean {
-  return id === "panorama" || id === "panorama-end";
-}
+import {
+  panoramaStart,
+  isPanoramaEnd,
+  panoramaFamilies,
+  type PanoramaId,
+} from "./panorama-families";
+export { isPanoramaTemplate } from "./panorama-families";
 
 /** A panorama is an adjacent left/right unit. Roles travel with the slides. */
 export function panoramaPair(
@@ -20,14 +23,16 @@ export function panoramaPair(
 ): [Shot, Shot] | null {
   let index = project.shots.findIndex((shot) => shot.id === shotId);
   if (index < 0) return null;
-  if (resolveStyle(project, project.shots[index]).template === "panorama-end")
+  if (isPanoramaEnd(resolveStyle(project, project.shots[index]).template))
     index--;
   const left = project.shots[index],
     right = project.shots[index + 1];
-  return left &&
+  const start = left && panoramaStart(resolveStyle(project, left).template);
+  return start &&
+    left &&
     right &&
-    resolveStyle(project, left).template === "panorama" &&
-    resolveStyle(project, right).template === "panorama-end"
+    resolveStyle(project, left).template === start &&
+    resolveStyle(project, right).template === panoramaFamilies[start]
     ? [left, right]
     : null;
 }
@@ -61,12 +66,36 @@ export const panoramaStyle = {
   titleSize: 104,
 } satisfies Partial<Style>;
 
+export const panoramaStyles = {
+  panorama: panoramaStyle,
+  daybreak: {
+    ...panoramaStyle,
+    template: "daybreak",
+    background: "#FFF3DF",
+    backgroundEnd: "#F5B650",
+    accentColor: "#C47AA0",
+    textColor: "#322723",
+    titleSize: 118,
+  },
+  tidal: {
+    ...panoramaStyle,
+    template: "tidal",
+    background: "#113E52",
+    backgroundEnd: "#32677B",
+    accentColor: "#91C6C8",
+    textColor: "#F1F5E9",
+    titleSize: 116,
+  },
+} satisfies Record<PanoramaId, Partial<Style>>;
+
 /** Phone placement lives in one 2160-wide scene; each export crops one half. */
 export function panoramaLayout(project: Project, style: Style) {
   const { height: h } = canonicalCanvas(project);
-  const right = style.template === "panorama-end";
+  const right = isPanoramaEnd(style.template);
+  const family = panoramaStart(style.template);
+  const expressive = family !== "panorama";
   const wide = h <= 1080;
-  const rotation = -8;
+  const rotation = family === "daybreak" ? 16 : family === "tidal" ? -10 : -8;
   const unit = deviceGeometry(
     style.device,
     1000,
@@ -78,7 +107,10 @@ export function panoramaLayout(project: Project, style: Style) {
     Math.cos(radians) * unit.width + Math.sin(radians) * unit.height;
   const boundH =
     Math.sin(radians) * unit.width + Math.cos(radians) * unit.height;
-  const scale = Math.min(980 / boundW, (h * 0.85) / boundH);
+  const scale = Math.min(
+    (expressive ? 1100 : 980) / boundW,
+    (h * 0.85) / boundH,
+  );
   const width = Math.floor(unit.width * scale);
   const height = deviceGeometry(
     style.device,
@@ -86,6 +118,30 @@ export function panoramaLayout(project: Project, style: Style) {
     style.frame,
     style.deviceOrientation,
   ).height;
+  if (expressive)
+    return {
+      phone: {
+        x: Math.round(1080 - width / 2),
+        y: Math.round((h - height) / 2),
+        width,
+        rotation,
+      },
+      title: {
+        x: right ? (wide ? 650 : 620) : 80,
+        y: h * (wide ? 0.1 : right ? 0.65 : 0.065),
+        width: wide ? 420 : right ? 390 : 520,
+        height: h * (wide ? 0.4 : 0.25),
+      },
+      subtitle: {
+        x: right ? (wide ? 654 : 624) : 84,
+        y: h * (wide ? 0.66 : right ? 0.915 : 0.33),
+        width: wide ? 412 : right ? 386 : 490,
+        height: h * (wide ? 0.16 : 0.065),
+      },
+      panel: { x: 0, y: 0, width: 2160, height: h },
+      fontScale: wide ? 0.62 : 1,
+      subtitleSize: wide ? 22 : 30,
+    };
   return {
     phone: {
       x: Math.round(1080 - width / 2),
@@ -115,6 +171,7 @@ export function panoramaPreview(
   project: Project,
   shot: Shot,
   keepColors = false,
+  family: PanoramaId = "panorama",
 ): [Shot, Shot] {
   const existing = panoramaPair(project, shot.id);
   const left = existing?.[0] ?? shot;
@@ -124,7 +181,7 @@ export function panoramaPreview(
     title: "A closer look.",
     subtitle: "",
   };
-  const patch: Partial<Style> = { ...panoramaStyle };
+  const patch: Partial<Style> = { ...panoramaStyles[family] };
   if (keepColors)
     for (const key of [
       "background",
@@ -138,7 +195,10 @@ export function panoramaPreview(
   return [left, right].map((source, index) => ({
     ...source,
     assetId: left.assetId,
-    style: { ...shared, template: index === 0 ? "panorama" : "panorama-end" },
+    style: {
+      ...shared,
+      template: index === 0 ? family : panoramaFamilies[family],
+    },
     phone: { ...phone },
   })) as [Shot, Shot];
 }
@@ -146,6 +206,7 @@ export function applyPanorama(
   project: Project,
   shotId: string,
   keepColors = false,
+  family: PanoramaId = "panorama",
 ): void {
   const selected = project.shots.find((shot) => shot.id === shotId);
   if (!selected) return;
@@ -154,7 +215,7 @@ export function applyPanorama(
     throw new Error(
       `Panorama needs two slides. This format allows ${shotCapacity(project)}; remove a slide first.`,
     );
-  const previews = panoramaPreview(project, selected, keepColors);
+  const previews = panoramaPreview(project, selected, keepColors, family);
   if (!existing) previews[1].id = crypto.randomUUID();
   const index = project.shots.findIndex((shot) => shot.id === previews[0].id);
   project.shots.splice(index, existing ? 2 : 1, ...previews);

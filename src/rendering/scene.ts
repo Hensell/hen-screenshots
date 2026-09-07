@@ -1,3 +1,4 @@
+import { isPanoramaEnd, panoramaStart } from "../core/panorama-families";
 import Konva from "konva";
 import { legacyTemplateIds, resolveStyle } from "../core/model";
 import type { Project, Shot } from "../core/model";
@@ -35,6 +36,7 @@ function addText(
     height: number;
     fontSize: number;
     weight: string;
+    fontFamily?: string;
     color: string;
     align: "left" | "center";
     opacity?: number;
@@ -53,7 +55,7 @@ function addText(
         x: options.x,
         width: options.width,
         text: line || " ",
-        fontFamily: "Manrope",
+        fontFamily: options.fontFamily ?? "Manrope",
         fontStyle: options.weight,
         fontSize: options.fontSize,
         lineHeight: options.lineHeight ?? 1.15,
@@ -99,7 +101,7 @@ export function createScene(
   const template = templateLayout(project, style);
   const canvas = canonicalCanvas(project);
   const panoramic = isPanoramaTemplate(style.template);
-  const cropOffset = style.template === "panorama-end" ? canvas.width : 0;
+  const cropOffset = isPanoramaEnd(style.template) ? canvas.width : 0;
   const spreadWidth = panoramic ? canvas.width * 2 : canvas.width;
   const imageWidth = image.naturalWidth;
   const imageHeight = image.naturalHeight;
@@ -193,7 +195,7 @@ export function createScene(
         }),
       );
 
-    if (panoramic) {
+    if (panoramaStart(style.template) === "panorama") {
       layer.add(
         new Konva.Line({
           x: -cropOffset,
@@ -297,7 +299,9 @@ export function createScene(
       ...template.title,
       fitWords,
       fontSize: style.titleSize * template.fontScale,
-      weight: style.template === "classic" ? "700" : "800",
+      weight:
+        template.titleWeight ?? (style.template === "classic" ? "700" : "800"),
+      fontFamily: template.titleFont,
       lineHeight: template.lineHeight,
       color: style.textColor,
       accent: style.accentTitle ? style.accentColor : undefined,

@@ -1,3 +1,4 @@
+import { isPanoramaTemplate } from "../core/panorama-families";
 import {
   useCallback,
   useEffect,
@@ -1254,10 +1255,9 @@ export function App() {
             setTemplatesOpen(false);
             setReadyFile(null);
             setNotice({
-              message:
-                id === "panorama"
-                  ? "Panorama ready. Edit each caption and export the two slides together."
-                  : `${getTemplate(id).name} applied to ${all ? `all ${project.shots.length} screenshots` : pair ? "both slides" : "this screenshot"}. You can undo this change.`,
+              message: isPanoramaTemplate(id)
+                ? "Panorama ready. Edit each caption and export the two slides together."
+                : `${getTemplate(id).name} applied to ${all ? `all ${project.shots.length} screenshots` : pair ? "both slides" : "this screenshot"}. You can undo this change.`,
             });
           }}
         />

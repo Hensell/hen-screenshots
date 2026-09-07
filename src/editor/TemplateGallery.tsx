@@ -1,3 +1,4 @@
+import { panoramaStart } from "../core/panorama-families";
 import {
   memo,
   useEffect,
@@ -59,14 +60,15 @@ const TemplateCard = memo(function TemplateCard({
     observer.observe(ref.current!);
     return () => observer.disconnect();
   }, []);
+  const family = panoramaStart(template.id);
   const previews = useMemo(
     () =>
-      template.id === "panorama"
-        ? panoramaPreview(project, focusShot, keepColors)
+      family
+        ? panoramaPreview(project, focusShot, keepColors, family)
         : shots.map((shot) =>
             templatePreview(project, shot, template.id, keepColors),
           ),
-    [project, shots, focusShot, template.id, keepColors],
+    [project, shots, focusShot, template.id, keepColors, family],
   );
   return (
     <button
@@ -78,7 +80,8 @@ const TemplateCard = memo(function TemplateCard({
       aria-label={`${template.name} template`}
     >
       <div
-        className={`template-art ${template.id === "panorama" ? "template-art-panorama" : series ? "template-art-series" : ""}`}
+        className={`template-art ${isPanoramaTemplate(template.id) ? "template-art-panorama" : series || previews.length > 1 ? "template-art-series" : ""}`}
+        style={{ "--template-count": previews.length } as CSSProperties}
       >
         {previews.map((preview) => (
           <div className="template-preview-slot" key={preview.id}>
@@ -103,7 +106,11 @@ const TemplateCard = memo(function TemplateCard({
       </div>
       <span className="template-card-label">
         <strong>{template.name}</strong>
-        <span className="template-category">{template.category}</span>
+        <span className="template-category">
+          {isPanoramaTemplate(template.id)
+            ? "2-slide panorama"
+            : template.category}
+        </span>
         <span className="template-check">
           {selected && <Icon name="check" size={14} />}
         </span>

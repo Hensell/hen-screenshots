@@ -1,4 +1,8 @@
 import manropeUrl from "../../brand/fonts/Manrope.ttf?url";
+import frauncesUrl from "../../brand/fonts/Fraunces-Semibold.ttf?url";
+import type { Project, Shot } from "../core/model";
+import { resolveStyle } from "../core/model";
+import { getTemplate } from "../core/templates";
 
 let loading: Promise<void> | undefined;
 
@@ -30,4 +34,32 @@ export function ensureManrope(): Promise<void> {
     });
   }
   return loading;
+}
+
+let loadingSerif: Promise<void> | undefined;
+export async function ensureSceneFonts(
+  project: Project,
+  shot: Shot,
+): Promise<void> {
+  await ensureManrope();
+  if (
+    getTemplate(resolveStyle(project, shot).template).titleFont !== "Fraunces"
+  )
+    return;
+  loadingSerif ??= (async () => {
+    const face = new FontFace("Fraunces", `url(${frauncesUrl})`, {
+      weight: "600",
+      style: "normal",
+    });
+    await face.load();
+    document.fonts.add(face);
+    await document.fonts.load("600 112px Fraunces");
+  })().catch((cause: unknown) => {
+    loadingSerif = undefined;
+    throw new Error(
+      "The headline font could not load. Check your connection and try again.",
+      { cause },
+    );
+  });
+  await loadingSerif;
 }

@@ -95,8 +95,16 @@ Official references:
 
 ## Status
 
-A working editor for personal use: local projects, up to 20 screenshots, nine adaptive templates, including a two-slide panorama, six device frames and simple cards, orientation, colors, text, editable composition, undo/redo, backup/restore, and PNG/ZIP export using the selected preset. The app has not been deployed yet.
+A working editor for personal use: local projects, up to 20 screenshots, 13 adaptive templates, including three two-slide panoramas, six device frames and simple cards, orientation, colors, text, editable composition, undo/redo, backup/restore, and PNG/ZIP export using the selected preset. The app has not been deployed yet.
 
 v0.6 saves documents using schema 4 and migrates v1/v2/v3 projects and backups. The gallery, editor, and export share the same scene. Store limits are 8 images per device type on Google Play and 10 per Apple screenshot slot; the app prevents ZIP exports that exceed the destination's limit.
 
 The [first FrogHappy capture session](docs/capture-session.md) provides five Android images with sample data and a reproducible workflow for validating the editor.
+
+### Expressive collection
+
+**Daybreak** joins two slides with warm color waves and a tilted device. **Tidal** combines a deep blue panorama, flowing contour lines, and serif headlines. **Bloom** uses botanical silhouettes and a soft arch; **Punch** brings coral poster typography and a contrasting device stage. All four use editable colors and vector decorations rendered by the same scene in previews and PNG exports. Applying a template preserves your screenshots, captions, and device settings.
+
+Panorama pairs share one image and composition while keeping independent captions. Switching between panorama styles preserves the pair; applying a single-slide template separates both slides. Existing templates and version 4 project files remain supported.
+
+The editor bundles a static Fraunces 600 headline face (optical size 48, generated from the upstream variable font) from [Fraunces](https://github.com/google/fonts/tree/main/ofl/fraunces) for editorial headlines under the [SIL Open Font License](brand/fonts/OFL-Fraunces.txt), alongside Manrope. Fonts load locally before measuring captions or exporting; no external font service is required.

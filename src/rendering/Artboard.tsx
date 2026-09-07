@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Konva from "konva";
 import { errorMessage } from "../core/model";
 import type { Project, Shot } from "../core/model";
-import { ensureManrope } from "./fonts";
+import { ensureSceneFonts } from "./fonts";
 import { previewDimensions } from "./geometry";
 import { canonicalCanvas } from "../core/export-profiles";
 import { createScene } from "./scene";
@@ -32,7 +32,7 @@ export function Artboard({
     let stage: Konva.Stage | undefined;
     setError(null);
     setReady(false);
-    void ensureManrope()
+    void ensureSceneFonts(project, shot)
       .then(() => {
         if (disposed || !container.current) return;
         const size = previewDimensions(width, canonicalCanvas(project));

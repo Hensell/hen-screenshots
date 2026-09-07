@@ -5,7 +5,7 @@ import {
   validateExportPng,
 } from "../core/export-profiles";
 import type { Project, Shot } from "../core/model";
-import { ensureManrope } from "../rendering/fonts";
+import { ensureSceneFonts } from "../rendering/fonts";
 import { createScene } from "../rendering/scene";
 
 /** Render the same scene as Artboard, at native size and without editor controls. */
@@ -19,7 +19,7 @@ export async function renderShot(
   const profile = resolveExportProfile(snapshot.project);
   const dimensions = { width: profile.width, height: profile.height };
   validateDimensions(profile, dimensions.width, dimensions.height);
-  await ensureManrope();
+  await ensureSceneFonts(snapshot.project, snapshot.shot);
   const container = document.createElement("div");
   let stage: Konva.Stage | undefined;
   try {
