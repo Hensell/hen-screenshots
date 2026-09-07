@@ -27,6 +27,7 @@ import {
 import { CanvasSettings } from "../editor/CanvasSettings";
 import { projectPurpose, type ProjectPurpose } from "../core/canvas-formats";
 import { NewProjectDialog } from "./NewProjectDialog";
+import { DeleteSlidesDialog } from "./DeleteSlidesDialog";
 import {
   duplicateUnit,
   editLinkedShots,
@@ -78,10 +79,15 @@ export function App() {
   const [notice, setNotice] = useState<Notice | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    projectId: string;
+    shotId: string;
+  } | null>(null);
   const [readyFile, setReadyFile] = useState<ReadyFile | null>(null);
   const [dragging, setDragging] = useState(false);
   const imageInput = useRef<HTMLInputElement>(null);
   const backupInput = useRef<HTMLInputElement>(null);
+  const undoButton = useRef<HTMLButtonElement>(null);
   const replaceId = useRef<string | null>(null);
   const cancelExport = useRef(false);
   const dragCount = useRef(0);
@@ -89,6 +95,10 @@ export function App() {
   const shot = project?.shots.find((shot) => shot.id === selectedId);
 
   const pair = project && shot ? panoramaPair(project, shot.id) : null;
+  const deletingShots =
+    project && deleteTarget?.projectId === project.id
+      ? linkedShots(project, deleteTarget.shotId)
+      : [];
   const visibleProjects = projects.filter(
     (item) => projectPurpose(item) === libraryPurpose,
   );
@@ -179,7 +189,13 @@ export function App() {
 
   useEffect(() => {
     function keyboard(event: KeyboardEvent) {
-      if (!useEditor.getState().project || busy || exportOpen || templatesOpen)
+      if (
+        !useEditor.getState().project ||
+        busy ||
+        exportOpen ||
+        templatesOpen ||
+        deleteTarget
+      )
         return;
       const target = event.target as HTMLElement;
       if (target.closest('input, textarea, select, [contenteditable="true"]'))
@@ -192,7 +208,7 @@ export function App() {
     }
     window.addEventListener("keydown", keyboard);
     return () => window.removeEventListener("keydown", keyboard);
-  }, [busy, exportOpen, templatesOpen]);
+  }, [busy, exportOpen, templatesOpen, deleteTarget]);
 
   async function backToProjects() {
     if (busy) return;
@@ -821,6 +837,7 @@ export function App() {
                 <button
                   className="icon-button"
                   aria-label="Undo"
+                  ref={undoButton}
                   title="Undo (⌘/Ctrl Z)"
                   disabled={!state.past.length || !!busy}
                   onClick={state.undo}
@@ -958,11 +975,9 @@ export function App() {
                         pair ? "Remove panorama" : "Remove screenshot"
                       }
                       onClick={() => {
-                        state.edit((project) => {
-                          removeUnit(project, shot.id);
-                        });
-                        setNotice({
-                          message: `${pair ? "Panorama" : "Screenshot"} removed. Use Undo to bring it back.`,
+                        setDeleteTarget({
+                          projectId: project.id,
+                          shotId: shot.id,
                         });
                       }}
                     >
@@ -1083,6 +1098,26 @@ export function App() {
         <NewProjectDialog
           onCreate={newProject}
           onClose={() => setNewProjectOpen(false)}
+        />
+      )}
+      {deleteTarget && project && deletingShots.length > 0 && (
+        <DeleteSlidesDialog
+          slides={deletingShots.map((item) => ({
+            number: project.shots.indexOf(item) + 1,
+            title: item.title,
+          }))}
+          fallbackFocus={undoButton}
+          onCancel={() => setDeleteTarget(null)}
+          onConfirm={() => {
+            state.edit((draft) => {
+              if (draft.id === deleteTarget.projectId)
+                removeUnit(draft, deleteTarget.shotId);
+            });
+            setDeleteTarget(null);
+            setNotice({
+              message: `${deletingShots.length === 2 ? "Panorama" : "Screenshot"} removed. Use Undo to bring it back.`,
+            });
+          }}
         />
       )}
       {templatesOpen && project && shot && (

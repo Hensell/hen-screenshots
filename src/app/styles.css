@@ -998,6 +998,57 @@ svg {
 .export-dialog::backdrop {
   background: #20272575;
 }
+.delete-slides-dialog {
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  padding: clamp(20px, 4vw, 30px);
+  border: 1px solid var(--brand-border);
+  border-radius: 12px;
+  color: var(--brand-ink);
+  background: var(--brand-paper);
+  box-shadow: 0 20px 90px #18211840;
+}
+.delete-slides-dialog::backdrop {
+  background: #20272575;
+}
+.delete-slides-dialog h2 {
+  font-size: clamp(24px, 4vw, 30px);
+  letter-spacing: -0.9px;
+  font-weight: 650;
+}
+.deletion-slides {
+  margin: 22px 0;
+  padding: 0;
+  list-style: none;
+  border-block: 1px solid var(--brand-border);
+}
+.deletion-slides li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px;
+  padding-block: 12px;
+}
+.deletion-slides li + li {
+  border-top: 1px solid var(--brand-border);
+}
+.deletion-slides span {
+  color: var(--brand-muted);
+  font-size: 11px;
+}
+.deletion-slides strong {
+  font-size: 13px;
+  font-weight: 650;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.deletion-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
 .dialog-heading {
   display: flex;
   align-items: center;
