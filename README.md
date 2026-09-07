@@ -6,6 +6,8 @@ A web app for creating polished screenshots for app stores, portfolios, and webs
 
 Public name: **Hen Screenshots**.
 
+Website: [screenshots.hensell.dev](https://screenshots.hensell.dev/) · [Open studio](https://screenshots.hensell.dev/studio/).
+
 Repository: [Hensell/hen-screenshots](https://github.com/Hensell/hen-screenshots).
 
 **App screenshot studio** — _Your app. Beautifully presented._
@@ -46,7 +48,7 @@ npm run deploy:check  # Build and validate with Wrangler without deploying
 npm run deploy        # Deploy to Cloudflare using an authenticated Wrangler session
 ```
 
-The official plugin generates `dist/wrangler.json` and prepares the frontend for **Cloudflare Workers Static Assets**, without backend Worker logic or bindings. The app has not been deployed yet. `dist/` contains only application assets; local screenshots, databases, and FrogHappy tools are excluded.
+The official plugin generates `dist/wrangler.json` and prepares the frontend for **Cloudflare Workers Static Assets**, without backend Worker logic or bindings. `dist/` contains only application assets; local screenshots, databases, and FrogHappy tools are excluded.
 
 Projects are stored per browser and origin. Use **Project file** to download a `.henscreenshots` file and **Open project file** to restore it as a copy in another browser, domain, or computer. Clearing site data also deletes its local projects.
 
@@ -81,23 +83,36 @@ Initial validation: use real screenshots from one of the creator's apps, prepare
 
 The core workflow and series editing are implemented. Future iterations will expand the composition catalog and size profiles based on real-world use with FrogHappy.
 
-## Planned deployment
+## Deployment
 
-The planned setup uses Cloudflare Workers with Static Assets and the official Cloudflare Vite plugin. This foundation serves the frontend and allows an API to be added when the product needs one. Cloudflare Pages also supports React + Vite.
+Production runs on **Cloudflare Workers Static Assets** at [screenshots.hensell.dev](https://screenshots.hensell.dev/), with the editor at `/studio/`. The Worker is named `hen-screenshots`; its custom domain is declared in `wrangler.jsonc`. Cloudflare manages the domain's DNS record and HTTPS certificate.
 
-Screenshot processing and editor export are designed to run in the browser. Local storage does not provide synchronization across devices.
+**Cloudflare Workers Builds** connects directly to `Hensell/hen-screenshots` on GitHub. Every push to `main` automatically installs dependencies, runs the tests and production build, then deploys if they pass. Build settings live in Cloudflare under **Workers & Pages → hen-screenshots → Settings → Build**:
+
+| Setting                      | Value                                |
+| ---------------------------- | ------------------------------------ |
+| Production branch            | `main`                               |
+| Root directory               | `/`                                  |
+| Build command                | `npm run check`                      |
+| Deploy command               | `npx wrangler deploy`                |
+| Non-production branch builds | Disabled                             |
+| Node.js                      | `22.21.1`, pinned in `.node-version` |
+
+Build authentication is managed by Cloudflare's existing Git integration. No deployment credentials are stored in the repository. For a manual deployment from an authenticated local checkout, run `npm run check` followed by `npx wrangler deploy`. Roll back from the Worker's **Deployments** page, or revert the offending commit on `main` and push it to trigger a corrected deployment.
+
+Screenshot processing, project storage, and PNG/ZIP exports run in the browser. Existing localhost projects do not transfer automatically to the public domain: download **Project file** locally, then use **Open project file** in the hosted studio.
 
 Official references:
 
-- [React + Vite on Cloudflare Workers](https://developers.cloudflare.com/workers/framework-guides/web-apps/react/)
-- [Cloudflare Vite plugin](https://developers.cloudflare.com/workers/vite-plugin/)
-- [React on Cloudflare Pages](https://developers.cloudflare.com/pages/framework-guides/deploy-a-react-site/)
+- [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/)
+- [Build configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)
+- [Custom domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)
 
 ## Status
 
-A working editor for personal use: local projects, up to 20 screenshots, 13 adaptive templates, including three two-slide panoramas, six device frames and simple cards, orientation, colors, text, editable composition, undo/redo, backup/restore, and PNG/ZIP export using the selected preset. The app has not been deployed yet.
+A working editor for personal use: local projects, up to 20 screenshots, 13 adaptive templates, including three two-slide panoramas, six device frames and simple cards, orientation, colors, text, editable composition, undo/redo, backup/restore, and PNG/ZIP export using the selected preset. The public editor is hosted on Cloudflare.
 
-v0.6 saves documents using schema 4 and migrates v1/v2/v3 projects and backups. The gallery, editor, and export share the same scene. Store limits are 8 images per device type on Google Play and 10 per Apple screenshot slot; the app prevents ZIP exports that exceed the destination's limit.
+The editor saves documents using schema 5 and migrates v1/v2/v3/v4 projects and backups. The gallery, editor, and export share the same scene. Store limits are 8 images per device type on Google Play and 10 per Apple screenshot slot; the app prevents ZIP exports that exceed the destination's limit.
 
 The [first FrogHappy capture session](docs/capture-session.md) provides five Android images with sample data and a reproducible workflow for validating the editor.
 
