@@ -58,7 +58,7 @@ describe("capture geometry", () => {
   });
 
   it.each(["android", "ios"] as const)(
-    "preserves the original portrait %s geometry",
+    "preserves the original portrait %s footprint and image placement",
     (family) => {
       const width = 620;
       for (const frame of [true, false]) {
@@ -66,28 +66,14 @@ describe("capture geometry", () => {
         const screenWidth = width - inset * 2;
         const screenHeight =
           screenWidth * (family === "ios" ? 19.5 / 9 : 20 / 9);
-        const radius = width * (family === "ios" ? 0.102 : 0.078);
-        const cameraWidth =
-          family === "ios" ? screenWidth * 0.29 : screenWidth * 0.032;
-        const cameraHeight =
-          family === "ios" ? screenWidth * 0.065 : cameraWidth;
         expect(deviceGeometry(family, width, frame)).toMatchObject({
           width,
           height: screenHeight + inset * 2,
-          radius,
           screen: {
             x: inset,
             y: inset,
             width: screenWidth,
             height: screenHeight,
-            radius: Math.max(0, radius - inset),
-          },
-          camera: {
-            x: (width - cameraWidth) / 2,
-            y: inset + screenWidth * (family === "ios" ? 0.016 : 0.022),
-            width: cameraWidth,
-            height: cameraHeight,
-            radius: cameraHeight / 2,
           },
         });
       }
@@ -141,6 +127,10 @@ describe("capture geometry", () => {
               geometry.base,
               geometry.keyboard,
               geometry.trackpad,
+              geometry.handheld?.shell,
+              ...(geometry.handheld?.buttons ?? []),
+              ...(geometry.handheld?.antennaBands ?? []),
+              geometry.handheld?.speaker,
             ]) {
               if (!part) continue;
               expect(part.x).toBeGreaterThanOrEqual(-0.000001);
@@ -173,6 +163,7 @@ describe("capture geometry", () => {
               expect(geometry.body).toBeUndefined();
               expect(geometry.stand).toBeUndefined();
               expect(geometry.base).toBeUndefined();
+              expect(geometry.handheld).toBeUndefined();
               expect(geometry.screen.width).toBeCloseTo(geometry.width);
               expect(geometry.screen.height).toBeCloseTo(geometry.height);
             }
@@ -195,6 +186,20 @@ describe("capture geometry", () => {
     expect(landscape.screen.height).toBeCloseTo(portrait.screen.width);
     expect(landscape.camera.x).toBeCloseTo(portrait.camera.y);
     expect(landscape.camera.width).toBeCloseTo(portrait.camera.height);
+    portrait.handheld!.buttons.forEach((button, index) => {
+      const turned = landscape.handheld!.buttons[index];
+      expect(turned.x).toBeCloseTo(button.y);
+      expect(turned.y).toBeCloseTo(portrait.width - button.x - button.width);
+      expect(turned.width).toBeCloseTo(button.height);
+      expect(turned.height).toBeCloseTo(button.width);
+    });
+    // The tablet camera belongs to its long bezel, and lands above the screen in landscape.
+    expect(portrait.camera.x).toBeGreaterThan(
+      portrait.screen.x + portrait.screen.width,
+    );
+    expect(landscape.camera.y + landscape.camera.height).toBeLessThan(
+      landscape.screen.y,
+    );
   });
 
   it("counts desktop hardware as part of the device bounds", () => {

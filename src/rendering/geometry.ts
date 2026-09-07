@@ -6,6 +6,7 @@ export interface Rect {
   width: number;
   height: number;
 }
+type RoundedRect = Rect & { radius: number };
 export interface DeviceGeometry {
   version: 1;
   family: DeviceFamily;
@@ -15,6 +16,13 @@ export interface DeviceGeometry {
   radius: number;
   screen: Rect & { radius: number };
   camera: Rect & { radius: number };
+  /** Physical details stay inside the same footprint and rotate with the frame. */
+  handheld?: {
+    shell: RoundedRect;
+    buttons: RoundedRect[];
+    antennaBands: RoundedRect[];
+    speaker?: RoundedRect;
+  };
   /** Desktop parts use the same coordinates as the screen and full device bounds. */
   body?: Rect & { radius: number };
   stand?: Rect;
@@ -51,7 +59,7 @@ function handheldGeometry(
     ? frame
       ? width * (family === "ipad" ? 0.058 : 0.043)
       : 0
-    : width * (family === "ios" ? 0.102 : 0.078);
+    : width * (family === "ios" ? (frame ? 0.13 : 0.102) : 0.078);
   const screen = {
     x: inset,
     y: inset,
@@ -64,26 +72,99 @@ function handheldGeometry(
     : family === "ios"
       ? screenWidth * 0.29
       : screenWidth * 0.032;
-  const cameraHeight = family === "ios" ? screenWidth * 0.065 : cameraWidth;
+  const cameraHeight = family === "ios" ? screenWidth * 0.081 : cameraWidth;
+  const height = screenHeight + inset * 2;
+  const edge = width * (family === "ios" ? 0.006 : 0.004);
+  const sideButton = (
+    right: boolean,
+    y: number,
+    length: number,
+  ): RoundedRect => ({
+    x: right ? width - edge * 1.5 : 0,
+    y: height * y,
+    width: edge * 1.5,
+    height: height * length,
+    radius: edge * 0.65,
+  });
+  const buttons: RoundedRect[] = tablet
+    ? [
+        {
+          x: width * 0.79,
+          y: 0,
+          width: width * 0.075,
+          height: edge * 1.5,
+          radius: edge * 0.65,
+        },
+        sideButton(true, 0.075, 0.045),
+        sideButton(true, 0.132, 0.045),
+      ]
+    : family === "ios"
+      ? [
+          sideButton(false, 0.135, 0.028),
+          sideButton(false, 0.205, 0.052),
+          sideButton(false, 0.272, 0.052),
+          sideButton(true, 0.235, 0.085),
+          sideButton(true, 0.65, 0.06),
+        ]
+      : [sideButton(true, 0.15, 0.085), sideButton(true, 0.27, 0.05)];
   return {
     version: 1,
     family,
     frame,
     width,
-    height: screenHeight + inset * 2,
+    height,
     radius,
     screen,
     camera: {
-      x: (width - cameraWidth) / 2,
+      x:
+        tablet && frame
+          ? width - (inset + cameraWidth) / 2
+          : (width - cameraWidth) / 2,
       y: tablet
         ? frame
-          ? (inset - cameraHeight) / 2
+          ? (height - cameraHeight) / 2
           : width * 0.012
-        : inset + screenWidth * (family === "ios" ? 0.016 : 0.022),
+        : inset + screenWidth * (family === "ios" ? 0.026 : 0.022),
       width: cameraWidth,
       height: cameraHeight,
       radius: cameraHeight / 2,
     },
+    ...(frame
+      ? {
+          handheld: {
+            shell: {
+              x: edge,
+              y: tablet ? edge : 0,
+              width: width - edge * 2,
+              height: height - (tablet ? edge : 0),
+              radius,
+            },
+            buttons,
+            antennaBands: tablet
+              ? []
+              : [0.085, 0.88].flatMap((y) =>
+                  [edge, width - edge * 2.5].map((x) => ({
+                    x,
+                    y: height * y,
+                    width: edge * 1.5,
+                    height: width * 0.0035,
+                    radius: 0,
+                  })),
+                ),
+            ...(!tablet
+              ? {
+                  speaker: {
+                    x: width * 0.435,
+                    y: inset * 0.27,
+                    width: width * 0.13,
+                    height: width * 0.0035,
+                    radius: width * 0.00175,
+                  },
+                }
+              : {}),
+          },
+        }
+      : {}),
   };
 }
 
@@ -245,6 +326,18 @@ export function deviceGeometry(
     height: portrait.width,
     screen: rotate(portrait.screen),
     camera: rotate(portrait.camera),
+    ...(portrait.handheld
+      ? {
+          handheld: {
+            shell: rotate(portrait.handheld.shell),
+            buttons: portrait.handheld.buttons.map(rotate),
+            antennaBands: portrait.handheld.antennaBands.map(rotate),
+            ...(portrait.handheld.speaker
+              ? { speaker: rotate(portrait.handheld.speaker) }
+              : {}),
+          },
+        }
+      : {}),
   };
 }
 

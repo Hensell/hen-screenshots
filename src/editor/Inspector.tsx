@@ -242,7 +242,9 @@ export function Inspector({
                 checked={style.camera}
                 onChange={(event) => setStyle({ camera: event.target.checked })}
               />{" "}
-              Add camera cutout
+              {style.device === "ios"
+                ? "Add Dynamic Island"
+                : "Add front camera"}
             </label>
           )}
           <p className="field-help">

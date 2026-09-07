@@ -1,13 +1,182 @@
 import Konva from "konva";
 import type { DeviceGeometry } from "./geometry";
 
+function drawHandheld(group: Konva.Group, device: DeviceGeometry): void {
+  const { shell, buttons, antennaBands, speaker } = device.handheld!;
+  const scale = Math.min(device.width, device.height);
+  const apple = device.family === "ios" || device.family === "ipad";
+  const metal = apple
+    ? [
+        0,
+        "#77736D",
+        0.18,
+        "#D6D2C9",
+        0.44,
+        "#99958E",
+        0.72,
+        "#E1DED7",
+        1,
+        "#7C7872",
+      ]
+    : [
+        0,
+        "#454950",
+        0.2,
+        "#A4A9B0",
+        0.5,
+        "#60666F",
+        0.8,
+        "#C1C5CB",
+        1,
+        "#4A5058",
+      ];
+  for (const button of buttons) {
+    group.add(
+      new Konva.Rect({
+        ...button,
+        cornerRadius: button.radius,
+        fillLinearGradientStartPoint: { x: 0, y: 0 },
+        fillLinearGradientEndPoint: { x: button.width, y: button.height },
+        fillLinearGradientColorStops: metal,
+        stroke: "#55565A",
+        strokeWidth: scale * 0.0007,
+        listening: false,
+      }),
+    );
+  }
+  group.add(
+    new Konva.Rect({
+      ...shell,
+      cornerRadius: shell.radius,
+      fillLinearGradientStartPoint: { x: 0, y: 0 },
+      fillLinearGradientEndPoint: { x: shell.width, y: shell.height * 0.55 },
+      fillLinearGradientColorStops: metal,
+      stroke: "#464749",
+      strokeWidth: scale * 0.0014,
+      shadowColor: "#0D1118",
+      shadowBlur: scale * 0.06,
+      shadowOffsetY: scale * 0.035,
+      shadowOpacity: 0.24,
+    }),
+  );
+  const rim =
+    scale * (device.family === "ios" ? 0.007 : apple ? 0.006 : 0.0045);
+  group.add(
+    new Konva.Rect({
+      x: shell.x + rim,
+      y: shell.y + rim,
+      width: shell.width - rim * 2,
+      height: shell.height - rim * 2,
+      cornerRadius: shell.radius - rim,
+      fill: "#101114",
+      stroke: "#08090B",
+      strokeWidth: scale * 0.0015,
+      listening: false,
+    }),
+  );
+  group.add(
+    new Konva.Rect({
+      x: shell.x + rim * 0.35,
+      y: shell.y + rim * 0.35,
+      width: shell.width - rim * 0.7,
+      height: shell.height - rim * 0.7,
+      cornerRadius: shell.radius - rim * 0.35,
+      stroke: "#F4F0E9",
+      strokeWidth: scale * 0.0009,
+      opacity: 0.55,
+      listening: false,
+    }),
+  );
+  for (const band of antennaBands) {
+    group.add(new Konva.Rect({ ...band, fill: "#5B5A58", listening: false }));
+  }
+  if (speaker) {
+    group.add(
+      new Konva.Rect({
+        ...speaker,
+        cornerRadius: speaker.radius,
+        fill: "#050608",
+        listening: false,
+      }),
+    );
+  }
+}
+
+/** Glass lip and optional camera sit above the screenshot, using the same rotated geometry. */
+export function drawDeviceDetails(
+  group: Konva.Group,
+  device: DeviceGeometry,
+  camera: boolean,
+): void {
+  if (device.frame && device.family !== "card") {
+    group.add(
+      new Konva.Rect({
+        ...device.screen,
+        cornerRadius: device.screen.radius,
+        stroke: "#050608",
+        strokeWidth: Math.min(device.width, device.height) * 0.0015,
+        listening: false,
+      }),
+    );
+  }
+  if (!camera || device.family === "card") return;
+  const cutout = device.camera;
+  const diameter = Math.min(cutout.width, cutout.height);
+  const island = device.family === "ios";
+  group.add(
+    new Konva.Rect({
+      ...cutout,
+      cornerRadius: cutout.radius,
+      fill: "#050608",
+      stroke: "#24262B",
+      strokeWidth: diameter * 0.035,
+      listening: false,
+    }),
+  );
+  const horizontal = cutout.width > cutout.height;
+  const x =
+    island && horizontal
+      ? cutout.x + cutout.width - diameter * 0.65
+      : cutout.x + cutout.width / 2;
+  const y =
+    island && !horizontal
+      ? cutout.y + diameter * 0.65
+      : cutout.y + cutout.height / 2;
+  const radius = diameter * (island ? 0.235 : 0.32);
+  group.add(
+    new Konva.Circle({
+      x,
+      y,
+      radius,
+      fill: "#111925",
+      stroke: "#202938",
+      strokeWidth: diameter * 0.04,
+      listening: false,
+    }),
+  );
+  group.add(
+    new Konva.Circle({
+      x: x - radius * 0.22,
+      y: y - radius * 0.23,
+      radius: radius * 0.43,
+      fill: "#314157",
+      opacity: 0.75,
+      listening: false,
+    }),
+  );
+}
+
 /** Paint the hardware behind the screenshot. Shared by the preview and PNG renderer. */
 export function drawDeviceFrame(
   group: Konva.Group,
   device: DeviceGeometry,
 ): void {
+  if (device.handheld && device.frame) {
+    drawHandheld(group, device);
+    return;
+  }
   if (!device.body || !device.frame) {
-    // Keep the original phone shell and shadow identical for existing projects.
+    // Bare screenshots and cards retain their original surface and shadow.
     group.add(
       new Konva.Rect({
         width: device.width,

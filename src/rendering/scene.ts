@@ -5,7 +5,7 @@ import { deviceGeometry, fitImage } from "./geometry";
 import { templateLayout } from "../core/templates";
 import { canonicalCanvas } from "../core/export-profiles";
 import { isPanoramaTemplate } from "../core/panorama";
-import { drawDeviceFrame } from "./device-frame";
+import { drawDeviceFrame, drawDeviceDetails } from "./device-frame";
 import { drawTemplateDecoration } from "./template-decoration";
 
 interface SceneOptions {
@@ -266,19 +266,7 @@ export function createScene(
     phone.add(screen);
 
     // Imported status/navigation bars stay in their original pixels. No synthetic bars.
-    if (style.camera && style.device !== "card") {
-      phone.add(
-        new Konva.Rect({
-          x: device.camera.x,
-          y: device.camera.y,
-          width: device.camera.width,
-          height: device.camera.height,
-          cornerRadius: device.camera.radius,
-          fill: "#111514",
-          listening: false,
-        }),
-      );
-    }
+    drawDeviceDetails(phone, device, style.camera);
     if (options.onMove) {
       phone.on("dragend", () =>
         options.onMove?.(
