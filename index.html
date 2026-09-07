@@ -6,13 +6,404 @@
     <meta name="theme-color" content="#F6F4ED" />
     <meta
       name="description"
-      content="Your app. Beautifully presented. Create app screenshots with iOS and Android frames, right in your browser."
+      content="Create beautiful screenshots for the App Store, Google Play, and your portfolio. Templates, device frames, and full-resolution exports. Free forever, with no account or watermarks."
     />
+    <meta
+      property="og:title"
+      content="Hen Screenshots — Your app. Beautifully presented."
+    />
+    <meta
+      property="og:description"
+      content="A free screenshot studio for your next launch. Make app store screenshots and portfolio mockups right in your browser."
+    />
+    <meta property="og:type" content="website" />
     <link rel="icon" type="image/svg+xml" href="/brand/icon.svg" />
-    <title>Hen Screenshots — App screenshot studio</title>
+    <link rel="stylesheet" href="/brand/tokens.css" />
+    <link rel="stylesheet" href="/src/landing/landing.css" />
+    <title>Hen Screenshots — Free app screenshot &amp; mockup studio</title>
+    <script>
+      // Preserve project bookmarks created before the studio moved to its own route.
+      const projectUrl = new URL(window.location.href);
+      if (projectUrl.searchParams.has("project")) {
+        projectUrl.pathname = "/studio/";
+        window.location.replace(projectUrl.href);
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="landing-header wrap">
+      <a class="wordmark" href="/" aria-label="Hen Screenshots home">
+        <img src="/brand/mark.svg" width="32" height="34" alt="" />
+        <span>hen<small>screenshots</small></span>
+      </a>
+      <nav aria-label="Main navigation">
+        <a class="nav-section" href="#templates">Templates</a>
+        <a class="nav-section" href="#how-it-works">How it works</a>
+        <a class="nav-section" href="#free-forever">Free forever</a>
+        <a class="action action-small" href="/studio/"
+          >Open studio <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero wrap" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="short-rule" aria-hidden="true"></span> YOUR NEXT LAUNCH
+            STARTS HERE
+          </p>
+          <h1 id="hero-title">
+            Your app.<br /><em>Beautifully</em><br />presented.
+          </h1>
+          <p class="lead">
+            Turn your screenshots into something worth showing off. For the app
+            stores, your portfolio, and everywhere your work belongs.
+          </p>
+          <div class="hero-actions">
+            <a class="action" href="/studio/"
+              >Start creating <span aria-hidden="true">↗</span></a
+            >
+            <a class="inline-link" href="#templates"
+              >Find your look <span aria-hidden="true">↓</span></a
+            >
+          </div>
+          <p class="reassurance">Free forever. No account. No watermarks.</p>
+        </div>
+        <figure class="hero-art">
+          <div class="art-label">
+            <span>FROM CAPTURE TO COMPOSITION</span
+            ><span aria-hidden="true">01 / 02</span>
+          </div>
+          <div class="hero-prints">
+            <img
+              class="print print-dark"
+              src="/examples/halo.webp"
+              width="540"
+              height="960"
+              alt="A FrogHappy screenshot in the Halo template, with a dark background, warm circle, and the headline Small habits. Happier days."
+              fetchpriority="high"
+            />
+            <img
+              class="print print-light"
+              src="/examples/studio.webp"
+              width="540"
+              height="960"
+              alt="A matching FrogHappy progress screenshot in the minimal Studio template."
+            />
+          </div>
+          <figcaption>
+            Composed in Hen Screenshots.<span>Made with FrogHappy</span>
+          </figcaption>
+        </figure>
+      </section>
+      <div class="format-strip wrap" aria-label="Supported presentations">
+        <p>A home for your best work.</p>
+        <ul>
+          <li>App Store</li>
+          <li>Google Play</li>
+          <li>Portfolios &amp; websites</li>
+        </ul>
+      </div>
+      <section
+        class="templates-section wrap section-space"
+        id="templates"
+        aria-labelledby="templates-title"
+      >
+        <div class="section-intro">
+          <div>
+            <p class="eyebrow">NINE TEMPLATES. YOUR OWN STYLE.</p>
+            <h2 id="templates-title">Find a look.<br />Make it yours.</h2>
+          </div>
+          <p>
+            Start with a thoughtfully composed template. Bring your own colors,
+            words, and screenshots. Keep the whole series feeling like you.
+          </p>
+        </div>
+        <div class="template-examples">
+          <figure>
+            <img
+              src="/examples/halo.webp"
+              width="540"
+              height="960"
+              alt="Halo template with bold type and a circular backdrop."
+              loading="lazy"
+            />
+            <figcaption>
+              <strong>Halo</strong><span>A little drama.</span>
+            </figcaption>
+          </figure>
+          <figure>
+            <img
+              src="/examples/studio.webp"
+              width="540"
+              height="960"
+              alt="Studio template with a fine border and generous space."
+              loading="lazy"
+            />
+            <figcaption>
+              <strong>Studio</strong><span>Room to breathe.</span>
+            </figcaption>
+          </figure>
+          <figure>
+            <img
+              src="/examples/split.webp"
+              width="540"
+              height="960"
+              alt="Split template with a warm yellow and terracotta color block."
+              loading="lazy"
+            />
+            <figcaption>
+              <strong>Split</strong><span>Color with confidence.</span>
+            </figcaption>
+          </figure>
+          <figure>
+            <img
+              src="/examples/gallery.webp"
+              width="540"
+              height="960"
+              alt="Gallery template with an oversized screenshot and editorial caption."
+              loading="lazy"
+            />
+            <figcaption>
+              <strong>Gallery</strong><span>Let the details speak.</span>
+            </figcaption>
+          </figure>
+        </div>
+        <div class="section-footnote">
+          <p>A few of the nine templates waiting in your studio.</p>
+          <a class="inline-link" href="/studio/"
+            >Make these your own <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </section>
+      <section
+        class="panorama-section section-space"
+        aria-labelledby="panorama-title"
+      >
+        <div class="panorama-layout wrap">
+          <figure class="panorama-example">
+            <div class="panorama-tiles">
+              <img
+                src="/examples/panorama-left.webp"
+                width="675"
+                height="1200"
+                alt="Left slide: Small habits. A bigger story. A tilted phone crosses into the next slide."
+                loading="lazy"
+              /><img
+                src="/examples/panorama-right.webp"
+                width="675"
+                height="1200"
+                alt="Right slide: the same phone and ribbon continue, with the words Every day, a little brighter."
+                loading="lazy"
+              />
+            </div>
+            <figcaption><span>01</span><span>02</span></figcaption>
+          </figure>
+          <div class="feature-copy">
+            <p class="eyebrow">MEET PANORAMA</p>
+            <h2 id="panorama-title">Two slides.<br />One bigger story.</h2>
+            <p>
+              Let your design flow from one screenshot into the next. A shared
+              background and device connect the scene, with room for a different
+              message on each slide.
+            </p>
+            <p class="feature-note">
+              Design them together. Export them as two separate images, ready
+              for your store listing.
+            </p>
+            <a class="inline-link" href="/studio/"
+              >Create your first series <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </div>
+      </section>
+      <section
+        class="portfolio-section wrap section-space"
+        aria-labelledby="portfolio-title"
+      >
+        <div class="feature-copy">
+          <p class="eyebrow">THINK OUTSIDE THE APP STORE</p>
+          <h2 id="portfolio-title">Your work.<br />In its best frame.</h2>
+          <p>
+            A project card for your portfolio. A laptop mockup for a website. A
+            tablet view that gives the details room to shine.
+          </p>
+          <p>
+            Choose the App stores workspace for store presets, or Portfolio for
+            cards and custom sizes. Each has the formats you need.
+          </p>
+          <ul class="frame-list" aria-label="Available frame types">
+            <li>iPhone &amp; Android</li>
+            <li>Tablets</li>
+            <li>Monitors &amp; laptops</li>
+            <li>Simple cards</li>
+          </ul>
+        </div>
+        <figure class="portfolio-example">
+          <img
+            src="/examples/portfolio.webp"
+            width="1000"
+            height="718"
+            alt="A landscape portfolio card showing the Hen Screenshots brand design, with the caption Ideas, made real."
+            loading="lazy"
+          />
+          <figcaption>A portfolio card, made in Hen Screenshots.</figcaption>
+        </figure>
+      </section>
+      <section
+        class="how-section wrap section-space"
+        id="how-it-works"
+        aria-labelledby="how-title"
+      >
+        <div class="section-intro">
+          <div>
+            <p class="eyebrow">FROM FIRST CAPTURE TO FINAL EXPORT</p>
+            <h2 id="how-title">A small process.<br />A polished result.</h2>
+          </div>
+          <p>
+            You already did the hard part: building your app. Give it a
+            presentation that feels just as considered.
+          </p>
+        </div>
+        <ol class="steps">
+          <li>
+            <span class="step-number" aria-hidden="true">01</span>
+            <div>
+              <h3>Bring your screenshots.</h3>
+              <p>
+                Create an App stores or Portfolio project. Add your PNG, JPEG,
+                or WebP captures.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number" aria-hidden="true">02</span>
+            <div>
+              <h3>Give them your look.</h3>
+              <p>
+                Pick a template, choose a frame, and make the colors and
+                captions your own. Apply the style across your series.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number" aria-hidden="true">03</span>
+            <div>
+              <h3>Export. Show it off.</h3>
+              <p>
+                Download a PNG or your whole set as a ZIP. Use App Store and
+                Google Play size presets, or set your own portfolio dimensions.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+      <section
+        class="free-section"
+        id="free-forever"
+        aria-labelledby="free-title"
+      >
+        <div class="free-layout wrap section-space">
+          <div>
+            <p class="eyebrow">A TOOL FOR PEOPLE WHO MAKE THINGS</p>
+            <h2 id="free-title">Free.<br /><em>Forever.</em></h2>
+          </div>
+          <div class="free-copy">
+            <p class="free-lead">
+              Your next great screenshot shouldn’t come with a subscription.
+            </p>
+            <p>
+              Every template, every frame, and full-resolution exports are free.
+              No account to create. No watermark to remove.
+            </p>
+            <p>
+              Built by
+              <a
+                href="https://hensell.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Hensell</a
+              >
+              for his own apps, and for the things you’re building, too.
+            </p>
+            <a class="action action-paper" href="/studio/"
+              >Make something worth showing <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </div>
+      </section>
+      <section
+        class="faq-section wrap section-space"
+        aria-labelledby="faq-title"
+      >
+        <div>
+          <p class="eyebrow">A FEW GOOD QUESTIONS</p>
+          <h2 id="faq-title">Before you<br />start creating.</h2>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>Is it really free forever?</summary>
+            <p>
+              Yes. Hen Screenshots is free to use, including every template,
+              device frame, and full-resolution export. There’s no subscription
+              or paid tier.
+            </p>
+          </details>
+          <details>
+            <summary>Where do my screenshots and projects go?</summary>
+            <p>
+              Your captures are processed in your browser and your projects are
+              saved on this device. They aren’t uploaded to a server. Download a
+              project file to keep a backup or move your work to another browser
+              or computer. Clearing this site’s browser data also deletes its
+              saved projects.
+            </p>
+          </details>
+          <details>
+            <summary>Can I use this for my app store listing?</summary>
+            <p>
+              Yes. The App stores workspace includes size presets for the App
+              Store and Google Play. Exports are checked for the selected
+              dimensions and opaque RGB PNG format. Choose the preset for your
+              device and listing; the editor links to each store’s current
+              requirements.
+            </p>
+          </details>
+          <details>
+            <summary>Can I make mockups for my portfolio?</summary>
+            <p>
+              Yes. The Portfolio workspace includes rectangular cards, square
+              and portrait layouts, wide canvases, and custom dimensions. Pair
+              them with a phone, tablet, monitor, laptop, or simple screenshot
+              frame.
+            </p>
+          </details>
+          <details>
+            <summary>Do I need to install anything?</summary>
+            <p>
+              No. Open the studio in your browser and start a project. A larger
+              screen gives you more room to compose, and your project files let
+              you take your work with you.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+    <footer class="landing-footer wrap">
+      <a class="wordmark" href="/" aria-label="Hen Screenshots home"
+        ><img src="/brand/mark.svg" width="28" height="30" alt="" /><span
+          >hen<small>screenshots</small></span
+        ></a
+      >
+      <p>Made for the apps you care about.</p>
+      <a
+        class="inline-link"
+        href="https://hensell.dev"
+        target="_blank"
+        rel="noopener noreferrer"
+        >By Hensell <span aria-hidden="true">↗</span></a
+      >
+    </footer>
   </body>
 </html>

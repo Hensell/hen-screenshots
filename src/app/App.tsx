@@ -452,7 +452,9 @@ export function App() {
             <Brand />
           </button>
         ) : (
-          <Brand />
+          <a href="/" aria-label="Hen Screenshots home">
+            <Brand />
+          </a>
         )}
         {project ? (
           <>

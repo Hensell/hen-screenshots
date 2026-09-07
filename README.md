@@ -2,6 +2,8 @@
 
 A web app for creating polished screenshots for app stores, portfolios, and websites. Includes simple cards and frames for phones, tablets, monitors, and laptops.
 
+**Free forever. No account. No watermarks.** Every template, frame, and full-resolution export is included.
+
 Public name: **Hen Screenshots**.
 
 Repository: [Hensell/hen-screenshots](https://github.com/Hensell/hen-screenshots).
@@ -33,7 +35,9 @@ npm ci
 npm run dev
 ```
 
-Open the [local studio](http://127.0.0.1:5174/). Create an **App stores** or **Portfolio** project and import PNG, JPEG, or WebP images. Each screenshot gets its own canvas; original images are kept in the browser.
+Open the [landing page](http://127.0.0.1:5174/) or go straight to the [local studio](http://127.0.0.1:5174/studio/). Create an **App stores** or **Portfolio** project and import PNG, JPEG, or WebP images. Each screenshot gets its own canvas; original images are kept in the browser.
+
+The landing page introduces the editor with real examples, templates, Panorama, portfolio formats, the free-forever commitment, and an FAQ. It is static HTML and CSS; the React editor loads only at `/studio/`. Existing `/?project=…` bookmarks redirect to `/studio/?project=…` on the same origin, preserving saved projects.
 
 ```sh
 npm run check         # Run tests, TypeScript checks, and the production build
@@ -50,7 +54,7 @@ Projects are stored per browser and origin. Use **Project file** to download a `
 
 - The project's creator is its first user, preparing screenshots for his own apps.
 - The first version will be validated through that real-world use and polished before being shared with others.
-- A free, open-source release is being considered for the future. Release plans and licensing have not been decided yet.
+- The web editor is free forever. An open-source release is still being considered; licensing has not been decided yet.
 
 ## Project decisions
 
@@ -71,7 +75,7 @@ Goal: create, save, reopen, and export a consistent series of promotional images
 4. Save automatically in the browser, with project download and import—including source images—for backup and transfer.
 5. Export a single image as PNG, a linked panorama as two PNGs in a ZIP, or the series as ZIP at the selected dimensions.
 
-The proposed initial scope leaves accounts, synchronization, collaboration, payments, AI generation, and 3D scenes for later consideration.
+Accounts, synchronization, collaboration, AI generation, and 3D scenes are outside the current scope.
 
 Initial validation: use real screenshots from one of the creator's apps, prepare a series, close and reopen the project, restore it from a backup, and visually verify the export and its dimensions. Check both frame families without distorting screenshots or duplicating status bars, navigation bars, or camera cutouts.
 

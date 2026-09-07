@@ -62,7 +62,7 @@ Ejemplos de textos de interfaz:
 | Reabrir respaldo | Open project |
 | Confirmación local | Saved on this device |
 
-La marca no promete mejoras de conversión ni resultados comerciales medidos. El estado de proyecto gratuito y de código abierto se anunciará cuando el usuario decida publicarlo en esos términos.
+La marca no promete mejoras de conversión ni resultados comerciales medidos. El 7 de septiembre de 2026 el usuario decidió presentar el editor como **gratis para siempre**, con el mensaje público “Free forever. No account. No watermarks.” La publicación con licencia de código abierto sigue pendiente de decidir.
 
 ## Sistema visual
 
