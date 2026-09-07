@@ -491,6 +491,22 @@ details > p {
   border-top: 1px solid var(--brand-border);
   padding-block: 32px;
 }
+.feedback-section {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: center;
+  gap: 64px;
+  border-top: 1px solid var(--brand-border);
+}
+.feedback-copy p {
+  max-width: 440px;
+  color: var(--brand-muted);
+}
+.feedback-copy .inline-link {
+  margin-top: 16px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 .landing-footer .wordmark {
   font-size: 22px;
 }
@@ -604,7 +620,8 @@ details > p {
   .panorama-layout,
   .portfolio-section,
   .free-layout,
-  .faq-section {
+  .faq-section,
+  .feedback-section {
     grid-template-columns: 1fr;
     gap: 36px;
   }
