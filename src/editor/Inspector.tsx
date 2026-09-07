@@ -264,7 +264,7 @@ export function Inspector({
           </label>
           <button type="button" className="text-button" onClick={onReplace}>
             <Icon name="image" />
-            Replace screenshot
+            {pair ? "Replace panorama image" : "Replace image"}
           </button>
         </section>
         <section className="property-section template-property">

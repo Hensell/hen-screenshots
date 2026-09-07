@@ -17,6 +17,7 @@ export function SlideActionsMenu({
   canDuplicate,
   capacity,
   onClose,
+  onReplace,
   onDuplicate,
   onDelete,
 }: {
@@ -26,6 +27,7 @@ export function SlideActionsMenu({
   canDuplicate: boolean;
   capacity: number;
   onClose: (restoreFocus?: boolean) => void;
+  onReplace: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
 }) {
@@ -96,6 +98,17 @@ export function SlideActionsMenu({
       }}
     >
       <p className="slide-menu-label">{label}</p>
+      <button
+        role="menuitem"
+        tabIndex={-1}
+        onClick={() => {
+          onClose();
+          onReplace();
+        }}
+      >
+        <Icon name="image" />
+        {panorama ? "Replace panorama image…" : "Replace image…"}
+      </button>
       <button
         role="menuitem"
         tabIndex={-1}

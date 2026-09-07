@@ -665,6 +665,10 @@ svg {
     0 12px 35px #27362314,
     0 1px 3px #27362320;
 }
+.replace-image-button {
+  margin-top: 14px;
+  max-width: 100%;
+}
 .shot-actions {
   display: flex;
   align-items: center;

@@ -269,9 +269,10 @@ export function App() {
     setNewProjectOpen(false);
     open({ project, assets: [], revision: 0 });
   }
-  function chooseImages(replace = false) {
-    replaceId.current = replace ? (shot?.id ?? null) : null;
-    imageInput.current!.multiple = !replace;
+  function chooseImages(replacementId?: string) {
+    if (busy) return;
+    replaceId.current = replacementId ?? null;
+    imageInput.current!.multiple = !replacementId;
     imageInput.current!.click();
   }
   async function addImages(files: File[]) {
@@ -316,6 +317,7 @@ export function App() {
           editLinkedShots(project, replacement, (target) => {
             target.assetId = incoming[0].id;
           });
+          firstId = replacement;
         } else {
           incoming.forEach((asset) => {
             const next = createShot(asset.id, project.shots.length);
@@ -328,7 +330,7 @@ export function App() {
       if (firstId) state.select(firstId);
       setNotice({
         message: replacement
-          ? "Screenshot replaced. Your layout is preserved."
+          ? `${replacedIds.size === 2 ? "Panorama image" : "Image"} replaced. Your layout is preserved. Undo anytime.`
           : `${incoming.length} screenshot${incoming.length === 1 ? "" : "s"} added. Start with the headline.`,
       });
     } catch (error) {
@@ -1002,6 +1004,16 @@ export function App() {
                       />
                     ))}
                   </div>
+                  <button
+                    type="button"
+                    className="button secondary replace-image-button"
+                    disabled={!!busy}
+                    title="Choose a new image. Keep your text, frame, colors and placement."
+                    onClick={() => chooseImages(shot.id)}
+                  >
+                    <Icon name="image" />
+                    {pair ? "Replace panorama image" : "Replace image"}
+                  </button>
                   {pair && (
                     <div
                       className="panorama-selection"
@@ -1128,7 +1140,7 @@ export function App() {
               project={project}
               shot={shot}
               disabled={!!busy}
-              onReplace={() => chooseImages(true)}
+              onReplace={() => chooseImages(shot.id)}
               onTemplates={() => setTemplatesOpen(true)}
             />
           ) : (
@@ -1199,6 +1211,7 @@ export function App() {
             }
             capacity={shotCapacity(project)}
             onClose={closeSlideMenu}
+            onReplace={() => chooseImages(slideMenu.shotId)}
             onDuplicate={() => duplicate(slideMenu.shotId)}
             onDelete={() =>
               setDeleteTarget({
