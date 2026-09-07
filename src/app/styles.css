@@ -2348,15 +2348,6 @@ svg {
   position: relative;
   overflow: hidden;
 }
-.panorama-board::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  border-left: 1px dashed #ffffff60;
-  pointer-events: none;
-}
 .panorama-board .artboard {
   min-width: 0;
 }

@@ -7,7 +7,7 @@
 1. Select a screenshot and open **Templates → Panorama**.
 2. **Create 2-slide panorama** adds a right-hand slide using the same source image. The original slide keeps its words; the new caption starts with “A closer look.”
 3. The editor displays both halves together. **Edit left slide** and **Edit right slide** choose which caption to change. The image, frame, colors, typography and device placement are shared.
-4. **Export this panorama** downloads a ZIP containing two PNGs, each at the selected export dimensions. Whole-series export includes the halves in order. The editor's dashed join is not exported.
+4. **Export this panorama** downloads a ZIP containing two PNGs, each at the selected export dimensions. Whole-series export includes the halves in order. The editor previews both halves edge to edge, without a divider over the image.
 
 Duplicating, moving and removing a panorama operates on both slides as one undoable edit. Applying another template to the pair makes both slides independent; **Separate slides** returns both to Studio while retaining their colors and words. Reapplying Panorama updates the pair without adding another slide.
 
@@ -35,3 +35,5 @@ The three new portfolio-only orientation counterparts bring the catalog to 22 ex
 ## Validation
 
 Unit coverage includes preview/application parity, pair validation, editing from either half, atomic operations, count limits, reflow and undo, and portable backup round trips. A geometry matrix covers all export profiles and custom size extremes with all seven frame types, both frame orientations, and framed/unframed devices. Production TypeScript and Vite build checks are included in `npm run check`.
+
+Browser verification completed on September 7 in the integrated browser: new Store and Portfolio workspaces, exact orientation counterparts and landscape-only Mac size, two-slide creation, independent captions, duplicate/undo, orientation/undo, and successful panorama ZIP generation. A custom Portfolio PNG was verified at 1537 × 1103. Mobile (390 px) and tablet (820 px) checks found no horizontal overflow. Fractional preview widths are preserved to avoid a gap between adjacent panorama tiles. No browser console errors were observed.

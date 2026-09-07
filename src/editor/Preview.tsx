@@ -21,7 +21,8 @@ export function Preview({
   useEffect(() => {
     const element = ref.current!;
     const observer = new ResizeObserver(([entry]) =>
-      setWidth(Math.floor(entry.contentRect.width)),
+      // Adjacent panorama tiles can be half a CSS pixel wide; rounding leaves a visible seam.
+      setWidth(entry.contentRect.width),
     );
     observer.observe(element);
     return () => observer.disconnect();
