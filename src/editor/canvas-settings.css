@@ -1,15 +1,47 @@
-.canvas-settings .canvas-orientation {
+.orientation-settings {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+.orientation-settings > fieldset {
   padding: 0;
-  margin: 18px 0 0;
+  margin: 0;
   border: 0;
   min-width: 0;
 }
-.canvas-orientation legend {
+.orientation-settings legend {
   padding: 0;
+  margin-bottom: 3px;
+  color: var(--brand-ink);
+  font-size: 11px;
+  font-weight: 650;
+}
+.orientation-scope {
   margin-bottom: 8px;
   color: var(--brand-muted);
   font-size: 10px;
+}
+.frame-orientation .segmented {
+  margin: 0;
+}
+.frame-orientation .segmented button {
+  min-height: 44px;
+}
+.frame-fixed-orientation {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  color: var(--brand-ink);
+  font-size: 11px;
   font-weight: 650;
+}
+.frame-fixed-orientation small {
+  display: block;
+  margin-top: 3px;
+  color: var(--brand-muted);
+  font-size: 10px;
+  font-weight: 450;
 }
 .canvas-orientation-options {
   display: grid;
@@ -84,7 +116,7 @@
   align-items: center;
   gap: 12px;
   min-height: 58px;
-  margin-top: 16px;
+  margin-top: 0;
   padding: 12px;
   background: #e9ece3;
   border-radius: 5px;

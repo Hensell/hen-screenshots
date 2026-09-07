@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { errorMessage, type Project } from "../core/model";
 import { changeCustomSize, changeExportProfile } from "../core/templates";
 import {
@@ -119,17 +119,9 @@ function CustomSize({ project }: { project: Project }) {
 
 function OrientationSettings({ project }: { project: Project }) {
   const edit = useEditor((state) => state.edit);
+  const helpId = useId();
   const orientation = canvasOrientation(project);
   const custom = project.exportProfile === "portfolio-custom";
-  if (orientation === "square")
-    return (
-      <div className="canvas-square-note">
-        <span className="canvas-shape square" aria-hidden="true" />
-        <span>
-          Square canvas <small>Both sides are equal</small>
-        </span>
-      </div>
-    );
   const landscapeOnly =
     !custom && !profileForOrientation(project.exportProfile, "portrait");
   function setOrientation(next: Exclude<CanvasOrientation, "square">) {
@@ -147,45 +139,70 @@ function OrientationSettings({ project }: { project: Project }) {
     }
   }
   return (
-    <fieldset className="canvas-orientation">
+    <fieldset className="canvas-orientation" aria-describedby={helpId}>
       <legend>Canvas orientation</legend>
-      <div className="canvas-orientation-options">
-        {(["portrait", "landscape"] as const).map((value) => {
-          const id = profileForOrientation(project.exportProfile, value);
-          const size = custom
-            ? customSizeForOrientation(project.customSize, value)
-            : id
-              ? getExportProfile(id)
-              : undefined;
-          const label = value === "portrait" ? "Portrait" : "Landscape";
-          return (
-            <button
-              key={value}
-              type="button"
-              aria-label={`${label} canvas`}
-              aria-pressed={orientation === value}
-              disabled={!size}
-              onClick={() => setOrientation(value)}
-            >
-              <span className={`canvas-shape ${value}`} aria-hidden="true" />
-              <span>
-                {label}
-                <small>
-                  {size ? `${size.width} × ${size.height}` : "Unavailable"}
-                </small>
-              </span>
-            </button>
-          );
-        })}
-      </div>
-      {landscapeOnly && (
-        <p className="field-help">This device uses landscape screenshots.</p>
+      <p id={helpId} className="orientation-scope">
+        Export size · All slides
+      </p>
+      {orientation === "square" ? (
+        <div className="canvas-square-note">
+          <span className="canvas-shape square" aria-hidden="true" />
+          <span>
+            Square canvas <small>Both sides are equal</small>
+          </span>
+        </div>
+      ) : (
+        <>
+          <div className="canvas-orientation-options">
+            {(["portrait", "landscape"] as const).map((value) => {
+              const id = profileForOrientation(project.exportProfile, value);
+              const size = custom
+                ? customSizeForOrientation(project.customSize, value)
+                : id
+                  ? getExportProfile(id)
+                  : undefined;
+              const label = value === "portrait" ? "Portrait" : "Landscape";
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  aria-label={`${label} canvas`}
+                  aria-pressed={orientation === value}
+                  disabled={!size}
+                  onClick={() => setOrientation(value)}
+                >
+                  <span
+                    className={`canvas-shape ${value}`}
+                    aria-hidden="true"
+                  />
+                  <span>
+                    {label}
+                    <small>
+                      {size ? `${size.width} × ${size.height}` : "Unavailable"}
+                    </small>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {landscapeOnly && (
+            <p className="field-help">
+              This device uses landscape screenshots.
+            </p>
+          )}
+        </>
       )}
     </fieldset>
   );
 }
 
-export function CanvasSettings({ project }: { project: Project }) {
+export function CanvasSettings({
+  project,
+  frameOrientation,
+}: {
+  project: Project;
+  frameOrientation?: ReactNode;
+}) {
   const edit = useEditor((state) => state.edit);
   const profile = resolveExportProfile(project);
   const portfolio = projectPurpose(project) === "portfolio";
@@ -252,7 +269,10 @@ export function CanvasSettings({ project }: { project: Project }) {
           </label>
         </>
       )}
-      <OrientationSettings project={project} />
+      <div className="orientation-settings">
+        <OrientationSettings project={project} />
+        {frameOrientation}
+      </div>
       {profile.id === "portfolio-custom" && (
         <CustomSize
           key={`${project.id}:${project.customSize.width}:${project.customSize.height}`}

@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { resolveStyle, PLACEMENT_LIMITS } from "../core/model";
 import type { Project, Shot, Style } from "../core/model";
 import { useEditor } from "./store";
@@ -27,6 +28,51 @@ const palettes = [
   { name: "Sky", background: "#D8E4EB", textColor: "#263F4C" },
   { name: "Ink", background: "#202725", textColor: "#F6F4ED" },
 ];
+
+function FrameOrientation({
+  style,
+  linked,
+  onChange,
+}: {
+  style: Style;
+  linked: boolean;
+  onChange: (orientation: Style["deviceOrientation"]) => void;
+}) {
+  const helpId = useId();
+  const fixed = style.device === "monitor" || style.device === "laptop";
+  return (
+    <fieldset className="frame-orientation" aria-describedby={helpId}>
+      <legend>Frame orientation</legend>
+      <p id={helpId} className="orientation-scope">
+        {deviceNames[style.device]} ·{" "}
+        {linked ? "Both linked slides" : "This slide"}
+      </p>
+      {fixed ? (
+        <div className="frame-fixed-orientation">
+          <span className="canvas-shape landscape" aria-hidden="true" />
+          <span>
+            Landscape <small>Fixed for this frame</small>
+          </span>
+        </div>
+      ) : (
+        <div className="segmented">
+          {(["portrait", "landscape"] as const).map((orientation) => (
+            <button
+              type="button"
+              key={orientation}
+              aria-label={`${orientation === "portrait" ? "Portrait" : "Landscape"} frame`}
+              aria-pressed={style.deviceOrientation === orientation}
+              onClick={() => onChange(orientation)}
+            >
+              {orientation === "portrait" ? "Portrait" : "Landscape"}
+            </button>
+          ))}
+        </div>
+      )}
+    </fieldset>
+  );
+}
+
 export function Inspector({
   project,
   shot,
@@ -122,7 +168,16 @@ export function Inspector({
         </span>
       </div>
       <fieldset disabled={disabled} className="inspector-fields">
-        <CanvasSettings project={project} />
+        <CanvasSettings
+          project={project}
+          frameOrientation={
+            <FrameOrientation
+              style={style}
+              linked={!!pair}
+              onChange={(deviceOrientation) => setStyle({ deviceOrientation })}
+            />
+          }
+        />
         {pair && (
           <section className="property-section panorama-info">
             <h3>Two slides, one scene</h3>
@@ -172,27 +227,6 @@ export function Inspector({
               </button>
             ))}
           </div>
-          {style.device !== "monitor" && style.device !== "laptop" && (
-            <>
-              <p className="field-help">Frame orientation</p>
-              <div
-                className="segmented"
-                role="group"
-                aria-label="Frame orientation"
-              >
-                {(["portrait", "landscape"] as const).map((orientation) => (
-                  <button
-                    type="button"
-                    key={orientation}
-                    aria-pressed={style.deviceOrientation === orientation}
-                    onClick={() => setStyle({ deviceOrientation: orientation })}
-                  >
-                    {orientation === "portrait" ? "Portrait" : "Landscape"}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
           <label className="check-field">
             <input
               type="checkbox"
