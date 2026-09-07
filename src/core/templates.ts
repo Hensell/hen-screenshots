@@ -43,6 +43,7 @@ export interface Template {
   description: string;
   note: string;
   category: Exclude<TemplateCategory, "All">;
+  keywords?: readonly string[];
   surfaceLabel?: string;
   titleFont?: "Fraunces";
   titleWeight?: string;
@@ -70,6 +71,7 @@ export const templates: readonly Template[] = [
   {
     id: "daybreak",
     name: "Daybreak",
+    keywords: ["sunrise", "warm", "colorful", "waves", "yellow", "pink"],
     category: "Bold",
     surfaceLabel: "Color waves · 2 slides",
     description: "Warm light. Rolling color. One connected story.",
@@ -83,6 +85,7 @@ export const templates: readonly Template[] = [
   {
     id: "tidal",
     name: "Tidal",
+    keywords: ["ocean", "blue", "waves", "serif", "dark"],
     category: "Editorial",
     surfaceLabel: "Flowing lines · 2 slides",
     description: "Deep blue, sculpted waves and expressive serif type.",
@@ -98,6 +101,7 @@ export const templates: readonly Template[] = [
   {
     id: "bloom",
     name: "Bloom",
+    keywords: ["botanical", "nature", "green", "leaves", "serif", "light"],
     category: "Editorial",
     surfaceLabel: "Botanical",
     description: "Leaf silhouettes, soft paper and a little room to grow.",
@@ -124,6 +128,7 @@ export const templates: readonly Template[] = [
   {
     id: "punch",
     name: "Punch",
+    keywords: ["coral", "red", "poster", "arch", "colorful"],
     category: "Bold",
     surfaceLabel: "Coral poster",
     description: "Big words. A bold arch. Your app takes the stage.",
@@ -148,6 +153,7 @@ export const templates: readonly Template[] = [
   {
     id: "classic",
     name: "Classic",
+    keywords: ["clean", "simple", "sage", "green", "light"],
     category: "Minimal",
     description: "A little framing. Plenty of breathing room.",
     note: "The original Hen look, with your full screenshot in view.",
@@ -171,6 +177,7 @@ export const templates: readonly Template[] = [
   {
     id: "spotlight",
     name: "Spotlight",
+    keywords: ["dark", "green", "dots", "close up"],
     category: "Bold",
     description: "Big words. A closer look at your app.",
     note: "A generous product view with a bold headline.",
@@ -194,6 +201,7 @@ export const templates: readonly Template[] = [
   {
     id: "tilt",
     name: "Tilt",
+    keywords: ["angled", "diagonal", "warm", "cream"],
     category: "Bold",
     description: "An unexpected angle. A confident entrance.",
     note: "A considered angle and an oversized headline.",
@@ -217,6 +225,7 @@ export const templates: readonly Template[] = [
   {
     id: "editorial",
     name: "Editorial",
+    keywords: ["warm", "paper", "panel", "peach"],
     surfaceLabel: "Panel",
     category: "Editorial",
     description: "Let your product lead. Then make your point.",
@@ -241,6 +250,7 @@ export const templates: readonly Template[] = [
   {
     id: "studio",
     name: "Studio",
+    keywords: ["clean", "simple", "cream", "border", "light"],
     surfaceLabel: "Stage",
     category: "Minimal",
     description: "Quiet space. A product worth looking at.",
@@ -265,6 +275,7 @@ export const templates: readonly Template[] = [
   {
     id: "split",
     name: "Split",
+    keywords: ["color block", "yellow", "terracotta", "warm"],
     surfaceLabel: "Color block",
     category: "Bold",
     description: "Two tones. One confident statement.",
@@ -289,6 +300,7 @@ export const templates: readonly Template[] = [
   {
     id: "halo",
     name: "Halo",
+    keywords: ["circle", "dark", "orange", "stage"],
     surfaceLabel: "Halo",
     category: "Bold",
     description: "A circular stage. A moment in the spotlight.",
@@ -313,6 +325,7 @@ export const templates: readonly Template[] = [
   {
     id: "gallery",
     name: "Gallery",
+    keywords: ["minimal", "caption", "paper", "light"],
     surfaceLabel: "Mat",
     category: "Editorial",
     description: "The work comes first. The story follows.",
@@ -337,6 +350,7 @@ export const templates: readonly Template[] = [
   {
     id: "panorama",
     name: "Panorama",
+    keywords: ["ribbon", "warm", "cream", "diagonal"],
     category: "Editorial",
     surfaceLabel: "Ribbon",
     description: "One scene. A story across two slides.",
@@ -348,22 +362,6 @@ export const templates: readonly Template[] = [
     lineHeight: 1.07,
   },
 ];
-
-export function filterTemplates(
-  query: string,
-  category: TemplateCategory,
-): readonly Template[] {
-  const words = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-  return templates.filter(
-    (template) =>
-      (category === "All" || template.category === category) &&
-      words.every((word) =>
-        `${template.name} ${template.description} ${template.note} ${template.category}`
-          .toLocaleLowerCase()
-          .includes(word),
-      ),
-  );
-}
 
 export function getTemplate(id: TemplateId): Template {
   const template = templates.find(

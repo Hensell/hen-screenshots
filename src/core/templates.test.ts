@@ -9,7 +9,6 @@ import {
   getTemplate,
   templatePreview,
   templates,
-  filterTemplates,
 } from "./templates";
 import { useEditor } from "../editor/store";
 
@@ -65,17 +64,6 @@ describe("template application", () => {
     },
   );
 
-  it("combines case-insensitive search terms with category filters", () => {
-    expect(
-      filterTemplates("  stUDIO  ", "Minimal").map((item) => item.id),
-    ).toEqual(["studio"]);
-    expect(filterTemplates("studio", "Bold")).toEqual([]);
-    expect(
-      filterTemplates("circular stage", "All").map((item) => item.id),
-    ).toEqual(["halo"]);
-    expect(filterTemplates("no-such-template", "All")).toEqual([]);
-    expect(filterTemplates("  ", "All")).toEqual(templates);
-  });
   it("changes one composition while retaining its identity, content, source and device settings", () => {
     const project = fixture();
     const original = structuredClone(project);

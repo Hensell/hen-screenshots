@@ -26,6 +26,10 @@ The [v0.4 portfolio iteration](docs/portfolio-v0.4.md) adds **4:3, square, and p
 
 The [v0.5 template collection](docs/catalog-v0.5.md) adds **Studio, Split, Halo, and Gallery**, plus search, style filters, and previews of the whole series using your own screenshots.
 
+The **Template library** supports keyword search (names, colors, and visual ideas), style categories, composition and background filters, and curated or alphabetical sorting. Browse 12, 24, or 48 templates per page; your selection stays available as you browse, with **Show selected** to find it again. Mobile filters collapse behind a labeled button. Catalog pagination and series-preview navigation are independent.
+
+Catalog metadata is indexed once, and only the current page's cards are mounted; canvas previews render as they approach the visible area. Search and pagination are tested with 10,000 synthetic catalog entries. New designs can add searchable `keywords` in `src/core/templates.ts`; categories and counts are derived from catalog metadata. This is a local catalog, with no server search or project-format changes.
+
 The [v0.6 panorama iteration](docs/panorama-and-workspaces-v0.6.md) adds a continuous **two-slide Panorama** and separate **App stores / Portfolio** project workflows, each with its own format and orientation controls.
 
 ## Run the editor

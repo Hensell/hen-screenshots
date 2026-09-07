@@ -1,4 +1,6 @@
 type Name =
+  | "search"
+  | "filter"
   | "text"
   | "canvas"
   | "reset"
@@ -21,6 +23,8 @@ type Name =
   | "layout"
   | "phone";
 const paths: Record<Name, string> = {
+  search: "M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0",
+  filter: "M3 6h18M6 12h12M9 18h6",
   text: "M4 5V3h16v2M12 3v18m-4 0h8",
   canvas: "M4 4h16v16H4zM8 1v6m8-6v6M1 8h6m-6 8h6M17 8h6m-6 8h6M8 17v6m8-6v6",
   reset: "M3 4v6h6M3 10a9 9 0 1 1 1 7",
