@@ -182,8 +182,12 @@
 .language-control {
   display: flex;
   align-items: stretch;
+  gap: 8px;
   min-width: 0;
   min-height: 48px;
+}
+.language-manage {
+  flex-shrink: 0;
   border: 1px solid var(--brand-border);
   border-radius: 7px;
   background: var(--brand-paper);
@@ -195,7 +199,10 @@
   justify-content: center;
   width: 174px;
   min-width: 0;
-  min-height: 46px;
+  min-height: 48px;
+  border: 1px solid var(--brand-border);
+  border-radius: 7px;
+  background: var(--brand-paper);
   cursor: pointer;
 }
 .language-switch > span {
@@ -211,15 +218,11 @@
   background: transparent;
   font-size: 12px;
   font-weight: 650;
-  padding: 17px 0 3px 10px;
+  padding: 17px 8px 3px 10px;
   min-height: 46px;
-  border-radius: 2px;
+  border-radius: 6px;
   cursor: pointer;
   outline-offset: 1px;
-}
-.has-versions .language-manage {
-  border-left: 1px solid var(--brand-border);
-  border-radius: 0 6px 6px 0;
 }
 .compact-slide-actions {
   display: none;
