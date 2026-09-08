@@ -18,6 +18,61 @@ const ids = (filters: Partial<CatalogFilters>) =>
   browse(filters).items.map((item) => item.id);
 
 describe("template discovery", () => {
+  it("combines favorites with search, appearance, categories and sorting without hiding category counts", () => {
+    const favorites = new Set(["cobweb", "boo", "moonlight", "stale-id"]);
+    const filtered = queryCatalog(
+      templateCatalogIndex,
+      {
+        ...defaultCatalogFilters,
+        favoritesOnly: true,
+        query: "halloween",
+        appearance: "dark",
+        category: "Editorial",
+        sort: "name-desc",
+      },
+      favorites,
+    );
+    expect(filtered.items.map((item) => item.id)).toEqual([
+      "moonlight",
+      "cobweb",
+    ]);
+    expect(filtered.counts).toEqual({
+      All: 2,
+      Bold: 0,
+      Editorial: 2,
+      Minimal: 0,
+    });
+    expect(
+      queryCatalog(templateCatalogIndex, {
+        ...defaultCatalogFilters,
+        favoritesOnly: true,
+      }).items,
+    ).toEqual([]);
+    expect(
+      queryCatalog(templateCatalogIndex, defaultCatalogFilters, favorites)
+        .items,
+    ).toHaveLength(templates.length);
+  });
+  it("clamps a favorites page after its final item is removed", () => {
+    const favorites = new Set(
+      templates.slice(0, 13).map((template) => template.id),
+    );
+    const filters = { ...defaultCatalogFilters, favoritesOnly: true };
+    const before = paginateCatalog(
+      queryCatalog(templateCatalogIndex, filters, favorites).items,
+      2,
+      12,
+    );
+    expect(before).toMatchObject({ page: 2, pages: 2, total: 13 });
+    favorites.delete(before.items[0].id);
+    const after = paginateCatalog(
+      queryCatalog(templateCatalogIndex, filters, favorites).items,
+      2,
+      12,
+    );
+    expect(after).toMatchObject({ page: 1, pages: 1, total: 12 });
+    expect(after.items).toHaveLength(12);
+  });
   it("finds the Halloween collection and combines seasonal searches with appearance and layout", () => {
     expect(ids({ query: "halloween" })).toEqual([
       "jack-o-lantern",

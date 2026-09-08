@@ -21,6 +21,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 
 - **A template for your story.** 35 designs, from quiet editorial layouts to bold posters, including five panoramas that connect two slides into one scene.
 - **Find your look quickly.** Search by name, color, pattern, device position, or visual idea. Filter by style, appearance (Light, Dark, or Colorful), composition, and background, sort results, and browse 12, 24, or 48 templates per page. Previews use your own screenshots.
+- **Keep your favorites close.** Star any template and open **Favorites** to find it again. Favorites work with search, filters, and pagination and are shared across your projects in this browser. They stay on this device, outside project backups; no account is required.
 - **Choose the right frame.** iPhone, Android phone, iPad, Android tablet, monitor, laptop, or a simple screenshot card.
 - **Make the composition yours.** Customize captions, colors, typography, and backgrounds. Drag devices and text independently. Resize devices from their corner handles, with proportions preserved, or use the **Device size** slider. Reset size or placement whenever you want.
 - **Line things up.** Smart guides snap devices and text to centers, edges, margins, and nearby objects, including across panoramas. Hold Alt/Option to move freely, or turn guides off.

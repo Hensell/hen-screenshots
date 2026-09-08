@@ -1,4 +1,43 @@
 export const discoveryMessages: Record<string, readonly [string, string]> = {
+  "All templates": ["Todas las plantillas", "Todos os modelos"],
+  Favorites: ["Favoritos", "Favoritos"],
+  "Template collection": ["Colección de plantillas", "Coleção de modelos"],
+  "Add to favorites": ["Agregar a favoritos", "Adicionar aos favoritos"],
+  "Remove from favorites": ["Quitar de favoritos", "Remover dos favoritos"],
+  "Add {name} to favorites": [
+    "Agregar {name} a favoritos",
+    "Adicionar {name} aos favoritos",
+  ],
+  "Remove {name} from favorites": [
+    "Quitar {name} de favoritos",
+    "Remover {name} dos favoritos",
+  ],
+  "Favorites stay in this browser, across all your projects.": [
+    "Tus favoritos se guardan en este navegador para todos tus proyectos.",
+    "Seus favoritos ficam salvos neste navegador para todos os seus projetos.",
+  ],
+  "Browser storage is unavailable. Favorites will last for this session.": [
+    "El almacenamiento del navegador no está disponible. Los favoritos se conservarán durante esta sesión.",
+    "O armazenamento do navegador está indisponível. Os favoritos serão mantidos durante esta sessão.",
+  ],
+  "No favorites yet.": [
+    "Aún no tienes favoritos.",
+    "Você ainda não tem favoritos.",
+  ],
+  "No favorites match these filters.": [
+    "Ningún favorito coincide con estos filtros.",
+    "Nenhum favorito corresponde a estes filtros.",
+  ],
+  "Tap the star on any template to keep it here.": [
+    "Pulsa la estrella de cualquier plantilla para guardarla aquí.",
+    "Toque na estrela de qualquer modelo para guardá-lo aqui.",
+  ],
+  "Try another search or clear your filters to see all your favorites.": [
+    "Prueba otra búsqueda o quita los filtros para ver todos tus favoritos.",
+    "Tente outra busca ou limpe os filtros para ver todos os seus favoritos.",
+  ],
+  "Explore templates": ["Explorar plantillas", "Explorar modelos"],
+  "Show all favorites": ["Ver todos los favoritos", "Ver todos os favoritos"],
   "2-slide panorama": ["Panorama de 2 diapositivas", "Panorama de 2 slides"],
   "A different search might do it.": [
     "Prueba con otra búsqueda.",

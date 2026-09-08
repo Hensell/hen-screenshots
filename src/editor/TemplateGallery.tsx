@@ -7,6 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type CSSProperties,
 } from "react";
 import type { Project, Shot, TemplateId } from "../core/model";
@@ -39,6 +40,11 @@ import {
 import "./template-library.css";
 import { Preview } from "./Preview";
 import { Icon } from "../app/Icon";
+import {
+  getTemplateFavorites,
+  subscribeTemplateFavorites,
+  setTemplateFavorite,
+} from "../storage/template-favorites";
 
 const TemplateCard = memo(function TemplateCard({
   template,
@@ -48,6 +54,8 @@ const TemplateCard = memo(function TemplateCard({
   images,
   keepColors,
   selected,
+  favorite,
+  onFavorite,
   onSelect,
   series,
 }: {
@@ -58,6 +66,8 @@ const TemplateCard = memo(function TemplateCard({
   images: Map<string, HTMLImageElement>;
   keepColors: boolean;
   selected: boolean;
+  favorite: boolean;
+  onFavorite: (id: TemplateId) => void;
   onSelect: (id: TemplateId) => void;
   series: boolean;
 }) {
@@ -87,52 +97,67 @@ const TemplateCard = memo(function TemplateCard({
     [project, previews],
   );
   return (
-    <button
-      ref={ref}
-      type="button"
-      className="template-card"
-      aria-pressed={selected}
-      onClick={() => onSelect(template.id)}
-      aria-label={t("{name} template", { name: template.name })}
-    >
-      <span className="template-card-label">
-        <strong>{template.name}</strong>
-        <span className="template-category">
-          {isPanoramaTemplate(template.id)
-            ? t("2-slide panorama")
-            : t(template.category)}
-        </span>
-        <span className="template-check">
-          {selected && <Icon name="check" size={14} />}
-        </span>
-      </span>
-      <div
-        className={`template-art ${isPanoramaTemplate(template.id) ? "template-art-panorama" : series || previews.length > 1 ? "template-art-series" : ""}`}
-        style={{ "--template-count": previews.length } as CSSProperties}
+    <div className="template-card-shell">
+      <button
+        ref={ref}
+        type="button"
+        className="template-card"
+        aria-pressed={selected}
+        onClick={() => onSelect(template.id)}
+        aria-label={t("{name} template", { name: template.name })}
       >
-        {previews.map((preview) => (
-          <div className="template-preview-slot" key={preview.id}>
-            {visible ? (
-              <Preview
-                project={previewProject}
-                shot={preview}
-                image={images.get(preview.assetId)}
-                small
-              />
-            ) : (
-              <div
-                className="template-preview-placeholder"
-                style={{
-                  aspectRatio: `1080 / ${canonicalCanvas(project).height}`,
-                  background: resolveStyle(project, preview).background,
-                }}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-      <span className="template-description">{t(template.description)}</span>
-    </button>
+        <span className="template-card-label">
+          <strong>{template.name}</strong>
+          <span className="template-category">
+            {isPanoramaTemplate(template.id)
+              ? t("2-slide panorama")
+              : t(template.category)}
+          </span>
+          <span className="template-check">
+            {selected && <Icon name="check" size={14} />}
+          </span>
+        </span>
+        <div
+          className={`template-art ${isPanoramaTemplate(template.id) ? "template-art-panorama" : series || previews.length > 1 ? "template-art-series" : ""}`}
+          style={{ "--template-count": previews.length } as CSSProperties}
+        >
+          {previews.map((preview) => (
+            <div className="template-preview-slot" key={preview.id}>
+              {visible ? (
+                <Preview
+                  project={previewProject}
+                  shot={preview}
+                  image={images.get(preview.assetId)}
+                  small
+                />
+              ) : (
+                <div
+                  className="template-preview-placeholder"
+                  style={{
+                    aspectRatio: `1080 / ${canonicalCanvas(project).height}`,
+                    background: resolveStyle(project, preview).background,
+                  }}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+        <span className="template-description">{t(template.description)}</span>
+      </button>
+      <button
+        type="button"
+        className="template-favorite"
+        aria-pressed={favorite}
+        aria-label={t(
+          favorite ? "Remove {name} from favorites" : "Add {name} to favorites",
+          { name: template.name },
+        )}
+        title={t(favorite ? "Remove from favorites" : "Add to favorites")}
+        onClick={() => onFavorite(template.id)}
+      >
+        <Icon name="star" size={20} />
+      </button>
+    </div>
   );
 });
 
@@ -151,6 +176,10 @@ export function TemplateGallery({
 }) {
   const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
+  const favorites = useSyncExternalStore(
+    subscribeTemplateFavorites,
+    getTemplateFavorites,
+  );
   const [selected, setSelected] = useState<TemplateId>(
     getTemplate(resolveStyle(project, shot).template).id,
   );
@@ -202,9 +231,12 @@ export function TemplateGallery({
     [t],
   );
   const results = useMemo(
-    () => queryCatalog(localizedIndex, filters),
-    [localizedIndex, filters],
+    () => queryCatalog(localizedIndex, filters, favorites.ids),
+    [localizedIndex, filters, favorites.ids],
   );
+  const favoriteCount = templateCatalogIndex.filter(({ item }) =>
+    favorites.ids.has(item.id),
+  ).length;
   const pagination = useMemo(
     () => paginateCatalog(results.items, catalogPage, pageSize),
     [results.items, catalogPage, pageSize],
@@ -213,6 +245,7 @@ export function TemplateGallery({
   const selectedOnPage = pagination.items.some((item) => item.id === selected);
   const selectedInResults = results.items.some((item) => item.id === selected);
   const activeFilters =
+    Number(filters.favoritesOnly) +
     Number(filters.category !== "All") +
     Number(filters.layout !== "all") +
     Number(filters.background !== "all") +
@@ -230,6 +263,14 @@ export function TemplateGallery({
     setSelected(id);
     if (isPanoramaTemplate(id)) setAll(false);
   }, []);
+  const toggleFavorite = useCallback(
+    (id: TemplateId) => {
+      const wasFavorite = getTemplateFavorites().ids.has(id);
+      if (filters.favoritesOnly && wasFavorite) resultsRef.current?.focus();
+      setTemplateFavorite(id, !wasFavorite);
+    },
+    [filters.favoritesOnly],
+  );
   const changePage = (next: number) => {
     setCatalogPage(next);
     resultsRef.current?.focus();
@@ -248,7 +289,9 @@ export function TemplateGallery({
     galleryRef.current?.scrollTo({ top: 0 });
     if (revealSelected.current) {
       galleryRef.current
-        ?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')
+        ?.querySelector<HTMLButtonElement>(
+          '.template-card[aria-pressed="true"]',
+        )
         ?.focus();
       revealSelected.current = false;
     }
@@ -454,6 +497,28 @@ export function TemplateGallery({
         </aside>
         <section className="catalog-results" aria-label={t("Template results")}>
           <div className="catalog-results-bar" ref={resultsRef} tabIndex={-1}>
+            <div
+              className="catalog-collections"
+              role="group"
+              aria-label={t("Template collection")}
+            >
+              <button
+                type="button"
+                aria-pressed={!filters.favoritesOnly}
+                onClick={() => updateFilters({ favoritesOnly: false })}
+              >
+                {t("All templates")}
+              </button>
+              <button
+                type="button"
+                aria-pressed={filters.favoritesOnly}
+                onClick={() => updateFilters({ favoritesOnly: true })}
+              >
+                <Icon name="star" size={16} />
+                {t("Favorites")}
+                <span>{favoriteCount}</span>
+              </button>
+            </div>
             <p role="status" aria-live="polite" aria-atomic="true">
               {pagination.total > 0
                 ? t(
@@ -488,6 +553,16 @@ export function TemplateGallery({
               </select>
             </label>
           </div>
+          <p
+            className="catalog-favorites-note"
+            role={favorites.sessionOnly ? "status" : undefined}
+          >
+            {t(
+              favorites.sessionOnly
+                ? "Browser storage is unavailable. Favorites will last for this session."
+                : "Favorites stay in this browser, across all your projects.",
+            )}
+          </p>
           {all && (
             <div
               className="template-series-navigation"
@@ -537,25 +612,54 @@ export function TemplateGallery({
                 images={images}
                 keepColors={keepColors}
                 selected={selected === template.id}
+                favorite={favorites.ids.has(template.id)}
+                onFavorite={toggleFavorite}
                 onSelect={selectTemplate}
                 series={all || !!pair}
               />
             ))}
             {pagination.total === 0 && (
               <div className="template-empty">
-                <Icon name="search" size={28} />
-                <h3>{t("A different search might do it.")}</h3>
+                <Icon
+                  name={filters.favoritesOnly ? "star" : "search"}
+                  size={28}
+                />
+                <h3>
+                  {t(
+                    filters.favoritesOnly
+                      ? favoriteCount === 0
+                        ? "No favorites yet."
+                        : "No favorites match these filters."
+                      : "A different search might do it.",
+                  )}
+                </h3>
                 <p>
                   {t(
-                    "Try a name, a color like “blue”, or an idea like “waves”. You can also broaden your filters.",
+                    filters.favoritesOnly
+                      ? favoriteCount === 0
+                        ? "Tap the star on any template to keep it here."
+                        : "Try another search or clear your filters to see all your favorites."
+                      : "Try a name, a color like “blue”, or an idea like “waves”. You can also broaden your filters.",
                   )}
                 </p>
                 <button
                   type="button"
                   className="button secondary"
-                  onClick={clearFilters}
+                  onClick={() => {
+                    setFilters({
+                      ...defaultCatalogFilters,
+                      favoritesOnly: filters.favoritesOnly && favoriteCount > 0,
+                    });
+                    setCatalogPage(1);
+                  }}
                 >
-                  {t("Clear search & filters")}
+                  {t(
+                    filters.favoritesOnly
+                      ? favoriteCount === 0
+                        ? "Explore templates"
+                        : "Show all favorites"
+                      : "Clear search & filters",
+                  )}
                 </button>
               </div>
             )}

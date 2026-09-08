@@ -8,6 +8,7 @@ export type CatalogBackground = "all" | "solid" | "gradient";
 export type CatalogAppearance = "all" | "light" | "dark" | "colorful";
 export type CatalogSort = "recommended" | "name-asc" | "name-desc";
 export interface CatalogFilters {
+  favoritesOnly: boolean;
   query: string;
   category: string;
   layout: CatalogLayout;
@@ -16,6 +17,7 @@ export interface CatalogFilters {
   sort: CatalogSort;
 }
 export const defaultCatalogFilters: CatalogFilters = {
+  favoritesOnly: false,
   query: "",
   category: "All",
   layout: "all",
@@ -73,6 +75,7 @@ export function createCatalogIndex<T extends CatalogItem>(items: readonly T[]) {
 export function queryCatalog<T extends CatalogItem>(
   index: ReturnType<typeof createCatalogIndex<T>>,
   filters: CatalogFilters,
+  favorites: ReadonlySet<string> = new Set(),
 ) {
   const query = normalizeSearch(filters.query);
   const words = query.split(" ").filter(Boolean);
@@ -82,6 +85,7 @@ export function queryCatalog<T extends CatalogItem>(
   ]);
   const candidates = index.filter(
     ({ item, text }) =>
+      (!filters.favoritesOnly || favorites.has(item.id)) &&
       (filters.layout === "all" || item.layout === filters.layout) &&
       (filters.background === "all" ||
         item.background === filters.background) &&
