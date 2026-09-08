@@ -1,3 +1,4 @@
+import { BrandBadge } from "./BrandBadge";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   brandFonts,
@@ -30,21 +31,6 @@ import { download, filename } from "../platform/download";
 import { Icon } from "../app/Icon";
 import { Preview } from "./Preview";
 import "./brand-kits.css";
-
-export function BrandBadge({ kit }: { kit: BrandKit }) {
-  return (
-    <span
-      className="brand-kit-badge"
-      style={{ background: kit.colors.background, color: kit.colors.text }}
-    >
-      {kit.logo ? (
-        <img src={kit.logo} alt="" />
-      ) : (
-        <span>{kit.name.trim().slice(0, 1).toUpperCase()}</span>
-      )}
-    </span>
-  );
-}
 
 function ConfirmBrandAction({
   kind,

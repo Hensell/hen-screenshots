@@ -1,3 +1,7 @@
+import { DeferredFeature } from "./DeferredFeature";
+import { useProjectLibrary } from "./useProjectLibrary";
+import { ProjectLibrary } from "./ProjectLibrary";
+import type { Notice, ReadyFile } from "./types";
 import {
   localizedProject,
   localContent,
@@ -9,7 +13,6 @@ import { isPanoramaTemplate } from "../core/panorama-families";
 import { moveText } from "../core/text-placement";
 import {
   lazy,
-  Suspense,
   useCallback,
   useMemo,
   useEffect,
@@ -18,33 +21,20 @@ import {
   type MouseEvent,
   type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
-import { zip } from "fflate";
 import mark from "../../brand/mark.svg";
 import {
-  createProject,
   createShot,
   errorMessage,
   LIMITS,
   PLACEMENT_LIMITS,
 } from "../core/model";
-import type {
-  CanvasElement,
-  LoadedProject,
-  Project,
-  TextElement,
-} from "../core/model";
-import { importImages, loadImage } from "../assets/import";
-import { listProjects, loadProject } from "../storage/repository";
-import { exportProject, importProject } from "../storage/backup";
-import { renderShot } from "../export/images";
+import type { CanvasElement, LoadedProject, TextElement } from "../core/model";
+import { importImages } from "../assets/import";
 import { download, filename } from "../platform/download";
 import { saveNow, useEditor } from "../editor/store";
 import { useImages } from "../editor/useImages";
 import { Preview } from "../editor/Preview";
 import { Inspector, deviceNames, type InspectorTab } from "../editor/Inspector";
-import { TemplateGallery } from "../editor/TemplateGallery";
-import { PublicationPreview } from "../editor/PublicationPreview";
-import { BrandKitDialog } from "../editor/BrandKitDialog";
 import { applyBrandKit } from "../core/brand-application";
 import {
   applyTemplate,
@@ -52,7 +42,7 @@ import {
   resetComposition,
 } from "../core/templates";
 import { CanvasSettings } from "../editor/CanvasSettings";
-import { projectPurpose, type ProjectPurpose } from "../core/canvas-formats";
+import { projectPurpose } from "../core/canvas-formats";
 import { NewProjectDialog } from "./NewProjectDialog";
 import { DeleteSlidesDialog } from "./DeleteSlidesDialog";
 import { SlideActionsMenu, type SlideMenuTarget } from "./SlideActionsMenu";
@@ -66,20 +56,32 @@ import {
   shotCapacity,
 } from "../core/panorama";
 import { Icon } from "./Icon";
-import {
-  resolveExportProfile,
-  exportProfileSuffix,
-  type ExportProfile,
-} from "../core/export-profiles";
+import { resolveExportProfile } from "../core/export-profiles";
 
+const TemplateGallery = lazy(() =>
+  import("../editor/TemplateGallery").then((module) => ({
+    default: module.TemplateGallery,
+  })),
+);
+const PublicationPreview = lazy(() =>
+  import("../editor/PublicationPreview").then((module) => ({
+    default: module.PublicationPreview,
+  })),
+);
+const BrandKitDialog = lazy(() =>
+  import("../editor/BrandKitDialog").then((module) => ({
+    default: module.BrandKitDialog,
+  })),
+);
+const ExportDialog = lazy(() =>
+  import("./ExportDialog").then((module) => ({ default: module.ExportDialog })),
+);
 const LanguagesDialog = lazy(() =>
   import("../editor/LanguagesDialog").then((module) => ({
     default: module.LanguagesDialog,
   })),
 );
 
-type Notice = { message: string; error?: boolean };
-type ReadyFile = { url: string; name: string; image: boolean };
 function Brand() {
   return (
     <span className="brand">
@@ -88,16 +90,6 @@ function Brand() {
         hen<span className="brand-word">screenshots</span>
       </span>
     </span>
-  );
-}
-function Footer() {
-  return (
-    <footer className="site-footer">
-      <span>Made for the apps you care about.</span>
-      <a href="https://hensell.dev" target="_blank" rel="noopener noreferrer">
-        By Hensell <Icon name="arrow" size={14} />
-      </a>
-    </footer>
   );
 }
 
@@ -120,11 +112,7 @@ export function App() {
     [sourceProject, locale],
   );
   const [languagesOpen, setLanguagesOpen] = useState(false);
-  const [projects, setProjects] = useState<Project[]>([]);
   const [newProjectOpen, setNewProjectOpen] = useState(false);
-  const [libraryPurpose, setLibraryPurpose] =
-    useState<ProjectPurpose>("stores");
-  const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
@@ -211,7 +199,7 @@ export function App() {
   const backupInput = useRef<HTMLInputElement>(null);
   const undoButton = useRef<HTMLButtonElement>(null);
   const replaceId = useRef<string | null>(null);
-  const cancelExport = useRef(false);
+  const cancelExport = useRef<AbortController | null>(null);
   const dragCount = useRef(0);
   const { images, error: imageError } = useImages(assets, project?.shots);
   const shot = project?.shots.find((shot) => shot.id === selectedId);
@@ -232,9 +220,6 @@ export function App() {
       setSlideMenu(null);
     },
     [slideMenu],
-  );
-  const visibleProjects = projects.filter(
-    (item) => projectPurpose(item) === libraryPurpose,
   );
   const projectId = project?.id;
   useEffect(
@@ -263,46 +248,21 @@ export function App() {
     setSelectedCanvasElement(null);
   }, []);
 
-  useEffect(() => {
-    let active = true;
-    const id = new URLSearchParams(window.location.search).get("project");
-    if (!id) {
-      setLoading(false);
-      return;
-    }
-    loadProject(id)
-      .then((loaded) => {
-        if (active) open(loaded);
-      })
-      .catch((error) => {
-        if (active) setNotice({ message: errorMessage(error), error: true });
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (projectId) return;
-    let active = true;
-    listProjects()
-      .then((records) => {
-        if (active) setProjects(records.map((record) => record.project));
-      })
-      .catch((error) => {
-        if (active)
-          setNotice({
-            message: `Couldn't open local projects. ${errorMessage(error)}`,
-            error: true,
-          });
-      });
-    return () => {
-      active = false;
-    };
-  }, [projectId]);
+  const {
+    projects,
+    loading,
+    libraryPurpose,
+    setLibraryPurpose,
+    openExisting,
+    backToProjects,
+    newProject,
+  } = useProjectLibrary({
+    projectId,
+    busy,
+    onBusy: setBusy,
+    onNotice: setNotice,
+    onOpen: open,
+  });
 
   useEffect(() => {
     if (!projectId || status !== "pending") return;
@@ -360,43 +320,6 @@ export function App() {
     slideMenu,
   ]);
 
-  async function backToProjects() {
-    if (busy) return;
-    setBusy("Saving project…");
-    if (await saveNow()) {
-      if (project) setLibraryPurpose(projectPurpose(project));
-      state.close();
-      const url = new URL(window.location.href);
-      url.searchParams.delete("project");
-      window.history.replaceState(null, "", url);
-      setNotice(null);
-    }
-    setBusy(null);
-  }
-  async function openExisting(id: string) {
-    setBusy("Opening project…");
-    try {
-      open(await loadProject(id));
-    } catch (error) {
-      setNotice({ message: errorMessage(error), error: true });
-    } finally {
-      setBusy(null);
-    }
-  }
-  function newProject(purpose: ProjectPurpose) {
-    const project = createProject(
-      purpose === "portfolio" ? "Untitled portfolio" : "Untitled app",
-    );
-    if (purpose === "portfolio") {
-      project.exportProfile = "portfolio-card";
-      project.style.device = "card";
-      project.style.deviceOrientation = "landscape";
-      project.style.template = "studio";
-    }
-    setLibraryPurpose(purpose);
-    setNewProjectOpen(false);
-    open({ project, assets: [], revision: 0 });
-  }
   function chooseImages(replacementId?: string) {
     if (busy) return;
     replaceId.current = replacementId ?? null;
@@ -474,6 +397,7 @@ export function App() {
     if (!file || busy) return;
     setBusy("Opening project file…");
     try {
+      const { importProject } = await import("../storage/backup");
       const loaded = await importProject(file);
       open(loaded);
       setNotice({
@@ -490,6 +414,7 @@ export function App() {
     if (!project || busy) return;
     setBusy("Preparing project file…");
     try {
+      const { exportProject } = await import("../storage/backup");
       offerFile(
         await exportProject(sourceProject!, assets),
         `${filename(project.name)}.henscreenshots`,
@@ -504,80 +429,37 @@ export function App() {
     }
   }
   async function exportImages(all: boolean, languageCodes?: string[]) {
-    if (!project || !shot || busy) return;
-    const original = structuredClone(sourceProject!);
-    const locales = languageCodes?.length
-      ? languageCodes
-      : [locale ?? original.localization?.source ?? ""];
-    const snapshot = localizedProject(original, locales[0]);
-    const shots = all ? snapshot.shots : linkedShots(snapshot, shot.id);
-    const multiple = all || shots.length > 1 || locales.length > 1;
-    cancelExport.current = false;
+    if (!sourceProject || !shot || busy) return;
+    const controller = new AbortController();
+    cancelExport.current = controller;
     setBusy("Preparing export…");
     try {
-      const profile = resolveExportProfile(snapshot);
-      if (all && shots.length > profile.maxCount)
-        throw new Error(
-          `This destination accepts at most ${profile.maxCount} screenshots per device slot. Export individual screenshots or reduce the series.`,
-        );
-      const files: Record<string, Uint8Array> = {};
-      let png: Blob | undefined;
-      let exportedBytes = 0;
-      for (const [languageIndex, code] of locales.entries()) {
-        const version = localizedProject(original, code);
-        const localizedShots = all
-          ? version.shots
-          : linkedShots(version, shot.id);
-        for (const [index, item] of localizedShots.entries()) {
-          if (cancelExport.current) return;
-          setBusy(
-            `Rendering ${languageIndex * shots.length + index + 1} of ${shots.length * locales.length}…`,
-          );
-          const asset = assets.find((asset) => asset.id === item.assetId);
-          if (!asset)
-            throw new Error(
-              `The original image for screenshot ${index + 1} is missing. Replace it and try again.`,
-            );
-          const image = images.get(asset.id) ?? (await loadImage(asset));
-          png = await renderShot(version, item, image);
-          exportedBytes += png.size;
-          if (exportedBytes > 250 * 1024 * 1024)
-            throw new Error(
-              "This export is too large to package safely. Select fewer languages or screenshots and export again.",
-            );
-          files[
-            `${original.localization ? `${code}/` : ""}${String(snapshot.shots.findIndex((s) => s.id === item.id) + 1).padStart(2, "0")}-${filename(item.title)}.png`
-          ] = new Uint8Array(await png.arrayBuffer());
-        }
-      }
-      if (cancelExport.current) return;
-      if (multiple) {
-        setBusy("Packaging screenshots…");
-        const archive = await new Promise<Uint8Array>((resolve, reject) =>
-          zip(files, { level: 0 }, (error, result) =>
-            error ? reject(error) : resolve(result),
-          ),
-        );
-        if (cancelExport.current) return;
-        offerFile(
-          new Blob([new Uint8Array(archive)], { type: "application/zip" }),
-          `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}${!all ? "-selection" : ""}${locales.length > 1 ? "-languages" : original.localization ? `-${locales[0]}` : ""}.zip`,
-        );
-      } else if (png)
-        offerFile(
-          png,
-          `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}${original.localization ? `-${locales[0]}` : ""}-${String(project.shots.findIndex((s) => s.id === shot.id) + 1).padStart(2, "0")}.png`,
-        );
+      const { buildScreenshotExport } = await import("../export/screenshots");
+      const result = await buildScreenshotExport({
+        project: sourceProject,
+        assets,
+        images,
+        shotId: shot.id,
+        all,
+        locale,
+        languageCodes,
+        signal: controller.signal,
+        onProgress: setBusy,
+      });
+      offerFile(result.blob, result.name);
       setNotice({
-        message: `${multiple ? "Your screenshots are" : "Your PNG is"} ready. Check your downloads.`,
+        message: `${result.blob.type === "image/png" ? "Your PNG is" : "Your screenshots are"} ready. Check your downloads.`,
       });
     } catch (error) {
-      setNotice({
-        message: `Export couldn't finish. ${errorMessage(error)}`,
-        error: true,
-      });
-      setExportOpen(false);
+      if (!controller.signal.aborted) {
+        setNotice({
+          message: `Export couldn't finish. ${errorMessage(error)}`,
+          error: true,
+        });
+        setExportOpen(false);
+      }
     } finally {
+      cancelExport.current = null;
       setBusy(null);
     }
   }
@@ -836,134 +718,16 @@ export function App() {
           Opening your studio…
         </main>
       ) : !project ? (
-        <main className="library">
-          <div className="library-intro">
-            <p className="eyebrow">YOUR APPS, IN THEIR BEST LIGHT</p>
-            <h1>
-              A good app deserves
-              <br />
-              <span>a great first impression.</span>
-            </h1>
-            <p className="intro-copy">
-              Turn your screenshots into a story worth downloading.
-              <br className="desktop-break" /> A little framing. The right
-              words. All yours.
-            </p>
-            <div className="library-actions">
-              <button
-                className="button primary"
-                disabled={!!busy}
-                onClick={() => setNewProjectOpen(true)}
-              >
-                <Icon name="plus" />
-                New project
-              </button>
-              <button
-                className="button secondary"
-                disabled={!!busy}
-                onClick={() => backupInput.current!.click()}
-              >
-                <Icon name="upload" />
-                Open project file
-              </button>
-              <button
-                className="button secondary"
-                disabled={!!busy}
-                onClick={() => setBrandKitsOpen(true)}
-              >
-                <Icon name="brand" />
-                Brand kits
-              </button>
-            </div>
-            <p className="local-note">
-              Your screenshots stay in your browser. No account needed.
-            </p>
-          </div>
-          <section className="projects-section" aria-label="Saved projects">
-            <div className="section-heading">
-              <h2>Your projects</h2>
-              <span className="muted">
-                {visibleProjects.length} in this workspace
-              </span>
-            </div>
-            <div
-              className="library-purpose"
-              role="group"
-              aria-label="Project workspace"
-            >
-              {(["stores", "portfolio"] as const).map((purpose) => (
-                <button
-                  key={purpose}
-                  aria-pressed={libraryPurpose === purpose}
-                  onClick={() => setLibraryPurpose(purpose)}
-                >
-                  {purpose === "stores" ? "App stores" : "Portfolio"}
-                  <span>
-                    {
-                      projects.filter(
-                        (item) => projectPurpose(item) === purpose,
-                      ).length
-                    }
-                  </span>
-                </button>
-              ))}
-            </div>
-            {visibleProjects.length ? (
-              <div className="project-grid">
-                {visibleProjects.map((item) => (
-                  <button
-                    className="project-card"
-                    key={item.id}
-                    disabled={!!busy}
-                    onClick={() => void openExisting(item.id)}
-                  >
-                    <div
-                      className="project-cover"
-                      style={{
-                        background: item.style.background,
-                        color: item.style.textColor,
-                      }}
-                    >
-                      <span>{item.name || "Untitled app"}</span>
-                      <Icon name="phone" size={70} />
-                      <span className="cover-rule" />
-                    </div>
-                    <div className="project-card-details">
-                      <span>
-                        <strong>{item.name || "Untitled app"}</strong>
-                        <small>
-                          {item.shots.length} screenshot
-                          {item.shots.length === 1 ? "" : "s"} ·{" "}
-                          {new Date(item.updatedAt).toLocaleDateString("en", {
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </small>
-                      </span>
-                      <Icon name="arrow" />
-                    </div>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="empty-library">
-                <Icon name="folder" size={28} />
-                <div>
-                  <h3>
-                    {libraryPurpose === "stores"
-                      ? "A place for your next launch."
-                      : "A place for your best work."}
-                  </h3>
-                  <p>
-                    Your projects will appear here, ready to pick up where you
-                    left off.
-                  </p>
-                </div>
-              </div>
-            )}
-          </section>
-          <Footer />
-        </main>
+        <ProjectLibrary
+          projects={projects}
+          libraryPurpose={libraryPurpose}
+          setLibraryPurpose={setLibraryPurpose}
+          busy={busy}
+          onNew={() => setNewProjectOpen(true)}
+          onImport={() => backupInput.current!.click()}
+          onBrandKits={() => setBrandKitsOpen(true)}
+          onOpen={openExisting}
+        />
       ) : (
         <main
           className={`studio ${dragging ? "is-dragging" : ""}`}
@@ -1484,57 +1248,66 @@ export function App() {
         </div>
       )}
       {exportOpen && project && (
-        <ExportDialog
-          count={project.shots.length}
-          languages={
-            sourceProject?.localization
-              ? [
-                  sourceProject.localization.source,
-                  ...sourceProject.localization.targets,
-                ]
-              : []
-          }
-          currentLanguage={locale ?? sourceProject?.localization?.source ?? ""}
-          pair={!!pair}
-          profile={resolveExportProfile(project)}
-          busy={busy}
-          file={readyFile}
-          onClose={() => {
-            if (!busy) setExportOpen(false);
-          }}
-          onExport={exportImages}
-          onCancel={() => {
-            cancelExport.current = true;
-            setExportOpen(false);
-          }}
-        />
+        <DeferredFeature label="Export" onClose={() => setExportOpen(false)}>
+          <ExportDialog
+            count={project.shots.length}
+            languages={
+              sourceProject?.localization
+                ? [
+                    sourceProject.localization.source,
+                    ...sourceProject.localization.targets,
+                  ]
+                : []
+            }
+            currentLanguage={
+              locale ?? sourceProject?.localization?.source ?? ""
+            }
+            pair={!!pair}
+            profile={resolveExportProfile(project)}
+            busy={busy}
+            file={readyFile}
+            onClose={() => {
+              if (!busy) setExportOpen(false);
+            }}
+            onExport={exportImages}
+            onCancel={() => {
+              cancelExport.current?.abort();
+              setExportOpen(false);
+            }}
+          />
+        </DeferredFeature>
       )}
       {newProjectOpen && (
         <NewProjectDialog
-          onCreate={newProject}
+          onCreate={(purpose) => {
+            newProject(purpose);
+            setNewProjectOpen(false);
+          }}
           onClose={() => setNewProjectOpen(false)}
         />
       )}
       {publicationOpen && project && shot && (
-        <PublicationPreview
-          project={project}
-          images={images}
-          selectedId={selectedId}
+        <DeferredFeature
+          label="Publication preview"
           onClose={() => setPublicationOpen(false)}
-          onEdit={(id) => {
-            state.select(id);
-            setSelectedCanvasElement(null);
-            setPublicationOpen(false);
-          }}
-        />
+        >
+          <PublicationPreview
+            project={project}
+            images={images}
+            selectedId={selectedId}
+            onClose={() => setPublicationOpen(false)}
+            onEdit={(id) => {
+              state.select(id);
+              setSelectedCanvasElement(null);
+              setPublicationOpen(false);
+            }}
+          />
+        </DeferredFeature>
       )}
       {languagesOpen && sourceProject && (
-        <Suspense
-          fallback={
-            <div role="status" className="work-progress">
-              Opening languages…
-            </div>
-          }
+        <DeferredFeature
+          label="Languages"
+          onClose={() => setLanguagesOpen(false)}
         >
           <LanguagesDialog
             project={sourceProject}
@@ -1547,24 +1320,29 @@ export function App() {
             onEdit={state.edit}
             onSelect={state.select}
           />
-        </Suspense>
+        </DeferredFeature>
       )}
       {brandKitsOpen && (
-        <BrandKitDialog
-          project={project}
-          shot={shot}
-          images={images}
+        <DeferredFeature
+          label="Brand kits"
           onClose={() => setBrandKitsOpen(false)}
-          onApply={(kit, all) => {
-            state.edit((draft) =>
-              applyBrandKit(draft, kit, selectedId ?? undefined, all),
-            );
-            setBrandKitsOpen(false);
-            setNotice({
-              message: `${kit.name} applied to ${all ? "the project" : pair ? "both linked slides" : "this slide"}. Undo anytime.`,
-            });
-          }}
-        />
+        >
+          <BrandKitDialog
+            project={project}
+            shot={shot}
+            images={images}
+            onClose={() => setBrandKitsOpen(false)}
+            onApply={(kit, all) => {
+              state.edit((draft) =>
+                applyBrandKit(draft, kit, selectedId ?? undefined, all),
+              );
+              setBrandKitsOpen(false);
+              setNotice({
+                message: `${kit.name} applied to ${all ? "the project" : pair ? "both linked slides" : "this slide"}. Undo anytime.`,
+              });
+            }}
+          />
+        </DeferredFeature>
       )}
       {slideMenu &&
         project &&
@@ -1617,212 +1395,30 @@ export function App() {
         />
       )}
       {templatesOpen && project && shot && (
-        <TemplateGallery
-          project={project}
-          shot={shot}
-          images={images}
+        <DeferredFeature
+          label="Templates"
           onClose={() => setTemplatesOpen(false)}
-          onApply={(id, all, keepColors) => {
-            state.edit((draft) =>
-              applyTemplate(draft, shot.id, id, all, keepColors),
-            );
-            setTemplatesOpen(false);
-            setReadyFile(null);
-            setNotice({
-              message: isPanoramaTemplate(id)
-                ? "Panorama ready. Edit each caption and export the two slides together."
-                : `${getTemplate(id).name} applied to ${all ? `all ${project.shots.length} screenshots` : pair ? "both slides" : "this screenshot"}. You can undo this change.`,
-            });
-          }}
-        />
+        >
+          <TemplateGallery
+            project={project}
+            shot={shot}
+            images={images}
+            onClose={() => setTemplatesOpen(false)}
+            onApply={(id, all, keepColors) => {
+              state.edit((draft) =>
+                applyTemplate(draft, shot.id, id, all, keepColors),
+              );
+              setTemplatesOpen(false);
+              setReadyFile(null);
+              setNotice({
+                message: isPanoramaTemplate(id)
+                  ? "Panorama ready. Edit each caption and export the two slides together."
+                  : `${getTemplate(id).name} applied to ${all ? `all ${project.shots.length} screenshots` : pair ? "both slides" : "this screenshot"}. You can undo this change.`,
+              });
+            }}
+          />
+        </DeferredFeature>
       )}
     </>
-  );
-}
-
-function ExportDialog({
-  languages,
-  currentLanguage,
-  count,
-  pair,
-  profile,
-  busy,
-  file,
-  onClose,
-  onExport,
-  onCancel,
-}: {
-  languages: string[];
-  currentLanguage: string;
-  count: number;
-  pair: boolean;
-  profile: ExportProfile;
-  busy: string | null;
-  file: ReadyFile | null;
-  onClose: () => void;
-  onExport: (all: boolean, locales?: string[]) => Promise<void>;
-  onCancel: () => void;
-}) {
-  const [exportLanguages, setExportLanguages] = useState([currentLanguage]);
-  const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    const dialog = ref.current!;
-    dialog.showModal();
-    return () => dialog.close();
-  }, []);
-  return (
-    <dialog
-      ref={ref}
-      className="export-dialog"
-      aria-labelledby="export-heading"
-      aria-describedby="export-description"
-      onCancel={(event) => {
-        event.preventDefault();
-        if (busy) onCancel();
-        else onClose();
-      }}
-    >
-      <div className="dialog-heading">
-        <Icon name="download" size={26} />
-        <button
-          className="icon-button"
-          aria-label="Close export"
-          disabled={!!busy}
-          onClick={onClose}
-        >
-          <Icon name="close" />
-        </button>
-      </div>
-      <p className="eyebrow">READY FOR A FIRST IMPRESSION</p>
-      <h2 id="export-heading">
-        {file ? (
-          "Your export is ready."
-        ) : (
-          <>
-            Take your work
-            <br />
-            out into the world.
-          </>
-        )}
-      </h2>
-      <p className="dialog-copy" id="export-description">
-        {profile.width} × {profile.height} pixels · RGB PNG without
-        transparency.
-        <br />
-        {profile.name}
-      </p>
-      {busy ? (
-        <div className="export-progress">
-          <p role="status">
-            <span className="spinner" />
-            {busy}
-          </p>
-          <button className="button secondary full" onClick={onCancel}>
-            Cancel export
-          </button>
-        </div>
-      ) : file ? (
-        <div className="export-result">
-          {file.image && (
-            <img
-              className="export-preview"
-              src={file.url}
-              alt="Exported screenshot"
-              width={profile.width}
-              height={profile.height}
-            />
-          )}
-          <a
-            className="button primary full"
-            href={file.url}
-            download={file.name}
-          >
-            <Icon name="download" />
-            Save {file.image ? "PNG" : "ZIP"}
-          </a>
-          <button className="button secondary full" onClick={onClose}>
-            Back to editing
-          </button>
-        </div>
-      ) : (
-        <div className="export-options">
-          {languages.length > 1 && (
-            <fieldset className="export-languages">
-              <legend>Languages to export</legend>
-              {languages.map((code) => (
-                <label className="check-field" key={code}>
-                  <input
-                    type="checkbox"
-                    checked={exportLanguages.includes(code)}
-                    onChange={(event) =>
-                      setExportLanguages((previous) =>
-                        event.target.checked
-                          ? [...previous, code]
-                          : previous.filter((item) => item !== code),
-                      )
-                    }
-                  />
-                  {languageName(code)}
-                </label>
-              ))}
-              <p className="field-help">
-                A folder per language inside the ZIP. Review every translation
-                before publishing.
-              </p>
-            </fieldset>
-          )}
-          <button
-            className="button primary full"
-            disabled={!exportLanguages.length}
-            onClick={() => void onExport(false, exportLanguages)}
-          >
-            <Icon name="image" />
-            {pair ? "Export this panorama" : "Export this screenshot"}
-            <span>
-              {exportLanguages.length > 1
-                ? "ZIP"
-                : pair
-                  ? "ZIP · 2 PNGs"
-                  : "PNG"}
-            </span>
-          </button>
-          <button
-            className="button secondary full"
-            disabled={count > profile.maxCount || !exportLanguages.length}
-            onClick={() => void onExport(true, exportLanguages)}
-          >
-            <Icon name="download" />
-            Export all {count} screenshots<span>ZIP</span>
-          </button>
-        </div>
-      )}
-      {!file && (
-        <p className="field-help export-guidance">
-          {profile.note}{" "}
-          {count > profile.maxCount && (
-            <strong>
-              This series has {count} screenshots; the selected destination
-              allows {profile.maxCount}. Export one at a time or reduce the
-              series.
-            </strong>
-          )}
-          {profile.source && (
-            <>
-              {" "}
-              <a
-                href={profile.source}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View store requirements ↗
-              </a>
-            </>
-          )}
-        </p>
-      )}
-      <p className="field-help">
-        Your source images and saved project stay editable.
-      </p>
-    </dialog>
   );
 }

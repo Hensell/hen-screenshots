@@ -1,4 +1,6 @@
 import {
+  lazy,
+  Suspense,
   useEffect,
   useRef,
   useState,
@@ -7,7 +9,12 @@ import {
 } from "react";
 import type { Project, Shot, TextElement, CanvasElement } from "../core/model";
 import { canonicalCanvas } from "../core/export-profiles";
-import { Artboard } from "../rendering/Artboard";
+import { RenderBoundary } from "../app/DeferredFeature";
+const Artboard = lazy(() =>
+  import("../rendering/Artboard").then((module) => ({
+    default: module.Artboard,
+  })),
+);
 
 export function Preview({
   project,
@@ -59,16 +66,32 @@ export function Preview({
       aria-label={`${shot.title.replace(/\n/g, " ")} — ${shot.subtitle}`}
     >
       {width > 0 && image ? (
-        <Artboard
-          project={project}
-          shot={shot}
-          image={image}
-          width={width}
-          guides={guides}
-          onMove={onMove}
-          onTextMove={onTextMove}
-          onSelectElement={onSelectElement}
-        />
+        <RenderBoundary
+          fallback={
+            <p role="alert" className="preview-loading">
+              Preview unavailable. Save your project and reload to try again.
+            </p>
+          }
+        >
+          <Suspense
+            fallback={
+              <div className="preview-loading" role="status">
+                Preparing preview…
+              </div>
+            }
+          >
+            <Artboard
+              project={project}
+              shot={shot}
+              image={image}
+              width={width}
+              guides={guides}
+              onMove={onMove}
+              onTextMove={onTextMove}
+              onSelectElement={onSelectElement}
+            />
+          </Suspense>
+        </RenderBoundary>
       ) : (
         <div className="preview-loading">
           {small ? "" : "Loading screenshot…"}

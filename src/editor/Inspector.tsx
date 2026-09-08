@@ -18,7 +18,7 @@ import { linkedShots, panoramaPair } from "../core/panorama";
 import { CanvasSettings } from "./CanvasSettings";
 import { resetText } from "../core/text-placement";
 import { appliedBrand } from "../core/brand-application";
-import { BrandBadge } from "./BrandKitDialog";
+import { BrandBadge } from "./BrandBadge";
 
 export type InspectorTab = "design" | "text" | "device" | "canvas";
 const inspectorTabs = [

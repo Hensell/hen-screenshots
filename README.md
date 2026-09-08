@@ -117,20 +117,24 @@ Open [localhost:5174](http://127.0.0.1:5174/) for the landing page or [localhost
 
 The landing page is static HTML and CSS. The React editor loads at `/studio/`. A shared Konva scene renders editor previews, template thumbnails, and full-resolution exports, so they use the same composition rules.
 
+The library loads first. Canvas rendering, templates, brand kits, publication preview, languages, backups, and export tools load when needed. Optional dialogs show loading and recovery states so a failed download does not close the active project.
+
 | Directory          | Responsibility                                                         |
 | ------------------ | ---------------------------------------------------------------------- |
-| `src/app/`         | Project library, editor shell, dialogs, and user actions               |
+| `src/app/`         | Editor shell, project-library navigation, dialogs, and loading recovery |
 | `src/core/`        | Project schema, templates, catalog search, and export profiles         |
 | `src/editor/`      | Editing state, undo/redo, inspector, and template library              |
 | `src/rendering/`   | Shared scene, device frames, typography, and decorations               |
 | `src/assets/`      | Image validation and decoding                                          |
 | `src/storage/`     | IndexedDB persistence, migrations, and project backups                 |
-| `src/export/`      | PNG rendering and export validation                                    |
+| `src/export/`      | PNG rendering, snapshot-based language exports, ZIP packaging and cancellation |
 | `src/translation/` | Pinned model catalog, optional worker, download cache and cancellation |
 
 The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 13 templates.
 
 Autosave checks revisions to prevent one tab from overwriting another tab's changes. Image blobs are immutable: caption edits only write the document, and unused images are removed from the saved copy. Undo/redo retains the required original images in the current editing session. Brand kit updates use revision checks too. Project files use schema 7 and support migration from versions 1–6. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots and portability, localization, translation cancellation, and export profiles.
+
+Exports capture one revision of the project and its source images before rendering. Language folders, slide numbering, missing-image errors, cancellation, and packaging limits have dedicated regression tests. The [workflow QA report](docs/workflow-qa-2026-09-08.md) distinguishes automated coverage, visual checks, and validation limits.
 
 ### Deployment
 
@@ -152,6 +156,7 @@ For code contributions, keep changes focused and run `npm run check`. Check rend
 
 ## Project notes
 
+- [Workflow QA and loading improvements](docs/workflow-qa-2026-09-08.md)
 - [Technical review and follow-up priorities](docs/technical-review-2026-09-08.md)
 - [Architecture and original implementation plan](docs/architecture.md)
 - [Brand identity](docs/brand-identity.md)
