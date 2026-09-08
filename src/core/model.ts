@@ -91,6 +91,14 @@ export const templateIds = [
   "desktop-suite",
   "ecosystem",
   "constellation",
+  "evergreen",
+  "snowfall",
+  "gift-wrap",
+  "gingerbread",
+  "midnight",
+  "firework",
+  "countdown",
+  "first-light",
 ] as const;
 export type TemplateId = (typeof templateIds)[number];
 export type TextElement = "title" | "subtitle";

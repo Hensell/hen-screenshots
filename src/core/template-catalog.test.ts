@@ -114,6 +114,9 @@ describe("template discovery", () => {
   });
   it("combines dark appearance with composition, category, query and pagination", () => {
     expect(ids({ appearance: "dark" })).toEqual([
+      "evergreen",
+      "midnight",
+      "firework",
       "handoff",
       "desktop-suite",
       "constellation",
@@ -142,7 +145,7 @@ describe("template discovery", () => {
     expect(ids({ appearance: "light", query: "orbit" })).toEqual([]);
     expect(
       paginateCatalog(browse({ appearance: "dark" }).items, 2, 12),
-    ).toMatchObject({ page: 2, total: 16 });
+    ).toMatchObject({ page: 2, total: 19 });
     expect(ids({ appearance: "colorful", query: "peach" })).toEqual([
       "confetti",
     ]);
@@ -151,10 +154,10 @@ describe("template discovery", () => {
     expect(ids({})).toEqual(templates.map((item) => item.id));
     expect(new Set(ids({})).size).toBe(templates.length);
     expect(browse().counts).toEqual({
-      All: 43,
-      Minimal: 9,
-      Bold: 19,
-      Editorial: 15,
+      All: 51,
+      Minimal: 11,
+      Bold: 23,
+      Editorial: 17,
     });
   });
   it("combines case, accents, whitespace, punctuation, style and descriptive keywords", () => {
@@ -194,6 +197,9 @@ describe("template discovery", () => {
     expect(
       ids({ query: "dark", layout: "single", background: "solid" }),
     ).toEqual([
+      "evergreen",
+      "midnight",
+      "firework",
       "cobweb",
       "witching-hour",
       "contour",
@@ -254,20 +260,22 @@ describe("catalog pagination", () => {
     const first = paginateCatalog(items, 1, 12);
     const middle = paginateCatalog(items, 2, 12);
     const third = paginateCatalog(items, 3, 12);
-    const last = paginateCatalog(items, 4, 12);
+    const fourth = paginateCatalog(items, 4, 12);
+    const last = paginateCatalog(items, 5, 12);
     expect(first).toMatchObject({
       page: 1,
-      pages: 4,
+      pages: 5,
       from: 1,
       to: 12,
-      total: 43,
+      total: 51,
     });
     expect(middle).toMatchObject({ page: 2, from: 13, to: 24 });
-    expect(last).toMatchObject({ page: 4, from: 37, to: 43 });
+    expect(last).toMatchObject({ page: 5, from: 49, to: 51 });
     expect([
       ...first.items,
       ...middle.items,
       ...third.items,
+      ...fourth.items,
       ...last.items,
     ]).toEqual(items);
     expect(
@@ -289,7 +297,7 @@ describe("catalog pagination", () => {
     expect(paginateCatalog(browse().items, NaN, 24)).toMatchObject({
       page: 1,
       size: 24,
-      total: 43,
+      total: 51,
     });
   });
   it("keeps navigation bounded and exposes both ends of a large catalog", () => {

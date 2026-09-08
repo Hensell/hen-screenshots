@@ -19,7 +19,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 
 ## Make something worth showing
 
-- **A template for your story.** 43 designs, from quiet editorial layouts to bold posters, including five panoramas that connect two slides into one scene.
+- **A template for your story.** 51 designs, from quiet editorial layouts to bold posters, including five panoramas that connect two slides into one scene.
 - **Find your look quickly.** Search by name, color, pattern, device position, or visual idea. Filter by style, appearance (Light, Dark, or Colorful), composition, and background, sort results, and browse 12, 24, or 48 templates per page. Previews use your own screenshots.
 - **Keep your favorites close.** Star any template and open **Favorites** to find it again. Favorites work with search, filters, and pagination and are shared across your projects in this browser. They stay on this device, outside project backups; no account is required.
 - **Choose the right frame.** iPhone, Android phone, iPad, Android tablet, monitor, laptop, or a simple screenshot card.
@@ -34,6 +34,8 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 - **Use your language.** The website and editor are available in English, Spanish, and Brazilian Portuguese. The language selector remembers your choice in this browser; it does not change your screenshot text or project language versions.
 
 **Multi-device collection:** Sidekick, Handoff, Companion, Duet, Workspace, Desktop Suite, Ecosystem, and Constellation combine a phone with a desktop, a phone with a tablet, a tablet with a desktop, or all three. Find them under **Templates → Composition → Multiple devices**. Select each device on the canvas or in **Device** to replace its image, change its frame, move it, or resize it independently. **Reset placement** restores only the selected device. New devices initially reuse the current capture; replace each one with the right screenshot. Language versions can override each screen independently, and project files include every image.
+
+**Christmas & New Year collection:** Evergreen, Snowfall, Gift Wrap, and Gingerbread bring pine branches, ornaments, paper snowflakes, ribbons, and iced cookies to holiday launches. Midnight, Firework, Countdown, and First Light welcome the new year with art deco details, fireworks, streamers, and a quiet sunrise. Search **Christmas** or **New Year** (also **Navidad / Año Nuevo** in Spanish and **Natal / Ano Novo** in Portuguese). All eight designs adapt to phone, tablet, desktop, and portfolio formats, with editable colors and no fixed year.
 
 **Halloween collection:** Jack O’ Lantern, Cobweb, Boo, Witching Hour, Candy Club, and the two-slide Moonlight panorama bring carved pumpkins, fine webs, friendly ghosts, stars, candy, and a moonlit sky to your screenshots. Search **Halloween** or **October** in Templates; Spanish and Portuguese searches work too. All colors are editable, and the collection remains available year-round.
 
@@ -140,7 +142,7 @@ The library loads first. Canvas rendering, templates, brand kits, publication pr
 | `src/export/`      | PNG rendering, snapshot-based language exports, ZIP packaging, and cancellation |
 | `src/translation/` | Pinned model catalog, optional worker, download cache, and cancellation         |
 
-The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 43 templates.
+The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 51 templates.
 
 Autosave checks revisions to prevent one tab from overwriting another tab's changes. Image blobs are immutable: caption edits only write the document, and unused images are removed from the saved copy. Undo/redo retains the required original images in the current editing session. Brand kit updates use revision checks too. Project files use schema 8 and support migration from versions 1–7. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots, portability, localization, translation cancellation, and export profiles.
 

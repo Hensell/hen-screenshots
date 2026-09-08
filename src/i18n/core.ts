@@ -5,6 +5,7 @@ import { dialogMessages } from "./dialog-messages";
 import { discoveryMessages } from "./discovery-messages";
 import { landingMessages } from "./landing-messages";
 import { errorMessages } from "./error-messages";
+import { holidayMessages } from "./holiday-messages";
 import { halloweenMessages } from "./halloween-messages";
 
 export type InterfaceLocale = "en" | "es" | "pt-BR";
@@ -24,6 +25,7 @@ export const messageCatalog: Record<string, readonly [string, string]> = {
   ...landingMessages,
   ...errorMessages,
   ...halloweenMessages,
+  ...holidayMessages,
   ...compositionMessages,
 };
 
