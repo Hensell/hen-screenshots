@@ -1,3 +1,4 @@
+import { halloweenTemplates } from "./halloween-templates";
 import { refitText, resetText } from "./text-placement";
 import { panoramaStart } from "./panorama-families";
 import {
@@ -54,6 +55,8 @@ export interface Template {
   titleFont?: "Fraunces";
   titleWeight?: string;
   appearance?: "light" | "dark" | "colorful";
+  /** Reserve space for decorative artwork around the fitted product. */
+  deviceInset?: number;
   composition?:
     | PatternComposition
     | "angled"
@@ -84,6 +87,7 @@ export interface Template {
 
 /** IDs and geometry are part of document v2. Add new IDs for incompatible designs. */
 export const templates: readonly Template[] = [
+  ...halloweenTemplates,
   ...patternTemplates,
   ...showcaseTemplates,
   {
@@ -530,6 +534,16 @@ function collectionLayout(project: Project, style: Style, template: Template) {
     subtitle = { x: 88, y: h * 0.25, width: 904, height: h * 0.065 };
     area = { x: 100, y: h * 0.355, width: 880, height: h * 0.575 };
   }
+  const panel = { ...area };
+  if (template.deviceInset) {
+    const inset = template.deviceInset;
+    area = {
+      x: area.x + area.width * inset,
+      y: area.y + area.height * inset,
+      width: area.width * (1 - inset * 2),
+      height: area.height * (1 - inset * 2),
+    };
+  }
   const unit = deviceGeometry(
     style.device,
     1000,
@@ -569,7 +583,7 @@ function collectionLayout(project: Project, style: Style, template: Template) {
     },
     fontScale: wide ? 0.62 : 0.96,
     subtitleSize: wide ? 23 : 32,
-    panel: area,
+    panel,
   };
 }
 

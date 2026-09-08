@@ -1,4 +1,5 @@
 import Konva from "konva";
+import { drawHalloweenDecoration } from "./halloween-decoration";
 import type { Style } from "../core/model";
 import type { Rect } from "./geometry";
 import { isPanoramaEnd, panoramaStart } from "../core/panorama-families";
@@ -209,6 +210,7 @@ export function drawTemplateDecoration(
   panel: Rect,
 ) {
   const h = canvas.height;
+  drawHalloweenDecoration(layer, style, h, panel);
   drawShowcaseDecoration(layer, style, h, panel);
   drawPatternDecoration(layer, style, h, panel);
   drawExpressiveDecoration(layer, style, h, panel);

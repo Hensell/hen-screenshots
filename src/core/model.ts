@@ -75,6 +75,13 @@ export const templateIds = [
   "blueprint",
   "stitch",
   "parade",
+  "jack-o-lantern",
+  "cobweb",
+  "boo",
+  "witching-hour",
+  "candy-club",
+  "moonlight",
+  "moonlight-end",
 ] as const;
 export type TemplateId = (typeof templateIds)[number];
 export type TextElement = "title" | "subtitle";

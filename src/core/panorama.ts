@@ -95,6 +95,15 @@ export const panoramaStyles = {
     textColor: "#F1F0E9",
     titleSize: 116,
   },
+  moonlight: {
+    ...panoramaStyle,
+    template: "moonlight",
+    background: "#192236",
+    backgroundEnd: "#30405A",
+    textColor: "#F5EBD8",
+    accentColor: "#C6B7A6",
+    titleSize: 116,
+  },
 } satisfies Record<PanoramaId, Partial<Style>>;
 
 /** Phone placement lives in one 2160-wide scene; each export crops one half. */
@@ -111,7 +120,9 @@ export function panoramaLayout(project: Project, style: Style) {
         ? -10
         : family === "orbit"
           ? 12
-          : -8;
+          : family === "moonlight"
+            ? -12
+            : -8;
   const unit = deviceGeometry(
     style.device,
     1000,
@@ -145,13 +156,13 @@ export function panoramaLayout(project: Project, style: Style) {
       title: {
         x: right ? (wide ? 650 : 620) : 80,
         y: h * (wide ? 0.1 : right ? 0.65 : 0.065),
-        width: wide ? 420 : right ? 390 : 520,
+        width: wide ? 420 : right ? 390 : family === "moonlight" ? 420 : 520,
         height: h * (wide ? 0.4 : 0.25),
       },
       subtitle: {
         x: right ? (wide ? 654 : 624) : 84,
         y: h * (wide ? 0.66 : right ? 0.915 : 0.33),
-        width: wide ? 412 : right ? 386 : 490,
+        width: wide ? 412 : right ? 386 : family === "moonlight" ? 416 : 490,
         height: h * (wide ? 0.16 : 0.065),
       },
       panel: { x: 0, y: 0, width: 2160, height: h },

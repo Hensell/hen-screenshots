@@ -13,9 +13,9 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     "UNA HERRAMIENTA PARA QUIENES CREAN",
     "UMA FERRAMENTA PARA QUEM CRIA",
   ],
-  "A few of the 29 templates waiting in your studio.": [
-    "Algunas de las 29 plantillas que te esperan en el estudio.",
-    "Alguns dos 29 modelos que esperam por você no estúdio.",
+  "A few of the 35 templates waiting in your studio.": [
+    "Algunas de las 35 plantillas que te esperan en el estudio.",
+    "Alguns dos 35 modelos que esperam por você no estúdio.",
   ],
   "A free screenshot studio for your next launch. Make app store screenshots and portfolio mockups right in your browser.":
     [

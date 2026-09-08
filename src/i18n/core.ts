@@ -4,6 +4,7 @@ import { dialogMessages } from "./dialog-messages";
 import { discoveryMessages } from "./discovery-messages";
 import { landingMessages } from "./landing-messages";
 import { errorMessages } from "./error-messages";
+import { halloweenMessages } from "./halloween-messages";
 
 export type InterfaceLocale = "en" | "es" | "pt-BR";
 export type MessageValues = Record<string, string | number>;
@@ -21,6 +22,7 @@ export const messageCatalog: Record<string, readonly [string, string]> = {
   ...discoveryMessages,
   ...landingMessages,
   ...errorMessages,
+  ...halloweenMessages,
 };
 
 export function detectInterfaceLocale(

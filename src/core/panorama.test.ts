@@ -245,7 +245,7 @@ describe("panorama document invariants", () => {
 });
 
 describe("panorama spread geometry", () => {
-  it.each(["panorama", "daybreak", "tidal", "orbit"] as const)(
+  it.each(["panorama", "daybreak", "tidal", "orbit", "moonlight"] as const)(
     "keeps %s devices within the spread across profiles and custom extremes",
     (family) => {
       const scenarios: {
@@ -316,6 +316,17 @@ describe("panorama spread geometry", () => {
                   expect(text.x + text.width).toBeLessThanOrEqual(1080);
                   expect(text.y).toBeGreaterThanOrEqual(0);
                   expect(text.y + text.height).toBeLessThanOrEqual(height);
+                  if (family === "moonlight") {
+                    // Keep default captions clear of the tilted device on both halves.
+                    if (shot.id === pair[0].id)
+                      expect(text.x + text.width).toBeLessThanOrEqual(
+                        centerX - boundWidth / 2,
+                      );
+                    else
+                      expect(1080 + text.x).toBeGreaterThanOrEqual(
+                        centerX + boundWidth / 2,
+                      );
+                  }
                 }
               }
             }
@@ -513,7 +524,7 @@ describe("panorama template changes and undo", () => {
 });
 
 describe("panorama backup", () => {
-  it.each(["panorama", "daybreak", "tidal", "orbit"] as const)(
+  it.each(["panorama", "daybreak", "tidal", "orbit", "moonlight"] as const)(
     "round-trips %s roles, text and original image bytes",
     async (family) => {
       const imageBytes = Uint8Array.from(

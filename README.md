@@ -19,7 +19,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 
 ## Make something worth showing
 
-- **A template for your story.** 29 designs, from quiet editorial layouts to bold posters, including four panoramas that connect two slides into one scene.
+- **A template for your story.** 35 designs, from quiet editorial layouts to bold posters, including five panoramas that connect two slides into one scene.
 - **Find your look quickly.** Search by name, color, pattern, device position, or visual idea. Filter by style, appearance (Light, Dark, or Colorful), composition, and background, sort results, and browse 12, 24, or 48 templates per page. Previews use your own screenshots.
 - **Choose the right frame.** iPhone, Android phone, iPad, Android tablet, monitor, laptop, or a simple screenshot card.
 - **Make the composition yours.** Customize captions, colors, typography, and backgrounds. Drag devices and text independently. Resize devices from their corner handles, with proportions preserved, or use the **Device size** slider. Reset size or placement whenever you want.
@@ -32,7 +32,9 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 - **Keep your work.** Projects save automatically in your browser. Download an editable project file with its original images for backup or transfer.
 - **Use your language.** The website and editor are available in English, Spanish, and Brazilian Portuguese. The language selector remembers your choice in this browser; it does not change your screenshot text or project language versions.
 
-The newest collection adds **Zest, Cabana, Contour, Cherry, Terracotta, Blueprint, Stitch, and Parade**: citrus stripes, aqua awnings, topographic curves, cherry checks, clay fans, cobalt grids, lilac zigzags, and burgundy scallops. Devices sit high, low, to either side, or on a diagonal, with separate space for captions. Search **stripes**, **checker**, **left**, or **diagonal** to find a composition. Open **Templates → Appearance → Dark** to browse all ten dark templates. Every design remains editable and adapts to the project's frame and canvas.
+**Halloween collection:** Jack O’ Lantern, Cobweb, Boo, Witching Hour, Candy Club, and the two-slide Moonlight panorama bring carved pumpkins, fine webs, friendly ghosts, stars, candy, and a moonlit sky to your screenshots. Search **Halloween** or **October** in Templates; Spanish and Portuguese searches work too. All colors are editable, and the collection remains available year-round.
+
+The patterns collection adds **Zest, Cabana, Contour, Cherry, Terracotta, Blueprint, Stitch, and Parade**: citrus stripes, aqua awnings, topographic curves, cherry checks, clay fans, cobalt grids, lilac zigzags, and burgundy scallops. Devices sit high, low, to either side, or on a diagonal, with separate space for captions. Search **stripes**, **checker**, **left**, or **diagonal** to find a composition. Open **Templates → Appearance → Dark** to browse all thirteen dark templates. Every design remains editable and adapts to the project's frame and canvas.
 
 ### Two slides. One bigger story.
 
@@ -41,7 +43,7 @@ The newest collection adds **Zest, Cabana, Contour, Cherry, Terracotta, Blueprin
   <img src="public/examples/panorama-right.webp" width="35%" alt="Right half: the phone and warm ribbon continue into the caption Every day, a little brighter." />
 </p>
 
-Design the pair together, keep a different caption on each slide, and export two separate PNGs in a ZIP. **Panorama**, **Daybreak**, **Tidal**, and **Orbit** each offer a different take on the continuous scene.
+Design the pair together, keep a different caption on each slide, and export two separate PNGs in a ZIP. **Panorama**, **Daybreak**, **Tidal**, **Orbit**, and **Moonlight** each offer a different take on the continuous scene.
 
 ## From capture to export
 
@@ -135,7 +137,7 @@ The library loads first. Canvas rendering, templates, brand kits, publication pr
 | `src/export/`      | PNG rendering, snapshot-based language exports, ZIP packaging, and cancellation |
 | `src/translation/` | Pinned model catalog, optional worker, download cache, and cancellation         |
 
-The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 29 templates.
+The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 35 templates.
 
 Autosave checks revisions to prevent one tab from overwriting another tab's changes. Image blobs are immutable: caption edits only write the document, and unused images are removed from the saved copy. Undo/redo retains the required original images in the current editing session. Brand kit updates use revision checks too. Project files use schema 7 and support migration from versions 1–6. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots, portability, localization, translation cancellation, and export profiles.
 

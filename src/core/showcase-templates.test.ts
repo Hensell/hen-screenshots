@@ -8,6 +8,7 @@ import {
 import { applyTemplate, templateLayout } from "./templates";
 import { showcaseTemplates } from "./showcase-templates";
 import { patternTemplates } from "./pattern-templates";
+import { halloweenTemplates } from "./halloween-templates";
 import { canonicalCanvas, type ExportProfileId } from "./export-profiles";
 import { deviceGeometry, type Rect } from "../rendering/geometry";
 import { isPanoramaTemplate } from "./panorama-families";
@@ -20,7 +21,7 @@ const intersects = (a: Rect, b: Rect) =>
 
 describe("showcase collection geometry", () => {
   it.each(
-    [...showcaseTemplates, ...patternTemplates].filter(
+    [...showcaseTemplates, ...patternTemplates, ...halloweenTemplates].filter(
       (t) => !isPanoramaTemplate(t.id),
     ),
   )(
