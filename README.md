@@ -117,6 +117,8 @@ See [deployment instructions](docs/deployment.md) for build settings, custom dom
 
 Built by [Hensell](https://hensell.dev) for his own apps, and for the things you are building too.
 
+If Hen Screenshots helps you showcase your apps, you can [support its development on Ko-fi](https://ko-fi.com/hensell). Donations are optional; the editor remains free forever.
+
 Enjoying it? Found a bug? Have a template in mind? [Open an issue](https://github.com/Hensell/hen-screenshots/issues) or email [hensell@hensell.dev](mailto:hensell@hensell.dev?subject=Hen%20Screenshots%20feedback). For bugs, include your browser, the steps to reproduce, and what you expected. Only attach screenshots or project files you are comfortable sharing publicly.
 
 For code contributions, keep changes focused and run `npm run check`. Check rendering changes in both the preview and a PNG export, and check UI changes on mobile. New templates need a catalog entry and search keywords in [`src/core/templates.ts`](src/core/templates.ts), with any new scene behavior in `src/rendering/`.
