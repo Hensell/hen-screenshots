@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import Konva from "konva";
 import { errorMessage } from "../core/model";
 import type { Project, Shot, TextElement, CanvasElement } from "../core/model";
@@ -43,25 +49,26 @@ export function Artboard({
   const [selectedLabel, setSelectedLabel] = useState("Device");
   const editable = Boolean(onMove || onTextMove);
   const selectionCallback = useRef(onSelectElement);
-  selectionCallback.current = onSelectElement;
-  function selectElement(
-    element: CanvasElement,
-    ownerId = shot.id,
-    notify = true,
-  ) {
-    selectedElement.current = element;
-    selectedShotId.current = ownerId;
-    setSelectedLabel(
-      element === "title"
-        ? "Headline"
-        : element === "subtitle"
-          ? "Supporting text"
-          : "Device",
-    );
-    if (layerRef.current)
-      selectSceneElement(layerRef.current, element, ownerId);
-    if (notify) selectionCallback.current?.(element, ownerId);
-  }
+  useLayoutEffect(() => {
+    selectionCallback.current = onSelectElement;
+  }, [onSelectElement]);
+  const selectElement = useCallback(
+    (element: CanvasElement, ownerId = shot.id, notify = true) => {
+      selectedElement.current = element;
+      selectedShotId.current = ownerId;
+      setSelectedLabel(
+        element === "title"
+          ? "Headline"
+          : element === "subtitle"
+            ? "Supporting text"
+            : "Device",
+      );
+      if (layerRef.current)
+        selectSceneElement(layerRef.current, element, ownerId);
+      if (notify) selectionCallback.current?.(element, ownerId);
+    },
+    [shot.id],
+  );
   const dimensions = previewDimensions(width, canonicalCanvas(project));
 
   useEffect(() => {
@@ -114,7 +121,7 @@ export function Artboard({
       stage?.destroy();
       layerRef.current = null;
     };
-  }, [project, shot, image, width, onMove, onTextMove, guides]);
+  }, [project, shot, image, width, onMove, onTextMove, guides, selectElement]);
 
   return (
     <div

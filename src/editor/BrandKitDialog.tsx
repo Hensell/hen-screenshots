@@ -137,6 +137,7 @@ export function BrandKitDialog({
     if (dirty) setMessage("");
   }, [dirty]);
   const currentBrand = project ? appliedBrand(project, shot) : undefined;
+  const [initialBrandId] = useState(currentBrand?.id);
   const pair = project && shot ? panoramaPair(project, shot.id) : null;
 
   function choose(kit: BrandKit | null, storedRevision = kit?.revision ?? 0) {
@@ -171,9 +172,7 @@ export function BrandKitDialog({
         if (canceled) return;
         setKits(items);
         choose(
-          items.find((item) => item.id === currentBrand?.id) ??
-            items[0] ??
-            null,
+          items.find((item) => item.id === initialBrandId) ?? items[0] ?? null,
         );
       })
       .catch((error) => {
@@ -188,7 +187,7 @@ export function BrandKitDialog({
       document.body.style.overflow = overflow;
       if (opener?.isConnected) opener.focus({ preventScroll: true });
     };
-  }, []);
+  }, [initialBrandId]);
 
   const preview = useMemo(() => {
     if (!draft) return null;
@@ -221,7 +220,7 @@ export function BrandKitDialog({
     return () => {
       canceled = true;
     };
-  }, [draft?.fonts.title, draft?.fonts.body]);
+  }, [preview]);
 
   async function perform(action: () => Promise<void>) {
     setWorking(true);

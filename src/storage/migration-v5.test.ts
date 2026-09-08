@@ -13,32 +13,26 @@ describe("brand kit database upgrade", () => {
     };
     project.shots[0].textOffsets = { title: { x: 150, y: -25 } };
     const old = new Dexie("hen-screenshots");
-    old
-      .version(4)
-      .stores({
-        projects: "id, updatedAt",
-        assets: "[projectId+id], projectId",
-      });
+    old.version(4).stores({
+      projects: "id, updatedAt",
+      assets: "[projectId+id], projectId",
+    });
     const blob = new Blob(["original image bytes"]);
-    await old
-      .table("projects")
-      .put({
-        id: project.id,
-        project,
-        revision: 8,
-        updatedAt: project.updatedAt,
-      });
-    await old
-      .table("assets")
-      .put({
-        id: "original-image",
-        projectId: project.id,
-        name: "original.png",
-        mime: "image/png",
-        width: 10,
-        height: 20,
-        blob,
-      });
+    await old.table("projects").put({
+      id: project.id,
+      project,
+      revision: 8,
+      updatedAt: project.updatedAt,
+    });
+    await old.table("assets").put({
+      id: "original-image",
+      projectId: project.id,
+      name: "original.png",
+      mime: "image/png",
+      width: 10,
+      height: 20,
+      blob,
+    });
     old.close();
     const repository = await import("./repository");
     try {

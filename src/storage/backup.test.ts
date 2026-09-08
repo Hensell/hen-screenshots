@@ -66,6 +66,30 @@ async function changedBackup(
 }
 
 describe("portable project backups", () => {
+  it("restores more than 20 distinct images across language versions", async () => {
+    const project = createProject("Many languages");
+    project.shots = Array.from({ length: LIMITS.shots }, (_, i) =>
+      createShot(`original-${i}`, i),
+    );
+    addLanguage(project, "en", "es");
+    const assets = project.shots.flatMap((shot, i) => {
+      const translatedId = `spanish-${i}`;
+      localContent(shot, "es").assetId = translatedId;
+      return [shot.assetId, translatedId].map((id) => ({ ...image(), id }));
+    });
+    const backup = new File(
+      [await exportProject(project, assets)],
+      "many-images.henscreenshots",
+    );
+    const restored = await importProject(backup);
+    expect(restored.project.shots).toHaveLength(LIMITS.shots);
+    expect(restored.assets).toHaveLength(40);
+    expect(new Set(referencedAssetIds(restored.project))).toEqual(
+      new Set(restored.assets.map((asset) => asset.id)),
+    );
+    for (const shot of restored.project.shots)
+      expect(shot.translations!.es.assetId).not.toBe(shot.assetId);
+  });
   it("round-trips language words, localized images and placement while preserving the shared design", async () => {
     const project = document();
     applyTemplate(project, project.shots[0].id, "panorama");

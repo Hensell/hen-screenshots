@@ -257,14 +257,22 @@ export async function importProject(file: File): Promise<LoadedProject> {
   }
   if (entries.size !== metadata.assets.length + 1)
     fail("The backup contains unexpected files.");
-  const imported = await importImages(
-    metadata.assets.map((asset) => {
-      const data = extracted[asset.path];
-      if (!data || data.byteLength !== asset.size)
-        fail("A screenshot image is missing or truncated.");
-      return new File([new Uint8Array(data)], asset.name, { type: asset.mime });
-    }),
-  );
+  const imported: Asset[] = [];
+  // The archive's global limits were validated above. Language variants may
+  // reference more images than the editor's 20-image interactive import limit.
+  for (let start = 0; start < metadata.assets.length; start += LIMITS.shots) {
+    const files = metadata.assets
+      .slice(start, start + LIMITS.shots)
+      .map((asset) => {
+        const data = extracted[asset.path];
+        if (!data || data.byteLength !== asset.size)
+          fail("A screenshot image is missing or truncated.");
+        return new File([new Uint8Array(data)], asset.name, {
+          type: asset.mime,
+        });
+      });
+    imported.push(...(await importImages(files)));
+  }
   const ids = new Map<string, string>();
   imported.forEach((asset, index) => {
     const original = metadata.assets[index];

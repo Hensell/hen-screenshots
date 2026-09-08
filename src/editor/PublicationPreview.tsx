@@ -98,7 +98,9 @@ export function PublicationPreview({
     Math.min(Math.max(1, width - 36) * 0.88, 360 * ratio),
   );
   const indexRef = useRef(active);
-  indexRef.current = active;
+  useLayoutEffect(() => {
+    indexRef.current = active;
+  }, [active]);
 
   useEffect(() => {
     const dialog = dialogRef.current!;
@@ -146,7 +148,7 @@ export function PublicationPreview({
       ];
     if (carousel && first && tile)
       carousel.scrollLeft = tile.offsetLeft - first.offsetLeft;
-  }, [tileWidth]);
+  }, [tileWidth, width]);
 
   function trackScroll() {
     if (!width) return;

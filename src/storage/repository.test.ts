@@ -68,7 +68,7 @@ describe("local project persistence", () => {
       inspector.close();
     }
   });
-  it("retains original image bytes and unused images for undo, with project-scoped IDs", async () => {
+  it("keeps only current image references on disk and preserves project-scoped IDs", async () => {
     const first = project();
     const second = { ...project(), updatedAt: first.updatedAt + 100 };
     await saveProject(first, [asset(), asset("old-image")], 0);
@@ -77,25 +77,57 @@ describe("local project persistence", () => {
       [{ ...asset(), blob: new Blob(["different image"]) }],
       0,
     );
-    const revision = await saveProject({ ...first, shots: [] }, [], 1);
-    expect(revision).toBe(2);
-    expect((await loadProject(first.id)).assets).toHaveLength(2);
-    expect(
-      await (
-        await loadProject(first.id)
-      ).assets
-        .find((asset) => asset.id === "image-a")!
-        .blob.text(),
-    ).toBe("image");
+    expect((await loadProject(first.id)).assets.map(({ id }) => id)).toEqual([
+      "image-a",
+    ]);
     expect(await (await loadProject(second.id)).assets[0].blob.text()).toBe(
       "different image",
     );
-    expect((await listProjects()).map((row) => row.project.id)).toEqual([
-      second.id,
-      first.id,
-    ]);
+    await saveProject({ ...first, shots: [] }, [], 1);
+    expect((await loadProject(first.id)).assets).toEqual([]);
     await deleteProject(first.id);
     expect((await loadProject(second.id)).assets).toHaveLength(1);
+  });
+
+  it("restores original bytes from session assets when undoing a saved replacement", async () => {
+    const original = project();
+    await saveProject(original, [asset()], 0);
+    const session = await loadProject(original.id);
+    const replacement = {
+      ...original,
+      shots: [{ ...original.shots[0], assetId: "replacement" }],
+    };
+    const sessionAssets = [...session.assets, asset("replacement")];
+    await saveProject(replacement, sessionAssets, 1);
+    expect((await loadProject(original.id)).assets.map(({ id }) => id)).toEqual(
+      ["replacement"],
+    );
+    await saveProject(original, sessionAssets, 2);
+    const undone = await loadProject(original.id);
+    expect(undone.project).toEqual(original);
+    expect(undone.assets.map(({ id }) => id)).toEqual(["image-a"]);
+    expect(await undone.assets[0].blob.text()).toBe("image");
+    await saveProject(replacement, sessionAssets, 3);
+    expect((await loadProject(original.id)).project).toEqual(replacement);
+  });
+
+  it("does not rewrite immutable blobs when autosaving a caption", async () => {
+    const original = project();
+    await saveProject(original, [asset()], 0);
+    const put = vi.spyOn(IDBObjectStore.prototype, "put");
+    const add = vi.spyOn(IDBObjectStore.prototype, "add");
+    await saveProject({ ...original, name: "New name" }, [asset()], 1);
+    expect(
+      put.mock.contexts.filter(
+        (store) => (store as IDBObjectStore).name === "assets",
+      ),
+    ).toHaveLength(0);
+    expect(
+      add.mock.contexts.filter(
+        (store) => (store as IDBObjectStore).name === "assets",
+      ),
+    ).toHaveLength(0);
+    expect((await loadProject(original.id)).project.name).toBe("New name");
   });
 
   it("allows exactly one writer for the same revision and rejects a stale tab", async () => {
@@ -130,7 +162,11 @@ describe("local project persistence", () => {
     });
     await expect(
       saveProject(
-        { ...original, name: "Should not persist" },
+        {
+          ...original,
+          name: "Should not persist",
+          shots: [{ ...original.shots[0], assetId: "new-image" }],
+        },
         [asset("new-image")],
         1,
       ),

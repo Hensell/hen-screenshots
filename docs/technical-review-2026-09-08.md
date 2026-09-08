@@ -1,0 +1,39 @@
+# Technical review — September 8, 2026
+
+Reviewed baseline: `f3cc532` on `main`. The existing storage, rendering, and domain boundaries are useful; the app does not need a framework change or a full rewrite. The main risks found here were in portable backup restoration and the cost of saving image data.
+
+## Scope and evidence
+
+Targeted inspection covered the editor's async actions and history, IndexedDB transactions, project and brand backups, image decoding, preview/export ownership, localization, translation worker cleanup, and build checks. This is a focused code review, not a claim that every browser or possible user journey has been tested.
+
+Baseline: 339 tests across 24 files passed, TypeScript/build passed, and `npm audit` reported zero known vulnerabilities. The studio's main JavaScript chunk triggered the existing 650 kB size warning.
+
+## Findings addressed
+
+| Priority | Finding and trigger                                                                                                                                                                                                                                                       | Resolution and proof                                                                                                                                                                                                                                                                                                                                                              |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| High     | A valid multilingual backup can contain more than 20 distinct images. Restoration passed all images to the interactive importer, which rejects batches larger than 20. A 20-slide project with separate Spanish captures exported successfully but could not be restored. | Restore validated archives in bounded batches, preserving the archive-wide byte, pixel, file count, and reference checks. A new 40-image round-trip test first failed with “Choose up to 20 images at a time” and passes after the fix.                                                                                                                                           |
+| Medium   | Every autosave wrote every session image blob again, including after a caption-only edit. Replaced/deleted images remained in IndexedDB indefinitely even though persisted history does not reference them.                                                               | The transaction checks the revision first, adds only missing immutable image IDs, saves the current document, and prunes unreferenced disk images atomically. The editor still owns original assets needed for undo/redo. Tests cover no blob writes on text edits, saved replacement/undo/redo, project isolation, and rollback of both new images and pruning on write failure. |
+| Medium   | React effect dependencies and ref updates were unchecked by CI. Initial brand selection was implicit, font preview updates depended on only part of the preview, and carousel sizing omitted the viewport width.                                                          | Make initial brand selection explicit, synchronize preview and viewport effects with their inputs, capture the deletion fallback node, and update callback/index refs after commit. Add enforced React hook/dependency checks.                                                                                                                                                    |
+| Low      | Download filename normalization split accented words: `Pequeños hábitos` became `Pequen-os-ha-bitos`.                                                                                                                                                                     | Remove combining marks before replacing separators; regression cases include composed/decomposed accents and path characters.                                                                                                                                                                                                                                                     |
+
+No project schema migration is needed. Old unused disk images are cleaned during the next successful save. Referenced original and localized images remain part of the saved document and portable backup.
+
+## Automated checks
+
+`npm run check` now runs Oxlint, Prettier verification, Vitest, TypeScript, and the production build. Cloudflare already uses this command before deployment. `npm run format` fixes formatting locally.
+
+Oxlint is pinned and checks the source plus Vite/Vitest configuration. Its native TypeScript parser works with the project's TypeScript 7 toolchain; the current typescript-eslint release declares a peer range below TypeScript 6.1. No forced peer overrides or compiler downgrade were introduced. See [typescript-eslint setup](https://typescript-eslint.io/getting-started/) and [Oxlint configuration](https://oxc.rs/docs/guide/usage/linter/config).
+
+The `set-state-in-effect` optimization rule is disabled deliberately: this app synchronizes loading/error state with imperative canvas, font, and local database operations. Hook ordering, dependency checks, ref checks, and the correctness category remain enabled, with warnings failing the command. Existing narrowly documented dependency suppressions retain the image cache and fixed translation-dialog ownership.
+
+After the fixes: **347 tests across 25 files pass**, lint and formatting are clean, and TypeScript/build pass. `npm audit` still reports **zero known vulnerabilities**; this is a dependency advisory check, not a security certification. Structured closeout review and deployment results are recorded in the completion message.
+
+## Follow-up priorities
+
+1. **Split `App.tsx` along ownership boundaries.** At roughly 1,800 lines it combines project navigation, import/download/export orchestration, editor chrome, and modal state. Extract export orchestration and project-library actions incrementally, with workflow regression coverage; leave the shared document and renderer contracts intact.
+2. **Add a browser regression suite.** Vitest currently runs in Node with fake IndexedDB and simulated browser image decoding. It does not prove native dialog focus, real canvas output, file pickers, or Safari/Firefox behavior. Cover create → import → edit → save/reopen → backup/restore → export, plus multilingual and panorama variants.
+3. **Reduce initial editor loading cost.** The main studio chunk remains approximately 658 kB (205 kB gzip), above the existing warning threshold. Optional dialogs are candidates for lazy loading, with loading/error recovery that preserves unsaved work. Do not silence the warning by raising the threshold.
+4. **Bound in-memory history assets.** Disk cleanup is addressed here. The session still retains imported blobs for undo/redo; a later change can release assets only after no current, past, or future document references them. Test history eviction and replacement races before changing that lifetime.
+
+The earlier visual QA of the header is separate evidence. The browser tool could not start during this review because the Mac was locked; no new visual or cross-browser pass is claimed here.

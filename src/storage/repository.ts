@@ -184,18 +184,26 @@ export async function saveProject(
     if ((current?.revision ?? 0) !== expectedRevision)
       throw new ConflictError();
     if (current) storedProject(current.project);
-    if (assets.length)
-      await db.assets.bulkPut(
-        assets.map((asset) => ({ ...asset, projectId: project.id })),
-      );
     const referenced = referencedAssetIds(project);
-    const stored = await db.assets.bulkGet(
-      referenced.map((id) => [project.id, id]),
-    );
-    if (stored.some((asset) => !asset))
+    const storedKeys = await db.assets
+      .where("projectId")
+      .equals(project.id)
+      .primaryKeys();
+    const storedIds = new Set(storedKeys.map(([, id]) => id));
+    const incoming = new Map(assets.map((asset) => [asset.id, asset]));
+    const missing = referenced.filter((id) => !storedIds.has(id));
+    if (missing.some((id) => !incoming.has(id)))
       throw new Error(
         "A screenshot image is missing. Re-import it before saving.",
       );
+    // Asset IDs are immutable. Text edits write only the document, not all of
+    // its blobs. Undo/redo retains its own source assets in the editor session.
+    if (missing.length)
+      await db.assets.bulkAdd(
+        missing.map((id) => ({ ...incoming.get(id)!, projectId: project.id })),
+      );
+    const keep = new Set(referenced);
+    await db.assets.bulkDelete(storedKeys.filter(([, id]) => !keep.has(id)));
     const revision = expectedRevision + 1;
     await db.projects.put({
       id: project.id,

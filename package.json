@@ -11,9 +11,12 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 5174 --strictPort",
     "test": "vitest run --config vitest.config.ts",
-    "check": "npm run test && npm run build",
+    "check": "npm run lint && npm run format:check && npm test && npm run build",
     "deploy": "npm run build && wrangler deploy",
-    "deploy:check": "npm run build && wrangler deploy --dry-run"
+    "deploy:check": "npm run build && wrangler deploy --dry-run",
+    "lint": "oxlint --deny-warnings src vite.config.ts vitest.config.ts",
+    "format:check": "prettier --check src vite.config.ts vitest.config.ts package.json tsconfig.json .oxlintrc.json",
+    "format": "prettier --write src vite.config.ts vitest.config.ts package.json tsconfig.json .oxlintrc.json"
   },
   "dependencies": {
     "@huggingface/transformers": "4.2.0",
@@ -31,6 +34,7 @@
     "@types/react-dom": "19.2.7",
     "@vitejs/plugin-react": "6.1.1",
     "fake-indexeddb": "6.2.5",
+    "oxlint": "1.82.0",
     "prettier": "3.9.6",
     "typescript": "7.0.2",
     "vite": "8.2.2",

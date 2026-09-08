@@ -98,15 +98,18 @@ npm run dev
 
 Open [localhost:5174](http://127.0.0.1:5174/) for the landing page or [localhost:5174/studio/](http://127.0.0.1:5174/studio/) for the editor.
 
-| Command                | What it does                                                  |
-| ---------------------- | ------------------------------------------------------------- |
-| `npm run dev`          | Start the local Vite server on port 5174                      |
-| `npm test`             | Run the Vitest suite                                          |
-| `npm run check`        | Run tests, TypeScript checks, and the production build        |
-| `npm run build`        | Type-check and build production assets                        |
-| `npm run preview`      | Serve the build locally; stop the dev server first            |
-| `npm run deploy:check` | Build and validate a Cloudflare deployment without publishing |
-| `npm run deploy`       | Build and publish using an authenticated Wrangler session     |
+| Command                | What it does                                                      |
+| ---------------------- | ----------------------------------------------------------------- |
+| `npm run dev`          | Start the local Vite server on port 5174                          |
+| `npm test`             | Run the Vitest suite                                              |
+| `npm run lint`         | Check TypeScript/React code with Oxlint                           |
+| `npm run format:check` | Verify source and configuration formatting                        |
+| `npm run format`       | Format source and configuration files                             |
+| `npm run check`        | Run lint, format checks, tests, type checks, and production build |
+| `npm run build`        | Type-check and build production assets                            |
+| `npm run preview`      | Serve the build locally; stop the dev server first                |
+| `npm run deploy:check` | Build and validate a Cloudflare deployment without publishing     |
+| `npm run deploy`       | Build and publish using an authenticated Wrangler session         |
 
 ## How it is built
 
@@ -127,7 +130,7 @@ The landing page is static HTML and CSS. The React editor loads at `/studio/`. A
 
 The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 13 templates.
 
-Autosave checks revisions to prevent one tab from overwriting another tab's changes. Brand kit updates use revision checks too. Project files use schema 7 and support migration from versions 1–6. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots and portability, localization, translation cancellation, and export profiles.
+Autosave checks revisions to prevent one tab from overwriting another tab's changes. Image blobs are immutable: caption edits only write the document, and unused images are removed from the saved copy. Undo/redo retains the required original images in the current editing session. Brand kit updates use revision checks too. Project files use schema 7 and support migration from versions 1–6. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots and portability, localization, translation cancellation, and export profiles.
 
 ### Deployment
 
@@ -149,6 +152,7 @@ For code contributions, keep changes focused and run `npm run check`. Check rend
 
 ## Project notes
 
+- [Technical review and follow-up priorities](docs/technical-review-2026-09-08.md)
 - [Architecture and original implementation plan](docs/architecture.md)
 - [Brand identity](docs/brand-identity.md)
 - [Device frame design](docs/device-frames.md)

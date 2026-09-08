@@ -19,13 +19,14 @@ export function DeleteSlidesDialog({
   useEffect(() => {
     const dialog = ref.current!;
     const opener = document.activeElement as HTMLElement | null;
+    const fallback = fallbackFocus.current;
     dialog.showModal();
     cancelButton.current?.focus();
     return () => {
       dialog.close();
       // Deleting the last slide removes its trigger; keep Undo within reach.
       if (opener?.isConnected) opener.focus();
-      else fallbackFocus.current?.focus();
+      else if (fallback?.isConnected) fallback.focus();
     };
   }, [fallbackFocus]);
 

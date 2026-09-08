@@ -13,6 +13,7 @@ export function filename(name: string) {
   return (
     name
       .normalize("NFKD")
+      .replace(/\p{M}/gu, "")
       .replace(/[^a-zA-Z0-9_-]+/g, "-")
       .replace(/^-+|-+$/g, "")
       .slice(0, 70) || "hen-screenshots"

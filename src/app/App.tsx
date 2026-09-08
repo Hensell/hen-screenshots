@@ -236,6 +236,7 @@ export function App() {
   const visibleProjects = projects.filter(
     (item) => projectPurpose(item) === libraryPurpose,
   );
+  const projectId = project?.id;
   useEffect(
     () => () => {
       if (readyFile) URL.revokeObjectURL(readyFile.url);
@@ -285,7 +286,7 @@ export function App() {
   }, [open]);
 
   useEffect(() => {
-    if (project) return;
+    if (projectId) return;
     let active = true;
     listProjects()
       .then((records) => {
@@ -301,15 +302,15 @@ export function App() {
     return () => {
       active = false;
     };
-  }, [project?.id]);
+  }, [projectId]);
 
   useEffect(() => {
-    if (!project || status !== "pending") return;
+    if (!projectId || status !== "pending") return;
     const timer = setTimeout(() => {
       void saveNow();
     }, 450);
     return () => clearTimeout(timer);
-  }, [project?.id, change, status]);
+  }, [projectId, change, status]);
 
   useEffect(() => {
     function preventLostChanges(event: BeforeUnloadEvent) {

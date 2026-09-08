@@ -41,7 +41,7 @@ Restore a previous deployment from the Worker's **Deployments** page. Also rever
 
 ## Browser data
 
-Project storage is scoped to the browser and origin. Localhost projects do not automatically appear on the public domain. Download **Project file** from the local editor and use **Open project file** in the hosted studio to import a copy, including its source images.
+Project storage is scoped to the browser and origin. Localhost projects do not automatically appear on the public domain. Download **Download project** from the local editor and use **Open project file** in the hosted studio to import a copy, including its source images.
 
 ## References
 
