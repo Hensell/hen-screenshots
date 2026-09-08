@@ -13,6 +13,7 @@ export interface ArtboardProps {
   shot: Shot;
   image: HTMLImageElement;
   width: number;
+  guides?: boolean;
   onMove?: (x: number, y: number) => void;
   onSelectElement?: (element: CanvasElement, shotId: string) => void;
   onTextMove?: (
@@ -28,6 +29,7 @@ export function Artboard({
   shot,
   image,
   width,
+  guides = false,
   onMove,
   onTextMove,
   onSelectElement,
@@ -79,6 +81,7 @@ export function Artboard({
           scaleY: size.scale,
         });
         const layer = createScene(project, shot, image, {
+          guides,
           onMove,
           onTextMove,
           onSelectElement: selectElement,
@@ -111,7 +114,7 @@ export function Artboard({
       stage?.destroy();
       layerRef.current = null;
     };
-  }, [project, shot, image, width, onMove, onTextMove]);
+  }, [project, shot, image, width, onMove, onTextMove, guides]);
 
   return (
     <div

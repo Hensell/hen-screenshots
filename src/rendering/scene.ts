@@ -9,8 +9,10 @@ import { canonicalCanvas } from "../core/export-profiles";
 import { isPanoramaTemplate, panoramaPair } from "../core/panorama";
 import { drawDeviceFrame, drawDeviceDetails } from "./device-frame";
 import { drawTemplateDecoration } from "./template-decoration";
+import { attachSceneGuides } from "./scene-guides";
 
 interface SceneOptions {
+  guides?: boolean;
   onMove?: (x: number, y: number) => void;
   onTextMove?: (
     element: TextElement,
@@ -153,6 +155,7 @@ function addText(
     y: options.y + options.offset.y,
     name: `caption-${options.element}`,
     shotId: options.shotId,
+    guideBounds: { x: 0, y: 0, width: options.width, height: height() },
   });
   let y = 0;
   for (const node of nodes) {
@@ -346,6 +349,7 @@ export function createScene(
       height: device.height,
       draggable: Boolean(options.onMove),
       name: "phone",
+      guideBounds: { x: 0, y: 0, width: device.width, height: device.height },
     });
     drawDeviceFrame(phone, device);
 
@@ -431,6 +435,8 @@ export function createScene(
         if (shot.textOffsets?.[element])
           layer.findOne(`.caption-${element}`)?.moveToTop();
     }
+    if (options.guides && (options.onMove || options.onTextMove))
+      attachSceneGuides(layer, canvas, panoramic ? 2 : 1, cropOffset);
     return layer;
   } catch (error) {
     layer.destroy();

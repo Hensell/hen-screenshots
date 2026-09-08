@@ -1,0 +1,301 @@
+.publication-dialog {
+  width: min(1040px, calc(100vw - 40px));
+  max-width: none;
+  max-height: calc(100dvh - 40px);
+  height: min(900px, calc(100dvh - 40px));
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--brand-border);
+  border-radius: 16px;
+  background: var(--brand-paper);
+  color: var(--brand-ink);
+}
+.publication-dialog[open] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+.publication-dialog::backdrop {
+  background: #20272599;
+  backdrop-filter: blur(5px);
+}
+.publication-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 28px 16px;
+}
+.publication-heading .eyebrow {
+  font-size: 10px;
+  margin-bottom: 7px;
+  color: var(--brand-muted);
+}
+.publication-heading h2 {
+  font-size: clamp(22px, 3vw, 28px);
+  letter-spacing: -0.8px;
+}
+.publication-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 28px 20px;
+  border-bottom: 1px solid var(--brand-border);
+}
+.publication-controls > p {
+  max-width: 420px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--brand-muted);
+}
+.publication-controls label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.publication-controls select {
+  min-width: 0;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 8px 30px 8px 12px;
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  background: #fdfcf8;
+  color: var(--brand-ink);
+  font: inherit;
+}
+.publication-body {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 24px;
+  background: #e7eae2;
+}
+.publication-viewport {
+  width: min(var(--publication-width), 100%);
+  margin-inline: auto;
+  border: 1px solid #c8cec2;
+  border-radius: 12px;
+  background: #fdfcf9;
+  box-shadow: 0 5px 18px #2027250d;
+  container-type: inline-size;
+}
+.publication-sitebar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-bottom: 1px solid #e8eae3;
+  padding: 13px 18px;
+  font-size: 10px;
+  font-weight: 650;
+  color: #626b60;
+}
+.publication-app {
+  padding: 20px 18px 16px;
+}
+.publication-app h3 {
+  font-size: 20px;
+  letter-spacing: -0.6px;
+  overflow-wrap: anywhere;
+}
+.publication-app p {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 18px;
+  font-size: 13px;
+  font-weight: 650;
+}
+.publication-app p span {
+  color: #697164;
+  font-size: 11px;
+  font-weight: 450;
+}
+.publication-carousel {
+  position: relative;
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 18px;
+  padding: 0 18px 14px;
+  scrollbar-width: thin;
+  scrollbar-color: #b1bbaa transparent;
+  border-radius: 0;
+}
+.publication-carousel:focus-visible {
+  outline-offset: -2px;
+}
+.publication-tile {
+  flex: 0 0 var(--tile-width);
+  width: var(--tile-width);
+  min-width: 0;
+  scroll-snap-align: start;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.publication-image {
+  width: 100%;
+  position: relative;
+  background: #e5e8de;
+}
+.publication-image .artboard {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.publication-placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.publication-missing {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  font-size: 12px;
+  text-align: center;
+}
+.publication-swipe {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 18px 18px;
+  font-size: 10px;
+  color: #626b60;
+}
+.publication-note,
+.publication-limit {
+  max-width: 450px;
+  margin: 16px auto 0;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #596452;
+}
+.publication-limit {
+  color: var(--brand-clay);
+}
+.publication-grid {
+  display: grid;
+  gap: 20px;
+  padding: 0 18px 20px;
+}
+.publication-card {
+  min-width: 0;
+  text-align: left;
+}
+.publication-card > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  font-size: 11px;
+  font-weight: 650;
+}
+.publication-card:hover > span {
+  color: var(--brand-clay);
+}
+@container (min-width: 500px) {
+  .publication-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.publication-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 28px;
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--brand-border);
+}
+.publication-footer > p {
+  font-size: 12px;
+  color: var(--brand-muted);
+}
+.publication-navigation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.publication-navigation > span > span {
+  color: var(--brand-muted);
+  font-weight: 450;
+}
+@media (max-width: 600px) {
+  .publication-dialog {
+    width: calc(100vw - 16px);
+    height: calc(100dvh - 16px);
+    max-height: calc(100dvh - 16px);
+    border-radius: 12px;
+  }
+  .publication-heading {
+    padding: 16px 16px 12px;
+  }
+  .publication-heading .eyebrow {
+    font-size: 9px;
+  }
+  .publication-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 0 16px 12px;
+  }
+  .publication-controls label {
+    justify-content: space-between;
+  }
+  .publication-controls select {
+    font-size: 16px;
+    flex: 1;
+  }
+  .publication-body {
+    padding: 16px 10px;
+  }
+  .publication-footer {
+    padding-inline: 12px;
+    gap: 8px;
+  }
+  .publication-footer .button {
+    padding-inline: 10px;
+    font-size: 11px;
+  }
+  .publication-navigation {
+    gap: 0;
+  }
+}
+@media (max-height: 500px) {
+  .publication-heading {
+    padding-block: 10px;
+  }
+  .publication-heading .eyebrow,
+  .publication-controls > p {
+    display: none;
+  }
+  .publication-heading h2 {
+    font-size: 21px;
+  }
+  .publication-controls {
+    padding-bottom: 8px;
+  }
+  .publication-footer {
+    padding-block: 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .publication-carousel {
+    scroll-behavior: auto;
+  }
+}

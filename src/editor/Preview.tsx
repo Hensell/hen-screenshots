@@ -19,6 +19,7 @@ export function Preview({
   small = false,
   onContextMenu,
   onKeyDown,
+  guides = false,
 }: {
   project: Project;
   shot: Shot;
@@ -32,6 +33,7 @@ export function Preview({
     shotId: string,
   ) => void;
   small?: boolean;
+  guides?: boolean;
   onContextMenu?: MouseEventHandler<HTMLDivElement>;
   onKeyDown?: KeyboardEventHandler<HTMLDivElement>;
 }) {
@@ -62,6 +64,7 @@ export function Preview({
           shot={shot}
           image={image}
           width={width}
+          guides={guides}
           onMove={onMove}
           onTextMove={onTextMove}
           onSelectElement={onSelectElement}

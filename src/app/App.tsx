@@ -33,6 +33,7 @@ import { useImages } from "../editor/useImages";
 import { Preview } from "../editor/Preview";
 import { Inspector, deviceNames, type InspectorTab } from "../editor/Inspector";
 import { TemplateGallery } from "../editor/TemplateGallery";
+import { PublicationPreview } from "../editor/PublicationPreview";
 import {
   applyTemplate,
   getTemplate,
@@ -94,6 +95,8 @@ export function App() {
   const [notice, setNotice] = useState<Notice | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [publicationOpen, setPublicationOpen] = useState(false);
+  const [smartGuides, setSmartGuides] = useState(true);
   const [inspectorTab, setInspectorTab] = useState<InspectorTab>("design");
   const [selectedCanvasElement, setSelectedCanvasElement] =
     useState<CanvasElement | null>(null);
@@ -277,6 +280,7 @@ export function App() {
         busy ||
         exportOpen ||
         templatesOpen ||
+        publicationOpen ||
         deleteTarget ||
         slideMenu
       )
@@ -292,7 +296,14 @@ export function App() {
     }
     window.addEventListener("keydown", keyboard);
     return () => window.removeEventListener("keydown", keyboard);
-  }, [busy, exportOpen, templatesOpen, deleteTarget, slideMenu]);
+  }, [
+    busy,
+    exportOpen,
+    templatesOpen,
+    publicationOpen,
+    deleteTarget,
+    slideMenu,
+  ]);
 
   async function backToProjects() {
     if (busy) return;
@@ -499,7 +510,15 @@ export function App() {
     opener: HTMLElement,
     point?: { x: number; y: number },
   ) {
-    if (!project || busy || deleteTarget || templatesOpen || exportOpen) return;
+    if (
+      !project ||
+      busy ||
+      deleteTarget ||
+      templatesOpen ||
+      exportOpen ||
+      publicationOpen
+    )
+      return;
     const bounds = opener.getBoundingClientRect();
     setSlideMenu({
       projectId: project.id,
@@ -636,6 +655,14 @@ export function App() {
               >
                 <Icon name="folder" />
                 <span>Project file</span>
+              </button>
+              <button
+                className="button secondary publication-button"
+                aria-label="Publication preview"
+                disabled={!shot || !!busy || !!imageError}
+                onClick={() => setPublicationOpen(true)}
+              >
+                <Icon name="eye" /> Preview
               </button>
               <button
                 className="button primary"
@@ -1037,7 +1064,7 @@ export function App() {
               className="canvas-surround"
               style={
                 {
-                  "--preview-chrome": pair ? "390px" : "335px",
+                  "--preview-chrome": pair ? "440px" : "385px",
                   "--canvas-ratio":
                     ((pair ? 2 : 1) * resolveExportProfile(project).width) /
                     resolveExportProfile(project).height,
@@ -1075,6 +1102,7 @@ export function App() {
                         shot={item}
                         image={images.get(item.assetId)}
                         onContextMenu={(event) => contextMenu(event, item.id)}
+                        guides={smartGuides}
                         onKeyDown={(event) => menuKeyboard(event, item.id)}
                         onSelectElement={busy ? undefined : selectCanvasElement}
                         onTextMove={busy ? undefined : moveCanvasText}
@@ -1086,6 +1114,24 @@ export function App() {
                     Click an object to edit it. Drag to move. Enter selects ·
                     Arrow keys nudge.
                   </p>
+                  <div className="canvas-guide-tools">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={smartGuides}
+                        disabled={!!busy}
+                        onChange={(event) =>
+                          setSmartGuides(event.target.checked)
+                        }
+                      />
+                      Smart guides
+                    </label>
+                    <span>
+                      {smartGuides
+                        ? "Align edges, centers and margins. Alt/Option moves freely."
+                        : "Move freely. Turn on guides for alignment."}
+                    </span>
+                  </div>
                   {pair && (
                     <div
                       className="panorama-selection"
@@ -1276,6 +1322,19 @@ export function App() {
         <NewProjectDialog
           onCreate={newProject}
           onClose={() => setNewProjectOpen(false)}
+        />
+      )}
+      {publicationOpen && project && shot && (
+        <PublicationPreview
+          project={project}
+          images={images}
+          selectedId={selectedId}
+          onClose={() => setPublicationOpen(false)}
+          onEdit={(id) => {
+            state.select(id);
+            setSelectedCanvasElement(null);
+            setPublicationOpen(false);
+          }}
         />
       )}
       {slideMenu &&

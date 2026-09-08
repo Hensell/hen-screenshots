@@ -105,6 +105,51 @@
   line-height: 1.6;
   max-width: 460px;
 }
+.canvas-guide-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0 12px;
+  max-width: 620px;
+  margin: 4px 0;
+  color: #596452;
+  font-size: 10px;
+  text-align: center;
+}
+.canvas-guide-tools label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  color: var(--brand-ink);
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.canvas-guide-tools input {
+  accent-color: var(--brand-clay);
+  width: 15px;
+  height: 15px;
+}
+.canvas-guide-tools > span {
+  line-height: 1.6;
+}
+@media (max-width: 540px) {
+  .header-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .header-actions > .button {
+    min-width: 0;
+    padding-inline: 6px;
+    gap: 5px;
+    font-size: 11px;
+  }
+  .header-actions .backup-button svg {
+    display: none;
+  }
+}
 .shot-actions {
   margin-top: 10px;
 }

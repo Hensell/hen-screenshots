@@ -1,0 +1,359 @@
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
+import type { Project, Shot } from "../core/model";
+import { projectPurpose } from "../core/canvas-formats";
+import { resolveExportProfile } from "../core/export-profiles";
+import { Icon } from "../app/Icon";
+import { Preview } from "./Preview";
+import "./publication-preview.css";
+
+function PublicationImage({
+  project,
+  shot,
+  image,
+}: {
+  project: Project;
+  shot: Shot;
+  image?: HTMLImageElement;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "180px" },
+    );
+    observer.observe(ref.current!);
+    return () => observer.disconnect();
+  }, []);
+  const profile = resolveExportProfile(project);
+  return (
+    <div
+      ref={ref}
+      className="publication-image"
+      style={{ aspectRatio: `${profile.width} / ${profile.height}` }}
+    >
+      {!image ? (
+        <p className="publication-missing">
+          Image unavailable. Replace this slide’s screenshot in the editor.
+        </p>
+      ) : visible ? (
+        <Preview project={project} shot={shot} image={image} />
+      ) : (
+        <span
+          className="publication-placeholder"
+          aria-label="Preparing screenshot preview"
+        />
+      )}
+    </div>
+  );
+}
+
+export function PublicationPreview({
+  project,
+  images,
+  selectedId,
+  onClose,
+  onEdit,
+}: {
+  project: Project;
+  images: Map<string, HTMLImageElement>;
+  selectedId: string | null;
+  onClose: () => void;
+  onEdit: (id: string) => void;
+}) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(
+    Math.max(
+      0,
+      project.shots.findIndex((shot) => shot.id === selectedId),
+    ),
+  );
+  const profile = resolveExportProfile(project);
+  const portfolio = projectPurpose(project) === "portfolio";
+  const [viewport, setViewport] = useState(
+    portfolio || profile.category !== "phone" ? 760 : 390,
+  );
+  const [width, setWidth] = useState(0);
+  const destination = portfolio
+    ? "Portfolio"
+    : profile.store === "apple"
+      ? "App Store"
+      : "Google Play";
+  const ratio = profile.width / profile.height;
+  const tileWidth = Math.max(
+    1,
+    Math.min(Math.max(1, width - 36) * 0.88, 360 * ratio),
+  );
+  const indexRef = useRef(active);
+  indexRef.current = active;
+
+  useEffect(() => {
+    const dialog = dialogRef.current!;
+    const opener = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+    return () => {
+      dialog.close();
+      document.body.style.overflow = overflow;
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+    };
+  }, []);
+
+  useEffect(() => {
+    const observer = new ResizeObserver(([entry]) =>
+      setWidth(entry.contentRect.width),
+    );
+    observer.observe(viewportRef.current!);
+    return () => observer.disconnect();
+  }, []);
+
+  function go(index: number) {
+    const next = Math.max(0, Math.min(project.shots.length - 1, index));
+    const carousel = carouselRef.current;
+    const first = carousel?.querySelector<HTMLElement>(".publication-tile");
+    const tile =
+      carousel?.querySelectorAll<HTMLElement>(".publication-tile")[next];
+    if (carousel && first && tile)
+      carousel.scrollTo({
+        left: tile.offsetLeft - first.offsetLeft,
+        behavior: "instant",
+      });
+    setActive(next);
+  }
+
+  useLayoutEffect(() => {
+    // Keep the current slide in view when changing the reading width or rotating a phone.
+    if (!width) return;
+    const carousel = carouselRef.current;
+    const first = carousel?.querySelector<HTMLElement>(".publication-tile");
+    const tile =
+      carousel?.querySelectorAll<HTMLElement>(".publication-tile")[
+        indexRef.current
+      ];
+    if (carousel && first && tile)
+      carousel.scrollLeft = tile.offsetLeft - first.offsetLeft;
+  }, [tileWidth]);
+
+  function trackScroll() {
+    if (!width) return;
+    const carousel = carouselRef.current!;
+    const tiles = [
+      ...carousel.querySelectorAll<HTMLElement>(".publication-tile"),
+    ];
+    const origin = tiles[0]?.offsetLeft ?? 0;
+    let nearest = 0;
+    tiles.forEach((tile, index) => {
+      if (
+        Math.abs(tile.offsetLeft - origin - carousel.scrollLeft) <
+        Math.abs(tiles[nearest].offsetLeft - origin - carousel.scrollLeft)
+      )
+        nearest = index;
+    });
+    setActive(nearest);
+  }
+
+  return (
+    <dialog
+      ref={dialogRef}
+      className="publication-dialog"
+      aria-labelledby="publication-heading"
+      aria-describedby="publication-description"
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+    >
+      <header className="publication-heading">
+        <div>
+          <p className="eyebrow">SEE IT BEFORE YOU SHARE IT</p>
+          <h2 id="publication-heading">Publication preview</h2>
+        </div>
+        <button
+          className="icon-button"
+          aria-label="Close publication preview"
+          onClick={onClose}
+        >
+          <Icon name="close" />
+        </button>
+      </header>
+      <div className="publication-controls">
+        <p id="publication-description">
+          {portfolio
+            ? "Check your project cards at website reading size."
+            : "Check the headlines, pacing, and joins as you swipe."}
+        </p>
+        <label>
+          Reading width
+          <select
+            value={viewport}
+            onChange={(event) => setViewport(Number(event.target.value))}
+          >
+            <option value={320}>Compact · 320 px</option>
+            <option value={390}>Phone · 390 px</option>
+            <option value={760}>Wide · 760 px</option>
+          </select>
+        </label>
+      </div>
+      <div className="publication-body">
+        <div
+          className={`publication-viewport ${portfolio ? "publication-portfolio" : "publication-store"}`}
+          ref={viewportRef}
+          style={
+            {
+              "--publication-width": `${viewport}px`,
+              "--tile-width": `${tileWidth}px`,
+            } as CSSProperties
+          }
+        >
+          <div className="publication-sitebar">
+            <Icon name={portfolio ? "canvas" : "phone"} size={15} />
+            <span>{destination} preview</span>
+          </div>
+          <div className="publication-app">
+            <h3>{project.name || "Untitled app"}</h3>
+            <p>
+              {portfolio ? "Project cards" : "Screenshots"}
+              <span>{project.shots.length}</span>
+            </p>
+          </div>
+          {portfolio ? (
+            <div className="publication-grid">
+              {project.shots.map((shot, index) => (
+                <button
+                  className="publication-card"
+                  key={shot.id}
+                  onClick={() => onEdit(shot.id)}
+                  aria-label={`Edit slide ${index + 1}: ${shot.title.replace(/\n/g, " ")}`}
+                >
+                  <PublicationImage
+                    project={project}
+                    shot={shot}
+                    image={images.get(shot.assetId)}
+                  />
+                  <span>
+                    Slide {String(index + 1).padStart(2, "0")}
+                    <Icon name="arrow" size={16} />
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div
+                className="publication-carousel"
+                ref={carouselRef}
+                role="region"
+                aria-roledescription="carousel"
+                aria-label={`${destination} screenshots. Use arrow keys or swipe to browse.`}
+                tabIndex={0}
+                onScroll={trackScroll}
+                onKeyDown={(event) => {
+                  let next: number | undefined;
+                  if (event.key === "ArrowRight") next = active + 1;
+                  if (event.key === "ArrowLeft") next = active - 1;
+                  if (event.key === "Home") next = 0;
+                  if (event.key === "End") next = project.shots.length - 1;
+                  if (next !== undefined) {
+                    event.preventDefault();
+                    go(next);
+                  }
+                }}
+              >
+                {project.shots.map((shot, index) => (
+                  <div
+                    key={shot.id}
+                    className="publication-tile"
+                    role="group"
+                    aria-roledescription="slide"
+                    aria-label={`${index + 1} of ${project.shots.length}: ${shot.title.replace(/\n/g, " ")}`}
+                  >
+                    <PublicationImage
+                      project={project}
+                      shot={shot}
+                      image={images.get(shot.assetId)}
+                    />
+                  </div>
+                ))}
+                <div
+                  aria-hidden="true"
+                  style={{
+                    flex: `0 0 ${Math.max(0, width - 36 - tileWidth - 10)}px`,
+                  }}
+                />
+              </div>
+              <p className="publication-swipe">
+                Swipe to see the story unfold <Icon name="right" size={13} />
+              </p>
+            </>
+          )}
+        </div>
+        <p className="publication-note">
+          {portfolio
+            ? "A website-size preview of your exported cards."
+            : "A reading-size preview. Store layouts and spacing vary by device."}{" "}
+          {width < viewport - 2 && "Scaled to fit your screen."}
+        </p>
+        {profile.store !== "presentation" &&
+          project.shots.length > profile.maxCount && (
+            <p className="publication-limit">
+              Showing all {project.shots.length} slides. This store slot accepts
+              up to {profile.maxCount} screenshots.
+            </p>
+          )}
+      </div>
+      <footer className="publication-footer">
+        {portfolio ? (
+          <p>Choose a card to return to its editor.</p>
+        ) : (
+          <div className="publication-navigation">
+            <button
+              className="icon-button"
+              aria-label="Previous preview slide"
+              disabled={active === 0}
+              onClick={() => go(active - 1)}
+            >
+              <Icon name="left" />
+            </button>
+            <span role="status" aria-live="polite">
+              {String(active + 1).padStart(2, "0")}{" "}
+              <span>/ {String(project.shots.length).padStart(2, "0")}</span>
+            </span>
+            <button
+              className="icon-button"
+              aria-label="Next preview slide"
+              disabled={active === project.shots.length - 1}
+              onClick={() => go(active + 1)}
+            >
+              <Icon name="right" />
+            </button>
+          </div>
+        )}
+        <button
+          className="button primary"
+          onClick={() =>
+            portfolio ? onClose() : onEdit(project.shots[active].id)
+          }
+        >
+          {portfolio
+            ? "Back to editor"
+            : `Edit slide ${String(active + 1).padStart(2, "0")}`}
+          <Icon name="arrow" size={16} />
+        </button>
+      </footer>
+    </dialog>
+  );
+}

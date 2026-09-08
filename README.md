@@ -23,6 +23,8 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 - **Find your look quickly.** Search by name, color, or visual idea. Filter by style, composition, and background, sort results, and browse 12, 24, or 48 templates per page. Previews use your own screenshots.
 - **Choose the right frame.** iPhone, Android phone, iPad, Android tablet, monitor, laptop, or a simple screenshot card.
 - **Make the composition yours.** Customize captions, colors, typography, and backgrounds. Drag devices and text independently, or use the keyboard. Reset positions whenever you want.
+- **Line things up.** Smart guides snap devices and text to centers, edges, margins, and nearby objects, including across panoramas. Hold Alt/Option to move freely, or turn guides off.
+- **Preview before publishing.** Review store screenshots in a swipeable carousel or portfolio cards in a website grid. Check compact, phone, and wide reading sizes, then jump back to any slide to edit it.
 - **Edit a whole series.** Apply a template to one slide or the series. Replace an image while keeping its design, duplicate and reorder slides, and undo or redo changes.
 - **Export for the destination.** Separate **App stores** and **Portfolio** workspaces keep store presets apart from cards, square formats, widescreen covers, and custom dimensions.
 - **Keep your work.** Projects save automatically in your browser. Download an editable project file with its original images for backup or transfer.
@@ -43,6 +45,8 @@ Design the pair together, keep a different caption on each slide, and export two
 3. Click **Export** to download a PNG, a panorama pair, or the whole series as a ZIP. Use **Project file** to keep an editable backup too.
 
 **Keyboard:** focus the preview and press **Enter** to select an object. Move it with the arrow keys; hold **Shift** for larger steps. Outside text fields, **⌘/Ctrl + Z** undoes changes and **⌘/Ctrl + Shift + Z** redoes them.
+
+**Before exporting:** open **Preview** beside Export to check small-screen readability and the spacing between panorama slides. Use the carousel's arrow keys, Home/End, or swipe. This is a reading-size simulation; store layouts vary. Guides and preview controls never appear in exported images.
 
 ## Your screenshots stay with you
 
