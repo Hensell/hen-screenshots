@@ -16,6 +16,7 @@
     "deploy:check": "npm run build && wrangler deploy --dry-run"
   },
   "dependencies": {
+    "@huggingface/transformers": "4.2.0",
     "dexie": "4.4.5",
     "fflate": "0.8.3",
     "konva": "10.3.3",
@@ -35,5 +36,13 @@
     "vite": "8.2.2",
     "vitest": "5.0.0",
     "wrangler": "4.129.0"
+  },
+  "overrides": {
+    "@huggingface/transformers": {
+      "sharp": "0.35.4"
+    },
+    "onnxruntime-node": {
+      "adm-zip": "0.6.0"
+    }
   }
 }

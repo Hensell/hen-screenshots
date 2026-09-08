@@ -180,6 +180,7 @@ export function panoramaPreview(
     id: `${shot.id}-panorama-preview`,
     title: "A closer look.",
     subtitle: "",
+    ...(shot.translations ? { translations: {} } : {}),
   };
   const patch: Partial<Style> = { ...panoramaStyles[family] };
   if (keepColors)
@@ -196,6 +197,36 @@ export function panoramaPreview(
     const { textOffsets: _offsets, ...content } = source;
     return {
       ...content,
+      ...(source.translations || left.translations
+        ? {
+            translations: Object.fromEntries(
+              (project.localization?.targets ?? []).map((locale) => {
+                const translated = source.translations?.[locale] ?? {
+                  title: source.title,
+                  subtitle: source.subtitle,
+                  sourceTitle: source.title,
+                  sourceSubtitle: source.subtitle,
+                  status: "untranslated" as const,
+                };
+                const {
+                  assetId: _asset,
+                  textOffsets: _translatedOffsets,
+                  titleSize: _translatedSize,
+                  ...words
+                } = translated;
+                return [
+                  locale,
+                  {
+                    ...structuredClone(words),
+                    ...(left.translations?.[locale]?.assetId
+                      ? { assetId: left.translations[locale].assetId }
+                      : {}),
+                  },
+                ];
+              }),
+            ),
+          }
+        : {}),
       assetId: left.assetId,
       style: {
         ...shared,

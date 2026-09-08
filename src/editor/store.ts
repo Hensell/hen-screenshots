@@ -6,6 +6,8 @@ import { saveProject } from "../storage/repository";
 type SaveStatus = "saved" | "pending" | "saving" | "error";
 interface EditorState {
   project: Project | null;
+  locale: string | null;
+  setLocale: (locale: string | null) => void;
   assets: Asset[];
   revision: number;
   selectedId: string | null;
@@ -31,6 +33,8 @@ let editorSession = 0;
 let saving: Promise<boolean> | undefined;
 export const useEditor = create<EditorState>((set, get) => ({
   project: null,
+  locale: null,
+  setLocale: (locale) => set({ locale, group: null }),
   assets: [],
   revision: 0,
   selectedId: null,
@@ -45,6 +49,7 @@ export const useEditor = create<EditorState>((set, get) => ({
     editorSession++;
     set({
       project,
+      locale: null,
       assets,
       revision,
       selectedId: project.shots[0]?.id ?? null,

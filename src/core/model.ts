@@ -19,7 +19,9 @@ import {
   type BrandFont,
 } from "./brand-kit";
 
-export const SCHEMA_VERSION = 6 as const;
+import { isLanguage, MAX_LANGUAGES, type LocalizedShot } from "./localization";
+
+export const SCHEMA_VERSION = 7 as const;
 export const CANVAS = { width: 1080, height: 1920 } as const;
 export const PLACEMENT_LIMITS = {
   x: { min: -1080, max: 2160 },
@@ -81,6 +83,7 @@ export interface Style {
   titleSize: number;
 }
 export interface Shot {
+  translations?: Record<string, LocalizedShot>;
   brand?: string;
   id: string;
   assetId: string;
@@ -91,7 +94,8 @@ export interface Shot {
   textOffsets?: Partial<Record<TextElement, { x: number; y: number }>>;
 }
 export interface Project {
-  schemaVersion: 6;
+  schemaVersion: 7;
+  localization?: { source: string; targets: string[] };
   brands?: Record<string, BrandKit>;
   brand?: string;
   exportProfile: ExportProfileId;
@@ -154,8 +158,14 @@ export type V3Style = Omit<Style, "device" | "template"> & {
   template: (typeof legacyTemplateIds)[number];
   device: "android" | "ios" | "ipad" | "android-tablet" | "monitor" | "laptop";
 };
-export interface V5Project extends Omit<
+export interface V6Project extends Omit<
   Project,
+  "schemaVersion" | "localization"
+> {
+  schemaVersion: 6;
+}
+export interface V5Project extends Omit<
+  V6Project,
   "schemaVersion" | "brands" | "brand"
 > {
   schemaVersion: 5;
@@ -209,11 +219,21 @@ export interface LegacyProject extends Omit<
 /** Add presentation defaults without changing an existing project's content or identity. */
 export function migrateProject(
   project:
-    Project | V5Project | V4Project | V3Project | V2Project | LegacyProject,
+    | Project
+    | V6Project
+    | V5Project
+    | V4Project
+    | V3Project
+    | V2Project
+    | LegacyProject,
 ): Project {
   validateProject(project);
   if (project.schemaVersion === SCHEMA_VERSION) return project;
-  if (project.schemaVersion === 4 || project.schemaVersion === 5)
+  if (
+    project.schemaVersion === 4 ||
+    project.schemaVersion === 5 ||
+    project.schemaVersion === 6
+  )
     return { ...structuredClone(project), schemaVersion: SCHEMA_VERSION };
   return {
     ...project,
@@ -291,7 +311,13 @@ const v2StyleKeys = [
 ];
 const styleKeys = [...v2StyleKeys, "deviceOrientation"];
 type StoredProject =
-  Project | V5Project | V4Project | V3Project | V2Project | LegacyProject;
+  | Project
+  | V6Project
+  | V5Project
+  | V4Project
+  | V3Project
+  | V2Project
+  | LegacyProject;
 type RecordValue = Record<string, unknown>;
 
 function invalid(): never {
@@ -339,7 +365,7 @@ function numeric(
 }
 function validateStyle(
   value: unknown,
-  version: 1 | 2 | 3 | 4 | 5 | 6,
+  version: 1 | 2 | 3 | 4 | 5 | 6 | 7,
   partial = false,
 ): void {
   const entries = object(
@@ -419,6 +445,7 @@ export function validateProject(
     version !== 3 &&
     version !== 4 &&
     version !== 5 &&
+    version !== 6 &&
     version !== SCHEMA_VERSION
   )
     throw new Error("This project uses an unsupported project version.");
@@ -432,6 +459,9 @@ export function validateProject(
     "shots",
     ...(version >= 3 ? ["exportProfile"] : []),
     ...(version >= 4 ? ["customSize"] : []),
+    ...(version >= 7 && Object.hasOwn(value, "localization")
+      ? ["localization"]
+      : []),
     ...(version >= 6
       ? ["brands", "brand"].filter((key) => Object.hasOwn(value, key))
       : []),
@@ -455,6 +485,17 @@ export function validateProject(
       width: size.width as number,
       height: size.height as number,
     });
+  }
+  if (Object.hasOwn(raw, "localization")) {
+    const locale = object(raw.localization, ["source", "targets"]);
+    if (
+      !isLanguage(locale.source) ||
+      !Array.isArray(locale.targets) ||
+      locale.targets.length >= MAX_LANGUAGES ||
+      new Set(locale.targets).size !== locale.targets.length ||
+      locale.targets.some((code) => !isLanguage(code) || code === locale.source)
+    )
+      invalid();
   }
   validateStyle(raw.style, version);
   if (Object.hasOwn(raw, "brands")) {
@@ -490,6 +531,12 @@ export function validateProject(
       "subtitle",
       "style",
       "phone",
+      ...(version >= 7 &&
+      value &&
+      typeof value === "object" &&
+      Object.hasOwn(value, "translations")
+        ? ["translations"]
+        : []),
       ...(version >= 5 &&
       value &&
       typeof value === "object" &&
@@ -503,6 +550,53 @@ export function validateProject(
         ? ["brand"]
         : []),
     ]);
+    if (Object.hasOwn(shot, "translations")) {
+      const targets =
+        (raw.localization as Project["localization"])?.targets ?? [];
+      const entries = object(shot.translations, targets, true);
+      for (const item of Object.values(entries)) {
+        const content = object(item, [
+          "title",
+          "subtitle",
+          "sourceTitle",
+          "sourceSubtitle",
+          "status",
+          ...["textOffsets", "titleSize", "assetId"].filter(
+            (key) =>
+              item && typeof item === "object" && Object.hasOwn(item, key),
+          ),
+        ]);
+        textValue(content.title, 300);
+        textValue(content.subtitle, 450);
+        textValue(content.sourceTitle, 100);
+        textValue(content.sourceSubtitle, 150);
+        if (
+          !["untranslated", "draft", "reviewed"].includes(
+            content.status as string,
+          )
+        )
+          invalid();
+        if (Object.hasOwn(content, "titleSize"))
+          numeric(content.titleSize, 48, 132);
+        if (Object.hasOwn(content, "assetId")) identifier(content.assetId);
+        if (Object.hasOwn(content, "textOffsets")) {
+          const offsets = object(
+            content.textOffsets,
+            ["title", "subtitle"],
+            true,
+          );
+          for (const offset of Object.values(offsets)) {
+            const position = object(offset, ["x", "y"]);
+            for (const key of ["x", "y"] as const)
+              numeric(
+                position[key],
+                -TEXT_OFFSET_LIMITS[key],
+                TEXT_OFFSET_LIMITS[key],
+              );
+          }
+        }
+      }
+    }
     if (Object.hasOwn(shot, "brand")) validateBrandReference(shot.brand);
     if (Object.hasOwn(shot, "textOffsets")) {
       const offsets = object(shot.textOffsets, ["title", "subtitle"], true);
@@ -554,6 +648,15 @@ export function validateProject(
       const right = project.shots[++index];
       if (!right) invalid();
       const other = resolveStyle(project, right);
+      if (
+        version >= 7 &&
+        project.localization?.targets.some(
+          (locale) =>
+            (left.translations?.[locale]?.assetId ?? left.assetId) !==
+            (right.translations?.[locale]?.assetId ?? right.assetId),
+        )
+      )
+        invalid();
       if (
         other.template !== panoramaFamilies[start] ||
         left.assetId !== right.assetId ||

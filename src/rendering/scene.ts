@@ -403,7 +403,7 @@ export function createScene(
         offset: textOffset(owner, "title"),
         interaction: options,
         fitWords,
-        fontSize: style.titleSize * template.fontScale,
+        fontSize: ownerStyle.titleSize * template.fontScale,
         weight: style.titleFont
           ? style.titleFont === "Fraunces"
             ? "600"

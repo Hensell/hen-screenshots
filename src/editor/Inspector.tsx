@@ -1,3 +1,9 @@
+import {
+  localContent,
+  writeText,
+  languageName,
+  localeStatus,
+} from "../core/localization";
 import { useEffect, useId, useRef } from "react";
 import { resolveStyle, PLACEMENT_LIMITS } from "../core/model";
 import type { Project, Shot, Style, CanvasElement } from "../core/model";
@@ -95,6 +101,8 @@ export function Inspector({
   selectedElement,
   onPreview,
   onBrandKits,
+  onLanguages,
+  locale,
 }: {
   project: Project;
   shot: Shot;
@@ -106,6 +114,8 @@ export function Inspector({
   selectedElement: CanvasElement | null;
   onPreview: () => void;
   onBrandKits: () => void;
+  onLanguages: () => void;
+  locale: string | null;
 }) {
   const panelId = useId();
   const inspectorRef = useRef<HTMLElement>(null);
@@ -113,7 +123,9 @@ export function Inspector({
   useEffect(() => {
     if (inspectorRef.current) inspectorRef.current.scrollTop = 0;
   }, [tab]);
-  const { edit, endGroup } = useEditor();
+  const { edit, endGroup, project: originalProject } = useEditor();
+  const sourceShot =
+    originalProject?.shots.find((item) => item.id === shot.id) ?? shot;
   const style = resolveStyle(project, shot);
   const brand = appliedBrand(project, shot);
   const pair = panoramaPair(project, shot.id);
@@ -468,7 +480,10 @@ export function Inspector({
               className="button secondary full"
               onClick={() =>
                 edit((project) => {
-                  const { template: _template, ...shared } = style;
+                  const { template: _template, ...shared } = resolveStyle(
+                    project,
+                    project.shots.find((item) => item.id === shot.id)!,
+                  );
                   const previous = project.shots.map((item) =>
                     resolveStyle(project, item),
                   );
@@ -524,20 +539,32 @@ export function Inspector({
               </span>
             </div>
             <p className="section-intro">
-              Write your story. Drag the text to place it.
+              {locale
+                ? `Editing ${languageName(locale)}. Design changes apply to every language.`
+                : "Write your story. Drag the text to place it."}
             </p>
+            <button
+              type="button"
+              className="text-button language-text-link"
+              onClick={onLanguages}
+            >
+              <Icon name="languages" size={16} />
+              {locale
+                ? `Review translation · ${localeStatus(sourceShot, locale)}`
+                : "Add a language version"}
+            </button>
             <label
               className={`field text-editor ${selectedElement === "title" ? "is-selected" : ""}`}
             >
               Headline
               <textarea
-                maxLength={100}
+                maxLength={locale ? 300 : 100}
                 rows={3}
                 value={shot.title}
                 onChange={(event) =>
                   updateShot(
                     (shot) => {
-                      shot.title = event.target.value;
+                      writeText(shot, locale, "title", event.target.value);
                     },
                     "title",
                     false,
@@ -547,15 +574,25 @@ export function Inspector({
               />
             </label>
             <div className="text-field-footer">
-              <span>{shot.title.length} / 100</span>
+              <span>
+                {shot.title.length} / {locale ? 300 : 100}
+              </span>
               <button
                 type="button"
                 className="text-button"
-                disabled={!shot.textOffsets?.title}
+                disabled={
+                  locale
+                    ? !sourceShot.translations?.[locale]?.textOffsets?.title
+                    : !shot.textOffsets?.title
+                }
                 aria-label="Reset headline position"
                 onClick={() =>
                   updateShot(
-                    (target) => resetText(target, "title"),
+                    (target) => {
+                      if (locale)
+                        delete localContent(target, locale).textOffsets?.title;
+                      else resetText(target, "title");
+                    },
                     undefined,
                     false,
                   )
@@ -569,13 +606,13 @@ export function Inspector({
             >
               Supporting text
               <textarea
-                maxLength={150}
+                maxLength={locale ? 450 : 150}
                 rows={2}
                 value={shot.subtitle}
                 onChange={(event) =>
                   updateShot(
                     (shot) => {
-                      shot.subtitle = event.target.value;
+                      writeText(shot, locale, "subtitle", event.target.value);
                     },
                     "subtitle",
                     false,
@@ -585,15 +622,26 @@ export function Inspector({
               />
             </label>
             <div className="text-field-footer">
-              <span>{shot.subtitle.length} / 150</span>
+              <span>
+                {shot.subtitle.length} / {locale ? 450 : 150}
+              </span>
               <button
                 type="button"
                 className="text-button"
-                disabled={!shot.textOffsets?.subtitle}
+                disabled={
+                  locale
+                    ? !sourceShot.translations?.[locale]?.textOffsets?.subtitle
+                    : !shot.textOffsets?.subtitle
+                }
                 aria-label="Reset supporting text position"
                 onClick={() =>
                   updateShot(
-                    (target) => resetText(target, "subtitle"),
+                    (target) => {
+                      if (locale)
+                        delete localContent(target, locale).textOffsets
+                          ?.subtitle;
+                      else resetText(target, "subtitle");
+                    },
                     undefined,
                     false,
                   )
@@ -635,13 +683,30 @@ export function Inspector({
                 value={style.titleSize}
                 onChange={(event) =>
                   updateShot((shot) => {
-                    shot.style.titleSize = Number(event.target.value);
+                    if (locale)
+                      localContent(shot, locale).titleSize = Number(
+                        event.target.value,
+                      );
+                    else shot.style.titleSize = Number(event.target.value);
                   }, "titleSize")
                 }
                 onPointerUp={endGroup}
                 onBlur={endGroup}
               />
             </label>
+            {locale && (
+              <button
+                type="button"
+                className="text-button"
+                onClick={() =>
+                  updateShot((target) => {
+                    delete localContent(target, locale).titleSize;
+                  })
+                }
+              >
+                Reset to shared headline size
+              </button>
+            )}
             <label className="check-field">
               <input
                 type="checkbox"
@@ -754,6 +819,27 @@ export function Inspector({
               {pair ? "Replace panorama image" : "Replace image"}
             </button>
           </section>
+          {locale && (
+            <section className="property-section">
+              <p className="field-help">
+                Replacing the screenshot changes only {languageName(locale)}.
+                Its frame and position stay shared.
+              </p>
+              {sourceShot.translations?.[locale]?.assetId && (
+                <button
+                  className="text-button"
+                  onClick={() =>
+                    updateShot((target) => {
+                      delete localContent(target, locale).assetId;
+                    })
+                  }
+                >
+                  <Icon name="reset" size={14} />
+                  Use original image
+                </button>
+              )}
+            </section>
+          )}
           <section className="property-section">
             <div className="section-heading">
               <h3>Position &amp; size</h3>

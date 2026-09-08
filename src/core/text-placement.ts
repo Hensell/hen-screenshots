@@ -33,3 +33,12 @@ export function resetText(shot: Shot, element?: TextElement): void {
     if (Object.keys(shot.textOffsets).length === 0) delete shot.textOffsets;
   }
 }
+
+/** A new canvas/template refits every language; ordinary resets stay local. */
+export function refitText(shot: Shot, resetSizes = false): void {
+  resetText(shot);
+  for (const text of Object.values(shot.translations ?? {})) {
+    delete text.textOffsets;
+    if (resetSizes) delete text.titleSize;
+  }
+}

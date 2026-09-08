@@ -43,7 +43,7 @@ describe("brand kit database upgrade", () => {
     const repository = await import("./repository");
     try {
       const loaded = await repository.loadProject(project.id);
-      expect(loaded.project).toEqual({ ...project, schemaVersion: 6 });
+      expect(loaded.project).toEqual({ ...project, schemaVersion: 7 });
       expect(loaded.revision).toBe(8);
       expect(await loaded.assets[0].blob.text()).toBe("original image bytes");
       expect(await repository.listBrandKits()).toEqual([]);

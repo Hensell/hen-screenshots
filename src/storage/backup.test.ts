@@ -1,3 +1,9 @@
+import {
+  addLanguage,
+  localContent,
+  localizedProject,
+  referencedAssetIds,
+} from "../core/localization";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { strToU8, unzipSync, zipSync } from "fflate";
 import { createProject, createShot, defaultStyle, LIMITS } from "../core/model";
@@ -60,6 +66,60 @@ async function changedBackup(
 }
 
 describe("portable project backups", () => {
+  it("round-trips language words, localized images and placement while preserving the shared design", async () => {
+    const project = document();
+    applyTemplate(project, project.shots[0].id, "panorama");
+    addLanguage(project, "en", "es");
+    const translatedImage = {
+      ...image(),
+      id: "spanish-image",
+      name: "spanish.png",
+    };
+    for (const shot of project.shots.slice(0, 2))
+      localContent(shot, "es").assetId = translatedImage.id;
+    Object.assign(localContent(project.shots[0], "es"), {
+      title: "Pequeños hábitos",
+      subtitle: "Un día más feliz",
+      textOffsets: { title: { x: 83, y: -54 } },
+      titleSize: 60,
+      status: "reviewed",
+    });
+    const file = new File(
+      [await exportProject(project, [image(), translatedImage])],
+      "languages.henscreenshots",
+    );
+    const restored = await importProject(file);
+    expect(restored.project.localization).toEqual(project.localization);
+    expect(restored.assets).toHaveLength(2);
+    expect(referencedAssetIds(restored.project)).toEqual(
+      expect.arrayContaining(restored.assets.map((asset) => asset.id)),
+    );
+    expect(restored.project.shots[0].assetId).not.toBe(
+      project.shots[0].assetId,
+    );
+    expect(restored.project.shots[0].translations!.es.assetId).not.toBe(
+      translatedImage.id,
+    );
+    expect(restored.project.shots[0].translations!.es.assetId).toBe(
+      restored.project.shots[1].translations!.es.assetId,
+    );
+    expect(localizedProject(restored.project, "es").shots[0]).toMatchObject({
+      title: "Pequeños hábitos",
+      subtitle: "Un día más feliz",
+      textOffsets: { title: { x: 83, y: -54 } },
+      style: { titleSize: 60 },
+    });
+    expect(restored.project.shots[0].title).toBe(project.shots[0].title);
+    expect(restored.project.shots[0].phone).toEqual(project.shots[0].phone);
+  });
+  it("restores schema 6 brand projects without adding or guessing languages", async () => {
+    const file = await changedBackup((value) => {
+      value.schemaVersion = value.project.schemaVersion = 6;
+    });
+    const restored = await importProject(file);
+    expect(restored.project.schemaVersion).toBe(7);
+    expect(restored.project.localization).toBeUndefined();
+  });
   it("keeps independent brand revisions, logos and font overrides inside the project file", async () => {
     const project = document();
     const kit = {
@@ -94,7 +154,7 @@ describe("portable project backups", () => {
       value.project.shots[0].textOffsets = { title: { x: 90, y: -75 } };
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(6);
+    expect(restored.project.schemaVersion).toBe(7);
     expect(restored.project.shots[0].textOffsets).toEqual({
       title: { x: 90, y: -75 },
     });
@@ -118,14 +178,14 @@ describe("portable project backups", () => {
     expect(restored.project.shots.map((s) => s.phone)).toEqual(
       project.shots.map((s) => s.phone),
     );
-    expect(restored.project.schemaVersion).toBe(6);
+    expect(restored.project.schemaVersion).toBe(7);
   });
   it("opens a version 4 backup without changing its saved composition", async () => {
     const backup = await changedBackup((value) => {
       value.schemaVersion = value.project.schemaVersion = 4;
     });
     const restored = await importProject(backup);
-    expect(restored.project.schemaVersion).toBe(6);
+    expect(restored.project.schemaVersion).toBe(7);
     expect(restored.project.shots[0].phone).toEqual(document().shots[0].phone);
     expect(restored.project.shots[0].textOffsets).toBeUndefined();
   });
@@ -205,9 +265,9 @@ describe("portable project backups", () => {
         unzipSync(new Uint8Array(await blob.arrayBuffer()))["project.json"],
       ),
     );
-    expect(archived.schemaVersion).toBe(6);
-    expect(archived.project.schemaVersion).toBe(6);
-    expect(restored.project.schemaVersion).toBe(6);
+    expect(archived.schemaVersion).toBe(7);
+    expect(archived.project.schemaVersion).toBe(7);
+    expect(restored.project.schemaVersion).toBe(7);
     expect(restored.project.style).toEqual(original.style);
     expect(restored.project.exportProfile).toBe("apple-mac");
     expect(restored.project.id).not.toBe(original.id);
@@ -257,7 +317,7 @@ describe("portable project backups", () => {
       delete value.project.shots[1].phone.rotation;
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(6);
+    expect(restored.project.schemaVersion).toBe(7);
     expect(restored.project.style).toEqual({
       ...defaultStyle,
       background: "#ACBD12",
@@ -280,7 +340,7 @@ describe("portable project backups", () => {
         unzipSync(new Uint8Array(await upgraded.arrayBuffer()))["project.json"],
       ),
     );
-    expect(upgradedMetadata.schemaVersion).toBe(6);
+    expect(upgradedMetadata.schemaVersion).toBe(7);
     expect(upgradedMetadata.project).toEqual(restored.project);
   });
   it("round-trips portfolio cards and custom dimensions, including a saved size while another preset is selected", async () => {
@@ -301,7 +361,7 @@ describe("portable project backups", () => {
         "portfolio.henscreenshots",
       );
       const restored = await importProject(file);
-      expect(restored.project.schemaVersion).toBe(6);
+      expect(restored.project.schemaVersion).toBe(7);
       expect(restored.project.exportProfile).toBe(profile);
       expect(restored.project.customSize).toEqual(original.customSize);
       expect(restored.project.style).toEqual(original.style);
@@ -328,7 +388,7 @@ describe("portable project backups", () => {
       };
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(6);
+    expect(restored.project.schemaVersion).toBe(7);
     expect(restored.project.exportProfile).toBe("apple-ipad13-landscape");
     expect(restored.project.customSize).toEqual({ width: 1600, height: 1200 });
     expect(restored.project.style).toMatchObject({
@@ -424,7 +484,7 @@ describe("portable project backups", () => {
       original = structuredClone(value.project);
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(6);
+    expect(restored.project.schemaVersion).toBe(7);
     expect(restored.project.exportProfile).toBe("play-phone-portrait");
     expect(restored.project.style).toEqual({
       ...original.style,
@@ -547,13 +607,13 @@ describe("portable project backups", () => {
     [
       "unsupported version",
       (value: any) => {
-        value.schemaVersion = 7;
+        value.schemaVersion = 8;
       },
     ],
     [
       "future project version",
       (value: any) => {
-        value.project.schemaVersion = 7;
+        value.project.schemaVersion = 8;
       },
     ],
     [

@@ -1,4 +1,5 @@
 type Name =
+  | "languages"
   | "brand"
   | "eye"
   | "search"
@@ -25,6 +26,8 @@ type Name =
   | "layout"
   | "phone";
 const paths: Record<Name, string> = {
+  languages:
+    "M3 5h12M9 3v2M5 5c0 5 4 9 8 10M13 5c0 5-4 9-10 11M14 21l4-11 4 11m-7-3h6",
   brand:
     "M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 0-4h-1a2 2 0 0 1 0-4h4a5 5 0 0 0 5-5c0-3-4-5-9-5ZM7 9h.01M11 6h.01M16 7h.01M6 14h.01",
   eye: "M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12m13 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0",

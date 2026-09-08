@@ -1,4 +1,4 @@
-import { resetText } from "./text-placement";
+import { refitText, resetText } from "./text-placement";
 import { panoramaStart } from "./panorama-families";
 import {
   resolveStyle,
@@ -558,7 +558,7 @@ export function changeExportProfile(
   project.exportProfile = id;
   for (const shot of project.shots) {
     resetComposition(project, shot);
-    resetText(shot);
+    refitText(shot);
   }
 }
 
@@ -577,7 +577,7 @@ export function changeCustomSize(
   project.customSize = { ...size };
   for (const shot of project.shots) {
     resetComposition(project, shot);
-    resetText(shot);
+    refitText(shot);
   }
 }
 
@@ -621,7 +621,7 @@ export function applyTemplate(
         delete shot.style[key];
     } else Object.assign(shot.style, patch);
     resetComposition(project, shot);
-    resetText(shot);
+    refitText(shot, true);
   }
 }
 

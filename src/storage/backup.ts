@@ -1,3 +1,4 @@
+import { referencedAssetIds, MAX_LANGUAGES } from "../core/localization";
 import { strToU8, unzipSync, zipSync } from "fflate";
 import type { UnzipFileInfo } from "fflate";
 import { importImages } from "../assets/import";
@@ -88,6 +89,7 @@ function manifest(value: unknown): Manifest {
       raw.schemaVersion !== 3 &&
       raw.schemaVersion !== 4 &&
       raw.schemaVersion !== 5 &&
+      raw.schemaVersion !== 6 &&
       raw.schemaVersion !== SCHEMA_VERSION)
   )
     fail("This backup uses an unsupported project version.");
@@ -95,7 +97,11 @@ function manifest(value: unknown): Manifest {
   if (raw.project.schemaVersion !== raw.schemaVersion)
     fail("The backup and project versions do not match.");
   const document = migrateProject(raw.project);
-  if (!Array.isArray(raw.assets) || raw.assets.length > LIMITS.shots) fail();
+  if (
+    !Array.isArray(raw.assets) ||
+    raw.assets.length > LIMITS.shots * MAX_LANGUAGES
+  )
+    fail();
   const assets: AssetInfo[] = raw.assets.map((value) => {
     const entry = record(value, [
       "id",
@@ -134,7 +140,7 @@ function manifest(value: unknown): Manifest {
     assets.reduce((sum, asset) => sum + asset.size, 0) > LIMITS.totalBytes
   )
     fail();
-  const references = new Set(document.shots.map((shot) => shot.assetId));
+  const references = new Set(referencedAssetIds(document));
   if (
     assets.length !== references.size ||
     assets.some((asset) => !references.has(asset.id))
@@ -154,14 +160,14 @@ export async function exportProject(
   sourceAssets: Asset[],
 ): Promise<Blob> {
   const assetsById = new Map(sourceAssets.map((asset) => [asset.id, asset]));
-  const referenced = [
-    ...new Set(document.shots.map((shot) => shot.assetId)),
-  ].map((assetId) => {
-    const asset = assetsById.get(assetId);
-    if (!asset)
-      fail("A screenshot image is missing. Re-import it before exporting.");
-    return asset;
-  });
+  const referenced = [...new Set(referencedAssetIds(document))].map(
+    (assetId) => {
+      const asset = assetsById.get(assetId);
+      if (!asset)
+        fail("A screenshot image is missing. Re-import it before exporting.");
+      return asset;
+    },
+  );
   const metadata: Manifest = manifest({
     format: "hen-screenshots",
     schemaVersion: SCHEMA_VERSION,
@@ -201,7 +207,10 @@ export async function importProject(file: File): Promise<LoadedProject> {
     // every unexpected entry before a second pass extracts stored bytes.
     unzipSync(bytes, {
       filter: (entry) => {
-        if (entries.size >= LIMITS.shots + 1 || entries.has(entry.name))
+        if (
+          entries.size >= LIMITS.shots * MAX_LANGUAGES + 1 ||
+          entries.has(entry.name)
+        )
           fail("The backup contains too many or duplicate files.");
         if (
           entry.name !== "project.json" &&
@@ -280,6 +289,21 @@ export async function importProject(file: File): Promise<LoadedProject> {
         ...shot,
         id: crypto.randomUUID(),
         assetId: ids.get(shot.assetId)!,
+        ...(shot.translations
+          ? {
+              translations: Object.fromEntries(
+                Object.entries(shot.translations).map(([locale, content]) => [
+                  locale,
+                  {
+                    ...content,
+                    ...(content.assetId
+                      ? { assetId: ids.get(content.assetId)! }
+                      : {}),
+                  },
+                ]),
+              ),
+            }
+          : {}),
       })),
     },
   };

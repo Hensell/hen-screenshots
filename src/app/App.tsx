@@ -1,7 +1,17 @@
+import {
+  localizedProject,
+  localContent,
+  referencedAssetIds,
+  languageName,
+} from "../core/localization";
+import "../editor/languages.css";
 import { isPanoramaTemplate } from "../core/panorama-families";
 import { moveText } from "../core/text-placement";
 import {
+  lazy,
+  Suspense,
   useCallback,
+  useMemo,
   useEffect,
   useRef,
   useState,
@@ -62,6 +72,12 @@ import {
   type ExportProfile,
 } from "../core/export-profiles";
 
+const LanguagesDialog = lazy(() =>
+  import("../editor/LanguagesDialog").then((module) => ({
+    default: module.LanguagesDialog,
+  })),
+);
+
 type Notice = { message: string; error?: boolean };
 type ReadyFile = { url: string; name: string; image: boolean };
 function Brand() {
@@ -87,7 +103,23 @@ function Footer() {
 
 export function App() {
   const state = useEditor();
-  const { project, assets, selectedId, status, saveError, change } = state;
+  const {
+    project: sourceProject,
+    assets,
+    selectedId,
+    status,
+    saveError,
+    change,
+  } = state;
+  const locale =
+    state.locale && sourceProject?.localization?.targets.includes(state.locale)
+      ? state.locale
+      : null;
+  const project = useMemo(
+    () => sourceProject && localizedProject(sourceProject, locale),
+    [sourceProject, locale],
+  );
+  const [languagesOpen, setLanguagesOpen] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [newProjectOpen, setNewProjectOpen] = useState(false);
   const [libraryPurpose, setLibraryPurpose] =
@@ -131,7 +163,22 @@ export function App() {
         const target = draft.shots.find(
           (candidate) => candidate.id === ownerId,
         );
-        if (target) moveText(target, element, x, y);
+        if (target) {
+          const locale =
+            editor.locale && draft.localization?.targets.includes(editor.locale)
+              ? editor.locale
+              : null;
+          if (locale) {
+            const content = localContent(target, locale);
+            // Explicit zero overrides are meaningful when the shared position is nonzero.
+            const moved: typeof target = { ...target, textOffsets: {} };
+            moveText(moved, element, x, y);
+            content.textOffsets = {
+              ...content.textOffsets,
+              [element]: moved.textOffsets?.[element] ?? { x: 0, y: 0 },
+            };
+          } else moveText(target, element, x, y);
+        }
       });
       if (editor.selectedId !== ownerId) editor.select(ownerId);
     },
@@ -285,6 +332,7 @@ export function App() {
         templatesOpen ||
         publicationOpen ||
         brandKitsOpen ||
+        languagesOpen ||
         deleteTarget ||
         slideMenu
       )
@@ -306,6 +354,7 @@ export function App() {
     templatesOpen,
     publicationOpen,
     brandKitsOpen,
+    languagesOpen,
     deleteTarget,
     slideMenu,
   ]);
@@ -372,11 +421,13 @@ export function App() {
           ? linkedShots(project, replacement).map((shot) => shot.id)
           : [],
       );
-      const usedIds = new Set(
-        project.shots
-          .filter((s) => !replacedIds.has(s.id))
-          .map((s) => s.assetId),
-      );
+      const beforeImport = structuredClone(sourceProject!);
+      if (replacement)
+        editLinkedShots(beforeImport, replacement, (target) => {
+          if (locale) delete localContent(target, locale).assetId;
+          else target.assetId = "replacement-pending";
+        });
+      const usedIds = new Set(referencedAssetIds(beforeImport));
       const existingBytes = assets
         .filter((asset) => usedIds.has(asset.id))
         .reduce((sum, asset) => sum + asset.blob.size, 0);
@@ -393,7 +444,8 @@ export function App() {
       state.edit((project) => {
         if (replacement) {
           editLinkedShots(project, replacement, (target) => {
-            target.assetId = incoming[0].id;
+            if (locale) localContent(target, locale).assetId = incoming[0].id;
+            else target.assetId = incoming[0].id;
           });
           firstId = replacement;
         } else {
@@ -438,7 +490,7 @@ export function App() {
     setBusy("Preparing project file…");
     try {
       offerFile(
-        await exportProject(project, assets),
+        await exportProject(sourceProject!, assets),
         `${filename(project.name)}.henscreenshots`,
       );
       setNotice({
@@ -450,11 +502,15 @@ export function App() {
       setBusy(null);
     }
   }
-  async function exportImages(all: boolean) {
+  async function exportImages(all: boolean, languageCodes?: string[]) {
     if (!project || !shot || busy) return;
-    const snapshot = structuredClone(project);
+    const original = structuredClone(sourceProject!);
+    const locales = languageCodes?.length
+      ? languageCodes
+      : [locale ?? original.localization?.source ?? ""];
+    const snapshot = localizedProject(original, locales[0]);
     const shots = all ? snapshot.shots : linkedShots(snapshot, shot.id);
-    const multiple = all || shots.length > 1;
+    const multiple = all || shots.length > 1 || locales.length > 1;
     cancelExport.current = false;
     setBusy("Preparing export…");
     try {
@@ -465,19 +521,33 @@ export function App() {
         );
       const files: Record<string, Uint8Array> = {};
       let png: Blob | undefined;
-      for (const [index, item] of shots.entries()) {
-        if (cancelExport.current) return;
-        setBusy(`Rendering ${index + 1} of ${shots.length}…`);
-        const asset = assets.find((asset) => asset.id === item.assetId);
-        if (!asset)
-          throw new Error(
-            `The original image for screenshot ${index + 1} is missing. Replace it and try again.`,
+      let exportedBytes = 0;
+      for (const [languageIndex, code] of locales.entries()) {
+        const version = localizedProject(original, code);
+        const localizedShots = all
+          ? version.shots
+          : linkedShots(version, shot.id);
+        for (const [index, item] of localizedShots.entries()) {
+          if (cancelExport.current) return;
+          setBusy(
+            `Rendering ${languageIndex * shots.length + index + 1} of ${shots.length * locales.length}…`,
           );
-        const image = images.get(asset.id) ?? (await loadImage(asset));
-        png = await renderShot(snapshot, item, image);
-        files[
-          `${String(snapshot.shots.findIndex((s) => s.id === item.id) + 1).padStart(2, "0")}-${filename(item.title)}.png`
-        ] = new Uint8Array(await png.arrayBuffer());
+          const asset = assets.find((asset) => asset.id === item.assetId);
+          if (!asset)
+            throw new Error(
+              `The original image for screenshot ${index + 1} is missing. Replace it and try again.`,
+            );
+          const image = images.get(asset.id) ?? (await loadImage(asset));
+          png = await renderShot(version, item, image);
+          exportedBytes += png.size;
+          if (exportedBytes > 250 * 1024 * 1024)
+            throw new Error(
+              "This export is too large to package safely. Select fewer languages or screenshots and export again.",
+            );
+          files[
+            `${original.localization ? `${code}/` : ""}${String(snapshot.shots.findIndex((s) => s.id === item.id) + 1).padStart(2, "0")}-${filename(item.title)}.png`
+          ] = new Uint8Array(await png.arrayBuffer());
+        }
       }
       if (cancelExport.current) return;
       if (multiple) {
@@ -490,12 +560,12 @@ export function App() {
         if (cancelExport.current) return;
         offerFile(
           new Blob([new Uint8Array(archive)], { type: "application/zip" }),
-          `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}${!all ? "-panorama" : ""}.zip`,
+          `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}${!all ? "-selection" : ""}${locales.length > 1 ? "-languages" : original.localization ? `-${locales[0]}` : ""}.zip`,
         );
       } else if (png)
         offerFile(
           png,
-          `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}-${String(project.shots.findIndex((s) => s.id === shot.id) + 1).padStart(2, "0")}.png`,
+          `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}${original.localization ? `-${locales[0]}` : ""}-${String(project.shots.findIndex((s) => s.id === shot.id) + 1).padStart(2, "0")}.png`,
         );
       setNotice({
         message: `${multiple ? "Your screenshots are" : "Your PNG is"} ready. Check your downloads.`,
@@ -522,7 +592,8 @@ export function App() {
       templatesOpen ||
       exportOpen ||
       publicationOpen ||
-      brandKitsOpen
+      brandKitsOpen ||
+      languagesOpen
     )
       return;
     const bounds = opener.getBoundingClientRect();
@@ -930,7 +1001,11 @@ export function App() {
                 className="toolbar-button"
                 disabled={!shot || !!busy}
                 onClick={() => shot && chooseImages(shot.id)}
-                title="Replace the image and keep your design"
+                title={
+                  locale
+                    ? `Replace the ${languageName(locale)} image and keep your design`
+                    : "Replace the image and keep your design"
+                }
               >
                 <Icon name="image" size={18} /> Replace image
               </button>
@@ -946,6 +1021,44 @@ export function App() {
                 aria-label={pair ? "Duplicate panorama" : "Duplicate slide"}
               >
                 <Icon name="copy" size={18} /> Duplicate
+              </button>
+            </div>
+            <div className="language-toolbar">
+              {project.localization && (
+                <label className="language-switch">
+                  <span className="sr-only">Editing language</span>
+                  <select
+                    value={locale ?? project.localization.source}
+                    disabled={!!busy}
+                    onChange={(event) => {
+                      state.setLocale(
+                        event.target.value === project.localization!.source
+                          ? null
+                          : event.target.value,
+                      );
+                      setReadyFile(null);
+                    }}
+                  >
+                    <option value={project.localization.source}>
+                      {languageName(project.localization.source)} · Original
+                    </option>
+                    {project.localization.targets.map((code) => (
+                      <option key={code} value={code}>
+                        {languageName(code)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              <button
+                type="button"
+                className="toolbar-button"
+                disabled={!!busy || !shot}
+                onClick={() => setLanguagesOpen(true)}
+                aria-label="Manage languages"
+              >
+                <Icon name="languages" size={18} />
+                <span>Languages</span>
               </button>
             </div>
             <button
@@ -1275,6 +1388,8 @@ export function App() {
               onReplace={() => chooseImages(shot.id)}
               onTemplates={() => setTemplatesOpen(true)}
               onBrandKits={() => setBrandKitsOpen(true)}
+              onLanguages={() => setLanguagesOpen(true)}
+              locale={locale}
               tab={inspectorTab}
               onTabChange={(tab) => {
                 state.endGroup();
@@ -1329,6 +1444,15 @@ export function App() {
       {exportOpen && project && (
         <ExportDialog
           count={project.shots.length}
+          languages={
+            sourceProject?.localization
+              ? [
+                  sourceProject.localization.source,
+                  ...sourceProject.localization.targets,
+                ]
+              : []
+          }
+          currentLanguage={locale ?? sourceProject?.localization?.source ?? ""}
           pair={!!pair}
           profile={resolveExportProfile(project)}
           busy={busy}
@@ -1361,6 +1485,27 @@ export function App() {
             setPublicationOpen(false);
           }}
         />
+      )}
+      {languagesOpen && sourceProject && (
+        <Suspense
+          fallback={
+            <div role="status" className="work-progress">
+              Opening languages…
+            </div>
+          }
+        >
+          <LanguagesDialog
+            project={sourceProject}
+            locale={locale}
+            onClose={() => {
+              state.endGroup();
+              setLanguagesOpen(false);
+            }}
+            onLocale={state.setLocale}
+            onEdit={state.edit}
+            onSelect={state.select}
+          />
+        </Suspense>
       )}
       {brandKitsOpen && (
         <BrandKitDialog
@@ -1450,6 +1595,8 @@ export function App() {
 }
 
 function ExportDialog({
+  languages,
+  currentLanguage,
   count,
   pair,
   profile,
@@ -1459,15 +1606,18 @@ function ExportDialog({
   onExport,
   onCancel,
 }: {
+  languages: string[];
+  currentLanguage: string;
   count: number;
   pair: boolean;
   profile: ExportProfile;
   busy: string | null;
   file: ReadyFile | null;
   onClose: () => void;
-  onExport: (all: boolean) => Promise<void>;
+  onExport: (all: boolean, locales?: string[]) => Promise<void>;
   onCancel: () => void;
 }) {
+  const [exportLanguages, setExportLanguages] = useState([currentLanguage]);
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current!;
@@ -1550,18 +1700,50 @@ function ExportDialog({
         </div>
       ) : (
         <div className="export-options">
+          {languages.length > 1 && (
+            <fieldset className="export-languages">
+              <legend>Languages to export</legend>
+              {languages.map((code) => (
+                <label className="check-field" key={code}>
+                  <input
+                    type="checkbox"
+                    checked={exportLanguages.includes(code)}
+                    onChange={(event) =>
+                      setExportLanguages((previous) =>
+                        event.target.checked
+                          ? [...previous, code]
+                          : previous.filter((item) => item !== code),
+                      )
+                    }
+                  />
+                  {languageName(code)}
+                </label>
+              ))}
+              <p className="field-help">
+                A folder per language inside the ZIP. Review every translation
+                before publishing.
+              </p>
+            </fieldset>
+          )}
           <button
             className="button primary full"
-            onClick={() => void onExport(false)}
+            disabled={!exportLanguages.length}
+            onClick={() => void onExport(false, exportLanguages)}
           >
             <Icon name="image" />
             {pair ? "Export this panorama" : "Export this screenshot"}
-            <span>{pair ? "ZIP · 2 PNGs" : "PNG"}</span>
+            <span>
+              {exportLanguages.length > 1
+                ? "ZIP"
+                : pair
+                  ? "ZIP · 2 PNGs"
+                  : "PNG"}
+            </span>
           </button>
           <button
             className="button secondary full"
-            disabled={count > profile.maxCount}
-            onClick={() => void onExport(true)}
+            disabled={count > profile.maxCount || !exportLanguages.length}
+            onClick={() => void onExport(true, exportLanguages)}
           >
             <Icon name="download" />
             Export all {count} screenshots<span>ZIP</span>

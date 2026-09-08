@@ -1,3 +1,4 @@
+import { referencedAssetIds } from "../core/localization";
 import Dexie from "dexie";
 import type { Table } from "dexie";
 import { validateBrandKit, type BrandKit } from "../core/brand-kit";
@@ -11,6 +12,7 @@ import type {
   V3Project,
   V4Project,
   V5Project,
+  V6Project,
 } from "../core/model";
 
 interface ProjectRow {
@@ -18,7 +20,13 @@ interface ProjectRow {
   updatedAt: number;
   revision: number;
   project:
-    Project | V5Project | V4Project | V3Project | V2Project | LegacyProject;
+    | Project
+    | V6Project
+    | V5Project
+    | V4Project
+    | V3Project
+    | V2Project
+    | LegacyProject;
 }
 interface AssetRow extends Asset {
   projectId: string;
@@ -180,7 +188,7 @@ export async function saveProject(
       await db.assets.bulkPut(
         assets.map((asset) => ({ ...asset, projectId: project.id })),
       );
-    const referenced = [...new Set(project.shots.map((shot) => shot.assetId))];
+    const referenced = referencedAssetIds(project);
     const stored = await db.assets.bulkGet(
       referenced.map((id) => [project.id, id]),
     );

@@ -26,6 +26,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 - **Line things up.** Smart guides snap devices and text to centers, edges, margins, and nearby objects, including across panoramas. Hold Alt/Option to move freely, or turn guides off.
 - **Preview before publishing.** Review store screenshots in a swipeable carousel or portfolio cards in a website grid. Check compact, phone, and wide reading sizes, then jump back to any slide to edit it.
 - **One brand, every project.** Save an app’s palette, headline and supporting fonts, and identifying logo in a reusable brand kit. Preview it on your screenshots and apply it to a slide, linked panorama, or entire series.
+- **One design, multiple languages.** Edit independent captions, keep layouts linked, and export a folder per language. Translate manually or download optional local translation packs.
 - **Edit a whole series.** Apply a template to one slide or the series. Replace an image while keeping its design, duplicate and reorder slides, and undo or redo changes.
 - **Export for the destination.** Separate **App stores** and **Portfolio** workspaces keep store presets apart from cards, square formats, widescreen covers, and custom dimensions.
 - **Keep your work.** Projects save automatically in your browser. Download an editable project file with its original images for backup or transfer.
@@ -48,6 +49,21 @@ Design the pair together, keep a different caption on each slide, and export two
 **Keyboard:** focus the preview and press **Enter** to select an object. Move it with the arrow keys; hold **Shift** for larger steps. Outside text fields, **⌘/Ctrl + Z** undoes changes and **⌘/Ctrl + Shift + Z** redoes them.
 
 **Before exporting:** open **Preview** beside Export to check small-screen readability and the spacing between panorama slides. Use the carousel's arrow keys, Home/End, or swipe. This is a reading-size simulation; store layouts vary. Guides and preview controls never appear in exported images.
+
+## One design, every language
+
+Open **Languages** in the studio toolbar, choose the language of your original captions, and add a language version. The original text and translation appear side by side. Everything saves automatically. The toolbar’s language selector changes the canvas, thumbnails, inspector, and publication preview together.
+
+- Colors, templates, frames, device positions, and slide order stay shared.
+- Captions are independent. Each language can override text positions, headline size, and screenshot images; reset controls restore the shared settings.
+- Original text changes flag existing translations for review without overwriting your edits. Newly added slides start as untranslated.
+- **Export** lets you select languages. ZIPs contain folders such as `en/` and `es/`, with numbered PNGs at the project’s export resolution. Project files include all language versions and their images.
+
+**Manual editing always works without a model download.** Optional **Translate on device** uses OPUS-MT through Transformers.js in a dedicated WebAssembly worker; it does not use Chrome’s Translator API or a hosted inference service. Downloadable packs currently cover English, Spanish, French, and German. Pairs without English use two packs and translate through English. Other listed languages support manual editing.
+
+The download dialog explains the size before starting: roughly **112–120 MB per directional language pack**, plus shared runtime files on first use. Files download from Hugging Face and jsDelivr; captions stay on the device. Packs are cached when browser storage permits, can be removed from the dialog, and are not included in project backups. Cache eviction or clearing site data can require another download. Performance depends on browser and hardware; downloads, cancellation, and errors preserve your text. Review machine translations before publishing, especially marketing headlines.
+
+Translations support up to **10 languages per project**. The initial language list uses scripts covered by the bundled fonts; RTL and CJK typesetting are not yet offered. PNG ZIP exports are limited to 250 MB before packaging; split larger exports into smaller batches.
 
 ## Your screenshots stay with you
 
@@ -98,19 +114,20 @@ Open [localhost:5174](http://127.0.0.1:5174/) for the landing page or [localhost
 
 The landing page is static HTML and CSS. The React editor loads at `/studio/`. A shared Konva scene renders editor previews, template thumbnails, and full-resolution exports, so they use the same composition rules.
 
-| Directory        | Responsibility                                                 |
-| ---------------- | -------------------------------------------------------------- |
-| `src/app/`       | Project library, editor shell, dialogs, and user actions       |
-| `src/core/`      | Project schema, templates, catalog search, and export profiles |
-| `src/editor/`    | Editing state, undo/redo, inspector, and template library      |
-| `src/rendering/` | Shared scene, device frames, typography, and decorations       |
-| `src/assets/`    | Image validation and decoding                                  |
-| `src/storage/`   | IndexedDB persistence, migrations, and project backups         |
-| `src/export/`    | PNG rendering and export validation                            |
+| Directory          | Responsibility                                                         |
+| ------------------ | ---------------------------------------------------------------------- |
+| `src/app/`         | Project library, editor shell, dialogs, and user actions               |
+| `src/core/`        | Project schema, templates, catalog search, and export profiles         |
+| `src/editor/`      | Editing state, undo/redo, inspector, and template library              |
+| `src/rendering/`   | Shared scene, device frames, typography, and decorations               |
+| `src/assets/`      | Image validation and decoding                                          |
+| `src/storage/`     | IndexedDB persistence, migrations, and project backups                 |
+| `src/export/`      | PNG rendering and export validation                                    |
+| `src/translation/` | Pinned model catalog, optional worker, download cache and cancellation |
 
 The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 13 templates.
 
-Autosave checks revisions to prevent one tab from overwriting another tab's changes. Brand kit updates use revision checks too. Project files use schema 6 and support migration from versions 1–5. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots and portability, and export profiles.
+Autosave checks revisions to prevent one tab from overwriting another tab's changes. Brand kit updates use revision checks too. Project files use schema 7 and support migration from versions 1–6. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots and portability, localization, translation cancellation, and export profiles.
 
 ### Deployment
 
@@ -140,3 +157,5 @@ For code contributions, keep changes focused and run `npm run check`. Check rend
 - [Panoramas and workspace separation](docs/panorama-and-workspaces-v0.6.md)
 
 These notes record design decisions and earlier milestones; the sections above describe the current app.
+
+Translation model credits: [Helsinki-NLP / OPUS-MT](https://github.com/Helsinki-NLP/OPUS-MT-train), [Xenova’s ONNX conversions](https://huggingface.co/Xenova), and [Transformers.js](https://github.com/huggingface/transformers.js). Model revisions are pinned in [`src/translation/catalog.ts`](src/translation/catalog.ts); their original model licenses apply. The application license status above is unchanged.
