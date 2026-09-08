@@ -17,6 +17,7 @@ export function SlideActionsMenu({
   canDuplicate,
   capacity,
   onClose,
+  onEdit,
   onReplace,
   onDuplicate,
   onDelete,
@@ -27,6 +28,7 @@ export function SlideActionsMenu({
   canDuplicate: boolean;
   capacity: number;
   onClose: (restoreFocus?: boolean) => void;
+  onEdit: () => void;
   onReplace: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
@@ -45,6 +47,8 @@ export function SlideActionsMenu({
 
   useEffect(() => {
     function outside(event: Event) {
+      // Let the trigger's click toggle its menu instead of reopening it.
+      if (target.opener.contains(event.target as Node)) return;
       if (!ref.current?.contains(event.target as Node)) onClose(false);
     }
     function dismiss(event: Event) {
@@ -63,7 +67,7 @@ export function SlideActionsMenu({
       document.removeEventListener("scroll", dismiss, true);
       window.removeEventListener("resize", resize);
     };
-  }, [onClose]);
+  }, [onClose, target.opener]);
 
   return createPortal(
     <div
@@ -98,6 +102,16 @@ export function SlideActionsMenu({
       }}
     >
       <p className="slide-menu-label">{label}</p>
+      <button
+        role="menuitem"
+        tabIndex={-1}
+        onClick={() => {
+          onClose();
+          onEdit();
+        }}
+      >
+        <Icon name="edit" /> Edit slide
+      </button>
       <button
         role="menuitem"
         tabIndex={-1}

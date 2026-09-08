@@ -44,7 +44,7 @@ Design the pair together, keep a different caption on each slide, and export two
 
 1. [Open the studio](https://screenshots.hensell.dev/studio/), create an **App stores** or **Portfolio** project, and add PNG, JPEG, or still WebP screenshots.
 2. Choose a template and frame. Use **Design**, **Text**, **Device**, and **Canvas** to adjust the result. Drag text or devices on the canvas; their reset controls return them to the template position.
-3. Click **Export** to download a PNG, a panorama pair, or the whole series as a ZIP. Use **Project file** to keep an editable backup too.
+3. Click **Export** to download a PNG, a panorama pair, or the whole series as a ZIP. Use **Download project** (**Project file** on small screens) to keep an editable backup too.
 
 **Keyboard:** focus the preview and press **Enter** to select an object. Move it with the arrow keys; hold **Shift** for larger steps. Outside text fields, **⌘/Ctrl + Z** undoes changes and **⌘/Ctrl + Shift + Z** redoes them.
 
@@ -73,7 +73,7 @@ Projects keep independent copies of applied kits. Editing or deleting a library 
 
 Image processing, preview rendering, project storage, and exports happen in your browser. There is no account, screenshot upload service, or cloud synchronization. Fonts are bundled locally.
 
-Projects belong to the browser and site where you created them. Clearing site data removes those local projects. To move to another browser, computer, or domain, download **Project file** (`.henscreenshots`), then choose **Open project file** in the other studio. Importing a backup creates a new copy.
+Projects belong to the browser and site where you created them. Clearing site data removes those local projects. To move to another browser, computer, or domain, choose **Download project** (`.henscreenshots`), then **Open project file** in the other studio. Importing a backup creates a new copy.
 
 | Item                            | Current limit                                                |
 | ------------------------------- | ------------------------------------------------------------ |

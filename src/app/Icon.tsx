@@ -1,4 +1,5 @@
 type Name =
+  | "edit"
   | "languages"
   | "brand"
   | "eye"
@@ -26,6 +27,7 @@ type Name =
   | "layout"
   | "phone";
 const paths: Record<Name, string> = {
+  edit: "m16 3 5 5M4 15 16 3a3.5 3.5 0 0 1 5 5L9 20l-6 1z",
   languages:
     "M3 5h12M9 3v2M5 5c0 5 4 9 8 10M13 5c0 5-4 9-10 11M14 21l4-11 4 11m-7-3h6",
   brand:

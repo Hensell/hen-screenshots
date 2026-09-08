@@ -596,6 +596,10 @@ export function App() {
       languagesOpen
     )
       return;
+    if (!point && slideMenu?.opener === opener) {
+      closeSlideMenu();
+      return;
+    }
     const bounds = opener.getBoundingClientRect();
     setSlideMenu({
       projectId: project.id,
@@ -671,14 +675,16 @@ export function App() {
           void restore(file);
         }}
       />
-      <header className={`topbar ${project ? "topbar-editor" : ""}`}>
+      <header className={`topbar ${project ? "editor-header" : ""}`}>
         {project ? (
           <button
             className="brand-home"
             aria-label="Back to projects"
+            title="Back to projects"
             disabled={!!busy}
             onClick={() => void backToProjects()}
           >
+            <Icon name="left" size={16} />
             <Brand />
           </button>
         ) : (
@@ -688,50 +694,50 @@ export function App() {
         )}
         {project ? (
           <>
-            <div className="project-heading">
-              <button
-                className="icon-button"
-                aria-label="Back to projects"
-                disabled={!!busy}
-                onClick={() => void backToProjects()}
-              >
-                <Icon name="left" />
-              </button>
-              <input
-                className="project-name"
-                aria-label="Project name"
-                maxLength={80}
-                value={project.name}
-                disabled={!!busy}
-                onChange={(event) =>
-                  state.edit((project) => {
-                    project.name = event.target.value;
-                  }, "name")
-                }
-                onBlur={() => {
-                  if (!project.name.trim())
+            <div className="editor-project">
+              <label className="project-name-field" title="Rename project">
+                <input
+                  className="editor-project-name"
+                  aria-label="Project name"
+                  title="Rename project"
+                  maxLength={80}
+                  size={Math.max(12, Math.min(project.name.length + 2, 40))}
+                  value={project.name}
+                  disabled={!!busy}
+                  onChange={(event) =>
                     state.edit((project) => {
-                      project.name = "Untitled app";
-                    });
-                  state.endGroup();
-                }}
-              />
+                      project.name = event.target.value;
+                    }, "name")
+                  }
+                  onBlur={() => {
+                    if (!project.name.trim())
+                      state.edit((project) => {
+                        project.name = "Untitled app";
+                      });
+                    state.endGroup();
+                  }}
+                />
+                <Icon name="edit" size={14} />
+              </label>
               <span
-                className={`save-status ${status === "error" ? "has-error" : ""}`}
+                className={`editor-save-status ${status === "error" ? "has-error" : ""}`}
                 role="status"
               >
                 {status === "saved" && <Icon name="check" size={14} />}
                 {savingText}
               </span>
             </div>
-            <div className="header-actions">
+            <div className="editor-file-actions">
               <button
-                className="button secondary backup-button"
+                className="button quiet project-download"
+                aria-label="Download project file"
+                title="Download an editable .henscreenshots backup"
                 disabled={!!busy}
                 onClick={() => void backup()}
               >
                 <Icon name="folder" />
-                <span>Project file</span>
+                <span className="download-label">Download project</span>
+                <span className="download-label-compact">Project file</span>
               </button>
               <button
                 className="button secondary publication-button"
@@ -986,133 +992,168 @@ export function App() {
             void addImages(Array.from(event.dataTransfer.files));
           }}
         >
-          <div className="studio-toolbar" aria-label="Project tools">
-            <div className="toolbar-group">
-              <button
-                type="button"
-                className="toolbar-button"
-                disabled={!shot || !!busy || !images.get(shot.assetId)}
-                onClick={() => setTemplatesOpen(true)}
+          <div className="editor-toolbar" aria-label="Project tools">
+            <div className="editing-actions">
+              <div
+                className="history-actions"
+                role="group"
+                aria-label="Edit history"
               >
-                <Icon name="layout" size={18} /> Templates
-              </button>
-              <button
-                type="button"
-                className="toolbar-button"
-                disabled={!shot || !!busy}
-                onClick={() => shot && chooseImages(shot.id)}
-                title={
-                  locale
-                    ? `Replace the ${languageName(locale)} image and keep your design`
-                    : "Replace the image and keep your design"
-                }
+                <button
+                  className="icon-button"
+                  aria-label="Undo"
+                  ref={undoButton}
+                  title="Undo (⌘/Ctrl Z)"
+                  disabled={!state.past.length || !!busy}
+                  onClick={state.undo}
+                >
+                  <Icon name="undo" />
+                </button>
+                <button
+                  className="icon-button"
+                  aria-label="Redo"
+                  title="Redo (⌘/Ctrl Shift Z)"
+                  disabled={!state.future.length || !!busy}
+                  onClick={state.redo}
+                >
+                  <Icon name="redo" />
+                </button>
+              </div>
+              <div
+                className="slide-tools"
+                role="group"
+                aria-label="Slide tools"
               >
-                <Icon name="image" size={18} /> Replace image
-              </button>
-              <button
-                type="button"
-                className="toolbar-button toolbar-duplicate"
-                disabled={
-                  !shot ||
-                  !!busy ||
-                  project.shots.length + (pair ? 2 : 1) > shotCapacity(project)
-                }
-                onClick={() => shot && duplicate(shot.id)}
-                aria-label={pair ? "Duplicate panorama" : "Duplicate slide"}
-              >
-                <Icon name="copy" size={18} /> Duplicate
-              </button>
+                <button
+                  type="button"
+                  className="toolbar-button templates-trigger"
+                  disabled={!shot || !!busy || !images.get(shot.assetId)}
+                  onClick={() => setTemplatesOpen(true)}
+                >
+                  <Icon name="layout" size={18} /> Templates
+                </button>
+                <button
+                  type="button"
+                  className="toolbar-button desktop-slide-action"
+                  disabled={!shot || !!busy}
+                  onClick={() => shot && chooseImages(shot.id)}
+                  title={
+                    locale
+                      ? `Replace the ${languageName(locale)} image and keep your design`
+                      : "Replace the image and keep your design"
+                  }
+                >
+                  <Icon name="image" size={18} /> Replace image
+                </button>
+                <button
+                  type="button"
+                  className="toolbar-button desktop-slide-action"
+                  disabled={
+                    !shot ||
+                    !!busy ||
+                    project.shots.length + (pair ? 2 : 1) >
+                      shotCapacity(project)
+                  }
+                  onClick={() => shot && duplicate(shot.id)}
+                  aria-label={pair ? "Duplicate panorama" : "Duplicate slide"}
+                >
+                  <Icon name="copy" size={18} /> Duplicate
+                </button>
+                <button
+                  type="button"
+                  className="toolbar-button compact-slide-actions"
+                  aria-label="Selected slide actions"
+                  aria-haspopup="menu"
+                  aria-expanded={
+                    !!slideMenu &&
+                    slideMenu.opener.dataset.slideTools === "true"
+                  }
+                  aria-controls={slideMenu ? "slide-actions-menu" : undefined}
+                  data-slide-tools="true"
+                  disabled={!shot || !!busy}
+                  onClick={(event) => {
+                    if (shot) showSlideMenu(shot.id, event.currentTarget);
+                  }}
+                >
+                  <Icon name="more" size={18} /> Slide
+                </button>
+              </div>
             </div>
-            <div className="language-toolbar">
-              {project.localization && (
-                <label className="language-switch">
-                  <span className="sr-only">Editing language</span>
-                  <select
-                    value={locale ?? project.localization.source}
-                    disabled={!!busy}
-                    onChange={(event) => {
-                      state.setLocale(
-                        event.target.value === project.localization!.source
-                          ? null
-                          : event.target.value,
-                      );
-                      setReadyFile(null);
-                    }}
-                  >
-                    <option value={project.localization.source}>
-                      {languageName(project.localization.source)} · Original
-                    </option>
-                    {project.localization.targets.map((code) => (
-                      <option key={code} value={code}>
-                        {languageName(code)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              )}
-              <button
-                type="button"
-                className="toolbar-button"
-                disabled={!!busy || !shot}
-                onClick={() => setLanguagesOpen(true)}
-                aria-label="Manage languages"
-              >
-                <Icon name="languages" size={18} />
-                <span>Languages</span>
-              </button>
-            </div>
-            <button
-              type="button"
-              className="canvas-format-button"
-              onClick={() => openInspector("canvas")}
-              disabled={!!busy || !shot}
-            >
-              <Icon name="canvas" size={16} />
-              <span>
-                {projectPurpose(project) === "stores"
-                  ? "App stores"
-                  : "Portfolio"}
-                <strong>
-                  {resolveExportProfile(project).width} ×{" "}
-                  {resolveExportProfile(project).height}
-                </strong>
-              </span>
-              <Icon name="down" size={13} />
-            </button>
             <div
-              className="history-actions"
+              className="project-context-tools"
               role="group"
-              aria-label="Edit history"
+              aria-label="Canvas and languages"
             >
               <button
-                className="icon-button"
-                aria-label="Undo"
-                ref={undoButton}
-                title="Undo (⌘/Ctrl Z)"
-                disabled={!state.past.length || !!busy}
-                onClick={state.undo}
-              >
-                <Icon name="undo" />
-              </button>
-              <button
-                className="icon-button"
-                aria-label="Redo"
-                title="Redo (⌘/Ctrl Shift Z)"
-                disabled={!state.future.length || !!busy}
-                onClick={state.redo}
-              >
-                <Icon name="redo" />
-              </button>
-            </div>
-            {shot && (
-              <button
                 type="button"
-                className="toolbar-button mobile-edit-link"
-                onClick={() => openInspector(inspectorTab)}
+                className="canvas-format-button"
+                onClick={() => openInspector("canvas")}
+                disabled={!!busy || !shot}
+                aria-label={`Canvas settings: ${resolveExportProfile(project).name}, ${resolveExportProfile(project).width} × ${resolveExportProfile(project).height}`}
+                title="Change canvas size and orientation for this project"
               >
-                <Icon name="text" size={17} /> Edit slide
+                <Icon name="canvas" size={17} />
+                <span>
+                  <small>
+                    {projectPurpose(project) === "stores"
+                      ? "App stores"
+                      : "Portfolio"}{" "}
+                    · Canvas
+                  </small>
+                  <strong>
+                    {resolveExportProfile(project).width} ×{" "}
+                    {resolveExportProfile(project).height}
+                  </strong>
+                </span>
+                <Icon name="down" size={13} />
               </button>
-            )}
+              <div
+                className={`language-control ${project.localization ? "has-versions" : ""}`}
+              >
+                {project.localization && (
+                  <label className="language-switch">
+                    <span>{locale ? "Text language" : "Original text"}</span>
+                    <select
+                      aria-label="Editing language"
+                      title={`${languageName(locale ?? project.localization.source)}${locale ? "" : " · Original"}`}
+                      value={locale ?? project.localization.source}
+                      disabled={!!busy}
+                      onChange={(event) => {
+                        state.setLocale(
+                          event.target.value === project.localization!.source
+                            ? null
+                            : event.target.value,
+                        );
+                        setReadyFile(null);
+                      }}
+                    >
+                      <option value={project.localization.source}>
+                        {languageName(project.localization.source)}
+                      </option>
+                      {project.localization.targets.map((code) => (
+                        <option key={code} value={code}>
+                          {languageName(code)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+                <button
+                  type="button"
+                  className="language-manage"
+                  disabled={!!busy || !shot}
+                  onClick={() => setLanguagesOpen(true)}
+                  aria-label="Manage languages"
+                  title="Add or manage language versions"
+                >
+                  <Icon
+                    name={project.localization ? "plus" : "languages"}
+                    size={18}
+                  />
+                  <span>{project.localization ? "Manage" : "Languages"}</span>
+                </button>
+              </div>
+            </div>
           </div>
           <aside
             className="filmstrip"
@@ -1540,6 +1581,10 @@ export function App() {
             }
             capacity={shotCapacity(project)}
             onClose={closeSlideMenu}
+            onEdit={() => {
+              state.select(slideMenu.shotId);
+              openInspector(inspectorTab);
+            }}
             onReplace={() => chooseImages(slideMenu.shotId)}
             onDuplicate={() => duplicate(slideMenu.shotId)}
             onDelete={() =>

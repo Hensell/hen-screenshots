@@ -1,78 +1,4 @@
 /* The canvas stays central; frequent actions and object properties have distinct homes. */
-.studio-toolbar {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 8px 20px;
-  min-height: 62px;
-  border-bottom: 1px solid var(--brand-border);
-  background: #f9f8f3;
-  min-width: 0;
-}
-.toolbar-group {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-right: auto;
-}
-.toolbar-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 650;
-  white-space: nowrap;
-}
-.toolbar-button:hover:not(:disabled),
-.canvas-format-button:hover:not(:disabled) {
-  background: #e9ece3;
-}
-.canvas-format-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 5px 12px;
-  border: 1px solid var(--brand-border);
-  border-radius: 6px;
-  background: var(--brand-paper);
-  text-align: left;
-}
-.canvas-format-button > span {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  font-size: 11px;
-  color: var(--brand-muted);
-}
-.canvas-format-button strong {
-  color: var(--brand-ink);
-  font-size: 12px;
-  font-weight: 650;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.studio-toolbar .history-actions {
-  padding-left: 14px;
-  border-left: 1px solid var(--brand-border);
-  gap: 2px;
-}
-.studio-toolbar .history-actions .icon-button {
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: 6px;
-}
-.studio-toolbar .history-actions .icon-button:hover:not(:disabled) {
-  background: #e9ece3;
-}
-.mobile-edit-link,
 .mobile-preview-link {
   display: none;
 }
@@ -134,21 +60,6 @@
 }
 .canvas-guide-tools > span {
   line-height: 1.6;
-}
-@media (max-width: 540px) {
-  .header-actions {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .header-actions > .button {
-    min-width: 0;
-    padding-inline: 6px;
-    gap: 5px;
-    font-size: 11px;
-  }
-  .header-actions .backup-button svg {
-    display: none;
-  }
 }
 .shot-actions {
   margin-top: 10px;
@@ -361,10 +272,6 @@
   .studio .inspector {
     grid-row: 2;
   }
-  .studio-toolbar {
-    grid-row: 1;
-    flex-shrink: 0;
-  }
   .canvas-surround .main-artboard,
   .canvas-surround .canvas-label {
     width: min(
@@ -391,22 +298,6 @@
     padding-inline: 24px;
   }
 }
-@media (max-width: 1000px) {
-  .studio-toolbar {
-    padding-inline: 12px;
-    gap: 8px;
-  }
-  .toolbar-button {
-    padding-inline: 10px;
-  }
-  .canvas-format-button > span {
-    flex-direction: column;
-    gap: 0;
-  }
-  .studio-toolbar .history-actions {
-    padding-left: 8px;
-  }
-}
 @media (max-width: 800px) {
   #root:has(> .studio) {
     height: auto;
@@ -417,17 +308,6 @@
     flex-direction: column;
     min-height: 0;
   }
-  .studio-toolbar {
-    flex-wrap: wrap;
-    padding: 8px 12px;
-  }
-  .toolbar-group {
-    gap: 2px;
-  }
-  .toolbar-duplicate {
-    display: none;
-  }
-  .mobile-edit-link,
   .mobile-preview-link {
     display: inline-flex;
   }
@@ -435,11 +315,6 @@
     gap: 5px;
     font-size: 11px;
     padding-inline: 4px;
-  }
-  .mobile-edit-link {
-    margin-left: auto;
-    background: #eaede2;
-    padding-inline: 12px;
   }
   .studio .filmstrip {
     padding: 12px 16px;
@@ -520,61 +395,11 @@
   }
 }
 @media (max-width: 540px) {
-  .studio-toolbar {
-    gap: 4px 8px;
-  }
-  .studio-toolbar .toolbar-group {
-    flex: 1 0 calc(100% - 108px);
-  }
-  .studio-toolbar .history-actions {
-    order: 1;
-    border: 0;
-    padding-left: 0;
-  }
-  .canvas-format-button {
-    order: 2;
-    flex: 0 1 auto;
-    gap: 8px;
-    padding-inline: 8px;
-    min-width: 0;
-  }
-  .canvas-format-button > span {
-    flex-direction: row;
-    gap: 8px;
-  }
-  .mobile-edit-link {
-    order: 3;
-  }
-  .toolbar-button {
-    padding-inline: 8px;
-    font-size: 11px;
-  }
   .inspector-tabbed .desktop-scope {
     display: none;
   }
   .inspector-tabbed .inspector-tabs button {
     gap: 6px;
-    font-size: 11px;
-  }
-}
-@media (max-width: 360px) {
-  .studio-toolbar {
-    padding-inline: 8px;
-    gap: 4px;
-  }
-  .toolbar-button {
-    padding-inline: 6px;
-    gap: 5px;
-    font-size: 10px;
-  }
-  .canvas-format-button > svg:first-child {
-    display: none;
-  }
-  .canvas-format-button > span {
-    gap: 6px;
-    font-size: 10px;
-  }
-  .canvas-format-button strong {
     font-size: 11px;
   }
 }
