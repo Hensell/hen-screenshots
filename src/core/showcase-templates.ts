@@ -2,7 +2,7 @@ import type { Template } from "./templates";
 import { panoramaStyles } from "./panorama";
 
 /** Only new IDs use these defaults; saved compositions keep their existing geometry. */
-function design(
+export function defineTemplate(
   meta: Pick<
     Template,
     | "id"
@@ -46,7 +46,7 @@ function design(
 }
 
 export const showcaseTemplates: readonly Template[] = [
-  design(
+  defineTemplate(
     {
       id: "prism",
       name: "Prism",
@@ -61,7 +61,7 @@ export const showcaseTemplates: readonly Template[] = [
     ["#E5F0F1", "#B4C9E0", "#233C4B", "#708CA0"],
     { rotation: 9, size: 116, gradient: true },
   ),
-  design(
+  defineTemplate(
     {
       id: "nocturne",
       name: "Nocturne",
@@ -79,7 +79,7 @@ export const showcaseTemplates: readonly Template[] = [
     { size: 108 },
   ),
   {
-    ...design(
+    ...defineTemplate(
       {
         id: "orbit",
         name: "Orbit",
@@ -94,7 +94,7 @@ export const showcaseTemplates: readonly Template[] = [
     ),
     style: panoramaStyles.orbit,
   },
-  design(
+  defineTemplate(
     {
       id: "paper",
       name: "Paper",
@@ -111,7 +111,7 @@ export const showcaseTemplates: readonly Template[] = [
     ["#F5EEE2", "#E5D9C5", "#3D362D", "#96714F"],
     { size: 116 },
   ),
-  design(
+  defineTemplate(
     {
       id: "carbon",
       name: "Carbon",
@@ -126,7 +126,7 @@ export const showcaseTemplates: readonly Template[] = [
     ["#202522", "#323B35", "#F0F2E8", "#B8CA9F"],
     { size: 106 },
   ),
-  design(
+  defineTemplate(
     {
       id: "workbench",
       name: "Workbench",
@@ -150,7 +150,7 @@ export const showcaseTemplates: readonly Template[] = [
     ["#EAF0EE", "#CFDCD8", "#2F4844", "#71938A"],
     { size: 100 },
   ),
-  design(
+  defineTemplate(
     {
       id: "ember",
       name: "Ember",
@@ -165,7 +165,7 @@ export const showcaseTemplates: readonly Template[] = [
     ["#251D1A", "#674435", "#F9EAD9", "#D4A478"],
     { align: "center", size: 114 },
   ),
-  design(
+  defineTemplate(
     {
       id: "confetti",
       name: "Confetti",

@@ -15,6 +15,11 @@ import {
 } from "./export-profiles";
 import { deviceGeometry, type Rect } from "../rendering/geometry";
 import { showcaseTemplates, showcaseAreas } from "./showcase-templates";
+import {
+  patternTemplates,
+  patternAreas,
+  type PatternComposition,
+} from "./pattern-templates";
 
 import {
   applyPanorama,
@@ -50,6 +55,7 @@ export interface Template {
   titleWeight?: string;
   appearance?: "light" | "dark" | "colorful";
   composition?:
+    | PatternComposition
     | "angled"
     | "masthead"
     | "desk"
@@ -78,6 +84,7 @@ export interface Template {
 
 /** IDs and geometry are part of document v2. Add new IDs for incompatible designs. */
 export const templates: readonly Template[] = [
+  ...patternTemplates,
   ...showcaseTemplates,
   {
     id: "daybreak",
@@ -487,7 +494,10 @@ function collectionLayout(project: Project, style: Style, template: Template) {
   const { height: h } = canonicalCanvas(project);
   const wide = h <= 1080;
   let title: Rect, subtitle: Rect, area: Rect;
-  if (template.composition) {
+  const patterned = patternAreas(template.composition, h);
+  if (patterned) {
+    ({ title, subtitle, area } = patterned);
+  } else if (template.composition) {
     ({ title, subtitle, area } = showcaseAreas(template.composition, h));
   } else if (
     (style.template === "bloom" || style.template === "punch") &&
