@@ -17,7 +17,7 @@ No storage schema, export profiles, dependencies, or Cloudflare settings changed
 | --- | ---: | ---: |
 | Initial studio JavaScript | 658.12 kB | 398.78 kB |
 | Initial studio JavaScript, gzip | 205.18 kB | 125.44 kB |
-| Initial studio stylesheet | 78.65 kB | 52.94 kB |
+| Initial studio stylesheet | 78.65 kB | 53.58 kB |
 | `App.tsx` lines | 1,828 | 1,424 |
 
 The initial JavaScript is about 39% smaller. This measures the **library entry chunk**, not all code needed to edit a project: the scene and tools download as they become necessary. The 650 kB warning threshold was not raised. These are build sizes, not network timing or field performance measurements.
@@ -46,6 +46,8 @@ Used the built app at `http://127.0.0.1:5175/studio/` in the Codex in-app browse
 | Workspace separation | Created a Portfolio project with Card format and a laptop frame. Returning to the library kept the Portfolio filter, separate from App stores. |
 | Invalid files | A damaged PNG was rejected without replacing the active image. An invalid project archive showed an error and left the two existing store projects available. |
 | Failed optional module | Temporarily removed the built publication-preview chunk, reloaded, and opened Preview. Its error dialog appeared while the editor remained mounted. Dismissed it, renamed and saved the project, restored the chunk, reloaded, and successfully opened Preview with the new name. |
+
+A subsequent production check found a CSS ownership regression: the inspector's brand selector depended on styles from the deferred brand-kit dialog. A warm QA session had already loaded that stylesheet and masked the issue. Those selector rules now live in the always-loaded studio stylesheet. Rechecked a saved branded project from a fresh load before opening any optional dialogs: the selector has its border, 12 px gap, aligned label and logo, while the brand-kit chunk remains unloaded. Future loading checks should begin with both an empty library and a direct link to a saved branded project.
 
 Visual checks covered the normal desktop viewport, 320 × 740 (export result), 390 × 844 (library), 768 × 1024 (editor), 1024 × 768 (publication preview), and 844 × 390 (module error). The inspected controls and dialogs remained reachable; screenshots and DOM measurements showed no horizontal page overflow in the narrow export/library cases. The viewport override was reset afterward.
 

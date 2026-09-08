@@ -415,3 +415,43 @@
     font-size: 10px;
   }
 }
+
+.brand-property-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.brand-property-heading h3 {
+  margin: 0;
+}
+.brand-property-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 12px;
+  margin-top: 12px;
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+  background: #fdfcf8;
+}
+.brand-property-selector > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+.brand-property-selector strong {
+  display: block;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.brand-property-selector small {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--brand-muted);
+}
+.brand-property-selector:hover {
+  border-color: var(--brand-clay);
+}
