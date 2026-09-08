@@ -1,3 +1,11 @@
+import {
+  addOverlay,
+  isOverlayElement,
+  MAX_OVERLAYS,
+  overlayUploadBytes,
+  setOverlayPlacement,
+  type OverlayChange,
+} from "../core/overlays";
 import { isBannerProfile } from "../core/export-profiles";
 import { companionFor } from "../core/device-composition";
 import {
@@ -157,7 +165,13 @@ export function App() {
   const selectCanvasElement = useCallback(
     (element: CanvasElement, ownerId: string) => {
       setSelectedCanvasElement(element);
-      setInspectorTab(isDeviceElement(element) ? "device" : "text");
+      setInspectorTab(
+        isOverlayElement(element)
+          ? "design"
+          : isDeviceElement(element)
+            ? "device"
+            : "text",
+      );
       const editor = useEditor.getState();
       if (editor.selectedId !== ownerId) editor.select(ownerId);
     },
@@ -188,6 +202,18 @@ export function App() {
         }
       });
       if (editor.selectedId !== ownerId) editor.select(ownerId);
+    },
+    [],
+  );
+  const changeCanvasOverlay = useCallback<OverlayChange>(
+    (id, patch, ownerId) => {
+      const editor = useEditor.getState();
+      editor.edit((draft) => {
+        const overlay = draft.shots
+          .find((item) => item.id === ownerId)
+          ?.overlays?.find((item) => item.id === id);
+        if (overlay) setOverlayPlacement(overlay, patch);
+      });
     },
     [],
   );
@@ -238,6 +264,10 @@ export function App() {
   const [readyFile, setReadyFile] = useState<ReadyFile | null>(null);
   const [dragging, setDragging] = useState(false);
   const imageInput = useRef<HTMLInputElement>(null);
+  const overlayInput = useRef<HTMLInputElement>(null);
+  const overlayTarget = useRef<{ shotId: string; replaceId?: string } | null>(
+    null,
+  );
   const backupInput = useRef<HTMLInputElement>(null);
   const undoButton = useRef<HTMLButtonElement>(null);
   const replaceElement = useRef<DeviceElement>("device");
@@ -374,6 +404,75 @@ export function App() {
     replaceId.current = replacementId ?? null;
     imageInput.current!.multiple = !replacementId;
     imageInput.current!.click();
+  }
+  async function uploadOverlays(files: File[]) {
+    const target = overlayTarget.current;
+    overlayTarget.current = null;
+    if (!project || busy || !files.length || !target) return;
+    const owner = project.shots.find((item) => item.id === target.shotId);
+    if (!owner) return;
+    setBusy("Importing images…");
+    setNotice(null);
+    setReadyFile(null);
+    try {
+      if (
+        !target.replaceId &&
+        (owner.overlays?.length ?? 0) + files.length > MAX_OVERLAYS
+      )
+        throw new Error("A slide supports up to 8 extra images.");
+      if (
+        overlayUploadBytes(
+          sourceProject!,
+          assets,
+          target.replaceId ? files.slice(0, 1) : files,
+          target,
+        ) > LIMITS.totalBytes
+      )
+        throw new Error("The selected images exceed 120 MB.");
+      const incoming = await importImages(
+        target.replaceId ? files.slice(0, 1) : files,
+      );
+      state.addAssets(incoming);
+      let active: string | undefined;
+      state.edit((draft) => {
+        const shot = draft.shots.find((item) => item.id === target.shotId);
+        if (!shot) return;
+        if (target.replaceId) {
+          const overlay = shot.overlays?.find(
+            (item) => item.id === target.replaceId,
+          );
+          if (overlay) {
+            const asset = incoming[0],
+              scale = Math.min(
+                overlay.width / asset.width,
+                overlay.height / asset.height,
+              );
+            const width = asset.width * scale,
+              height = asset.height * scale;
+            Object.assign(overlay, {
+              assetId: asset.id,
+              name: asset.name,
+              x: overlay.x + (overlay.width - width) / 2,
+              y: overlay.y + (overlay.height - height) / 2,
+              width,
+              height,
+            });
+            active = overlay.id;
+          }
+        } else
+          for (const asset of incoming)
+            active = addOverlay(draft, shot, asset).id;
+      });
+      if (active) selectCanvasElement(`overlay:${active}`, target.shotId);
+      setNotice({
+        message:
+          "Extra images updated. Your screenshot is unchanged. Undo anytime.",
+      });
+    } catch (error) {
+      setNotice({ message: errorMessage(error), error: true });
+    } finally {
+      setBusy(null);
+    }
   }
   async function addImages(files: File[]) {
     if (!project || busy || !files.length) return;
@@ -602,6 +701,20 @@ export function App() {
           const files = Array.from(event.target.files ?? []);
           event.target.value = "";
           void addImages(files);
+        }}
+      />
+      <input
+        ref={overlayInput}
+        className="visually-hidden"
+        tabIndex={-1}
+        aria-hidden="true"
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        multiple
+        onChange={(event) => {
+          const files = Array.from(event.target.files ?? []);
+          event.target.value = "";
+          void uploadOverlays(files);
         }}
       />
       <input
@@ -1156,12 +1269,15 @@ export function App() {
                         onKeyDown={(event) => menuKeyboard(event, item.id)}
                         activeDevice={
                           selectedCanvasElement &&
-                          isDeviceElement(selectedCanvasElement)
+                          (isDeviceElement(selectedCanvasElement) ||
+                            isOverlayElement(selectedCanvasElement))
                             ? selectedCanvasElement
                             : null
                         }
+                        activeOwnerId={selectedId ?? undefined}
                         onSelectElement={busy ? undefined : selectCanvasElement}
                         onTextMove={busy ? undefined : moveCanvasText}
+                        onOverlayChange={busy ? undefined : changeCanvasOverlay}
                         onMove={busy ? undefined : moveCanvasDevice}
                         onResize={busy ? undefined : resizeCanvasDevice}
                       />
@@ -1328,6 +1444,15 @@ export function App() {
               project={project}
               shot={shot}
               disabled={!!busy}
+              images={images}
+              onOverlaySelect={(element) =>
+                selectCanvasElement(element, shot.id)
+              }
+              onOverlayUpload={(replaceId) => {
+                overlayTarget.current = { shotId: shot.id, replaceId };
+                overlayInput.current!.multiple = !replaceId;
+                overlayInput.current!.click();
+              }}
               onReplace={(element) =>
                 chooseImages(
                   shot.id,

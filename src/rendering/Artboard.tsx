@@ -1,4 +1,11 @@
 import {
+  isOverlayElement,
+  overlayFor,
+  resizeOverlay,
+  type OverlayChange,
+} from "../core/overlays";
+import type { OverlayElement } from "../core/model";
+import {
   companionFor,
   deviceShot,
   isDeviceElement,
@@ -20,6 +27,7 @@ import { textOffset } from "../core/text-placement";
 import { ensureSceneFonts } from "./fonts";
 import { previewDimensions } from "./geometry";
 import { canonicalCanvas } from "../core/export-profiles";
+import { linkedShots } from "../core/panorama";
 import { createScene, selectSceneElement } from "./scene";
 
 export interface ArtboardProps {
@@ -27,7 +35,9 @@ export interface ArtboardProps {
   shot: Shot;
   image: HTMLImageElement;
   images?: ReadonlyMap<string, HTMLImageElement>;
-  activeDevice?: DeviceElement | null;
+  activeDevice?: DeviceElement | OverlayElement | null;
+  activeOwnerId?: string;
+  onOverlayChange?: OverlayChange;
   width: number;
   guides?: boolean;
   onMove?: (x: number, y: number, element?: DeviceElement) => void;
@@ -51,12 +61,14 @@ export function Artboard({
   image,
   images,
   activeDevice,
+  activeOwnerId,
   width,
   guides = false,
   onMove,
   onResize,
   onTextMove,
   onSelectElement,
+  onOverlayChange,
 }: ArtboardProps) {
   const t = useT();
   const container = useRef<HTMLDivElement>(null);
@@ -80,7 +92,9 @@ export function Artboard({
           ? "Headline"
           : element === "subtitle"
             ? "Supporting text"
-            : "Device",
+            : isOverlayElement(element)
+              ? "Extra image"
+              : "Device",
       );
       if (layerRef.current)
         selectSceneElement(layerRef.current, element, ownerId);
@@ -90,6 +104,17 @@ export function Artboard({
   );
   // Inspector device selection must not overwrite the owner of a caption crossing a panorama seam.
   useEffect(() => {
+    if (activeDevice && isOverlayElement(activeDevice)) {
+      const owner = linkedShots(project, shot.id).find(
+        (item) => item.id === (activeOwnerId ?? shot.id),
+      );
+      selectElement(
+        owner && overlayFor(owner, activeDevice) ? activeDevice : "device",
+        owner?.id ?? shot.id,
+        false,
+      );
+      return;
+    }
     if (activeDevice)
       selectElement(
         isDeviceElement(activeDevice) &&
@@ -100,7 +125,7 @@ export function Artboard({
         shot.id,
         false,
       );
-  }, [activeDevice, shot, selectElement]);
+  }, [activeDevice, activeOwnerId, project, shot, selectElement]);
   const dimensions = previewDimensions(width, canonicalCanvas(project));
 
   useEffect(() => {
@@ -125,12 +150,22 @@ export function Artboard({
           onMove,
           onResize,
           onTextMove,
+          onOverlayChange,
           onSelectElement: selectElement,
         });
         stage.add(layer);
         layerRef.current = layer;
+        const owner = project.shots.find(
+          (item) => item.id === selectedShotId.current,
+        );
         if (
-          !isDeviceElement(selectedElement.current) &&
+          isOverlayElement(selectedElement.current) &&
+          (!owner || !overlayFor(owner, selectedElement.current))
+        )
+          selectElement("device", shot.id, false);
+        if (
+          (selectedElement.current === "title" ||
+            selectedElement.current === "subtitle") &&
           !project.shots
             .find((owner) => owner.id === selectedShotId.current)
             ?.[selectedElement.current].trim()
@@ -164,6 +199,7 @@ export function Artboard({
     onMove,
     onResize,
     onTextMove,
+    onOverlayChange,
     guides,
     selectElement,
   ]);
@@ -177,7 +213,7 @@ export function Artboard({
       aria-description={
         editable
           ? t(
-              "{element} selected. Drag to move. Drag a device corner to resize. Enter switches objects. Arrow keys move the selected object. Plus and minus resize the device. Hold Shift for larger steps.",
+              "{element} selected. Drag to move. Drag a device or image corner to resize. Enter switches objects. Arrow keys move the selected object. Plus and minus resize devices and images. Hold Shift for larger steps.",
               { element: t(selectedLabel) },
             )
           : undefined
@@ -205,6 +241,33 @@ export function Artboard({
       onKeyDown={
         editable
           ? (event) => {
+              if (
+                onOverlayChange &&
+                isOverlayElement(selectedElement.current) &&
+                !event.metaKey &&
+                !event.ctrlKey &&
+                !event.altKey &&
+                ["+", "=", "-", "_"].includes(event.key)
+              ) {
+                event.preventDefault();
+                const owner =
+                  project.shots.find(
+                    (item) => item.id === selectedShotId.current,
+                  ) ?? shot;
+                const overlay = overlayFor(owner, selectedElement.current);
+                if (overlay)
+                  onOverlayChange(
+                    overlay.id,
+                    resizeOverlay(
+                      overlay,
+                      overlay.width +
+                        (["-", "_"].includes(event.key) ? -1 : 1) *
+                          (event.shiftKey ? 50 : 10),
+                    ),
+                    owner.id,
+                  );
+                return;
+              }
               if (
                 onResize &&
                 isDeviceElement(selectedElement.current) &&
@@ -237,6 +300,9 @@ export function Artboard({
                   ...(shot.companions ?? []).map(
                     (device) => `device:${device.id}` as DeviceElement,
                   ),
+                  ...(shot.overlays ?? []).map(
+                    (item) => `overlay:${item.id}` as OverlayElement,
+                  ),
                   ...(["title", "subtitle"] as const).filter((element) =>
                     shot[element].trim(),
                   ),
@@ -267,6 +333,21 @@ export function Artboard({
                   slot.phone.y + direction[1] * step,
                   element,
                 );
+              } else if (isOverlayElement(element)) {
+                const owner =
+                  project.shots.find(
+                    (item) => item.id === selectedShotId.current,
+                  ) ?? shot;
+                const overlay = overlayFor(owner, element);
+                if (overlay)
+                  onOverlayChange?.(
+                    overlay.id,
+                    {
+                      x: overlay.x + direction[0] * step,
+                      y: overlay.y + direction[1] * step,
+                    },
+                    owner.id,
+                  );
               } else {
                 const owner =
                   project.shots.find(

@@ -150,6 +150,7 @@ export function referencedAssetIds(project: Project) {
     ...new Set(
       project.shots.flatMap((shot) => [
         shot.assetId,
+        ...(shot.overlays ?? []).map((item) => item.assetId),
         ...(shot.companions ?? []).map((device) => device.assetId),
         ...Object.values(shot.translations ?? {}).flatMap((content) => [
           ...(content.assetId ? [content.assetId] : []),

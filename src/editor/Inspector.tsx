@@ -1,3 +1,5 @@
+import { OverlayInspector } from "./OverlayInspector";
+import type { OverlayElement } from "../core/model";
 import { isBannerProfile } from "../core/export-profiles";
 import { DeviceCompositionInspector } from "./DeviceCompositionInspector";
 import type { DeviceElement } from "../core/model";
@@ -115,6 +117,9 @@ export function Inspector({
   onPreview,
   onBrandKits,
   onLanguages,
+  images,
+  onOverlaySelect,
+  onOverlayUpload,
   locale,
 }: {
   project: Project;
@@ -130,6 +135,9 @@ export function Inspector({
   onBrandKits: () => void;
   onLanguages: () => void;
   locale: string | null;
+  images: ReadonlyMap<string, HTMLImageElement>;
+  onOverlaySelect: (element: OverlayElement) => void;
+  onOverlayUpload: (replaceId?: string) => void;
 }) {
   const t = useT();
   const banners = isBannerProfile(project.exportProfile);
@@ -338,6 +346,15 @@ export function Inspector({
               <Icon name="layout" size={15} />
             </button>
           </section>
+          <OverlayInspector
+            key={shot.id}
+            project={project}
+            shot={shot}
+            images={images}
+            selectedElement={selectedElement}
+            onSelect={onOverlaySelect}
+            onUpload={onOverlayUpload}
+          />
           <section className="property-section">
             <div className="brand-property-heading">
               <h3>{t("Brand kit")}</h3>

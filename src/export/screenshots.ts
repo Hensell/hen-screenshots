@@ -1,3 +1,4 @@
+import { sceneAssetIds } from "../core/overlays";
 import { zip } from "fflate";
 import { loadImage } from "../assets/import";
 import type { Asset, Project } from "../core/model";
@@ -87,10 +88,7 @@ export async function buildScreenshotExport({
       );
       // Keep newly decoded language images scoped to one scene, not the entire export.
       const sceneImages = new Map<string, HTMLImageElement>();
-      for (const id of [
-        item.assetId,
-        ...(item.companions ?? []).map((device) => device.assetId),
-      ]) {
+      for (const id of sceneAssetIds(version, item)) {
         const asset = sources.get(id);
         if (!asset)
           throw new Error(

@@ -23,7 +23,7 @@ import {
 
 import { isLanguage, MAX_LANGUAGES, type LocalizedShot } from "./localization";
 
-export const SCHEMA_VERSION = 8 as const;
+export const SCHEMA_VERSION = 9 as const;
 export const CANVAS = { width: 1080, height: 1920 } as const;
 export const PLACEMENT_LIMITS = {
   x: { min: -1080, max: 2160 },
@@ -32,6 +32,7 @@ export const PLACEMENT_LIMITS = {
 } as const;
 export const LIMITS = {
   shots: 20,
+  overlays: 8,
   assetBytes: 20 * 1024 * 1024,
   totalBytes: 120 * 1024 * 1024,
   imagePixels: 24_000_000,
@@ -111,7 +112,18 @@ export type TemplateId = (typeof templateIds)[number];
 export type TextElement = "title" | "subtitle";
 export type CompanionId = "secondary" | "tertiary";
 export type DeviceElement = "device" | `device:${CompanionId}`;
-export type CanvasElement = DeviceElement | TextElement;
+export type OverlayElement = `overlay:${string}`;
+export type CanvasElement = DeviceElement | TextElement | OverlayElement;
+export interface ImageOverlay {
+  id: string;
+  assetId: string;
+  name: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation: number;
+}
 export type DeviceStyle = Pick<
   Style,
   "device" | "deviceOrientation" | "frame" | "camera" | "fit"
@@ -143,6 +155,7 @@ export interface Style {
   titleSize: number;
 }
 export interface Shot {
+  overlays?: ImageOverlay[];
   companions?: CompanionDevice[];
   translations?: Record<string, LocalizedShot>;
   brand?: string;
@@ -155,7 +168,7 @@ export interface Shot {
   textOffsets?: Partial<Record<TextElement, { x: number; y: number }>>;
 }
 export interface Project {
-  schemaVersion: 8;
+  schemaVersion: 9;
   localization?: { source: string; targets: string[] };
   brands?: Record<string, BrandKit>;
   brand?: string;
@@ -219,9 +232,13 @@ export type V3Style = Omit<Style, "device" | "template"> & {
   template: (typeof legacyTemplateIds)[number];
   device: "android" | "ios" | "ipad" | "android-tablet" | "monitor" | "laptop";
 };
-export interface V7Project extends Omit<Project, "schemaVersion" | "shots"> {
+export interface V8Project extends Omit<Project, "schemaVersion" | "shots"> {
+  schemaVersion: 8;
+  shots: Omit<Shot, "overlays">[];
+}
+export interface V7Project extends Omit<V8Project, "schemaVersion" | "shots"> {
   schemaVersion: 7;
-  shots: Omit<Shot, "companions">[];
+  shots: Omit<Shot, "companions" | "overlays">[];
 }
 export interface V6Project extends Omit<
   V7Project,
@@ -285,6 +302,7 @@ export interface LegacyProject extends Omit<
 export function migrateProject(
   project:
     | Project
+    | V8Project
     | V7Project
     | V6Project
     | V5Project
@@ -299,7 +317,8 @@ export function migrateProject(
     project.schemaVersion === 4 ||
     project.schemaVersion === 5 ||
     project.schemaVersion === 6 ||
-    project.schemaVersion === 7
+    project.schemaVersion === 7 ||
+    project.schemaVersion === 8
   )
     return { ...structuredClone(project), schemaVersion: SCHEMA_VERSION };
   return {
@@ -388,6 +407,7 @@ const v2StyleKeys = [
 const styleKeys = [...v2StyleKeys, "deviceOrientation"];
 type StoredProject =
   | Project
+  | V8Project
   | V7Project
   | V6Project
   | V5Project
@@ -442,7 +462,7 @@ function numeric(
 }
 function validateStyle(
   value: unknown,
-  version: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8,
+  version: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
   partial = false,
 ): void {
   const entries = object(
@@ -524,6 +544,7 @@ export function validateProject(
     version !== 5 &&
     version !== 6 &&
     version !== 7 &&
+    version !== 8 &&
     version !== SCHEMA_VERSION
   )
     throw new Error("This project uses an unsupported project version.");
@@ -609,6 +630,12 @@ export function validateProject(
       "subtitle",
       "style",
       "phone",
+      ...(version >= 9 &&
+      value &&
+      typeof value === "object" &&
+      Object.hasOwn(value, "overlays")
+        ? ["overlays"]
+        : []),
       ...(version >= 8 &&
       value &&
       typeof value === "object" &&
@@ -634,6 +661,41 @@ export function validateProject(
         ? ["brand"]
         : []),
     ]);
+    if (Object.hasOwn(shot, "overlays")) {
+      if (
+        !Array.isArray(shot.overlays) ||
+        !shot.overlays.length ||
+        shot.overlays.length > LIMITS.overlays
+      )
+        invalid();
+      const overlayIds = new Set<string>();
+      for (const entry of shot.overlays) {
+        const overlay = object(entry, [
+          "id",
+          "assetId",
+          "name",
+          "x",
+          "y",
+          "width",
+          "height",
+          "rotation",
+        ]);
+        const id = identifier(overlay.id);
+        if (overlayIds.has(id)) invalid();
+        overlayIds.add(id);
+        identifier(overlay.assetId);
+        textValue(overlay.name, 255);
+        for (const key of ["x", "y"] as const)
+          numeric(
+            overlay[key],
+            PLACEMENT_LIMITS[key].min,
+            PLACEMENT_LIMITS[key].max,
+          );
+        for (const key of ["width", "height"] as const)
+          numeric(overlay[key], 1e-9, 8640);
+        numeric(overlay.rotation, -180, 180);
+      }
+    }
     const composition = compositionId(
       (shot.style as Partial<Style>).template ?? (raw.style as Style).template,
     );

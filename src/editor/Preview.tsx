@@ -1,3 +1,5 @@
+import { sceneAssetIds, type OverlayChange } from "../core/overlays";
+import type { OverlayElement } from "../core/model";
 import type { DeviceElement } from "../core/model";
 import { useT } from "../i18n/react";
 import {
@@ -25,8 +27,10 @@ export function Preview({
   image,
   images,
   activeDevice,
+  activeOwnerId,
   onMove,
   onResize,
+  onOverlayChange,
   onTextMove,
   onSelectElement,
   small = false,
@@ -38,7 +42,9 @@ export function Preview({
   shot: Shot;
   image?: HTMLImageElement;
   images?: ReadonlyMap<string, HTMLImageElement>;
-  activeDevice?: DeviceElement | null;
+  activeDevice?: DeviceElement | OverlayElement | null;
+  activeOwnerId?: string;
+  onOverlayChange?: OverlayChange;
   onMove?: (x: number, y: number, element?: DeviceElement) => void;
   onResize?: (
     placement: DevicePlacement,
@@ -81,9 +87,8 @@ export function Preview({
     >
       {width > 0 &&
       image &&
-      (shot.companions ?? []).every(
-        (device) =>
-          device.assetId === shot.assetId || images?.has(device.assetId),
+      sceneAssetIds(project, shot).every(
+        (id) => id === shot.assetId || images?.has(id),
       ) ? (
         <RenderBoundary
           fallback={
@@ -107,10 +112,12 @@ export function Preview({
               image={image}
               images={images}
               activeDevice={activeDevice}
+              activeOwnerId={activeOwnerId}
               width={width}
               guides={guides}
               onMove={onMove}
               onResize={onResize}
+              onOverlayChange={onOverlayChange}
               onTextMove={onTextMove}
               onSelectElement={onSelectElement}
             />

@@ -1,3 +1,4 @@
+import type { OverlayChange } from "../core/overlays";
 import { isBannerProfile } from "../core/export-profiles";
 import { deviceShot } from "../core/device-composition";
 import type { DeviceElement } from "../core/model";
@@ -17,6 +18,7 @@ import { attachDeviceResize } from "./device-resize";
 import type { DevicePlacement } from "../core/device-placement";
 
 interface SceneOptions {
+  onOverlayChange?: OverlayChange;
   images?: ReadonlyMap<string, HTMLImageElement>;
   guides?: boolean;
   onMove?: (x: number, y: number, element?: DeviceElement) => void;
@@ -42,14 +44,12 @@ export function selectSceneElement(
 ) {
   layer.setAttr("selectedElement", element);
   layer.setAttr("selectedShotId", shotId);
-  layer
-    .find(".device-transformer")
-    .forEach((node) =>
-      node.visible(
-        node.getAttr("element") === element &&
-          node.getAttr("shotId") === shotId,
-      ),
-    );
+  layer.find(".device-transformer").forEach((node) => {
+    const selected =
+      node.getAttr("element") === element && node.getAttr("shotId") === shotId;
+    node.visible(selected);
+    if (selected) node.moveToTop();
+  });
   layer
     .find(".selection-outline")
     .forEach((node) =>
@@ -496,6 +496,80 @@ export function createScene(
       for (const element of ["title", "subtitle"] as const)
         if (shot.textOffsets?.[element])
           layer.findOne(`.caption-${element}`)?.moveToTop();
+    }
+    // Extra artwork is always above the screenshot and captions, in authored order.
+    for (const owner of (panoramic ? panoramaPair(project, shot.id) : null) ?? [
+      shot,
+    ]) {
+      const origin = isPanoramaEnd(resolveStyle(project, owner).template)
+        ? canvas.width
+        : 0;
+      for (const overlay of owner.overlays ?? []) {
+        const source = options.images?.get(overlay.assetId);
+        if (!source?.complete || !source.naturalWidth)
+          throw new Error(
+            "An extra image is still loading. Try again in a moment.",
+          );
+        const element = `overlay:${overlay.id}` as const;
+        const group = new Konva.Group({
+          x: overlay.x + overlay.width / 2 + origin - cropOffset,
+          y: overlay.y + overlay.height / 2,
+          offsetX: overlay.width / 2,
+          offsetY: overlay.height / 2,
+          width: overlay.width,
+          height: overlay.height,
+          rotation: overlay.rotation,
+          name: "scene-overlay",
+          element,
+          shotId: owner.id,
+          guideBounds: {
+            x: 0,
+            y: 0,
+            width: overlay.width,
+            height: overlay.height,
+          },
+        });
+        group.add(
+          new Konva.Image({
+            image: source,
+            width: overlay.width,
+            height: overlay.height,
+          }),
+        );
+        layer.add(group);
+        if (options.onOverlayChange) {
+          makeMovable(group, element, options, owner.id);
+          group.on("dragend", () =>
+            options.onOverlayChange?.(
+              overlay.id,
+              {
+                x: group.x() - overlay.width / 2 - origin + cropOffset,
+                y: group.y() - overlay.height / 2,
+              },
+              owner.id,
+            ),
+          );
+          attachDeviceResize(
+            layer,
+            group,
+            overlay,
+            cropOffset - origin,
+            (placement) =>
+              options.onOverlayChange?.(
+                overlay.id,
+                {
+                  ...placement,
+                  height: (placement.width * overlay.height) / overlay.width,
+                },
+                owner.id,
+              ),
+            () => {
+              selectSceneElement(layer, element, owner.id);
+              options.onSelectElement?.(element, owner.id);
+            },
+          ).setAttrs({ element, shotId: owner.id });
+        }
+      }
     }
     if (options.guides && (options.onMove || options.onTextMove))
       attachSceneGuides(layer, canvas, panoramic ? 2 : 1, cropOffset);

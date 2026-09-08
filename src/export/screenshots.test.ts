@@ -1,3 +1,4 @@
+import { addOverlay } from "../core/overlays";
 import { setDeviceImage } from "../core/device-composition";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { unzipSync } from "fflate";
@@ -46,6 +47,27 @@ beforeEach(() => {
 });
 
 describe("screenshot export workflow", () => {
+  it("decodes overlays from both panorama halves in every language and rejects missing logos", async () => {
+    const input = fixture();
+    applyTemplate(input.project, input.shotId, "panorama");
+    addLanguage(input.project, "en", "es");
+    const logo = asset("logo"),
+      badge = asset("badge");
+    input.assets.push(logo, badge);
+    addOverlay(input.project, input.project.shots[0], logo);
+    addOverlay(input.project, input.project.shots[1], badge);
+    await buildScreenshotExport({ ...input, languageCodes: ["en", "es"] });
+    expect(renderShot).toHaveBeenCalledTimes(4);
+    for (const call of vi.mocked(renderShot).mock.calls) {
+      expect(call[3]?.get("logo")).toBe(image);
+      expect(call[3]?.get("badge")).toBe(image);
+    }
+    input.assets = input.assets.filter((a) => a.id !== "badge");
+    await expect(buildScreenshotExport(input)).rejects.toThrow(
+      "screenshot 1 is missing",
+    );
+  });
+
   it("decodes every device and renders each language with its own companion image", async () => {
     const input = fixture(),
       shot = input.project.shots[0];

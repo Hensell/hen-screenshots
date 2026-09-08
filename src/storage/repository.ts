@@ -14,6 +14,7 @@ import type {
   V5Project,
   V6Project,
   V7Project,
+  V8Project,
 } from "../core/model";
 
 interface ProjectRow {
@@ -22,6 +23,7 @@ interface ProjectRow {
   revision: number;
   project:
     | Project
+    | V8Project
     | V7Project
     | V6Project
     | V5Project

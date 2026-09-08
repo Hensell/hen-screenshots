@@ -14,6 +14,7 @@ export function useImages(assets: Asset[], shots: Shot[] = []) {
       ...new Set(
         shots.flatMap((shot) => [
           shot.assetId,
+          ...(shot.overlays ?? []).map((item) => item.assetId),
           ...(shot.companions ?? []).map((device) => device.assetId),
         ]),
       ),

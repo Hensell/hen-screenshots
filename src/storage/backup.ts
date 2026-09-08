@@ -91,6 +91,7 @@ function manifest(value: unknown): Manifest {
       raw.schemaVersion !== 5 &&
       raw.schemaVersion !== 6 &&
       raw.schemaVersion !== 7 &&
+      raw.schemaVersion !== 8 &&
       raw.schemaVersion !== SCHEMA_VERSION)
   )
     fail("This backup uses an unsupported project version.");
@@ -100,7 +101,7 @@ function manifest(value: unknown): Manifest {
   const document = migrateProject(raw.project);
   if (
     !Array.isArray(raw.assets) ||
-    raw.assets.length > LIMITS.shots * 3 * MAX_LANGUAGES
+    raw.assets.length > LIMITS.shots * (3 * MAX_LANGUAGES + LIMITS.overlays)
   )
     fail();
   const assets: AssetInfo[] = raw.assets.map((value) => {
@@ -209,7 +210,8 @@ export async function importProject(file: File): Promise<LoadedProject> {
     unzipSync(bytes, {
       filter: (entry) => {
         if (
-          entries.size >= LIMITS.shots * 3 * MAX_LANGUAGES + 1 ||
+          entries.size >=
+            LIMITS.shots * (3 * MAX_LANGUAGES + LIMITS.overlays) + 1 ||
           entries.has(entry.name)
         )
           fail("The backup contains too many files or duplicate filenames.");
@@ -298,6 +300,15 @@ export async function importProject(file: File): Promise<LoadedProject> {
         ...shot,
         id: crypto.randomUUID(),
         assetId: ids.get(shot.assetId)!,
+        ...(shot.overlays
+          ? {
+              overlays: shot.overlays.map((item) => ({
+                ...item,
+                id: crypto.randomUUID(),
+                assetId: ids.get(item.assetId)!,
+              })),
+            }
+          : {}),
         ...(shot.companions
           ? {
               companions: shot.companions.map((device) => ({

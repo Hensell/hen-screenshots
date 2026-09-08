@@ -77,6 +77,12 @@ The download dialog explains the size before starting: roughly **112–120 MB pe
 
 Translations support up to **10 languages per project**. The initial language list uses scripts covered by the bundled fonts; RTL and CJK typesetting are not yet offered. PNG ZIP exports are limited to 250 MB before packaging; split larger exports into smaller batches.
 
+## Logos, awards, and extra artwork
+
+Open **Design → Extra images → Add image or icon** to place PNG, JPEG, or still WebP artwork over a slide. Add up to **8 images per slide**, including transparent logos and award badges. Each image has its own position, size, and rotation. Drag it on the canvas, resize from a corner, or use the inspector; **Reset placement** restores its starting size and position. **Bring forward** and **Send backward** control the order of extra images above the screenshot and captions.
+
+Replacing or removing extra artwork leaves the app screenshot intact. Removal asks for confirmation, and undo/redo covers these edits. Template changes preserve your extra images. They are included in thumbnails, publication previews, PNG exports, and project backups, and shared across language versions. In panoramas, each image belongs to one slide and can cross the seam into the next. This works in App stores, Portfolio, and Banners projects.
+
 ## Google Play banners
 
 Choose **New project → Banners** to create store artwork in a separate workspace. Start by uploading an image or app icon (PNG, JPEG, or still WebP), then choose one of six banner templates: **Signal, Brand Orbit, Wordmark, Coral Ribbon, Dusk, and Paper Parade**.

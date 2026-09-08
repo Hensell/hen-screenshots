@@ -1,3 +1,4 @@
+import { addOverlay } from "../core/overlays";
 import { setDeviceImage } from "../core/device-composition";
 import {
   addLanguage,
@@ -67,6 +68,38 @@ async function changedBackup(
 }
 
 describe("portable project backups", () => {
+  it("round-trips transparent overlay bytes, geometry and layer order with fresh IDs", async () => {
+    const p = document(),
+      logo = { ...image(), id: "logo", name: "logo.png" };
+    const badge = { ...image(), id: "badge", name: "award.png" };
+    addOverlay(p, p.shots[0], logo);
+    const top = addOverlay(p, p.shots[0], badge);
+    top.x = 915;
+    top.rotation = -17;
+    const original = structuredClone(p.shots[0].overlays);
+    const restored = await importProject(
+      new File(
+        [await exportProject(p, [image(), logo, badge])],
+        "overlays.henscreenshots",
+      ),
+    );
+    expect(
+      restored.project.shots[0].overlays!.map(
+        ({ id: _id, assetId: _assetId, ...item }) => item,
+      ),
+    ).toEqual(original!.map(({ id: _id, assetId: _assetId, ...item }) => item));
+    for (const [index, item] of restored.project.shots[0].overlays!.entries()) {
+      expect(item.id).not.toBe(original![index].id);
+      expect(item.assetId).not.toBe(original![index].assetId);
+      expect(
+        await restored.assets
+          .find((a) => a.id === item.assetId)!
+          .blob.arrayBuffer(),
+      ).toEqual(await logo.blob.arrayBuffer());
+    }
+    await expect(exportProject(p, [image(), logo])).rejects.toThrow();
+  });
+
   it("round-trips separate device captures and their localized overrides with fresh asset IDs", async () => {
     const project = document();
     const shot = project.shots[0];
@@ -231,7 +264,7 @@ describe("portable project backups", () => {
       value.schemaVersion = value.project.schemaVersion = 6;
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(8);
+    expect(restored.project.schemaVersion).toBe(9);
     expect(restored.project.localization).toBeUndefined();
   });
   it("keeps independent brand revisions, logos and font overrides inside the project file", async () => {
@@ -268,7 +301,7 @@ describe("portable project backups", () => {
       value.project.shots[0].textOffsets = { title: { x: 90, y: -75 } };
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(8);
+    expect(restored.project.schemaVersion).toBe(9);
     expect(restored.project.shots[0].textOffsets).toEqual({
       title: { x: 90, y: -75 },
     });
@@ -292,14 +325,14 @@ describe("portable project backups", () => {
     expect(restored.project.shots.map((s) => s.phone)).toEqual(
       project.shots.map((s) => s.phone),
     );
-    expect(restored.project.schemaVersion).toBe(8);
+    expect(restored.project.schemaVersion).toBe(9);
   });
   it("opens a version 4 backup without changing its saved composition", async () => {
     const backup = await changedBackup((value) => {
       value.schemaVersion = value.project.schemaVersion = 4;
     });
     const restored = await importProject(backup);
-    expect(restored.project.schemaVersion).toBe(8);
+    expect(restored.project.schemaVersion).toBe(9);
     expect(restored.project.shots[0].phone).toEqual(document().shots[0].phone);
     expect(restored.project.shots[0].textOffsets).toBeUndefined();
   });
@@ -379,9 +412,9 @@ describe("portable project backups", () => {
         unzipSync(new Uint8Array(await blob.arrayBuffer()))["project.json"],
       ),
     );
-    expect(archived.schemaVersion).toBe(8);
-    expect(archived.project.schemaVersion).toBe(8);
-    expect(restored.project.schemaVersion).toBe(8);
+    expect(archived.schemaVersion).toBe(9);
+    expect(archived.project.schemaVersion).toBe(9);
+    expect(restored.project.schemaVersion).toBe(9);
     expect(restored.project.style).toEqual(original.style);
     expect(restored.project.exportProfile).toBe("apple-mac");
     expect(restored.project.id).not.toBe(original.id);
@@ -431,7 +464,7 @@ describe("portable project backups", () => {
       delete value.project.shots[1].phone.rotation;
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(8);
+    expect(restored.project.schemaVersion).toBe(9);
     expect(restored.project.style).toEqual({
       ...defaultStyle,
       background: "#ACBD12",
@@ -454,7 +487,7 @@ describe("portable project backups", () => {
         unzipSync(new Uint8Array(await upgraded.arrayBuffer()))["project.json"],
       ),
     );
-    expect(upgradedMetadata.schemaVersion).toBe(8);
+    expect(upgradedMetadata.schemaVersion).toBe(9);
     expect(upgradedMetadata.project).toEqual(restored.project);
   });
   it("round-trips portfolio cards and custom dimensions, including a saved size while another preset is selected", async () => {
@@ -475,7 +508,7 @@ describe("portable project backups", () => {
         "portfolio.henscreenshots",
       );
       const restored = await importProject(file);
-      expect(restored.project.schemaVersion).toBe(8);
+      expect(restored.project.schemaVersion).toBe(9);
       expect(restored.project.exportProfile).toBe(profile);
       expect(restored.project.customSize).toEqual(original.customSize);
       expect(restored.project.style).toEqual(original.style);
@@ -502,7 +535,7 @@ describe("portable project backups", () => {
       };
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(8);
+    expect(restored.project.schemaVersion).toBe(9);
     expect(restored.project.exportProfile).toBe("apple-ipad13-landscape");
     expect(restored.project.customSize).toEqual({ width: 1600, height: 1200 });
     expect(restored.project.style).toMatchObject({
@@ -598,7 +631,7 @@ describe("portable project backups", () => {
       original = structuredClone(value.project);
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(8);
+    expect(restored.project.schemaVersion).toBe(9);
     expect(restored.project.exportProfile).toBe("play-phone-portrait");
     expect(restored.project.style).toEqual({
       ...original.style,
@@ -721,13 +754,13 @@ describe("portable project backups", () => {
     [
       "unsupported version",
       (value: any) => {
-        value.schemaVersion = 9;
+        value.schemaVersion = 10;
       },
     ],
     [
       "future project version",
       (value: any) => {
-        value.project.schemaVersion = 9;
+        value.project.schemaVersion = 10;
       },
     ],
     [

@@ -212,6 +212,7 @@ export function panoramaPreview(
     title: "A closer look.",
     subtitle: "",
     ...(shot.translations ? { translations: {} } : {}),
+    overlays: undefined,
   };
   const patch: Partial<Style> = { ...panoramaStyles[family] };
   if (keepColors)
@@ -228,10 +229,14 @@ export function panoramaPreview(
     const {
       textOffsets: _offsets,
       companions: _companions,
+      overlays: _overlays,
       ...content
     } = source;
     return {
       ...content,
+      ...(source.overlays
+        ? { overlays: structuredClone(source.overlays) }
+        : {}),
       ...(source.translations || left.translations
         ? {
             translations: Object.fromEntries(
