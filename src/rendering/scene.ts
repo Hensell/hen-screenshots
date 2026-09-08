@@ -10,10 +10,13 @@ import { isPanoramaTemplate, panoramaPair } from "../core/panorama";
 import { drawDeviceFrame, drawDeviceDetails } from "./device-frame";
 import { drawTemplateDecoration } from "./template-decoration";
 import { attachSceneGuides } from "./scene-guides";
+import { attachDeviceResize } from "./device-resize";
+import type { DevicePlacement } from "../core/device-placement";
 
 interface SceneOptions {
   guides?: boolean;
   onMove?: (x: number, y: number) => void;
+  onResize?: (placement: DevicePlacement, shotId: string) => void;
   onTextMove?: (
     element: TextElement,
     x: number,
@@ -31,6 +34,9 @@ export function selectSceneElement(
 ) {
   layer.setAttr("selectedElement", element);
   layer.setAttr("selectedShotId", shotId);
+  layer
+    .find(".device-transformer")
+    .forEach((node) => node.visible(element === "device"));
   layer
     .find(".selection-outline")
     .forEach((node) =>
@@ -221,7 +227,9 @@ export function createScene(
     style.deviceOrientation,
   );
   const layer = new Konva.Layer({
-    listening: Boolean(options.onMove || options.onTextMove),
+    listening: Boolean(
+      options.onMove || options.onTextMove || options.onResize,
+    ),
   });
   try {
     // The base remains opaque even if a restored project contains a translucent color.
@@ -441,6 +449,18 @@ export function createScene(
     }
     if (options.guides && (options.onMove || options.onTextMove))
       attachSceneGuides(layer, canvas, panoramic ? 2 : 1, cropOffset);
+    if (options.onResize)
+      attachDeviceResize(
+        layer,
+        phone,
+        device,
+        cropOffset,
+        (placement) => options.onResize?.(placement, shot.id),
+        () => {
+          selectSceneElement(layer, "device", shot.id);
+          options.onSelectElement?.("device", shot.id);
+        },
+      );
     return layer;
   } catch (error) {
     layer.destroy();

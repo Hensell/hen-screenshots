@@ -6,7 +6,8 @@ import {
   useState,
 } from "react";
 import Konva from "konva";
-import { errorMessage } from "../core/model";
+import { errorMessage, resolveStyle } from "../core/model";
+import { resizeDevice, type DevicePlacement } from "../core/device-placement";
 import type { Project, Shot, TextElement, CanvasElement } from "../core/model";
 import { textOffset } from "../core/text-placement";
 import { ensureSceneFonts } from "./fonts";
@@ -21,6 +22,7 @@ export interface ArtboardProps {
   width: number;
   guides?: boolean;
   onMove?: (x: number, y: number) => void;
+  onResize?: (placement: DevicePlacement, shotId: string) => void;
   onSelectElement?: (element: CanvasElement, shotId: string) => void;
   onTextMove?: (
     element: TextElement,
@@ -37,6 +39,7 @@ export function Artboard({
   width,
   guides = false,
   onMove,
+  onResize,
   onTextMove,
   onSelectElement,
 }: ArtboardProps) {
@@ -47,7 +50,7 @@ export function Artboard({
   const layerRef = useRef<Konva.Layer | null>(null);
   const selectedShotId = useRef(shot.id);
   const [selectedLabel, setSelectedLabel] = useState("Device");
-  const editable = Boolean(onMove || onTextMove);
+  const editable = Boolean(onMove || onTextMove || onResize);
   const selectionCallback = useRef(onSelectElement);
   useLayoutEffect(() => {
     selectionCallback.current = onSelectElement;
@@ -90,6 +93,7 @@ export function Artboard({
         const layer = createScene(project, shot, image, {
           guides,
           onMove,
+          onResize,
           onTextMove,
           onSelectElement: selectElement,
         });
@@ -121,7 +125,17 @@ export function Artboard({
       stage?.destroy();
       layerRef.current = null;
     };
-  }, [project, shot, image, width, onMove, onTextMove, guides, selectElement]);
+  }, [
+    project,
+    shot,
+    image,
+    width,
+    onMove,
+    onResize,
+    onTextMove,
+    guides,
+    selectElement,
+  ]);
 
   return (
     <div
@@ -129,7 +143,7 @@ export function Artboard({
       aria-label={`Screenshot preview: ${shot.title || "Untitled screenshot"}`}
       aria-description={
         editable
-          ? `${selectedLabel} selected. Drag the device or text. Enter switches objects. Arrow keys move the selected object. Hold Shift for larger steps.`
+          ? `${selectedLabel} selected. Drag to move. Drag a device corner to resize. Enter switches objects. Arrow keys move the selected object. Plus and minus resize the device. Hold Shift for larger steps.`
           : undefined
       }
       aria-busy={!ready && !error}
@@ -148,13 +162,36 @@ export function Artboard({
         editable
           ? () =>
               layerRef.current
-                ?.find(".selection-outline")
+                ?.find(".selection-outline, .device-transformer")
                 .forEach((node) => node.hide())
           : undefined
       }
       onKeyDown={
         editable
           ? (event) => {
+              if (
+                onResize &&
+                selectedElement.current === "device" &&
+                !event.metaKey &&
+                !event.ctrlKey &&
+                !event.altKey &&
+                ["+", "=", "-", "_"].includes(event.key)
+              ) {
+                event.preventDefault();
+                const next = { ...shot, phone: { ...shot.phone } };
+                const direction =
+                  event.key === "-" || event.key === "_" ? -1 : 1;
+                resizeDevice(
+                  next,
+                  resolveStyle(project, shot),
+                  shot.phone.width + direction * (event.shiftKey ? 50 : 10),
+                );
+                onResize(
+                  { x: next.phone.x, y: next.phone.y, width: next.phone.width },
+                  shot.id,
+                );
+                return;
+              }
               if (event.key === "Enter") {
                 event.preventDefault();
                 const elements: CanvasElement[] = [

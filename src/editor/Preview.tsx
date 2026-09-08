@@ -9,6 +9,7 @@ import {
 } from "react";
 import type { Project, Shot, TextElement, CanvasElement } from "../core/model";
 import { canonicalCanvas } from "../core/export-profiles";
+import type { DevicePlacement } from "../core/device-placement";
 import { RenderBoundary } from "../app/DeferredFeature";
 const Artboard = lazy(() =>
   import("../rendering/Artboard").then((module) => ({
@@ -21,6 +22,7 @@ export function Preview({
   shot,
   image,
   onMove,
+  onResize,
   onTextMove,
   onSelectElement,
   small = false,
@@ -32,6 +34,7 @@ export function Preview({
   shot: Shot;
   image?: HTMLImageElement;
   onMove?: (x: number, y: number) => void;
+  onResize?: (placement: DevicePlacement, shotId: string) => void;
   onSelectElement?: (element: CanvasElement, shotId: string) => void;
   onTextMove?: (
     element: TextElement,
@@ -60,7 +63,7 @@ export function Preview({
       ref={ref}
       className={`artboard ${small ? "artboard-small" : ""}`}
       style={{ aspectRatio: `1080 / ${canonicalCanvas(project).height}` }}
-      role={onMove || onTextMove ? "group" : "img"}
+      role={onMove || onTextMove || onResize ? "group" : "img"}
       onContextMenu={onContextMenu}
       onKeyDown={onKeyDown}
       aria-label={`${shot.title.replace(/\n/g, " ")} — ${shot.subtitle}`}
@@ -87,6 +90,7 @@ export function Preview({
               width={width}
               guides={guides}
               onMove={onMove}
+              onResize={onResize}
               onTextMove={onTextMove}
               onSelectElement={onSelectElement}
             />

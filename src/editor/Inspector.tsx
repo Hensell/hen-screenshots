@@ -13,9 +13,11 @@ import {
   applyTemplate,
   getTemplate,
   resetComposition,
+  templateLayout,
 } from "../core/templates";
 import { linkedShots, panoramaPair } from "../core/panorama";
 import { CanvasSettings } from "./CanvasSettings";
+import { resizeDevice } from "../core/device-placement";
 import { resetText } from "../core/text-placement";
 import { appliedBrand } from "../core/brand-application";
 import { BrandBadge } from "./BrandBadge";
@@ -127,6 +129,7 @@ export function Inspector({
   const sourceShot =
     originalProject?.shots.find((item) => item.id === shot.id) ?? shot;
   const style = resolveStyle(project, shot);
+  const defaultDeviceWidth = templateLayout(project, style).phone.width;
   const brand = appliedBrand(project, shot);
   const pair = panoramaPair(project, shot.id);
   const surfaceLabel = getTemplate(style.template).surfaceLabel;
@@ -171,20 +174,35 @@ export function Inspector({
         <span>
           {label}
           <output>
-            {Math.round(shot.phone[key])}
-            <span className="unit">{key === "rotation" ? "°" : " px"}</span>
+            {key === "width"
+              ? Math.round((shot.phone.width / defaultDeviceWidth) * 100)
+              : Math.round(shot.phone[key])}
+            <span className="unit">
+              {key === "width" ? "%" : key === "rotation" ? "°" : " px"}
+            </span>
           </output>
         </span>
         <input
           type="range"
           aria-label={label}
+          aria-valuetext={
+            key === "width"
+              ? `${Math.round((shot.phone.width / defaultDeviceWidth) * 100)}% of template size`
+              : undefined
+          }
           min={min}
           max={max}
           step={1}
           value={shot.phone[key]}
           onChange={(event) =>
             updateShot((shot) => {
-              shot.phone[key] = Number(event.target.value);
+              if (key === "width")
+                resizeDevice(
+                  shot,
+                  resolveStyle(project, shot),
+                  Number(event.target.value),
+                );
+              else shot.phone[key] = Number(event.target.value);
             }, key)
           }
           onPointerUp={endGroup}
@@ -731,6 +749,38 @@ export function Inspector({
           tabIndex={0}
           className="inspector-tab-panel"
         >
+          <section className="property-section device-size-section">
+            <div className="section-heading">
+              <h3>Device size</h3>
+              <button
+                type="button"
+                className="text-button"
+                aria-label="Reset device size"
+                onClick={() =>
+                  updateShot((target) =>
+                    resizeDevice(
+                      target,
+                      resolveStyle(project, target),
+                      defaultDeviceWidth,
+                    ),
+                  )
+                }
+              >
+                <Icon name="reset" size={14} /> Reset size
+              </button>
+            </div>
+            {range(
+              "Device size",
+              "width",
+              PLACEMENT_LIMITS.width.min,
+              PLACEMENT_LIMITS.width.max,
+            )}
+            <p className="field-help">
+              Drag a corner on the canvas, or adjust here. 100% is the
+              template’s original size.
+              {pair ? " Both slides resize together." : ""}
+            </p>
+          </section>
           <section className="property-section">
             <h3>Device frame</h3>
             <p className="section-intro">
@@ -842,11 +892,11 @@ export function Inspector({
           )}
           <section className="property-section">
             <div className="section-heading">
-              <h3>Position &amp; size</h3>
+              <h3>Position &amp; rotation</h3>
               <button
                 type="button"
                 className="text-button"
-                aria-label="Reset device position"
+                aria-label="Reset device placement"
                 onClick={() =>
                   updateShot((shot) => {
                     resetComposition(project, shot);
@@ -856,12 +906,6 @@ export function Inspector({
                 Reset
               </button>
             </div>
-            {range(
-              "Device width",
-              "width",
-              PLACEMENT_LIMITS.width.min,
-              PLACEMENT_LIMITS.width.max,
-            )}
             {range(
               "Horizontal position",
               "x",
@@ -876,7 +920,8 @@ export function Inspector({
             )}
             {range("Device rotation", "rotation", -20, 20)}
             <p className="field-help">
-              You can also drag the device on the canvas.
+              Drag the device to move it. Reset restores the template’s size,
+              position and rotation.
             </p>
           </section>
         </div>

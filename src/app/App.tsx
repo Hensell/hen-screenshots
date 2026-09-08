@@ -12,6 +12,10 @@ import "../editor/languages.css";
 import { isPanoramaTemplate } from "../core/panorama-families";
 import { moveText } from "../core/text-placement";
 import {
+  setDevicePlacement,
+  type DevicePlacement,
+} from "../core/device-placement";
+import {
   lazy,
   useCallback,
   useMemo,
@@ -188,6 +192,18 @@ export function App() {
       }),
     );
   }, []);
+  const resizeCanvasDevice = useCallback(
+    (placement: DevicePlacement, ownerId: string) => {
+      useEditor
+        .getState()
+        .edit((draft) =>
+          editLinkedShots(draft, ownerId, (target) =>
+            setDevicePlacement(target, placement),
+          ),
+        );
+    },
+    [],
+  );
   const [slideMenu, setSlideMenu] = useState<SlideMenuTarget | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{
     projectId: string;
@@ -1040,12 +1056,13 @@ export function App() {
                         onSelectElement={busy ? undefined : selectCanvasElement}
                         onTextMove={busy ? undefined : moveCanvasText}
                         onMove={busy ? undefined : moveCanvasDevice}
+                        onResize={busy ? undefined : resizeCanvasDevice}
                       />
                     ))}
                   </div>
                   <p className="canvas-edit-help">
-                    Click an object to edit it. Drag to move. Enter selects ·
-                    Arrow keys nudge.
+                    Drag to move · Corners resize · Enter selects · Arrows move
+                    · + / − resize
                   </p>
                   <div className="canvas-guide-tools">
                     <label>
