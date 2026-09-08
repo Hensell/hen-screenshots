@@ -86,6 +86,15 @@ export const panoramaStyles = {
     textColor: "#F1F5E9",
     titleSize: 116,
   },
+  orbit: {
+    ...panoramaStyle,
+    template: "orbit",
+    background: "#171D32",
+    backgroundEnd: "#303D60",
+    accentColor: "#B9C9F2",
+    textColor: "#F1F0E9",
+    titleSize: 116,
+  },
 } satisfies Record<PanoramaId, Partial<Style>>;
 
 /** Phone placement lives in one 2160-wide scene; each export crops one half. */
@@ -95,7 +104,14 @@ export function panoramaLayout(project: Project, style: Style) {
   const family = panoramaStart(style.template);
   const expressive = family !== "panorama";
   const wide = h <= 1080;
-  const rotation = family === "daybreak" ? 16 : family === "tidal" ? -10 : -8;
+  const rotation =
+    family === "daybreak"
+      ? 16
+      : family === "tidal"
+        ? -10
+        : family === "orbit"
+          ? 12
+          : -8;
   const unit = deviceGeometry(
     style.device,
     1000,

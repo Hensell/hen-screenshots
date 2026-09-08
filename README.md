@@ -19,8 +19,8 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 
 ## Make something worth showing
 
-- **A template for your story.** 13 designs, from quiet editorial layouts to bold posters, including three panoramas that connect two slides into one scene.
-- **Find your look quickly.** Search by name, color, or visual idea. Filter by style, composition, and background, sort results, and browse 12, 24, or 48 templates per page. Previews use your own screenshots.
+- **A template for your story.** 21 designs, from quiet editorial layouts to bold posters, including four panoramas that connect two slides into one scene.
+- **Find your look quickly.** Search by name, color, or visual idea. Filter by style, appearance (Light, Dark, or Colorful), composition, and background, sort results, and browse 12, 24, or 48 templates per page. Previews use your own screenshots.
 - **Choose the right frame.** iPhone, Android phone, iPad, Android tablet, monitor, laptop, or a simple screenshot card.
 - **Make the composition yours.** Customize captions, colors, typography, and backgrounds. Drag devices and text independently, or use the keyboard. Reset positions whenever you want.
 - **Line things up.** Smart guides snap devices and text to centers, edges, margins, and nearby objects, including across panoramas. Hold Alt/Option to move freely, or turn guides off.
@@ -31,6 +31,8 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 - **Export for the destination.** Separate **App stores** and **Portfolio** workspaces keep store presets apart from cards, square formats, widescreen covers, and custom dimensions.
 - **Keep your work.** Projects save automatically in your browser. Download an editable project file with its original images for backup or transfer.
 
+The latest collection adds **Prism, Paper, Workbench, and Confetti**, plus four dark designs: **Nocturne, Orbit, Carbon, and Ember**. Open **Templates → Appearance → Dark** to browse all seven dark templates. Workbench gives desktop and portfolio projects a generous product area; Orbit connects two slides into a continuous midnight scene. Every design remains editable and adapts to the project's frame and canvas.
+
 ### Two slides. One bigger story.
 
 <p align="center">
@@ -38,7 +40,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
   <img src="public/examples/panorama-right.webp" width="35%" alt="Right half: the phone and warm ribbon continue into the caption Every day, a little brighter." />
 </p>
 
-Design the pair together, keep a different caption on each slide, and export two separate PNGs in a ZIP. **Panorama**, **Daybreak**, and **Tidal** each offer a different take on the continuous scene.
+Design the pair together, keep a different caption on each slide, and export two separate PNGs in a ZIP. **Panorama**, **Daybreak**, **Tidal**, and **Orbit** each offer a different take on the continuous scene.
 
 ## From capture to export
 
@@ -130,7 +132,7 @@ The library loads first. Canvas rendering, templates, brand kits, publication pr
 | `src/export/`      | PNG rendering, snapshot-based language exports, ZIP packaging and cancellation |
 | `src/translation/` | Pinned model catalog, optional worker, download cache and cancellation |
 
-The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 13 templates.
+The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 21 templates.
 
 Autosave checks revisions to prevent one tab from overwriting another tab's changes. Image blobs are immutable: caption edits only write the document, and unused images are removed from the saved copy. Undo/redo retains the required original images in the current editing session. Brand kit updates use revision checks too. Project files use schema 7 and support migration from versions 1–6. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots and portability, localization, translation cancellation, and export profiles.
 
@@ -156,6 +158,7 @@ For code contributions, keep changes focused and run `npm run check`. Check rend
 
 ## Project notes
 
+- [Light and dark template collection](docs/template-collection-2026-09-08.md)
 - [Workflow QA and loading improvements](docs/workflow-qa-2026-09-08.md)
 - [Technical review and follow-up priorities](docs/technical-review-2026-09-08.md)
 - [Architecture and original implementation plan](docs/architecture.md)

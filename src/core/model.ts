@@ -58,6 +58,15 @@ export const templateIds = [
   "tidal-end",
   "bloom",
   "punch",
+  "prism",
+  "paper",
+  "orbit",
+  "orbit-end",
+  "workbench",
+  "nocturne",
+  "carbon",
+  "ember",
+  "confetti",
 ] as const;
 export type TemplateId = (typeof templateIds)[number];
 export type TextElement = "title" | "subtitle";

@@ -159,6 +159,10 @@
   width: 100%;
   font-weight: 400;
 }
+.catalog-filters > .catalog-filter-field:first-child {
+  margin-top: 0;
+  margin-bottom: 22px;
+}
 .catalog-reset,
 .catalog-show-selected {
   color: var(--brand-clay);

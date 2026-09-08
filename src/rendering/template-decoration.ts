@@ -2,6 +2,7 @@ import Konva from "konva";
 import type { Style } from "../core/model";
 import type { Rect } from "./geometry";
 import { isPanoramaEnd, panoramaStart } from "../core/panorama-families";
+import { drawShowcaseDecoration } from "./showcase-decoration";
 
 /** All paths use spread coordinates, including the off-canvas half of a panorama. */
 function drawExpressiveDecoration(
@@ -207,6 +208,7 @@ export function drawTemplateDecoration(
   panel: Rect,
 ) {
   const h = canvas.height;
+  drawShowcaseDecoration(layer, style, h, panel);
   drawExpressiveDecoration(layer, style, h, panel);
   if (style.template === "studio") {
     const inset = Math.min(32, h * 0.04);

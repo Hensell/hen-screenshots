@@ -182,7 +182,8 @@ export function TemplateGallery({
   const activeFilters =
     Number(filters.category !== "All") +
     Number(filters.layout !== "all") +
-    Number(filters.background !== "all");
+    Number(filters.background !== "all") +
+    Number(filters.appearance !== "all");
   const hasFilters = activeFilters > 0 || filters.query.trim().length > 0;
   const updateFilters = (patch: Partial<CatalogFilters>) => {
     setFilters((current) => ({ ...current, ...patch }));
@@ -340,6 +341,23 @@ export function TemplateGallery({
           className={`catalog-filters ${filtersOpen ? "is-open" : ""}`}
           aria-label="Template filters"
         >
+          <label className="catalog-filter-field">
+            Appearance
+            <select
+              value={filters.appearance}
+              onChange={(event) =>
+                updateFilters({
+                  appearance: event.target
+                    .value as CatalogFilters["appearance"],
+                })
+              }
+            >
+              <option value="all">Any appearance</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+              <option value="colorful">Colorful</option>
+            </select>
+          </label>
           <fieldset className="catalog-categories">
             <legend>Style</legend>
             {Object.entries(results.counts).map(([category, count]) => (

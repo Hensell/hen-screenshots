@@ -5,12 +5,14 @@ export const catalogPageSizes = [12, 24, 48] as const;
 export type CatalogPageSize = (typeof catalogPageSizes)[number];
 export type CatalogLayout = "all" | "single" | "panorama";
 export type CatalogBackground = "all" | "solid" | "gradient";
+export type CatalogAppearance = "all" | "light" | "dark" | "colorful";
 export type CatalogSort = "recommended" | "name-asc" | "name-desc";
 export interface CatalogFilters {
   query: string;
   category: string;
   layout: CatalogLayout;
   background: CatalogBackground;
+  appearance: CatalogAppearance;
   sort: CatalogSort;
 }
 export const defaultCatalogFilters: CatalogFilters = {
@@ -18,6 +20,7 @@ export const defaultCatalogFilters: CatalogFilters = {
   category: "All",
   layout: "all",
   background: "all",
+  appearance: "all",
   sort: "recommended",
 };
 const nameCollator = new Intl.Collator("en", {
@@ -34,6 +37,7 @@ export interface CatalogItem {
   note: string;
   layout: Exclude<CatalogLayout, "all">;
   background: Exclude<CatalogBackground, "all">;
+  appearance?: Exclude<CatalogAppearance, "all">;
   keywords?: readonly string[];
   surfaceLabel?: string;
 }
@@ -57,6 +61,7 @@ export function createCatalogIndex<T extends CatalogItem>(items: readonly T[]) {
         item.note,
         item.surfaceLabel,
         item.background,
+        item.appearance,
         item.layout === "panorama"
           ? "panorama panoramic connected 2 slides"
           : "single slide",
@@ -80,6 +85,8 @@ export function queryCatalog<T extends CatalogItem>(
       (filters.layout === "all" || item.layout === filters.layout) &&
       (filters.background === "all" ||
         item.background === filters.background) &&
+      (filters.appearance === "all" ||
+        item.appearance === filters.appearance) &&
       words.every((word) => text.includes(word)),
   );
   for (const { item } of candidates) {
@@ -165,5 +172,12 @@ const catalogItems = templates.map((template) => ({
     ? ("panorama" as const)
     : ("single" as const),
   background: template.style.backgroundMode,
+  appearance:
+    template.appearance ??
+    (template.keywords?.includes("dark")
+      ? "dark"
+      : template.keywords?.includes("colorful") || template.id === "split"
+        ? "colorful"
+        : "light"),
 }));
 export const templateCatalogIndex = createCatalogIndex(catalogItems);

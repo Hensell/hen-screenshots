@@ -114,16 +114,17 @@ describe("store export profiles", () => {
 });
 
 describe("adaptive compositions", () => {
-  it("fits rotated devices in the canvas for every new device, template, orientation and export size", () => {
-    for (const device of [
-      "card",
-      "android",
-      "ios",
-      "ipad",
-      "android-tablet",
-      "monitor",
-      "laptop",
-    ] as DeviceFamily[])
+  it.each([
+    "card",
+    "android",
+    "ios",
+    "ipad",
+    "android-tablet",
+    "monitor",
+    "laptop",
+  ] as DeviceFamily[])(
+    "fits rotated %s devices for every template, orientation and export size",
+    (device) => {
       for (const orientation of ["portrait", "landscape"] as const)
         for (const frame of [true, false])
           for (const profile of exportProfiles)
@@ -185,7 +186,8 @@ describe("adaptive compositions", () => {
               );
               expect(preview.phone).toEqual(shot.phone);
             }
-  });
+    },
+  );
   it("reflows a format change while keeping source, captions, device and colors", () => {
     const project = createProject();
     project.shots = [createShot("image", 0)];

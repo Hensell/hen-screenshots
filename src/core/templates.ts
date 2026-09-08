@@ -14,6 +14,7 @@ import {
   type ExportProfileId,
 } from "./export-profiles";
 import { deviceGeometry, type Rect } from "../rendering/geometry";
+import { showcaseTemplates, showcaseAreas } from "./showcase-templates";
 
 import {
   applyPanorama,
@@ -47,6 +48,15 @@ export interface Template {
   surfaceLabel?: string;
   titleFont?: "Fraunces";
   titleWeight?: string;
+  appearance?: "light" | "dark" | "colorful";
+  composition?:
+    | "angled"
+    | "masthead"
+    | "desk"
+    | "caption"
+    | "technical"
+    | "pedestal"
+    | "collage";
   style: Pick<
     Style,
     | "template"
@@ -68,6 +78,7 @@ export interface Template {
 
 /** IDs and geometry are part of document v2. Add new IDs for incompatible designs. */
 export const templates: readonly Template[] = [
+  ...showcaseTemplates,
   {
     id: "daybreak",
     name: "Daybreak",
@@ -476,7 +487,12 @@ function collectionLayout(project: Project, style: Style, template: Template) {
   const { height: h } = canonicalCanvas(project);
   const wide = h <= 1080;
   let title: Rect, subtitle: Rect, area: Rect;
-  if ((style.template === "bloom" || style.template === "punch") && !wide) {
+  if (template.composition) {
+    ({ title, subtitle, area } = showcaseAreas(template.composition, h));
+  } else if (
+    (style.template === "bloom" || style.template === "punch") &&
+    !wide
+  ) {
     title = { x: 80, y: h * 0.06, width: 920, height: h * 0.155 };
     subtitle = { x: 84, y: h * 0.24, width: 912, height: h * 0.06 };
     area = { x: 70, y: h * 0.34, width: 940, height: h * 0.62 };
@@ -510,7 +526,11 @@ function collectionLayout(project: Project, style: Style, template: Template) {
     style.frame,
     style.deviceOrientation,
   );
-  const rotation = style.template === "punch" ? -6 : 0;
+  const rotation = template.composition
+    ? template.phone.rotation
+    : style.template === "punch"
+      ? -6
+      : 0;
   const radians = (Math.abs(rotation) * Math.PI) / 180;
   const boundW =
     Math.cos(radians) * unit.width + Math.sin(radians) * unit.height;

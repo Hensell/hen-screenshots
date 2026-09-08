@@ -245,7 +245,7 @@ describe("panorama document invariants", () => {
 });
 
 describe("panorama spread geometry", () => {
-  it.each(["panorama", "daybreak", "tidal"] as const)(
+  it.each(["panorama", "daybreak", "tidal", "orbit"] as const)(
     "keeps %s devices within the spread across profiles and custom extremes",
     (family) => {
       const scenarios: {
@@ -513,7 +513,7 @@ describe("panorama template changes and undo", () => {
 });
 
 describe("panorama backup", () => {
-  it.each(["panorama", "daybreak", "tidal"] as const)(
+  it.each(["panorama", "daybreak", "tidal", "orbit"] as const)(
     "round-trips %s roles, text and original image bytes",
     async (family) => {
       const imageBytes = Uint8Array.from(

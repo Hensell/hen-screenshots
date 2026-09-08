@@ -5,6 +5,7 @@ export const panoramaFamilies = {
   panorama: "panorama-end",
   daybreak: "daybreak-end",
   tidal: "tidal-end",
+  orbit: "orbit-end",
 } as const;
 export type PanoramaId = keyof typeof panoramaFamilies;
 
