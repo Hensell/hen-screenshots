@@ -1,96 +1,6 @@
+import { readImageHeader } from "./image-header";
 import { LIMITS } from "../core/model";
 import type { Asset } from "../core/model";
-
-function dimensions(bytes: Uint8Array): {
-  mime: Asset["mime"];
-  width: number;
-  height: number;
-} {
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  const text = (start: number, end: number) =>
-    String.fromCharCode(...bytes.subarray(start, end));
-  if (
-    bytes.length >= 24 &&
-    bytes[0] === 137 &&
-    text(1, 8) === "PNG\r\n\x1a\n" &&
-    text(12, 16) === "IHDR"
-  ) {
-    return {
-      mime: "image/png",
-      width: view.getUint32(16),
-      height: view.getUint32(20),
-    };
-  }
-  if (
-    bytes.length >= 12 &&
-    bytes[0] === 255 &&
-    bytes[1] === 216 &&
-    bytes[2] === 255
-  ) {
-    let position = 2;
-    while (position + 3 < bytes.length) {
-      if (bytes[position++] !== 255) break;
-      while (bytes[position] === 255) position++;
-      const marker = bytes[position++];
-      if (marker === 217 || marker === 218 || position + 2 > bytes.length)
-        break;
-      if (marker === 1 || (marker >= 208 && marker <= 215)) continue;
-      const length = view.getUint16(position);
-      if (length < 2 || position + length > bytes.length) break;
-      if (
-        marker >= 192 &&
-        marker <= 207 &&
-        ![196, 200, 204].includes(marker) &&
-        length >= 8
-      ) {
-        return {
-          mime: "image/jpeg",
-          width: view.getUint16(position + 5),
-          height: view.getUint16(position + 3),
-        };
-      }
-      position += length;
-    }
-  }
-  if (bytes.length >= 25 && text(0, 4) === "RIFF" && text(8, 12) === "WEBP") {
-    const kind = text(12, 16);
-    const uint24 = (at: number) =>
-      bytes[at] | (bytes[at + 1] << 8) | (bytes[at + 2] << 16);
-    if (kind === "VP8X" && bytes.length >= 30) {
-      if (bytes[20] & 2)
-        throw new Error(
-          "Animated WebP is not supported. Choose a still screenshot.",
-        );
-      return {
-        mime: "image/webp",
-        width: uint24(24) + 1,
-        height: uint24(27) + 1,
-      };
-    }
-    if (kind === "VP8L" && bytes[20] === 47) {
-      return {
-        mime: "image/webp",
-        width: 1 + (bytes[21] | ((bytes[22] & 63) << 8)),
-        height:
-          1 + ((bytes[22] >> 6) | (bytes[23] << 2) | ((bytes[24] & 15) << 10)),
-      };
-    }
-    if (
-      kind === "VP8 " &&
-      bytes.length >= 30 &&
-      bytes[23] === 157 &&
-      bytes[24] === 1 &&
-      bytes[25] === 42
-    ) {
-      return {
-        mime: "image/webp",
-        width: view.getUint16(26, true) & 16383,
-        height: view.getUint16(28, true) & 16383,
-      };
-    }
-  }
-  throw new Error("Choose a valid PNG, JPEG, or still WebP image.");
-}
 
 function checkPixels(width: number, height: number): void {
   if (
@@ -112,7 +22,17 @@ export function loadImage(asset: Asset): Promise<HTMLImageElement> {
     );
     const image = new Image();
     image.decoding = "async";
+    const timer = setTimeout(() => {
+      finish();
+      image.src = "";
+      reject(
+        new Error(
+          `Reading “${asset.name}” took too long. Try a smaller copy or save it again as JPEG or PNG.`,
+        ),
+      );
+    }, 25000);
     const finish = () => {
+      clearTimeout(timer);
       image.onload = null;
       image.onerror = null;
       URL.revokeObjectURL(url);
@@ -129,7 +49,9 @@ export function loadImage(asset: Asset): Promise<HTMLImageElement> {
     image.onerror = () => {
       finish();
       reject(
-        new Error(`Could not decode “${asset.name}”. Choose another image.`),
+        new Error(
+          `Could not decode “${asset.name}”. The file may be damaged or use an encoding this browser cannot read. Try an optimized copy, save it again as JPEG or PNG, or open the editor in your browser.`,
+        ),
       );
     };
     image.src = url;
@@ -140,14 +62,22 @@ export function loadImage(asset: Asset): Promise<HTMLImageElement> {
 export async function importImages(files: File[]): Promise<Asset[]> {
   if (files.length > LIMITS.shots)
     throw new Error("Choose up to 20 images at a time.");
-  if (files.some((file) => !file.size || file.size > LIMITS.assetBytes))
-    throw new Error("Each image must be between 1 byte and 20 MB.");
+  for (const file of files) {
+    if (!file.size)
+      throw new Error(
+        `“${file.name}” is empty (0 bytes). Choose the original image or download it again.`,
+      );
+    if (file.size > LIMITS.assetBytes)
+      throw new Error(
+        `“${file.name}” is ${(file.size / 1024 / 1024).toFixed(1)} MB. The limit is 20 MB per image. Compress a copy or choose a smaller image.`,
+      );
+  }
   if (files.reduce((total, file) => total + file.size, 0) > LIMITS.totalBytes)
     throw new Error("The selected images exceed 120 MB.");
   const assets: Asset[] = [];
   // Decode sequentially to keep peak memory bounded on mobile browsers.
   for (const file of files) {
-    const header = dimensions(new Uint8Array(await file.arrayBuffer()));
+    const header = await readImageHeader(file);
     checkPixels(header.width, header.height);
     const asset: Asset = {
       id: crypto.randomUUID(),

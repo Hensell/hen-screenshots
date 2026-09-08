@@ -51,7 +51,7 @@ import {
   PLACEMENT_LIMITS,
 } from "../core/model";
 import type { CanvasElement, LoadedProject, TextElement } from "../core/model";
-import { importImages } from "../assets/import";
+import { useImageImport } from "../assets/useImageImport";
 import { download, filename } from "../platform/download";
 import { saveNow, useEditor } from "../editor/store";
 import { useImages } from "../editor/useImages";
@@ -117,6 +117,7 @@ function Brand() {
 
 export function App() {
   const t = useT();
+  const imageImport = useImageImport();
   useEffect(() => {
     document.title = t("Your studio — Hen Screenshots");
   }, [t]);
@@ -420,18 +421,14 @@ export function App() {
         (owner.overlays?.length ?? 0) + files.length > MAX_OVERLAYS
       )
         throw new Error("A slide supports up to 8 extra images.");
-      if (
-        overlayUploadBytes(
-          sourceProject!,
-          assets,
-          target.replaceId ? files.slice(0, 1) : files,
-          target,
-        ) > LIMITS.totalBytes
-      )
-        throw new Error("The selected images exceed 120 MB.");
-      const incoming = await importImages(
+      const remaining =
+        LIMITS.totalBytes -
+        overlayUploadBytes(sourceProject!, assets, [], target);
+      const incoming = await imageImport.request(
         target.replaceId ? files.slice(0, 1) : files,
+        { availableBytes: remaining },
       );
+      if (!incoming) return;
       state.addAssets(incoming);
       let active: string | undefined;
       state.edit((draft) => {
@@ -503,14 +500,10 @@ export function App() {
       const existingBytes = assets
         .filter((asset) => usedIds.has(asset.id))
         .reduce((sum, asset) => sum + asset.blob.size, 0);
-      if (
-        existingBytes + files.reduce((sum, file) => sum + file.size, 0) >
-        LIMITS.totalBytes
-      )
-        throw new Error(
-          "This project would exceed 120 MB. Choose smaller screenshots.",
-        );
-      const incoming = await importImages(files);
+      const incoming = await imageImport.request(files, {
+        availableBytes: LIMITS.totalBytes - existingBytes,
+      });
+      if (!incoming) return;
       state.addAssets(incoming);
       let firstId: string | undefined;
       state.edit((project) => {
@@ -689,6 +682,7 @@ export function App() {
         : "Saving…";
   return (
     <>
+      {imageImport.dialog}
       <input
         ref={imageInput}
         className="visually-hidden"

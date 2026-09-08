@@ -1,11 +1,9 @@
-import { importImages, loadImage } from "./import";
+import { loadImage } from "./import";
+import type { Asset } from "../core/model";
 import { validateBrandLogo } from "../core/brand-kit";
 
 /** Keep the app-identification icon small and portable, without stretching its artwork. */
-export async function importBrandLogo(file: File): Promise<string> {
-  if (file.size > 5 * 1024 * 1024)
-    throw new Error("Choose a logo no larger than 5 MB.");
-  const [asset] = await importImages([file]);
+export async function importBrandLogo(asset: Asset): Promise<string> {
   const image = await loadImage(asset);
   const scale = Math.min(
     1,

@@ -26,6 +26,7 @@ import {
   saveBrandKit,
 } from "../storage/repository";
 import { exportBrandKit, importBrandKit } from "../storage/brand-backup";
+import { useImageImport } from "../assets/useImageImport";
 import { importBrandLogo } from "../assets/brand-logo";
 import { ensureSceneFonts } from "../rendering/fonts";
 import { download, filename } from "../platform/download";
@@ -109,6 +110,7 @@ export function BrandKitDialog({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const importRef = useRef<HTMLInputElement>(null);
   const logoRef = useRef<HTMLInputElement>(null);
+  const imageImport = useImageImport();
   const nameRef = useRef<HTMLInputElement>(null);
   const [kits, setKits] = useState<BrandKit[]>([]);
   const [draft, setDraft] = useState<BrandKit | null>(null);
@@ -350,7 +352,12 @@ export function BrandKitDialog({
             event.target.value = "";
             if (file)
               void perform(async () => {
-                const logo = await importBrandLogo(file);
+                const incoming = await imageImport.request([file], {
+                  availableBytes: 5 * 1024 * 1024,
+                  maxFileBytes: 5 * 1024 * 1024,
+                });
+                if (!incoming) return;
+                const logo = await importBrandLogo(incoming[0]);
                 setDraft((kit) => (kit ? { ...kit, logo } : null));
               });
           }}
@@ -804,6 +811,7 @@ export function BrandKitDialog({
           )}
         </footer>
       </dialog>
+      {imageImport.dialog}
       {pending && (
         <ConfirmBrandAction
           kind={pending.kind}

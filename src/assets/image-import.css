@@ -1,0 +1,136 @@
+.image-import-dialog {
+  width: min(620px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: 24px;
+  overflow-y: auto;
+  color: var(--brand-ink);
+  border: 1px solid var(--brand-border);
+  border-radius: 12px;
+  background: var(--brand-paper);
+  box-shadow: 0 20px 90px #18211840;
+}
+.image-import-dialog::backdrop {
+  background: #20272575;
+}
+.image-import-dialog h2 {
+  font-size: 26px;
+  margin: 12px 0;
+}
+.image-import-dialog .dialog-copy {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.image-import-limits {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 12px 0;
+  font-size: 12px;
+  border-block: 1px solid var(--brand-border);
+}
+.image-import-files {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.image-import-files li {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--brand-border);
+}
+.image-import-file {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  min-height: 44px;
+  cursor: pointer;
+}
+.image-import-file input {
+  margin-top: 5px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--brand-clay);
+}
+.image-import-file span {
+  min-width: 0;
+}
+.image-import-file strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.image-import-file small {
+  display: block;
+  margin-top: 5px;
+  color: var(--brand-muted);
+  line-height: 1.5;
+}
+.image-import-files p {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 8px 0 0 30px;
+  overflow-wrap: anywhere;
+}
+.image-import-error {
+  color: #9a3824;
+}
+.image-import-success {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #476040;
+}
+.image-import-files .is-excluded {
+  opacity: 0.62;
+}
+.image-import-compress {
+  margin: 6px 0 0 30px;
+  min-height: 44px;
+  font-size: 12px;
+}
+.image-import-summary {
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 16px;
+  overflow-wrap: anywhere;
+}
+.image-import-summary p {
+  margin: 8px 0;
+}
+.image-import-note {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--brand-muted);
+  margin: 16px 0;
+}
+.image-import-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.image-import-actions .button {
+  min-height: 44px;
+  flex: 1 1 auto;
+  white-space: normal;
+  text-align: center;
+  justify-content: center;
+}
+@media (max-width: 540px) {
+  .image-import-dialog {
+    padding: 20px;
+  }
+  .image-import-actions .primary {
+    flex-basis: 100%;
+  }
+}
+@media (max-height: 480px) {
+  .image-import-dialog {
+    padding: 16px 20px;
+  }
+  .image-import-dialog h2 {
+    margin: 8px 0;
+  }
+}

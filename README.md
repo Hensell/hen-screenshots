@@ -77,6 +77,14 @@ The download dialog explains the size before starting: roughly **112–120 MB pe
 
 Translations support up to **10 languages per project**. The initial language list uses scripts covered by the bundled fonts; RTL and CJK typesetting are not yet offered. PNG ZIP exports are limited to 250 MB before packaging; split larger exports into smaller batches.
 
+## Image checks and local compression
+
+Uploads are checked by their actual file signature, dimensions, and browser decoding, including files with misleading extensions. Captures and slide artwork accept **PNG, JPEG, and still WebP**, up to **20 MB and 24 megapixels per image** and **120 MB of referenced source images per project**. Brand-kit logo inputs have a **5 MB** limit.
+
+When files need attention, the import dialog names each problem and shows file size, resolution, and remaining capacity. Uncheck files to omit them, or choose **Compress to fit** to prepare optimized copies on your device, then explicitly import the result. Compression can reduce quality and resolution; original files remain unchanged, JPEG orientation and PNG/WebP transparency are preserved. Replacements count only assets still referenced elsewhere, including other language versions.
+
+Local compression accepts inputs up to **80 MB, 64 megapixels, and 32,768 pixels per side**. Larger sources must be reduced externally. Damaged files, unsupported encodings, HEIC/HEIF, AVIF, GIF, and animated PNG/WebP receive actionable guidance; changing an extension does not convert the file. A file that the browser cannot decode may still fail optimization and need to be saved again as JPEG or PNG.
+
 ## Logos, awards, and extra artwork
 
 Open **Design → Extra images → Add image or icon** to place PNG, JPEG, or still WebP artwork over a slide. Add up to **8 images per slide**, including transparent logos and award badges. Each image has its own position, size, and rotation. Drag it on the canvas, resize from a corner, or use the inspector; **Reset placement** restores its starting size and position. **Bring forward** and **Send backward** control the order of extra images above the screenshot and captions.
