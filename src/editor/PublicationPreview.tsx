@@ -204,7 +204,7 @@ export function PublicationPreview({
             : t("Check the headlines, pacing, and joins as you swipe.")}
         </p>
         <label>
-          {t("Reading width")}
+          {t("Preview width")}
           <select
             value={viewport}
             onChange={(event) => setViewport(Number(event.target.value))}
@@ -323,9 +323,9 @@ export function PublicationPreview({
         </div>
         <p className="publication-note">
           {portfolio
-            ? t("A website-size preview of your exported cards.")
+            ? t("Preview how your exported cards look on a website.")
             : t(
-                "A reading-size preview. Store layouts and spacing vary by device.",
+                "Check how your screenshots read. Store layouts and spacing vary by device.",
               )}{" "}
           {width < viewport - 2 && t("Scaled to fit your screen.")}
         </p>

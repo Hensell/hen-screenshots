@@ -9,8 +9,8 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   ],
   "“{name}” will be removed from your library. Projects keep their applied copies.":
     [
-      "Se eliminará «{name}» de tu biblioteca. Los proyectos conservarán las copias aplicadas.",
-      "“{name}” será removido da sua biblioteca. Os projetos manterão as cópias aplicadas.",
+      "Se eliminará «{name}» de tu biblioteca. Los proyectos conservarán su copia del kit.",
+      "“{name}” será removido da sua biblioteca. Cada projeto manterá sua cópia do kit.",
     ],
   "Your changes to this kit have not been saved.": [
     "Los cambios en este kit no se han guardado.",
@@ -50,8 +50,8 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   "Choose a brand": ["Elegir una marca", "Escolher uma marca"],
   "Select a kit": ["Seleccionar un kit", "Selecionar um kit"],
   "Save a kit once. Reuse it across store listings and portfolios.": [
-    "Guarda un kit una vez. Reutilízalo en fichas de tiendas y portafolios.",
-    "Salve um kit uma vez. Reutilize em páginas de lojas e portfólios.",
+    "Guarda un kit y reutilízalo en las fichas de tus apps y en tus portafolios.",
+    "Salve um kit e reutilize-o nas páginas dos seus apps nas lojas e nos seus portfólios.",
   ],
   "Recover project’s brand": [
     "Recuperar la marca del proyecto",
@@ -62,7 +62,7 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
     "Un estilo familiar, siempre.",
     "Um estilo familiar, sempre.",
   ],
-  "Keep your app’s colors, logo and fonts together. Start fresh or save a design you already love.":
+  "Keep your app’s colors, logo, and fonts together. Start fresh or save a design you already love.":
     [
       "Reúne los colores, el logo y las fuentes de tu app. Empieza desde cero o guarda un diseño que ya te guste.",
       "Reúna as cores, o logo e as fontes do seu app. Comece do zero ou salve um design de que você já gosta.",
@@ -81,17 +81,17 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   ],
   "Delete brand kit": ["Eliminar kit de marca", "Excluir kit de marca"],
   "Brand kit deleted. Applied project copies are unchanged.": [
-    "Kit de marca eliminado. Las copias aplicadas a proyectos se conservan.",
-    "Kit de marca excluído. As cópias aplicadas aos projetos foram mantidas.",
+    "Kit de marca eliminado. Los proyectos conservan la copia del kit que ya tenían aplicada.",
+    "Kit de marca excluído. Os projetos mantêm a cópia do kit que já estava aplicada.",
   ],
-  "App / brand name": ["Nombre de la app / marca", "Nome do app / marca"],
-  "App icon / logo": ["Icono de la app / logo", "Ícone do app / logo"],
+  "App / brand name": ["Nombre de la app o marca", "Nome do app ou da marca"],
+  "App icon / logo": ["Icono o logo de la app", "Ícone ou logo do app"],
   "Replace logo": ["Reemplazar logo", "Substituir logo"],
   "Add logo": ["Agregar logo", "Adicionar logo"],
   Remove: ["Quitar", "Remover"],
-  "Identifies your kit. PNG, JPG or WebP, up to 5 MB.": [
-    "Identifica tu kit. PNG, JPG o WebP de hasta 5 MB.",
-    "Identifica seu kit. PNG, JPG ou WebP de até 5 MB.",
+  "Identifies your kit. PNG, JPEG, or WebP, up to 5 MB.": [
+    "Identifica tu kit. PNG, JPEG o WebP de hasta 5 MB.",
+    "Identifica seu kit. PNG, JPEG ou WebP de até 5 MB.",
   ],
   "Color palette": ["Paleta de colores", "Paleta de cores"],
   Background: ["Fondo", "Fundo"],
@@ -148,10 +148,11 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
       "Los colores y las fuentes se adaptan a tu diseño. El logo identifica el kit; no se agrega a las diapositivas.",
       "As cores e as fontes se adaptam ao seu design. O logo identifica o kit; ele não é adicionado aos slides.",
     ],
-  "Applying keeps your words, images, layout and export size. Undo anytime.": [
-    "Al aplicar se conservan tus textos, imágenes, composición y tamaño de exportación. Puedes deshacerlo.",
-    "Ao aplicar, seus textos, imagens, layout e tamanho de exportação são mantidos. Você pode desfazer a qualquer momento.",
-  ],
+  "Applying the kit preserves your text, images, layout, and export size. Undo anytime.":
+    [
+      "Al aplicar el kit, se conservan tus textos, imágenes, composición y tamaño de exportación. Puedes deshacer el cambio en cualquier momento.",
+      "Aplicar o kit mantém seus textos, imagens, layout e tamanho de exportação. Você pode desfazer a alteração a qualquer momento.",
+    ],
   "This project uses an earlier copy. Apply this kit to update it.": [
     "Este proyecto usa una copia anterior. Aplica este kit para actualizarla.",
     "Este projeto usa uma cópia anterior. Aplique este kit para atualizá-la.",
@@ -162,8 +163,8 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   "Saving…": ["Guardando…", "Salvando…"],
   Save: ["Guardar", "Salvar"],
   "Save before applying or exporting.": [
-    "Guarda antes de aplicar o exportar.",
-    "Salve antes de aplicar ou exportar.",
+    "Guarda el kit antes de aplicarlo o exportarlo.",
+    "Salve o kit antes de aplicá-lo ou exportá-lo.",
   ],
   "Saved kits never update projects automatically.": [
     "Los kits guardados no actualizan los proyectos automáticamente.",
@@ -183,7 +184,7 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   Draft: ["Borrador", "Rascunho"],
   "Original changed": ["Original modificado", "Original alterado"],
   Reviewed: ["Revisado", "Revisado"],
-  "YOUR SERIES, IN MORE WORDS": [
+  "YOUR SERIES, IN MORE LANGUAGES": [
     "TU SERIE, EN MÁS IDIOMAS",
     "SUA SÉRIE, EM MAIS IDIOMAS",
   ],
@@ -213,7 +214,7 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   "Add a language": ["Agregar un idioma", "Adicionar um idioma"],
   "New language": ["Nuevo idioma", "Novo idioma"],
   "Add language": ["Agregar idioma", "Adicionar idioma"],
-  "Colors, frames and device positions stay linked across languages.": [
+  "Colors, frames, and device positions stay linked across languages.": [
     "Los colores, los marcos y las posiciones de los dispositivos siguen vinculados entre idiomas.",
     "As cores, as molduras e as posições dos dispositivos continuam vinculadas entre os idiomas.",
   ],
@@ -298,9 +299,9 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
       "Se descargan solo cuando lo decides. La primera vez también se necesitan archivos compartidos para ejecutar el traductor.",
       "O download só acontece quando você escolhe. Na primeira vez, também são necessários arquivos compartilhados para executar o tradutor.",
     ],
-  "No account, API key or payment needed.": [
-    "No necesitas cuenta, clave de API ni pago.",
-    "Não precisa de conta, chave de API nem pagamento.",
+  "No account, API key, or payment needed.": [
+    "No necesitas una cuenta ni una clave de API, y no hay que pagar.",
+    "Não é necessário criar uma conta, usar uma chave de API ou pagar.",
   ],
   "Packs are cached in this browser when storage allows. Clearing browser data may remove them.":
     [
@@ -311,10 +312,10 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
     "Mantén esta ventana abierta durante la traducción. Puedes cancelar en cualquier momento.",
     "Mantenha esta janela aberta durante a tradução. Você pode cancelar a qualquer momento.",
   ],
-  "This pair translates through English using two language packs. Review the result carefully.":
+  "These languages use English as an intermediate step and require two language packs. Review the result carefully.":
     [
-      "Esta combinación traduce a través del inglés con dos paquetes de idiomas. Revisa el resultado con atención.",
-      "Esta combinação traduz por meio do inglês usando dois pacotes de idiomas. Revise o resultado com atenção.",
+      "Esta combinación de idiomas usa el inglés como idioma intermedio y necesita dos paquetes. Revisa el resultado con atención.",
+      "Esta combinação de idiomas usa o inglês como idioma intermediário e precisa de dois pacotes. Revise o resultado com atenção.",
     ],
   "Replace existing translations too": [
     "Reemplazar también las traducciones existentes",
@@ -322,8 +323,8 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   ],
   "This replaces every translation in this language, including reviewed text. You can undo the whole batch.":
     [
-      "Esto reemplaza todas las traducciones de este idioma, incluidos los textos revisados. Puedes deshacer todo el lote.",
-      "Isso substitui todas as traduções deste idioma, incluindo os textos revisados. Você pode desfazer o lote inteiro.",
+      "Esto reemplaza todas las traducciones de este idioma, incluidos los textos revisados. Puedes deshacer todos los cambios de una vez.",
+      "Isso substitui todas as traduções deste idioma, incluindo os textos revisados. Você pode desfazer todas as alterações de uma vez.",
     ],
   "Only untranslated slides will change. Your edited and reviewed translations stay.":
     [
@@ -365,15 +366,15 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
       "Todas las diapositivas ya tienen traducciones. Activa el reemplazo para generar nuevos borradores.",
       "Todos os slides já têm traduções. Ative a substituição para gerar novos rascunhos.",
     ],
-  "Downloadable translation currently supports English, Spanish, French and German. You can write this language’s captions manually.":
+  "The optional translator currently supports English, Spanish, French, and German. You can write captions in this language manually.":
     [
-      "La traducción descargable actualmente admite inglés, español, francés y alemán. Puedes escribir los textos de este idioma manualmente.",
-      "A tradução para download atualmente oferece inglês, espanhol, francês e alemão. Você pode escrever os textos deste idioma manualmente.",
+      "El traductor con modelos descargables admite inglés, español, francés y alemán por ahora. Puedes escribir los textos de este idioma manualmente.",
+      "O tradutor com modelos para download oferece inglês, espanhol, francês e alemão por enquanto. Você pode escrever os textos deste idioma manualmente.",
     ],
   "The local translator cannot start in this browser. You can still write and export every language manually.":
     [
-      "El traductor local no puede iniciarse en este navegador. Puedes escribir y exportar todos los idiomas manualmente.",
-      "O tradutor local não pode iniciar neste navegador. Você ainda pode escrever e exportar todos os idiomas manualmente.",
+      "El traductor local no puede iniciarse en este navegador. Puedes escribir los textos manualmente y exportar las versiones de todos los idiomas.",
+      "Não é possível iniciar o tradutor local neste navegador. Você pode escrever os textos manualmente e exportar as versões de todos os idiomas.",
     ],
   "Continue manually": ["Continuar manualmente", "Continuar manualmente"],
   "About the translator & storage": [
@@ -385,10 +386,10 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
       "Utiliza modelos OPUS-MT de Helsinki-NLP, adaptados al navegador por Xenova con Transformers.js. Los modelos se descargan de Hugging Face y los archivos de ejecución de jsDelivr. Tus textos no se envían a estos servicios.",
       "Usa modelos OPUS-MT do Helsinki-NLP, adaptados ao navegador pela Xenova com Transformers.js. Os modelos são baixados do Hugging Face e os arquivos de execução do jsDelivr. Seus textos não são enviados a esses serviços.",
     ],
-  "Download and speed depend on your connection and device. Translation is a draft, especially for short marketing headlines.":
+  "Download time and translation speed depend on your connection and device. Treat the translation as a draft, especially for short marketing headlines.":
     [
-      "La descarga y la velocidad dependen de tu conexión y dispositivo. La traducción es un borrador, especialmente para títulos publicitarios cortos.",
-      "O download e a velocidade dependem da sua conexão e do seu dispositivo. A tradução é um rascunho, especialmente para títulos publicitários curtos.",
+      "El tiempo de descarga y la velocidad de traducción dependen de tu conexión y de tu dispositivo. Usa la traducción como borrador, sobre todo en títulos publicitarios breves.",
+      "O tempo de download e a velocidade de tradução dependem da sua conexão e do seu dispositivo. Use a tradução como rascunho, principalmente em títulos publicitários curtos.",
     ],
   "{model} · model details ↗": [
     "{model} · detalles del modelo ↗",
@@ -400,8 +401,8 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   ],
   "Browser storage could not be cleared. Try clearing this site’s cached data in your browser settings.":
     [
-      "No se pudo vaciar el almacenamiento del navegador. Intenta borrar los datos guardados de este sitio en la configuración del navegador.",
-      "Não foi possível limpar o armazenamento do navegador. Tente limpar os dados salvos deste site nas configurações do navegador.",
+      "No se pudieron borrar los archivos del traductor. Intenta eliminar los datos en caché de este sitio desde la configuración del navegador.",
+      "Não foi possível remover os arquivos do tradutor. Tente limpar os dados em cache deste site nas configurações do navegador.",
     ],
   "Removing downloads…": ["Eliminando descargas…", "Removendo downloads…"],
   "Remove translator downloads": [

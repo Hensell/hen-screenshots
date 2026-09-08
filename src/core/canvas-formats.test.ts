@@ -103,7 +103,7 @@ describe("separate canvas workflows", () => {
       "play-tablet10-landscape",
     );
     expect(() => profileForStore("portfolio-card", "apple")).toThrow(
-      /store project/,
+      /App stores project/,
     );
   });
 
@@ -145,7 +145,9 @@ describe("separate canvas workflows", () => {
     expect(() => profileForPortfolioFormat("play-phone", "portrait")).toThrow(
       /portfolio format/,
     );
-    expect(() => profileForSlot("card", "landscape")).toThrow(/store device/);
+    expect(() => profileForSlot("card", "landscape")).toThrow(
+      /device category/,
+    );
   });
 
   it("resolves custom orientation from actual dimensions and swaps only the committed sides", () => {

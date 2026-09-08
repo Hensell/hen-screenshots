@@ -1,12 +1,9 @@
 export const landingMessages: Record<string, readonly [string, string]> = {
-  "A FEW GOOD QUESTIONS": [
-    "ALGUNAS BUENAS PREGUNTAS",
-    "ALGUMAS BOAS PERGUNTAS",
-  ],
+  "A FEW GOOD QUESTIONS": ["PREGUNTAS FRECUENTES", "PERGUNTAS FREQUENTES"],
   "A FrogHappy screenshot in the Halo template, with a dark background, warm circle, and the headline Small habits. Happier days.":
     [
-      "Una captura de FrogHappy en la plantilla Halo, con fondo oscuro, un círculo cálido y el título «Pequeños hábitos. Días más felices».",
-      "Uma captura do FrogHappy no modelo Halo, com fundo escuro, um círculo acolhedor e o título «Pequenos hábitos. Dias mais felizes».",
+      "Una captura de FrogHappy en la plantilla Halo, con fondo oscuro, un círculo en tonos cálidos y el título «Pequeños hábitos. Días más felices».",
+      "Uma captura do FrogHappy no modelo Halo, com fundo escuro, um círculo em tons quentes e o título “Pequenos hábitos. Dias mais felizes”.",
     ],
   "A NOTE TO THE MAKER": [
     "UNA NOTA PARA EL CREADOR",
@@ -32,29 +29,29 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   "A landscape portfolio card showing the Hen Screenshots brand design, with the caption Ideas, made real.":
     [
       "Una tarjeta horizontal para portafolio con la identidad de Hen Screenshots y el texto «Ideas hechas realidad».",
-      "Um cartão horizontal para portfólio com a identidade do Hen Screenshots e o texto «Ideias que viram realidade».",
+      "Um cartão horizontal para portfólio com a identidade do Hen Screenshots e o texto “Ideias que viram realidade”.",
     ],
   "A little drama.": ["Un toque de dramatismo.", "Um toque de impacto."],
   "A matching FrogHappy progress screenshot in the minimal Studio template.": [
-    "Una captura del progreso en FrogHappy con el mismo estilo, en la plantilla minimalista Studio.",
-    "Uma captura do progresso no FrogHappy com o mesmo estilo, no modelo minimalista Studio.",
+    "Una captura del progreso en FrogHappy en la plantilla minimalista Studio, a juego con la anterior.",
+    "Uma captura do progresso no FrogHappy no modelo minimalista Studio, combinando com a anterior.",
   ],
   "A polished result.": ["Un resultado cuidado.", "Um resultado caprichado."],
   "A portfolio card, made in Hen Screenshots.": [
-    "Una tarjeta para portafolio, creada en Hen Screenshots.",
-    "Um cartão para portfólio, criado no Hen Screenshots.",
+    "Una tarjeta para portafolio creada en Hen Screenshots.",
+    "Um cartão para portfólio criado no Hen Screenshots.",
   ],
   "A project card for your portfolio. A laptop mockup for a website. A tablet view that gives the details room to shine.":
     [
-      "Una tarjeta de proyecto para tu portafolio. Un mockup de laptop para una web. Una vista de tablet donde los detalles tienen espacio para brillar.",
-      "Um cartão de projeto para seu portfólio. Um mockup de notebook para um site. Uma visualização de tablet com espaço para os detalhes brilharem.",
+      "Una tarjeta de proyecto para tu portafolio. Un mockup de laptop para tu web. Una vista en tablet con espacio para mostrar cada detalle.",
+      "Um cartão de projeto para seu portfólio. Um mockup de notebook para seu site. Uma visualização em tablet com espaço para mostrar cada detalhe.",
     ],
   "A small process.": ["Un proceso sencillo.", "Um processo simples."],
   "Available frame types": [
     "Tipos de marco disponibles",
     "Tipos de moldura disponíveis",
   ],
-  Beautifully: ["Bellamente", "Lindamente"],
+  Beautifully: ["Presentada", "Apresentado"],
   "Before you": ["Antes de", "Antes de"],
   "Bring your screenshots.": ["Trae tus capturas.", "Traga suas capturas."],
   "Built by": ["Creado por", "Criado por"],
@@ -69,8 +66,8 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   ],
   "Choose the App stores workspace for store presets, or Portfolio for cards and custom sizes. Each has the formats you need.":
     [
-      "Elige el espacio Tiendas de apps para usar sus tamaños predefinidos, o Portafolio para tarjetas y tamaños personalizados. Cada espacio tiene los formatos que necesitas.",
-      "Escolha o espaço Lojas de apps para usar os tamanhos predefinidos, ou Portfólio para cartões e tamanhos personalizados. Cada espaço tem os formatos de que você precisa.",
+      "Elige Tiendas de apps para usar los tamaños de las tiendas o Portafolio para crear tarjetas y definir tus propias dimensiones. Cada espacio incluye los formatos que necesitas.",
+      "Escolha Lojas de apps para usar os tamanhos das lojas ou Portfólio para criar cartões e definir suas próprias dimensões. Cada espaço inclui os formatos de que você precisa.",
     ],
   "Color with confidence.": [
     "Color con personalidad.",
@@ -78,7 +75,7 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   ],
   "Composed in Hen Screenshots.": [
     "Diseñado en Hen Screenshots.",
-    "Composto no Hen Screenshots.",
+    "Criado no Hen Screenshots.",
   ],
   "Create an App stores or Portfolio project. Add your PNG, JPEG, or WebP captures.":
     [
@@ -97,7 +94,7 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   "Design them together. Export them as two separate images, ready for your store listing.":
     [
       "Diséñalas juntas. Expórtalas como dos imágenes separadas, listas para la ficha de tu app.",
-      "Crie as duas juntas. Exporte como duas imagens separadas, prontas para a página do seu app.",
+      "Crie as duas juntas. Exporte-as como duas imagens separadas, prontas para a página do seu app.",
     ],
   "Do I need to install anything?": [
     "¿Necesito instalar algo?",
@@ -105,23 +102,20 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   ],
   "Download a PNG or your whole set as a ZIP. Use App Store and Google Play size presets, or set your own portfolio dimensions.":
     [
-      "Descarga un PNG o toda la serie en un ZIP. Usa los tamaños de App Store y Google Play, o define las dimensiones para tu portafolio.",
-      "Baixe um PNG ou toda a série em um ZIP. Use os tamanhos da App Store e do Google Play, ou defina as dimensões do seu portfólio.",
+      "Descarga una captura en PNG o toda la serie en un ZIP. Usa los tamaños de App Store y Google Play o define las dimensiones para tu portafolio.",
+      "Baixe uma captura em PNG ou toda a série em um ZIP. Use os tamanhos da App Store e do Google Play ou defina as dimensões do seu portfólio.",
     ],
   "Enjoying Hen Screenshots? Tell me what you like, suggest an improvement, or share a template you’d love to see.":
     [
-      "¿Te gusta Hen Screenshots? Cuéntame qué te gusta, sugiere una mejora o comparte una idea de plantilla que te encantaría ver.",
-      "Está gostando do Hen Screenshots? Conte o que você gostou, sugira uma melhoria ou compartilhe uma ideia de modelo que adoraria ver.",
+      "¿Te está sirviendo Hen Screenshots? Cuéntame qué te gusta, sugiere una mejora o comparte una idea para una nueva plantilla.",
+      "O Hen Screenshots está sendo útil? Conte o que você gostou, sugira uma melhoria ou compartilhe uma ideia para um novo modelo.",
     ],
   "Every template, every frame, and full-resolution exports are free. No account to create. No watermark to remove.":
     [
-      "Todas las plantillas, todos los marcos y las exportaciones en resolución completa son gratis. Sin crear una cuenta. Sin quitar marcas de agua.",
-      "Todos os modelos, todas as molduras e as exportações em resolução total são grátis. Sem criar uma conta. Sem remover marcas-d’água.",
+      "Todas las plantillas, todos los marcos y las exportaciones en resolución completa son gratis. No necesitas una cuenta y tus imágenes se exportan sin marcas de agua.",
+      "Todos os modelos, todas as molduras e as exportações em resolução total são grátis. Você não precisa de uma conta, e suas imagens são exportadas sem marcas-d’água.",
     ],
-  "Export. Show it off.": [
-    "Exporta. Compártelo.",
-    "Exporte. Mostre seu trabalho.",
-  ],
+  "Export. Show it off.": ["Exporta y comparte.", "Exporte e compartilhe."],
   "FROM CAPTURE TO COMPOSITION": [
     "DE LA CAPTURA A LA COMPOSICIÓN",
     "DA CAPTURA À COMPOSIÇÃO",
@@ -143,7 +137,7 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     "Plantilla Gallery con una captura de gran tamaño y un texto de estilo editorial.",
     "Modelo Gallery com uma captura ampliada e uma legenda de estilo editorial.",
   ],
-  "Give them your look.": ["Dales tu estilo.", "Dê seu estilo a elas."],
+  "Give them your look.": ["Dales tu estilo.", "Dê o seu toque."],
   "Halo template with bold type and a circular backdrop.": [
     "Plantilla Halo con tipografía destacada y un fondo circular.",
     "Modelo Halo com tipografia marcante e um fundo circular.",
@@ -158,21 +152,21 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     "Hen Screenshots — Estúdio gratuito de capturas e mockups para apps",
   ],
   "Hen Screenshots — Your app. Beautifully presented.": [
-    "Hen Screenshots — Tu app. Bellamente presentada.",
-    "Hen Screenshots — Seu app. Lindamente apresentado.",
+    "Hen Screenshots — Tu app, presentada con estilo.",
+    "Hen Screenshots — Seu app, apresentado com estilo.",
   ],
   "How it works": ["Cómo funciona", "Como funciona"],
   "In its best frame.": ["Con su mejor marco.", "Na melhor moldura."],
   "Website language": ["Idioma de la web", "Idioma do site"],
   "Is it really free forever?": [
     "¿De verdad es gratis para siempre?",
-    "É mesmo grátis para sempre?",
+    "É grátis para sempre mesmo?",
   ],
   "I’m listening.": ["Te escucho.", "Quero ouvir."],
   "Left slide: Small habits. A bigger story. A tilted phone crosses into the next slide.":
     [
       "Diapositiva izquierda: «Pequeños hábitos. Una gran historia». Un teléfono inclinado se extiende hacia la siguiente diapositiva.",
-      "Slide esquerdo: «Pequenos hábitos. Uma grande história». Um celular inclinado se estende até o próximo slide.",
+      "Slide esquerdo: “Pequenos hábitos. Uma grande história”. Um celular inclinado se estende até o próximo slide.",
     ],
   "Let the details speak.": [
     "Que hablen los detalles.",
@@ -199,21 +193,21 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   "Monitors & laptops": ["Monitores y laptops", "Monitores e notebooks"],
   "No. Open the studio in your browser and start a project. A larger screen gives you more room to compose, and your project files let you take your work with you.":
     [
-      "No. Abre el estudio en tu navegador y crea un proyecto. Una pantalla grande te da más espacio para diseñar, y los archivos de proyecto te permiten llevar tu trabajo contigo.",
-      "Não. Abra o estúdio no navegador e crie um projeto. Uma tela maior dá mais espaço para compor, e os arquivos de projeto permitem levar seu trabalho com você.",
+      "No. Abre el estudio en tu navegador y crea un proyecto. Una pantalla grande te da más espacio para diseñar. Descarga tus archivos de proyecto para continuar en otro equipo.",
+      "Não. Abra o estúdio no navegador e crie um projeto. Uma tela maior dá mais espaço para criar. Baixe seus arquivos de projeto para continuar em outro computador.",
     ],
   "One bigger story.": ["Una gran historia.", "Uma grande história."],
   "Open studio": ["Abrir estudio", "Abrir estúdio"],
   "Pick a template, choose a frame, and make the colors and captions your own. Apply the style across your series.":
     [
-      "Elige una plantilla y un marco, y personaliza los colores y los textos. Aplica el estilo a toda tu serie.",
-      "Escolha um modelo e uma moldura, e personalize as cores e as legendas. Aplique o estilo em toda a série.",
+      "Elige una plantilla y un marco. Personaliza los colores y los textos y aplica el estilo a toda tu serie.",
+      "Escolha um modelo e uma moldura. Personalize as cores e as legendas e aplique o estilo a toda a série.",
     ],
   "Portfolios & websites": ["Portafolios y sitios web", "Portfólios e sites"],
   "Right slide: the same phone and ribbon continue, with the words Every day, a little brighter.":
     [
       "Diapositiva derecha: el mismo teléfono y la cinta continúan, con el texto «Cada día, un poco más brillante».",
-      "Slide direito: o mesmo celular e a faixa continuam, com o texto «A cada dia, um pouco mais de luz».",
+      "Slide direito: o mesmo celular e a faixa continuam, com o texto “A cada dia, um pouco mais de luz”.",
     ],
   "Room to breathe.": ["Espacio para respirar.", "Espaço para respirar."],
   "Simple cards": ["Tarjetas sencillas", "Cartões simples"],
@@ -225,8 +219,8 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   "Start creating": ["Empezar a crear", "Começar a criar"],
   "Start with a thoughtfully composed template. Bring your own colors, words, and screenshots. Keep the whole series feeling like you.":
     [
-      "Empieza con una plantilla de diseño cuidado. Agrega tus colores, tus palabras y tus capturas. Mantén tu identidad en toda la serie.",
-      "Comece com um modelo criado com cuidado. Adicione suas cores, suas palavras e suas capturas. Mantenha sua identidade em toda a série.",
+      "Empieza con una plantilla diseñada con cuidado. Agrega tus colores, tus textos y tus capturas para mantener tu identidad en toda la serie.",
+      "Comece com um modelo criado com cuidado. Adicione suas cores, seus textos e suas capturas para manter sua identidade em toda a série.",
     ],
   "Studio template with a fine border and generous space.": [
     "Plantilla Studio con un borde fino y espacios amplios.",
@@ -248,8 +242,8 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   Templates: ["Plantillas", "Modelos"],
   "Turn your screenshots into something worth showing off. For the app stores, your portfolio, and everywhere your work belongs.":
     [
-      "Transforma tus capturas en algo que quieras mostrar. Para las tiendas de apps, tu portafolio y todos los lugares donde compartes tu trabajo.",
-      "Transforme suas capturas em algo que queira mostrar. Para as lojas de apps, seu portfólio e todos os lugares onde você compartilha seu trabalho.",
+      "Convierte tus capturas en una presentación que destaque. Para las tiendas de apps, tu portafolio y donde quieras mostrar tu trabajo.",
+      "Transforme suas capturas em uma apresentação que se destaque. Para as lojas de apps, seu portfólio e onde você quiser mostrar seu trabalho.",
     ],
   "Two slides.": ["Dos diapositivas.", "Dois slides."],
   "Where do my screenshots and projects go?": [
@@ -262,18 +256,18 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   ],
   "Yes. Hen Screenshots is free to use, including every template, device frame, and full-resolution export. There’s no subscription or paid tier.":
     [
-      "Sí. Hen Screenshots es gratis, con todas sus plantillas, marcos de dispositivos y exportaciones en resolución completa. No hay suscripción ni plan de pago.",
-      "Sim. O Hen Screenshots é grátis, com todos os modelos, molduras de dispositivos e exportações em resolução total. Não há assinatura nem plano pago.",
+      "Sí. Hen Screenshots es gratis e incluye todas las plantillas, los marcos de dispositivos y las exportaciones en resolución completa. No hay suscripción ni plan de pago.",
+      "Sim. O Hen Screenshots é grátis e inclui todos os modelos, as molduras de dispositivos e as exportações em resolução total. Não há assinatura nem plano pago.",
     ],
   "Yes. The App stores workspace includes size presets for the App Store and Google Play. Exports are checked for the selected dimensions and opaque RGB PNG format. Choose the preset for your device and listing; the editor links to each store’s current requirements.":
     [
-      "Sí. El espacio Tiendas de apps incluye tamaños predefinidos para App Store y Google Play. Las exportaciones se verifican con las dimensiones seleccionadas y el formato PNG RGB sin transparencia. Elige el tamaño de tu dispositivo y ficha; el editor enlaza a los requisitos actuales de cada tienda.",
-      "Sim. O espaço Lojas de apps inclui tamanhos predefinidos para a App Store e o Google Play. As exportações são verificadas nas dimensões selecionadas e no formato PNG RGB sem transparência. Escolha o tamanho do seu dispositivo e página; o editor inclui links para os requisitos atuais de cada loja.",
+      "Sí. El espacio Tiendas de apps incluye tamaños predefinidos para App Store y Google Play. Al exportar, se comprueban las dimensiones seleccionadas y el formato PNG RGB sin transparencia. Elige el tamaño correspondiente a tu dispositivo y a la sección de la tienda donde publicarás las capturas. El editor incluye enlaces a los requisitos actuales de cada tienda.",
+      "Sim. O espaço Lojas de apps inclui tamanhos predefinidos para a App Store e o Google Play. Na exportação, são conferidas as dimensões selecionadas e o formato PNG RGB sem transparência. Escolha o tamanho correspondente ao seu dispositivo e à seção da loja onde publicará as capturas. O editor inclui links para os requisitos atuais de cada loja.",
     ],
   "Yes. The Portfolio workspace includes rectangular cards, square and portrait layouts, wide canvases, and custom dimensions. Pair them with a phone, tablet, monitor, laptop, or simple screenshot frame.":
     [
-      "Sí. El espacio Portafolio incluye tarjetas rectangulares, diseños cuadrados y verticales, lienzos anchos y dimensiones personalizadas. Combínalos con un teléfono, tablet, monitor, laptop o un marco sencillo.",
-      "Sim. O espaço Portfólio inclui cartões retangulares, layouts quadrados e verticais, telas largas e dimensões personalizadas. Combine com um celular, tablet, monitor, notebook ou uma moldura simples.",
+      "Sí. El espacio Portafolio incluye tarjetas rectangulares, diseños cuadrados y verticales, lienzos anchos y dimensiones personalizadas. Puedes usar marcos de teléfono, tablet, monitor o laptop, o un marco sencillo para tu captura.",
+      "Sim. O espaço Portfólio inclui cartões retangulares, layouts quadrados e verticais, telas largas e dimensões personalizadas. Você pode usar molduras de celular, tablet, monitor ou notebook, ou uma moldura simples para sua captura.",
     ],
   "You already did the hard part: building your app. Give it a presentation that feels just as considered.":
     [
@@ -283,12 +277,12 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   "Your app.": ["Tu app.", "Seu app."],
   "Your captures are processed in your browser and your projects are saved on this device. They aren’t uploaded to a server. Download a project file to keep a backup or move your work to another browser or computer. Clearing this site’s browser data also deletes its saved projects.":
     [
-      "Tus capturas se procesan en el navegador y tus proyectos se guardan en este dispositivo. No se suben a un servidor. Descarga un archivo de proyecto para tener una copia de seguridad o mover tu trabajo a otro navegador o equipo. Borrar los datos de este sitio en el navegador también elimina los proyectos guardados.",
-      "Suas capturas são processadas no navegador e seus projetos ficam salvos neste dispositivo. Eles não são enviados a um servidor. Baixe um arquivo de projeto para guardar um backup ou levar seu trabalho para outro navegador ou computador. Limpar os dados deste site no navegador também exclui os projetos salvos.",
+      "Tus capturas se procesan en el navegador y tus proyectos se guardan en este dispositivo. No se suben a un servidor. Descarga un archivo de proyecto para guardar una copia de seguridad o continuar tu trabajo en otro navegador o equipo. Si borras los datos de este sitio en el navegador, también se eliminarán los proyectos guardados.",
+      "Suas capturas são processadas no navegador e seus projetos ficam salvos neste dispositivo. Eles não são enviados a um servidor. Baixe um arquivo de projeto para guardar um backup ou continuar seu trabalho em outro navegador ou computador. Se você limpar os dados deste site no navegador, os projetos salvos também serão excluídos.",
     ],
   "Your next great screenshot shouldn’t come with a subscription.": [
-    "Tu próxima gran captura no debería necesitar una suscripción.",
-    "Sua próxima grande captura não deveria precisar de uma assinatura.",
+    "No deberías necesitar una suscripción para crear una gran captura.",
+    "Você não deveria precisar de uma assinatura para criar uma ótima captura.",
   ],
   "Your work.": ["Tu trabajo.", "Seu trabalho."],
   "for his own apps, and for the things you’re building, too.": [
@@ -296,6 +290,6 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     "para seus próprios apps e também para tudo o que você está criando.",
   ],
   "iPhone & Android": ["iPhone y Android", "iPhone e Android"],
-  "presented.": ["presentada.", "apresentado."],
+  "presented.": ["con estilo.", "com estilo."],
   "start creating.": ["empezar a crear.", "começar a criar."],
 };

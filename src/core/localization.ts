@@ -162,7 +162,7 @@ export function applyTranslations(
   entries: TranslationDraft[],
 ) {
   if (!project.localization?.targets.includes(locale))
-    throw new Error("This language no longer exists.");
+    throw new Error("This language is no longer in the project.");
   for (const entry of entries) {
     const shot = project.shots.find((shot) => shot.id === entry.shotId);
     if (

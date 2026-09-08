@@ -92,7 +92,7 @@ export function LanguagesDialog({
     >
       <header className="languages-heading">
         <div>
-          <span className="eyebrow">{t("YOUR SERIES, IN MORE WORDS")}</span>
+          <span className="eyebrow">{t("YOUR SERIES, IN MORE LANGUAGES")}</span>
           <h2 id="languages-title">{t("Languages")}</h2>
           <p>{t("One shared design. A version for every audience.")}</p>
         </div>
@@ -218,7 +218,7 @@ export function LanguagesDialog({
           </form>
           <p className="field-help">
             {t(
-              "Colors, frames and device positions stay linked across languages.",
+              "Colors, frames, and device positions stay linked across languages.",
             )}
           </p>
         </aside>
@@ -592,7 +592,7 @@ function TranslatorDialog({
             </div>
           </div>
           <ul className="translator-facts">
-            <li>{t("No account, API key or payment needed.")}</li>
+            <li>{t("No account, API key, or payment needed.")}</li>
             <li>
               {t(
                 "Packs are cached in this browser when storage allows. Clearing browser data may remove them.",
@@ -607,7 +607,7 @@ function TranslatorDialog({
           {route.length > 1 && (
             <p className="field-help">
               {t(
-                "This pair translates through English using two language packs. Review the result carefully.",
+                "These languages use English as an intermediate step and require two language packs. Review the result carefully.",
               )}
             </p>
           )}
@@ -697,7 +697,7 @@ function TranslatorDialog({
           <p>
             {!route
               ? t(
-                  "Downloadable translation currently supports English, Spanish, French and German. You can write this language’s captions manually.",
+                  "The optional translator currently supports English, Spanish, French, and German. You can write captions in this language manually.",
                 )
               : t(
                   "The local translator cannot start in this browser. You can still write and export every language manually.",
@@ -717,7 +717,7 @@ function TranslatorDialog({
         </p>
         <p>
           {t(
-            "Download and speed depend on your connection and device. Translation is a draft, especially for short marketing headlines.",
+            "Download time and translation speed depend on your connection and device. Treat the translation as a draft, especially for short marketing headlines.",
           )}
         </p>
         {route?.map((pack) => (

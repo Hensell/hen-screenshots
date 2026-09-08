@@ -672,7 +672,9 @@ export function App() {
         ) : (
           <>
             {" "}
-            <span className="header-note">{t("App screenshot studio")}</span>
+            <span className="header-note">
+              {t("Screenshot studio for apps")}
+            </span>
             <LanguageSelector />{" "}
           </>
         )}
@@ -740,7 +742,7 @@ export function App() {
       {imageError && project && (
         <div className="notice notice-error" role="alert">
           {t(
-            "Couldn’t load an image: {error}. Replace the affected screenshot or reopen the project.",
+            "Couldn’t load an image. Replace the affected screenshot or reopen the project. Details: {error}",
             { error: t(imageError) },
           )}
         </div>
@@ -1123,7 +1125,7 @@ export function App() {
                     <span>
                       {smartGuides
                         ? t(
-                            "Align edges, centers and margins. Alt/Option moves freely.",
+                            "Align edges, centers, and margins. Hold Alt/Option to move freely.",
                           )
                         : t("Move freely. Turn on guides for alignment.")}
                     </span>
@@ -1240,7 +1242,7 @@ export function App() {
                     <Icon name="plus" />
                     {t("Choose screenshots")}
                   </button>
-                  <small>{t("PNG, JPG or WebP · Up to 20 MB each")}</small>
+                  <small>{t("PNG, JPEG, or WebP · Up to 20 MB each")}</small>
                 </div>
               )}
             </div>

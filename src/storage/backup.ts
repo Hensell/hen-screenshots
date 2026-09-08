@@ -184,7 +184,7 @@ export async function exportProject(
   });
   const encoded = strToU8(JSON.stringify(metadata));
   if (encoded.byteLength > MANIFEST_LIMIT)
-    fail("Project text is too large to export.");
+    fail("The project document is too large to export.");
   const files: Record<string, Uint8Array> = { "project.json": encoded };
   for (let index = 0; index < referenced.length; index++)
     files[metadata.assets[index].path] = new Uint8Array(
@@ -211,7 +211,7 @@ export async function importProject(file: File): Promise<LoadedProject> {
           entries.size >= LIMITS.shots * MAX_LANGUAGES + 1 ||
           entries.has(entry.name)
         )
-          fail("The backup contains too many or duplicate files.");
+          fail("The backup contains too many files or duplicate filenames.");
         if (
           entry.name !== "project.json" &&
           !/^assets\/[a-zA-Z0-9_-]+\.(png|jpg|webp)$/.test(entry.name)

@@ -444,7 +444,7 @@ export function BrandKitDialog({
                 <h3>{t("A familiar look, every time.")}</h3>
                 <p>
                   {t(
-                    "Keep your app’s colors, logo and fonts together. Start fresh or save a design you already love.",
+                    "Keep your app’s colors, logo, and fonts together. Start fresh or save a design you already love.",
                   )}
                 </p>
                 <button
@@ -558,7 +558,9 @@ export function BrandKitDialog({
                       </div>
                     </div>
                     <p className="brand-field-hint">
-                      {t("Identifies your kit. PNG, JPG or WebP, up to 5 MB.")}
+                      {t(
+                        "Identifies your kit. PNG, JPEG, or WebP, up to 5 MB.",
+                      )}
                     </p>
                     <h3>{t("Color palette")}</h3>
                     <div className="brand-color-grid">
@@ -713,7 +715,7 @@ export function BrandKitDialog({
                   {project && (
                     <p>
                       {t(
-                        "Applying keeps your words, images, layout and export size. Undo anytime.",
+                        "Applying the kit preserves your text, images, layout, and export size. Undo anytime.",
                       )}
                     </p>
                   )}

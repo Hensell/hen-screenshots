@@ -36,7 +36,7 @@ export function validateCustomSize(size: {
     Math.min(size.width, size.height) * CUSTOM_SIZE_LIMITS.maxRatio
   )
     throw new Error(
-      "Keep the longest side within four times the shortest side (up to 4:1).",
+      "The longest side must be no more than four times the shortest side (up to 4:1).",
     );
 }
 

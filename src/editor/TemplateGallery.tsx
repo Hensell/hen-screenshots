@@ -632,7 +632,7 @@ export function TemplateGallery({
           </div>
           <p className="template-target">
             {full
-              ? t("Needs one free slide · {count} allowed for this format", {
+              ? t("Needs room for one more slide · Limit: {count}", {
                   count: shotCapacity(project),
                 })
               : panoramic
@@ -641,7 +641,9 @@ export function TemplateGallery({
                   : t("Adds one slide to create a linked pair")
                 : pair && !all
                   ? t("Both slides become independent. Undo anytime.")
-                  : t("Layout resets. Words, images and frames stay.")}
+                  : t(
+                      "The layout resets. Your text, images, and frames are preserved.",
+                    )}
           </p>
           {!selectedInResults && (
             <p className="catalog-selection-note">

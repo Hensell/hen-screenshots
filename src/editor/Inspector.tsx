@@ -348,7 +348,7 @@ export function Inspector({
                 <strong>{brand?.name ?? t("Choose your app’s brand")}</strong>
                 <small>
                   {brand
-                    ? t("Applied copy · Manage & reapply")
+                    ? t("Brand kit applied · Manage & reapply")
                     : t("Colors and fonts, ready to reuse")}
                 </small>
               </span>
@@ -495,7 +495,7 @@ export function Inspector({
               <h3>{t("Linked panorama")}</h3>
               <p className="field-help">
                 {t(
-                  "Image, frame, colors and position are shared. Words belong to the selected slide.",
+                  "The image, frame, colors, and position are shared. Text belongs to the selected slide.",
                 )}
               </p>
               <button
@@ -518,7 +518,7 @@ export function Inspector({
             <h3>{t("Keep the series together")}</h3>
             <p className="field-help">
               {t(
-                "Use these colors, typography and frame across every screenshot. Templates and words stay. Devices that change shape are refitted.",
+                "Use these colors, typography, and frame across every screenshot. Templates and text are preserved. Devices are resized to fit if their shape changes.",
               )}
             </p>
             <button
@@ -781,7 +781,7 @@ export function Inspector({
             </label>
             <p className="field-help">
               {t(
-                "Add a line break to choose where the accent begins. Long headlines fit down automatically.",
+                "Add a line break to choose where the accent begins. Long headlines shrink to fit automatically.",
               )}
             </p>
           </section>
@@ -974,7 +974,7 @@ export function Inspector({
             {range("Device rotation", "rotation", -20, 20)}
             <p className="field-help">
               {t(
-                "Drag the device to move it. Reset restores the template’s size, position and rotation.",
+                "Drag the device to move it. Reset restores the template’s size, position, and rotation.",
               )}
             </p>
           </section>

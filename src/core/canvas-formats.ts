@@ -186,7 +186,7 @@ export function profileForSlot(
   orientation: CanvasOrientation,
 ): ExportProfileId {
   const slot = storeSlots.find((item) => item.id === slotId);
-  if (!slot) throw new Error("This store device is not supported.");
+  if (!slot) throw new Error("This device category is not supported.");
   return (
     slot.profiles[orientation] ??
     slot.profiles.portrait ??
@@ -201,7 +201,7 @@ export function profileForStore(
 ): ExportProfileId {
   const currentSlot = storeSlotForProfile(current);
   if (!currentSlot)
-    throw new Error("Choose a store project to change its store.");
+    throw new Error("Choose an App stores project before changing the store.");
   if (currentSlot.store === store) return current;
   const target = storeSlots.find(
     (slot) => slot.store === store && slot.category === currentSlot.category,

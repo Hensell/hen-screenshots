@@ -50,7 +50,9 @@ export function ProjectLibrary({
           <span>{t("a great first impression.")}</span>
         </h1>
         <p className="intro-copy">
-          {t("Turn your screenshots into a story worth downloading.")}
+          {t(
+            "Turn your screenshots into a story that makes people want to try your app.",
+          )}
           <br className="desktop-break" />
           {t("A little framing. The right words. All yours.")}
         </p>

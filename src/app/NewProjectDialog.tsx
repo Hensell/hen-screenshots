@@ -57,7 +57,7 @@ export function NewProjectDialog({
             <Icon name="arrow" />
           </strong>
           <p>{t("Tell your app’s story on the App Store and Google Play.")}</p>
-          <small>{t("Store sizes · Phones, tablets & desktop")}</small>
+          <small>{t("Store sizes · Phones, tablets & computers")}</small>
         </button>
         <button onClick={() => onCreate("portfolio")}>
           <div className="purpose-art purpose-art-portfolio" aria-hidden="true">
@@ -69,9 +69,11 @@ export function NewProjectDialog({
             <Icon name="arrow" />
           </strong>
           <p>
-            {t("Present your work in case studies, websites and social posts.")}
+            {t(
+              "Present your work in case studies, websites, and social posts.",
+            )}
           </p>
-          <small>{t("Cards, square & wide · Custom sizes")}</small>
+          <small>{t("Cards, squares & wide layouts · Custom sizes")}</small>
         </button>
       </div>
     </dialog>

@@ -27,7 +27,7 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   "Landscape frame": ["Marco horizontal", "Moldura em paisagem"],
   "Gradient end": ["Final del degradado", "Fim do degradê"],
   "{percent}% of template size": [
-    "{percent}% del tamaño de la plantilla",
+    "{percent} % del tamaño de la plantilla",
     "{percent}% do tamanho do modelo",
   ],
   "Screenshot properties": [
@@ -53,9 +53,9 @@ export const editorMessages: Record<string, readonly [string, string]> = {
     "Elige la marca de tu app",
     "Escolha a marca do seu app",
   ],
-  "Applied copy · Manage & reapply": [
-    "Copia aplicada · Gestionar y reaplicar",
-    "Cópia aplicada · Gerenciar e reaplicar",
+  "Brand kit applied · Manage & reapply": [
+    "Kit de marca aplicado · Gestionar y volver a aplicar",
+    "Kit de marca aplicado · Gerenciar e reaplicar",
   ],
   "Colors and fonts, ready to reuse": [
     "Colores y fuentes listos para reutilizar",
@@ -70,29 +70,29 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   Background: ["Fondo", "Fundo"],
   "Background color": ["Color de fondo", "Cor de fundo"],
   "Text color": ["Color del texto", "Cor do texto"],
-  "{name} color": ["Color de {name}", "Cor de {name}"],
+  "{name} color": ["Color: {name}", "Cor: {name}"],
   Accent: ["Acento", "Destaque"],
   "Accent color": ["Color de acento", "Cor de destaque"],
-  "Subtle dot texture": ["Textura de puntos sutil", "Textura sutil de pontos"],
+  "Subtle dot texture": ["Textura sutil de puntos", "Textura sutil de pontos"],
   "Linked panorama": ["Panorama vinculado", "Panorama vinculado"],
-  "Image, frame, colors and position are shared. Words belong to the selected slide.":
+  "The image, frame, colors, and position are shared. Text belongs to the selected slide.":
     [
       "La imagen, el marco, los colores y la posición se comparten. El texto pertenece a la diapositiva seleccionada.",
       "A imagem, a moldura, as cores e a posição são compartilhadas. O texto pertence ao slide selecionado.",
     ],
   "Separate slides": ["Separar diapositivas", "Separar slides"],
   "Returns both slides to Studio. Undo anytime.": [
-    "Devuelve ambas diapositivas a Studio. Puedes deshacerlo.",
-    "Retorna ambos os slides ao Studio. Você pode desfazer.",
+    "Aplica la plantilla Studio a ambas diapositivas. Puedes deshacer este cambio.",
+    "Aplica o modelo Studio a ambos os slides. Você pode desfazer esta alteração.",
   ],
   "Keep the series together": [
     "Unifica el estilo de la serie",
     "Unifique o estilo da série",
   ],
-  "Use these colors, typography and frame across every screenshot. Templates and words stay. Devices that change shape are refitted.":
+  "Use these colors, typography, and frame across every screenshot. Templates and text are preserved. Devices are resized to fit if their shape changes.":
     [
-      "Usa estos colores, tipografía y marco en todas las capturas. Se conservan las plantillas y los textos. Los dispositivos que cambien de forma se reajustan.",
-      "Use estas cores, tipografia e moldura em todas as capturas. Os modelos e textos são mantidos. Os dispositivos que mudarem de formato serão reajustados.",
+      "Aplica estos colores, tipografía y marco a todas las capturas. Las plantillas y los textos se conservan. Los dispositivos se reajustan si cambia su forma.",
+      "Aplique estas cores, tipografia e moldura a todas as capturas. Os modelos e textos são mantidos. Os dispositivos são reajustados se o formato mudar.",
     ],
   "Apply style to all {count}": [
     "Aplicar estilo a las {count} diapositivas",
@@ -104,8 +104,8 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   ],
   Words: ["Textos", "Textos"],
   "Editing {language}. Design changes apply to every language.": [
-    "Editando {language}. Los cambios de diseño se aplican a todos los idiomas.",
-    "Editando {language}. As alterações de design se aplicam a todos os idiomas.",
+    "Editando la versión en {language}. Los cambios de diseño se aplican a todos los idiomas.",
+    "Editando a versão em {language}. As alterações de design se aplicam a todos os idiomas.",
   ],
   "Write your story. Drag the text to place it.": [
     "Escribe tu historia. Arrastra el texto para ubicarlo.",
@@ -120,7 +120,7 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   reviewed: ["revisado", "revisado"],
   outdated: ["desactualizado", "desatualizado"],
   "Add a language version": [
-    "Agregar una versión por idioma",
+    "Agregar una versión en otro idioma",
     "Adicionar uma versão em outro idioma",
   ],
   Headline: ["Título", "Título"],
@@ -139,17 +139,17 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   Centered: ["Centrado", "Centralizado"],
   "Headline size": ["Tamaño del título", "Tamanho do título"],
   "Reset to shared headline size": [
-    "Restablecer tamaño del título compartido",
+    "Restablecer el tamaño compartido del título",
     "Restaurar tamanho compartilhado do título",
   ],
   "Accent the last headline line": [
     "Destacar la última línea del título",
     "Destacar a última linha do título",
   ],
-  "Add a line break to choose where the accent begins. Long headlines fit down automatically.":
+  "Add a line break to choose where the accent begins. Long headlines shrink to fit automatically.":
     [
-      "Agrega un salto de línea para elegir dónde empieza el acento. Los títulos largos se reducen automáticamente.",
-      "Adicione uma quebra de linha para escolher onde o destaque começa. Títulos longos são reduzidos automaticamente.",
+      "Agrega un salto de línea para elegir dónde empieza el texto destacado. Los títulos largos se reducen automáticamente para ajustarse al espacio.",
+      "Adicione uma quebra de linha para escolher onde o destaque começa. Títulos longos são reduzidos automaticamente para caber no espaço.",
     ],
   "Device size": ["Tamaño del dispositivo", "Tamanho do dispositivo"],
   "Reset device size": [
@@ -159,8 +159,8 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   "Reset size": ["Restablecer tamaño", "Restaurar tamanho"],
   "Drag a corner on the canvas, or adjust here. 100% is the template’s original size.":
     [
-      "Arrastra una esquina en el lienzo o ajusta aquí. 100% es el tamaño original de la plantilla.",
-      "Arraste um canto na tela ou ajuste aqui. 100% é o tamanho original do modelo.",
+      "Arrastra una esquina del dispositivo en el lienzo o ajusta el tamaño aquí. El 100 % corresponde al tamaño original de la plantilla.",
+      "Arraste um canto do dispositivo na tela ou ajuste o tamanho aqui. 100% corresponde ao tamanho original do modelo.",
     ],
   "Both slides resize together.": [
     "Ambas diapositivas cambian de tamaño juntas.",
@@ -177,8 +177,8 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   ],
   "Device family": ["Tipo de dispositivo", "Tipo de dispositivo"],
   "Canvas & frame orientation": [
-    "Orientación del lienzo y marco",
-    "Orientação da tela e moldura",
+    "Orientación del lienzo y del marco",
+    "Orientação da tela e da moldura",
   ],
   "Rounded corners": ["Esquinas redondeadas", "Cantos arredondados"],
   "Show device frame": [
@@ -194,8 +194,8 @@ export const editorMessages: Record<string, readonly [string, string]> = {
     ],
   "Original status and navigation bars stay in your screenshot. Keep the cutout off if one is already visible.":
     [
-      "Las barras de estado y navegación originales se conservan en la captura. Deja la cámara desactivada si ya se ve una.",
-      "As barras de status e navegação originais permanecem na captura. Deixe a câmera desativada se já houver uma visível.",
+      "Las barras de estado y navegación originales se conservan en la captura. No agregues una cámara ni una Dynamic Island si ya aparece una.",
+      "As barras de status e navegação originais permanecem na captura. Não adicione uma câmera nem uma Dynamic Island se uma já estiver visível.",
     ],
   "Screenshot fit": ["Ajuste de la captura", "Ajuste da captura"],
   "Fit entire screenshot": [
@@ -213,23 +213,23 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   "Replace image": ["Reemplazar imagen", "Substituir imagem"],
   "Replacing the screenshot changes only {language}. Its frame and position stay shared.":
     [
-      "Reemplazar la captura solo cambia {language}. El marco y la posición siguen compartidos.",
-      "Substituir a captura altera apenas {language}. A moldura e a posição continuam compartilhadas.",
+      "Reemplazar la captura solo afecta a la versión en {language}. El marco y la posición siguen compartidos entre idiomas.",
+      "Substituir a captura afeta apenas a versão em {language}. A moldura e a posição continuam compartilhadas entre os idiomas.",
     ],
   "Use original image": ["Usar imagen original", "Usar imagem original"],
   "Position & rotation": ["Posición y rotación", "Posição e rotação"],
   "Reset device placement": [
-    "Restablecer ubicación del dispositivo",
-    "Restaurar posicionamento do dispositivo",
+    "Restablecer posición del dispositivo",
+    "Restaurar posição do dispositivo",
   ],
   Reset: ["Restablecer", "Restaurar"],
   "Horizontal position": ["Posición horizontal", "Posição horizontal"],
   "Vertical position": ["Posición vertical", "Posição vertical"],
   "Device rotation": ["Rotación del dispositivo", "Rotação do dispositivo"],
-  "Drag the device to move it. Reset restores the template’s size, position and rotation.":
+  "Drag the device to move it. Reset restores the template’s size, position, and rotation.":
     [
-      "Arrastra el dispositivo para moverlo. Restablecer recupera el tamaño, la posición y la rotación de la plantilla.",
-      "Arraste o dispositivo para movê-lo. Restaurar recupera o tamanho, a posição e a rotação do modelo.",
+      "Arrastra el dispositivo para moverlo. «Restablecer» recupera el tamaño, la posición y la rotación de la plantilla.",
+      "Arraste o dispositivo para movê-lo. “Restaurar” recupera o tamanho, a posição e a rotação do modelo.",
     ],
   Width: ["Ancho", "Largura"],
   "Canvas width": ["Ancho del lienzo", "Largura da tela"],
@@ -257,7 +257,7 @@ export const editorMessages: Record<string, readonly [string, string]> = {
     "Este dispositivo usa capturas horizontales.",
     "Este dispositivo usa capturas em paisagem.",
   ],
-  "Portfolio canvas": ["Lienzo para portfolio", "Tela para portfólio"],
+  "Portfolio canvas": ["Lienzo para portafolio", "Tela para portfólio"],
   "Store screenshots": ["Capturas para tiendas", "Capturas para lojas"],
   "Canvas format": ["Formato del lienzo", "Formato da tela"],
   Store: ["Tienda", "Loja"],
@@ -286,16 +286,17 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   "Wide · 16:9": ["Panorámico · 16:9", "Amplo · 16:9"],
   "Custom size": ["Tamaño personalizado", "Tamanho personalizado"],
   "Use whole numbers from 256 to 4096 pixels for each side.": [
-    "Usa números enteros de 256 a 4096 píxeles para cada lado.",
-    "Use números inteiros de 256 a 4096 pixels para cada lado.",
+    "Introduce un número entero de 256 a 4096 píxeles para cada lado.",
+    "Digite um número inteiro de 256 a 4096 pixels para cada lado.",
   ],
-  "Keep the longest side within four times the shortest side (up to 4:1).": [
-    "El lado más largo no debe superar cuatro veces el más corto (hasta 4:1).",
-    "O lado maior não deve ultrapassar quatro vezes o menor (até 4:1).",
-  ],
+  "The longest side must be no more than four times the shortest side (up to 4:1).":
+    [
+      "El lado más largo no puede medir más de cuatro veces el más corto (hasta 4:1).",
+      "O lado maior não pode medir mais de quatro vezes o menor (até 4:1).",
+    ],
   "Preview unavailable. Save your project and reload to try again.": [
-    "Vista previa no disponible. Guarda el proyecto y recargá para volver a intentarlo.",
-    "Prévia indisponível. Salve o projeto e recarregue para tentar novamente.",
+    "Vista previa no disponible. Guarda el proyecto y recarga la página para volver a intentarlo.",
+    "Prévia indisponível. Salve o projeto e recarregue a página para tentar novamente.",
   ],
   "Preparing preview…": ["Preparando vista previa…", "Preparando prévia…"],
   "Loading screenshot…": ["Cargando captura…", "Carregando captura…"],
@@ -306,20 +307,20 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   "Untitled screenshot": ["Captura sin título", "Captura sem título"],
   "{element} selected. Drag to move. Drag a device corner to resize. Enter switches objects. Arrow keys move the selected object. Plus and minus resize the device. Hold Shift for larger steps.":
     [
-      "{element} seleccionado. Arrastra para mover. Arrastra una esquina del dispositivo para cambiar el tamaño. Enter cambia de objeto. Las flechas mueven el objeto seleccionado. Más y menos cambian el tamaño del dispositivo. Mantén Shift para pasos mayores.",
-      "{element} selecionado. Arraste para mover. Arraste um canto do dispositivo para redimensionar. Enter alterna os objetos. As setas movem o objeto selecionado. Mais e menos redimensionam o dispositivo. Segure Shift para passos maiores.",
+      "{element} seleccionado. Arrastra para moverlo. Arrastra una esquina del dispositivo para cambiar su tamaño. Enter cambia de objeto. Las flechas mueven el objeto seleccionado. Las teclas + y − cambian el tamaño del dispositivo. Mantén Shift para hacer ajustes mayores.",
+      "{element} selecionado. Arraste para movê-lo. Arraste um canto do dispositivo para redimensioná-lo. Enter alterna entre os objetos. As setas movem o objeto selecionado. As teclas + e − alteram o tamanho do dispositivo. Segure Shift para fazer ajustes maiores.",
     ],
   "This browser cannot load the font needed to render your screenshots.": [
-    "Este navegador no puede cargar la fuente necesaria para dibujar las capturas.",
-    "Este navegador não pode carregar a fonte necessária para renderizar suas capturas.",
+    "Este navegador no puede cargar la fuente necesaria para generar tus capturas.",
+    "Este navegador não consegue carregar a fonte necessária para gerar suas capturas.",
   ],
   "Manrope could not load. Check your connection and try again.": [
-    "No se pudo cargar Manrope. Revisa tu conexión y vuelve a intentarlo.",
-    "Não foi possível carregar Manrope. Verifique sua conexão e tente novamente.",
+    "No se pudo cargar Manrope. Revisa tu conexión e inténtalo de nuevo.",
+    "Não foi possível carregar Manrope. Confira sua conexão e tente novamente.",
   ],
   "The headline font could not load. Check your connection and try again.": [
-    "No se pudo cargar la fuente del título. Revisa tu conexión y vuelve a intentarlo.",
-    "Não foi possível carregar a fonte do título. Verifique sua conexão e tente novamente.",
+    "No se pudo cargar la fuente del título. Revisa tu conexión e inténtalo de nuevo.",
+    "Não foi possível carregar a fonte do título. Confira sua conexão e tente novamente.",
   ],
   "Color waves · 2 slides": [
     "Ondas de color · 2 diapositivas",
@@ -337,15 +338,15 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   Halo: ["Halo", "Halo"],
   Mat: ["Paspartú", "Passe-partout"],
   Ribbon: ["Cinta", "Faixa"],
-  "Citrus stripes": ["Franjas cítricas", "Listras cítricas"],
+  "Citrus stripes": ["Rayas cítricas", "Listras cítricas"],
   "Awning stripes": ["Rayas de toldo", "Listras de toldo"],
   "Topographic lines": ["Líneas topográficas", "Linhas topográficas"],
-  "Cherry checkerboard": ["Cuadrícula cereza", "Xadrez cereja"],
+  "Cherry checkerboard": ["Cuadros color cereza", "Xadrez cereja"],
   "Clay fans": ["Abanicos de arcilla", "Leques de argila"],
   "Drafting marks": ["Marcas de dibujo", "Marcas de desenho"],
   "Woven zigzags": ["Zigzags tejidos", "Zigue-zagues tecidos"],
   "Scalloped bands": ["Bandas onduladas", "Faixas onduladas"],
-  "Folded color": ["Color plegado", "Cor dobrada"],
+  "Folded color": ["Pliegues de color", "Dobras de cor"],
   "Inset panel": ["Panel interior", "Painel interno"],
   "Orbital arcs · 2 slides": [
     "Arcos orbitales · 2 diapositivas",
@@ -357,7 +358,7 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   "Copper stage": ["Base de cobre", "Base de cobre"],
   "Cut paper": ["Papel recortado", "Papel recortado"],
   "Something went wrong. Please try again.": [
-    "Algo salió mal. Vuelve a intentarlo.",
+    "Algo salió mal. Inténtalo de nuevo.",
     "Algo deu errado. Tente novamente.",
   ],
 };

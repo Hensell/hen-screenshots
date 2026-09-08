@@ -8,26 +8,27 @@ export const errorMessages: Record<string, readonly [string, string]> = {
     "Este kit de marca no es válido o no es compatible.",
     "Este kit de marca é inválido ou incompatível.",
   ],
-  "This store device is not supported.": [
-    "Este dispositivo de tienda no es compatible.",
-    "Este dispositivo de loja não é compatível.",
+  "This device category is not supported.": [
+    "Esta categoría de dispositivo no es compatible.",
+    "Esta categoria de dispositivo não é compatível.",
   ],
-  "Choose a store project to change its store.": [
-    "Elige un proyecto para tiendas para cambiar su tienda.",
-    "Escolha um projeto para lojas para alterar a loja.",
+  "Choose an App stores project before changing the store.": [
+    "Para cambiar de tienda, elige un proyecto destinado a tiendas de apps.",
+    "Para mudar de loja, escolha um projeto destinado a lojas de apps.",
   ],
   "This portfolio format is not supported.": [
     "Este formato de portafolio no es compatible.",
     "Este formato de portfólio não é compatível.",
   ],
   "Use whole numbers from 256 to 4096 pixels for each side.": [
-    "Usa números enteros de 256 a 4096 píxeles para cada lado.",
-    "Use números inteiros de 256 a 4096 pixels para cada lado.",
+    "Introduce un número entero de 256 a 4096 píxeles para cada lado.",
+    "Digite um número inteiro de 256 a 4096 pixels para cada lado.",
   ],
-  "Keep the longest side within four times the shortest side (up to 4:1).": [
-    "El lado más largo no debe superar cuatro veces el más corto (hasta 4:1).",
-    "O lado mais longo não pode ultrapassar quatro vezes o mais curto (até 4:1).",
-  ],
+  "The longest side must be no more than four times the shortest side (up to 4:1).":
+    [
+      "El lado más largo no puede medir más de cuatro veces el más corto (hasta 4:1).",
+      "O lado maior não pode medir mais de quatro vezes o menor (até 4:1).",
+    ],
   "This export preset is not supported.": [
     "Este formato de exportación no es compatible.",
     "Este formato de exportação não é compatível.",
@@ -37,12 +38,12 @@ export const errorMessages: Record<string, readonly [string, string]> = {
     "A imagem exportada não corresponde às dimensões do formato selecionado.",
   ],
   "These dimensions are not accepted in the selected App Store slot.": [
-    "Estas dimensiones no se aceptan en la categoría seleccionada de App Store.",
-    "Estas dimensões não são aceitas na categoria selecionada da App Store.",
+    "Estas dimensiones no se aceptan en la categoría de dispositivo seleccionada de App Store.",
+    "Estas dimensões não são aceitas na categoria de dispositivo selecionada da App Store.",
   ],
   "These dimensions do not satisfy Google Play screenshot rules.": [
-    "Estas dimensiones no cumplen las reglas de capturas de Google Play.",
-    "Estas dimensões não atendem às regras de capturas do Google Play.",
+    "Estas dimensiones no cumplen los requisitos de capturas de Google Play.",
+    "Estas dimensões não atendem aos requisitos de capturas do Google Play.",
   ],
   "Google Play large-screen presets require 16:9 or 9:16 and at least 1080 pixels.":
     [
@@ -74,9 +75,9 @@ export const errorMessages: Record<string, readonly [string, string]> = {
     "Un proyecto admite hasta {count} idiomas.",
     "Um projeto aceita até {count} idiomas.",
   ],
-  "This language no longer exists.": [
-    "Este idioma ya no existe.",
-    "Este idioma não existe mais.",
+  "This language is no longer in the project.": [
+    "Este idioma ya no está en el proyecto.",
+    "Este idioma não está mais no projeto.",
   ],
   "The original text changed. Translate the series again.": [
     "El texto original cambió. Traduce la serie de nuevo.",
@@ -104,8 +105,8 @@ export const errorMessages: Record<string, readonly [string, string]> = {
   ],
   "Panorama needs two slides. This format allows {count}; remove a slide first.":
     [
-      "Panorama necesita dos diapositivas. Este formato permite {count}; elimina una diapositiva primero.",
-      "Panorama precisa de dois slides. Este formato permite {count}; remova um slide primeiro.",
+      "Panorama necesita dos diapositivas. Este formato permite un máximo de {count}. Elimina una diapositiva primero.",
+      "Panorama precisa de dois slides. Este formato permite no máximo {count}. Remova um slide primeiro.",
     ],
   "This template is not supported.": [
     "Esta plantilla no es compatible.",
@@ -132,24 +133,24 @@ export const errorMessages: Record<string, readonly [string, string]> = {
     "Uma imagem excede 24 megapixels.",
   ],
   "The backup is missing screenshot images or contains unused images.": [
-    "A la copia de seguridad le faltan capturas o contiene imágenes sin usar.",
+    "La copia de seguridad contiene imágenes sin usar o le faltan capturas.",
     "Faltam capturas no backup ou ele contém imagens não utilizadas.",
   ],
   "A screenshot image is missing. Re-import it before exporting.": [
     "Falta una captura. Vuelve a importarla antes de exportar.",
     "Uma captura está ausente. Importe-a novamente antes de exportar.",
   ],
-  "Project text is too large to export.": [
-    "El texto del proyecto es demasiado grande para exportar.",
-    "O texto do projeto é grande demais para exportar.",
+  "The project document is too large to export.": [
+    "El contenido del proyecto ocupa demasiado espacio para exportarlo.",
+    "O conteúdo do projeto ocupa espaço demais para ser exportado.",
   ],
   "Choose a valid project backup no larger than 124 MB.": [
     "Elige una copia de seguridad válida de hasta 124 MB.",
     "Escolha um backup de projeto válido de até 124 MB.",
   ],
-  "The backup contains too many or duplicate files.": [
-    "La copia de seguridad contiene demasiados archivos o archivos duplicados.",
-    "O backup contém arquivos demais ou arquivos duplicados.",
+  "The backup contains too many files or duplicate filenames.": [
+    "La copia de seguridad contiene demasiados archivos o nombres de archivo duplicados.",
+    "O backup contém arquivos demais ou nomes de arquivo duplicados.",
   ],
   "The backup contains an unsupported file path.": [
     "La copia de seguridad contiene una ruta de archivo no compatible.",
@@ -249,8 +250,8 @@ export const errorMessages: Record<string, readonly [string, string]> = {
     "WebP animado não é compatível. Escolha uma captura estática.",
   ],
   "Choose a valid PNG, JPEG, or still WebP image.": [
-    "Elige una imagen válida PNG, JPEG o WebP estática.",
-    "Escolha uma imagem válida PNG, JPEG ou WebP estática.",
+    "Elige una imagen válida en formato PNG, JPEG o WebP sin animación.",
+    "Escolha uma imagem válida no formato PNG, JPEG ou WebP sem animação.",
   ],
   "Each image must be no larger than 24 megapixels.": [
     "Cada imagen debe tener como máximo 24 megapíxeles.",
@@ -306,8 +307,8 @@ export const errorMessages: Record<string, readonly [string, string]> = {
       "Este destino aceita no máximo {count} capturas por categoria de dispositivo. Exporte capturas individuais ou reduza a série.",
     ],
   "Rendering {index} of {total}…": [
-    "Renderizando {index} de {total}…",
-    "Renderizando {index} de {total}…",
+    "Generando captura {index} de {total}…",
+    "Gerando captura {index} de {total}…",
   ],
   "The original image for screenshot {index} is missing. Replace it and try again.":
     [
@@ -319,7 +320,10 @@ export const errorMessages: Record<string, readonly [string, string]> = {
       "Esta exportación es demasiado grande para empaquetarla. Selecciona menos idiomas o capturas y vuelve a exportar.",
       "Esta exportação é grande demais para empacotar. Selecione menos idiomas ou capturas e exporte novamente.",
     ],
-  "Packaging screenshots…": ["Empaquetando capturas…", "Empacotando capturas…"],
+  "Packaging screenshots…": [
+    "Preparando archivo de capturas…",
+    "Preparando arquivo de capturas…",
+  ],
   "The translator stopped responding. Try again or continue manually.": [
     "El traductor dejó de responder. Inténtalo de nuevo o continúa manualmente.",
     "O tradutor parou de responder. Tente novamente ou continue manualmente.",
@@ -356,16 +360,16 @@ export const errorMessages: Record<string, readonly [string, string]> = {
     ],
   "The local translator could not finish. Check your connection and free device storage, then retry or continue manually. Your existing text is safe.":
     [
-      "El traductor local no pudo terminar. Revisa tu conexión y el espacio libre del dispositivo; luego reintenta o continúa manualmente. Tu texto actual se conserva.",
-      "O tradutor local não conseguiu concluir. Confira sua conexão e o espaço livre no dispositivo; depois tente novamente ou continue manualmente. Seu texto atual foi mantido.",
+      "El traductor local no pudo terminar. Revisa tu conexión y el espacio libre del dispositivo. Después, inténtalo de nuevo o continúa manualmente. Tu texto actual se conserva.",
+      "O tradutor local não conseguiu concluir a tradução. Confira sua conexão e o espaço livre no dispositivo. Depois, tente novamente ou continue manualmente. Seu texto atual foi mantido.",
     ],
   "Manrope could not load. Check your connection and try again.": [
     "No se pudo cargar Manrope. Revisa tu conexión e inténtalo de nuevo.",
     "Não foi possível carregar Manrope. Confira sua conexão e tente novamente.",
   ],
   "This browser cannot load the font needed to render your screenshots.": [
-    "Este navegador no puede cargar la fuente necesaria para renderizar tus capturas.",
-    "Este navegador não consegue carregar a fonte necessária para renderizar suas capturas.",
+    "Este navegador no puede cargar la fuente necesaria para generar tus capturas.",
+    "Este navegador não consegue carregar a fonte necessária para gerar suas capturas.",
   ],
   "The headline font could not load. Check your connection and try again.": [
     "No se pudo cargar la fuente del título. Revisa tu conexión e inténtalo de nuevo.",
@@ -376,12 +380,12 @@ export const errorMessages: Record<string, readonly [string, string]> = {
     "Esta moldura de dispositivo não é compatível.",
   ],
   "This caption is too long to fit. Shorten it before exporting.": [
-    "Este texto es demasiado largo para caber. Acórtalo antes de exportar.",
-    "Este texto está longo demais para caber. Encurte-o antes de exportar.",
+    "Este texto no cabe en el espacio disponible. Acórtalo antes de exportar.",
+    "Este texto não cabe no espaço disponível. Encurte-o antes de exportar.",
   ],
   "The screenshot has not finished loading.": [
-    "La captura todavía no terminó de cargarse.",
-    "A captura ainda não terminou de carregar.",
+    "La captura todavía se está cargando.",
+    "A captura ainda está carregando.",
   ],
   "The device position is invalid.": [
     "La posición del dispositivo no es válida.",

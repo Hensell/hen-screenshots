@@ -25,12 +25,12 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 - **Make the composition yours.** Customize captions, colors, typography, and backgrounds. Drag devices and text independently. Resize devices from their corner handles, with proportions preserved, or use the **Device size** slider. Reset size or placement whenever you want.
 - **Line things up.** Smart guides snap devices and text to centers, edges, margins, and nearby objects, including across panoramas. Hold Alt/Option to move freely, or turn guides off.
 - **Preview before publishing.** Review store screenshots in a swipeable carousel or portfolio cards in a website grid. Check compact, phone, and wide reading sizes, then jump back to any slide to edit it.
-- **One brand, every project.** Save an app’s palette, headline and supporting fonts, and identifying logo in a reusable brand kit. Preview it on your screenshots and apply it to a slide, linked panorama, or entire series.
+- **One brand, every project.** Save an app’s palette, fonts for headlines and supporting text, and identifying logo in a reusable brand kit. Preview it on your screenshots and apply it to a slide, linked panorama, or entire series.
 - **One design, multiple languages.** Edit independent captions, keep layouts linked, and export a folder per language. Translate manually or download optional local translation packs.
 - **Edit a whole series.** Apply a template to one slide or the series. Replace an image while keeping its design, duplicate and reorder slides, and undo or redo changes.
 - **Export for the destination.** Separate **App stores** and **Portfolio** workspaces keep store presets apart from cards, square formats, widescreen covers, and custom dimensions.
 - **Keep your work.** Projects save automatically in your browser. Download an editable project file with its original images for backup or transfer.
-- **Use your language.** The website and editor are available in English, Spanish, and Brazilian Portuguese. The language selector remembers your choice on this browser; screenshot texts and their language versions stay independent.
+- **Use your language.** The website and editor are available in English, Spanish, and Brazilian Portuguese. The language selector remembers your choice in this browser; it does not change your screenshot text or project language versions.
 
 The newest collection adds **Zest, Cabana, Contour, Cherry, Terracotta, Blueprint, Stitch, and Parade**: citrus stripes, aqua awnings, topographic curves, cherry checks, clay fans, cobalt grids, lilac zigzags, and burgundy scallops. Devices sit high, low, to either side, or on a diagonal, with separate space for captions. Search **stripes**, **checker**, **left**, or **diagonal** to find a composition. Open **Templates → Appearance → Dark** to browse all ten dark templates. Every design remains editable and adapts to the project's frame and canvas.
 
@@ -55,9 +55,9 @@ Design the pair together, keep a different caption on each slide, and export two
 
 ## One design, every language
 
-The **Website language** selector changes the interface, including the landing page, project library, editor, and dialogs. It starts with your browser's preferred supported language and remembers an explicit choice. This is separate from **Languages** inside a project, which manages the text you export in your screenshots.
+The **Website language** selector changes the interface, including the landing page, project library, editor, and dialogs. It starts with your browser's preferred supported language and remembers an explicit choice. This is separate from the **Languages** dialog inside a project, which manages the text you export in your screenshots.
 
-Open **Languages** in the studio toolbar, choose the language of your original captions, and add a language version. The original text and translation appear side by side. Everything saves automatically. The toolbar’s language selector changes the canvas, thumbnails, inspector, and publication preview together.
+Open **Manage** beside the text language selector in the studio toolbar, choose the language of your original captions, and add a language version. The original text and translation appear side by side. Everything saves automatically. The toolbar’s language selector changes the canvas, thumbnails, inspector, and publication preview together.
 
 - Colors, templates, frames, device positions, and slide order stay shared.
 - Captions are independent. Each language can override text positions, headline size, and screenshot images; reset controls restore the shared settings.
@@ -120,24 +120,24 @@ Open [localhost:5174](http://127.0.0.1:5174/) for the landing page or [localhost
 
 **React · TypeScript · Vite · Konva · Zustand · Dexie / IndexedDB · Cloudflare**
 
-The landing page is static HTML and CSS. The React editor loads at `/studio/`. A shared Konva scene renders editor previews, template thumbnails, and full-resolution exports, so they use the same composition rules.
+The landing page uses static HTML and CSS, with a small script for interface language selection. The React editor loads at `/studio/`. A shared Konva scene renders editor previews, template thumbnails, and full-resolution exports, so they use the same composition rules.
 
 The library loads first. Canvas rendering, templates, brand kits, publication preview, languages, backups, and export tools load when needed. Optional dialogs show loading and recovery states so a failed download does not close the active project.
 
-| Directory          | Responsibility                                                         |
-| ------------------ | ---------------------------------------------------------------------- |
-| `src/app/`         | Editor shell, project-library navigation, dialogs, and loading recovery |
-| `src/core/`        | Project schema, templates, catalog search, and export profiles         |
-| `src/editor/`      | Editing state, undo/redo, inspector, and template library              |
-| `src/rendering/`   | Shared scene, device frames, typography, and decorations               |
-| `src/assets/`      | Image validation and decoding                                          |
-| `src/storage/`     | IndexedDB persistence, migrations, and project backups                 |
-| `src/export/`      | PNG rendering, snapshot-based language exports, ZIP packaging and cancellation |
-| `src/translation/` | Pinned model catalog, optional worker, download cache and cancellation |
+| Directory          | Responsibility                                                                  |
+| ------------------ | ------------------------------------------------------------------------------- |
+| `src/app/`         | Editor shell, project-library navigation, dialogs, and loading recovery         |
+| `src/core/`        | Project schema, templates, catalog search, and export profiles                  |
+| `src/editor/`      | Editing state, undo/redo, inspector, and template library                       |
+| `src/rendering/`   | Shared scene, device frames, typography, and decorations                        |
+| `src/assets/`      | Image validation and decoding                                                   |
+| `src/storage/`     | IndexedDB persistence, migrations, and project backups                          |
+| `src/export/`      | PNG rendering, snapshot-based language exports, ZIP packaging, and cancellation |
+| `src/translation/` | Pinned model catalog, optional worker, download cache, and cancellation         |
 
 The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 29 templates.
 
-Autosave checks revisions to prevent one tab from overwriting another tab's changes. Image blobs are immutable: caption edits only write the document, and unused images are removed from the saved copy. Undo/redo retains the required original images in the current editing session. Brand kit updates use revision checks too. Project files use schema 7 and support migration from versions 1–6. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots and portability, localization, translation cancellation, and export profiles.
+Autosave checks revisions to prevent one tab from overwriting another tab's changes. Image blobs are immutable: caption edits only write the document, and unused images are removed from the saved copy. Undo/redo retains the required original images in the current editing session. Brand kit updates use revision checks too. Project files use schema 7 and support migration from versions 1–6. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots, portability, localization, translation cancellation, and export profiles.
 
 Exports capture one revision of the project and its source images before rendering. Language folders, slide numbering, missing-image errors, cancellation, and packaging limits have dedicated regression tests. The [workflow QA report](docs/workflow-qa-2026-09-08.md) distinguishes automated coverage, visual checks, and validation limits.
 

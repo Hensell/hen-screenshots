@@ -4,13 +4,14 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
     "Prueba con otra búsqueda.",
     "Tente outra busca.",
   ],
-  "A reading-size preview. Store layouts and spacing vary by device.": [
-    "Vista previa a tamaño de lectura. El diseño y el espacio de las tiendas varían según el dispositivo.",
-    "Prévia em tamanho de leitura. O layout e o espaçamento das lojas variam conforme o dispositivo.",
-  ],
-  "A website-size preview of your exported cards.": [
-    "Vista previa de tus tarjetas exportadas a tamaño web.",
-    "Prévia dos cartões exportados em tamanho de site.",
+  "Check how your screenshots read. Store layouts and spacing vary by device.":
+    [
+      "Comprueba cómo se leen tus capturas. El diseño y el espaciado de las tiendas varían según el dispositivo.",
+      "Confira a leitura das suas capturas. O layout e o espaçamento das lojas variam conforme o dispositivo.",
+    ],
+  "Preview how your exported cards look on a website.": [
+    "Vista previa de tus tarjetas al tamaño en que se verían en una web.",
+    "Prévia dos seus cartões no tamanho em que apareceriam em um site.",
   ],
   "Adds one slide to create a linked pair": [
     "Agrega una diapositiva para crear un par vinculado",
@@ -32,12 +33,12 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
     "Os dois slides ficam independentes. Você pode desfazer.",
   ],
   "Check the headlines, pacing, and joins as you swipe.": [
-    "Revisa los títulos, el ritmo y las uniones al deslizar.",
-    "Confira os títulos, o ritmo e as emendas ao deslizar.",
+    "Revisa los títulos, la secuencia y las uniones entre capturas al deslizar.",
+    "Confira os títulos, a sequência e as emendas entre capturas ao deslizar.",
   ],
   "Check your project cards at website reading size.": [
-    "Revisa tus tarjetas de proyecto a tamaño de lectura web.",
-    "Confira os cartões do projeto em tamanho de leitura de site.",
+    "Revisa cómo se verán tus tarjetas en una web.",
+    "Confira como seus cartões vão aparecer em um site.",
   ],
   "Choose a card to return to its editor.": [
     "Elige una tarjeta para volver a su editor.",
@@ -82,7 +83,7 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
     "Imagem indisponível. Substitua a captura deste slide no editor.",
   ],
   "Keep my colors": ["Conservar mis colores", "Manter minhas cores"],
-  "Layout resets. Words, images and frames stay.": [
+  "The layout resets. Your text, images, and frames are preserved.": [
     "Se restablece el diseño. Los textos, imágenes y marcos se conservan.",
     "O layout é redefinido. Os textos, imagens e molduras são mantidos.",
   ],
@@ -93,9 +94,9 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   ],
   "Name A–Z": ["Nombre A–Z", "Nome A–Z"],
   "Name Z–A": ["Nombre Z–A", "Nome Z–A"],
-  "Needs one free slide · {count} allowed for this format": [
-    "Necesita una diapositiva libre · Este formato permite {count}",
-    "Precisa de um slide livre · Este formato permite {count}",
+  "Needs room for one more slide · Limit: {count}": [
+    "Necesita espacio para una diapositiva más · Límite: {count}",
+    "Precisa de espaço para mais um slide · Limite: {count}",
   ],
   "Next preview screenshots": [
     "Siguientes capturas de vista previa",
@@ -121,12 +122,12 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   "Phone · 390 px": ["Teléfono · 390 px", "Celular · 390 px"],
   Portfolio: ["Portafolio", "Portfólio"],
   "Preparing screenshot preview": [
-    "Preparando vista previa de captura",
-    "Preparando prévia da captura",
+    "Preparando la vista previa de la captura",
+    "Preparando a prévia da captura",
   ],
   "Previewing slides {from}–{to} of {count}": [
-    "Vista previa de diapositivas {from}–{to} de {count}",
-    "Prévia dos slides {from}–{to} de {count}",
+    "Vista previa: diapositivas {from}–{to} de {count}",
+    "Prévia: slides {from}–{to} de {count}",
   ],
   "Previous preview screenshots": [
     "Capturas anteriores de vista previa",
@@ -145,14 +146,14 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
     "Vista previa de publicación",
     "Prévia de publicação",
   ],
-  "Reading width": ["Ancho de lectura", "Largura de leitura"],
+  "Preview width": ["Ancho de vista previa", "Largura da prévia"],
   "SEE IT BEFORE YOU SHARE IT": [
     "MÍRALO ANTES DE COMPARTIRLO",
     "VEJA ANTES DE COMPARTILHAR",
   ],
   "Scaled to fit your screen.": [
-    "Ajustado al tamaño de tu pantalla.",
-    "Ajustado ao tamanho da sua tela.",
+    "Vista ajustada al tamaño de tu pantalla.",
+    "Visualização ajustada ao tamanho da sua tela.",
   ],
   "Screenshot templates": ["Plantillas de capturas", "Modelos de capturas"],
   Screenshots: ["Capturas", "Capturas"],
@@ -166,7 +167,7 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
     "Páginas de vista previa de la serie",
     "Páginas de prévia da série",
   ],
-  "Show selected": ["Mostrar selección", "Mostrar selecionado"],
+  "Show selected": ["Mostrar selección", "Mostrar seleção"],
   "Showing all {count} slides. This store slot accepts up to {max} screenshots.":
     [
       "Se muestran las {count} diapositivas. Esta sección de la tienda admite hasta {max} capturas.",
@@ -194,8 +195,8 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   "This screenshot": ["Esta captura", "Esta captura"],
   "Try a name, a color like “blue”, or an idea like “waves”. You can also broaden your filters.":
     [
-      "Prueba un nombre, un color como «azul» o una idea como «olas». También puedes ampliar los filtros.",
-      "Tente um nome, uma cor como «azul» ou uma ideia como «ondas». Você também pode ampliar os filtros.",
+      "Prueba con un nombre, un color como «azul» o una idea como «olas». También puedes quitar filtros para ver más resultados.",
+      "Tente um nome, uma cor como “azul” ou uma ideia como “ondas”. Você também pode remover filtros para ver mais resultados.",
     ],
   "Untitled app": ["App sin título", "App sem título"],
   "Updates this panorama": [
@@ -208,14 +209,14 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   ],
   "Wide · 760 px": ["Amplia · 760 px", "Ampla · 760 px"],
   "Your selection is outside these results.": [
-    "Tu selección no está entre estos resultados.",
-    "Sua seleção está fora destes resultados.",
+    "La plantilla seleccionada no aparece en estos resultados.",
+    "O modelo selecionado não aparece nestes resultados.",
   ],
   carousel: ["carrusel", "carrossel"],
   slide: ["diapositiva", "slide"],
   "{count} designs. Previewed with your screenshots and canvas.": [
-    "{count} diseños. Vista previa con tus capturas y lienzo.",
-    "{count} designs. Prévia com suas capturas e tela.",
+    "{count} diseños. Así se ven con tus capturas en tu lienzo.",
+    "{count} modelos. Veja como ficam com suas capturas na sua tela.",
   ],
   "{destination} preview": [
     "Vista previa de {destination}",
@@ -242,20 +243,20 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   Bold: ["Llamativo", "Marcante"],
   Editorial: ["Editorial", "Editorial"],
   "A bright check. A confident entrance.": [
-    "Cuadros vibrantes. Una entrada con personalidad.",
-    "Xadrez vibrante. Uma entrada com personalidade.",
+    "Cuadros vibrantes. Una presentación con personalidad.",
+    "Xadrez vibrante. Uma apresentação com personalidade.",
   ],
   "A circular stage. A moment in the spotlight.": [
     "Un escenario circular. Un momento para destacar.",
     "Um palco circular. Um momento de destaque.",
   ],
   "A considered angle and an oversized headline.": [
-    "Un ángulo cuidado y un título de gran tamaño.",
-    "Um ângulo cuidadoso e um título ampliado.",
+    "Un ángulo bien elegido y un título de gran tamaño.",
+    "Um ângulo bem escolhido e um título em destaque.",
   ],
   "A considered story, set on warm paper.": [
-    "Una historia cuidada, sobre papel cálido.",
-    "Uma história cuidadosa, sobre papel acolhedor.",
+    "Una historia cuidada sobre papel de tonos cálidos.",
+    "Uma história bem contada sobre papel de tons quentes.",
   ],
   "A continuous backdrop and one shared device, split into two consecutive slides.":
     [
@@ -264,12 +265,12 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
     ],
   "A coral poster with oversized typography and a tilted device on a contrasting stage.":
     [
-      "Un póster coral con tipografía de gran tamaño y un dispositivo inclinado sobre un escenario de contraste.",
-      "Um pôster coral com tipografia ampliada e um dispositivo inclinado sobre um palco contrastante.",
+      "Un póster coral con tipografía de gran tamaño y un dispositivo inclinado sobre un fondo de contraste.",
+      "Um pôster coral com tipografia ampliada e um dispositivo inclinado sobre um fundo contrastante.",
     ],
   "A crisp color block puts a bold headline beside your product.": [
-    "Un bloque de color definido coloca un título llamativo junto a tu producto.",
-    "Um bloco de cor definido coloca um título marcante ao lado do seu produto.",
+    "Un bloque de color destaca el título junto a tu producto.",
+    "Um bloco de cor destaca o título ao lado do seu produto.",
   ],
   "A fine border and generous margins let your interface speak.": [
     "Un borde fino y márgenes amplios dejan hablar a tu interfaz.",
@@ -284,8 +285,8 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
     "Uma visualização ampla do produto com um título marcante.",
   ],
   "A little coastal rhythm. Your app up front.": [
-    "Un ritmo costero. Tu app en primer plano.",
-    "Um ritmo litorâneo. Seu app em primeiro plano.",
+    "Un toque costero. Tu app en primer plano.",
+    "Um toque do litoral. Seu app em primeiro plano.",
   ],
   "A little framing. Plenty of breathing room.": [
     "Un marco sutil. Mucho espacio para respirar.",
@@ -301,18 +302,18 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   ],
   "A low, left-aligned device sits on a cobalt drafting grid, with fine dimension marks and open space for your message.":
     [
-      "Un dispositivo abajo a la izquierda sobre una cuadrícula cobalto, con marcas de dimensiones finas y espacio para tu mensaje.",
-      "Um dispositivo na parte inferior esquerda sobre uma grade cobalto, com marcas finas de dimensão e espaço para sua mensagem.",
+      "Un dispositivo en la parte inferior izquierda sobre una cuadrícula azul cobalto, con marcas finas de dimensiones y espacio para tu mensaje.",
+      "Um dispositivo na parte inferior esquerda sobre uma grade azul-cobalto, com marcas finas de dimensão e espaço para sua mensagem.",
     ],
   "A midnight panorama with elliptical arcs flowing across two slides and a shared tilted device.":
     [
-      "Un panorama de medianoche con arcos elípticos que fluyen entre dos diapositivas y un dispositivo inclinado compartido.",
-      "Um panorama de meia-noite com arcos elípticos fluindo entre dois slides e um dispositivo inclinado compartilhado.",
+      "Un panorama en tonos de medianoche con arcos elípticos que fluyen entre dos diapositivas y un dispositivo inclinado compartido.",
+      "Um panorama em tons de meia-noite com arcos elípticos que fluem entre dois slides e um dispositivo inclinado compartilhado.",
     ],
   "A raised device floats between woven zigzag borders. A lower headline and separate supporting caption keep the story balanced.":
     [
-      "Un dispositivo elevado flota entre bordes de zigzag tejido. Un título inferior y un texto de apoyo separado equilibran la historia.",
-      "Um dispositivo elevado flutua entre bordas de zigue-zague tecido. Um título inferior e uma legenda de apoio separada equilibram a história.",
+      "Un dispositivo flota en la parte superior, entre bordes de zigzag tejido. Un título debajo y un texto de apoyo separado equilibran la composición.",
+      "Um dispositivo flutua na parte superior, entre bordas de zigue-zague tecido. Um título abaixo e uma legenda de apoio separada equilibram a composição.",
     ],
   "A raised device sits to the left of a striped awning, with the headline tucked into the lower right.":
     [
@@ -329,12 +330,12 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
     "Um dispositivo inclinado conecta dois slides sobre ondas de cor contínuas e editáveis.",
   ],
   "A warm halo frames your device against a deep ink background.": [
-    "Un halo cálido enmarca tu dispositivo sobre un fondo de tinta profundo.",
-    "Um halo acolhedor emoldura seu dispositivo sobre um fundo de tinta profundo.",
+    "Un halo cálido enmarca tu dispositivo sobre un fondo oscuro.",
+    "Um halo em tons quentes emoldura seu dispositivo sobre um fundo escuro.",
   ],
   "A warm stage after dark.": [
-    "Un escenario cálido al anochecer.",
-    "Um palco acolhedor ao anoitecer.",
+    "Un escenario cálido entre tonos oscuros.",
+    "Um palco acolhedor entre tons escuros.",
   ],
   "An editorial panorama with one shared device and flowing lines that meet at the seam.":
     [
@@ -344,7 +345,7 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   "An expansive product area on a subtle drafting grid, with a headline above and a caption below. Made for portfolio cards.":
     [
       "Un área amplia para el producto sobre una cuadrícula sutil, con un título arriba y un texto abajo. Ideal para tarjetas de portafolio.",
-      "Uma área ampla para o produto sobre uma grade sutil, com um título acima e uma legenda abaixo. Feito para cartões de portfólio.",
+      "Uma área ampla para o produto sobre uma grade sutil, com um título acima e uma legenda abaixo. Ideal para cartões de portfólio.",
     ],
   "An image-led composition with a caption beneath, made for a closer look.": [
     "Una composición centrada en la imagen con texto debajo, pensada para ver los detalles.",
@@ -361,29 +362,29 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
       "Um arco aberto emoldura sua captura; um título com serifa traz um ritmo editorial mais tranquilo.",
     ],
   "An unexpected angle. A confident entrance.": [
-    "Un ángulo inesperado. Una entrada con personalidad.",
-    "Um ângulo inesperado. Uma entrada com personalidade.",
+    "Un ángulo inesperado. Una presentación con personalidad.",
+    "Um ângulo inesperado. Uma apresentação com personalidade.",
   ],
   "Awning stripes": ["Rayas de toldo", "Listras de toldo"],
   "Big words. A bold arch. Your app takes the stage.": [
-    "Palabras grandes. Un arco llamativo. Tu app en escena.",
-    "Palavras grandes. Um arco marcante. Seu app em cena.",
+    "Títulos grandes. Un arco llamativo. Tu app en escena.",
+    "Títulos grandes. Um arco marcante. Seu app em cena.",
   ],
   "Big words. A closer look at your app.": [
-    "Palabras grandes. Tu app más de cerca.",
-    "Palavras grandes. Seu app de perto.",
+    "Títulos grandes. Tu app más de cerca.",
+    "Títulos grandes. Seu app de perto.",
   ],
   Botanical: ["Botánico", "Botânico"],
   "Broad stripes carry a tilted device toward the lower right, with room for a headline and a separate side caption.":
     [
-      "Rayas anchas acompañan un dispositivo inclinado hacia abajo a la derecha, con espacio para un título y un texto lateral separado.",
-      "Listras largas acompanham um dispositivo inclinado para a parte inferior direita, com espaço para um título e uma legenda lateral separada.",
+      "Rayas anchas acompañan un dispositivo inclinado en la parte inferior derecha, con espacio para un título y un texto lateral separado.",
+      "Listras largas acompanham um dispositivo inclinado na parte inferior direita, com espaço para um título e uma legenda lateral separada.",
     ],
-  "Cherry checkerboard": ["Cuadros cereza", "Xadrez cereja"],
+  "Cherry checkerboard": ["Cuadros color cereza", "Xadrez cereja"],
   "Cherry checks border a high, right-aligned device. A generous caption below finishes the composition.":
     [
-      "Cuadros cereza rodean un dispositivo arriba a la derecha. Un texto amplio debajo completa la composición.",
-      "Um xadrez cereja envolve um dispositivo na parte superior direita. Uma legenda ampla abaixo completa a composição.",
+      "Cuadros color cereza rodean un dispositivo en la parte superior derecha. Un texto amplio debajo completa la composición.",
+      "Um xadrez cor de cereja envolve um dispositivo na parte superior direita. Uma legenda ampla abaixo completa a composição.",
     ],
   "Citrus color. An off-center point of view.": [
     "Color cítrico. Un punto de vista diferente.",
@@ -398,15 +399,15 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   ],
   "Copper planes and an elliptical stage frame the device against espresso, with clean, centered typography.":
     [
-      "Planos de cobre y un escenario elíptico enmarcan el dispositivo sobre café oscuro, con tipografía limpia y centrada.",
-      "Planos de cobre e um palco elíptico emolduram o dispositivo sobre café escuro, com tipografia limpa e centralizada.",
+      "Planos de cobre y un escenario elíptico enmarcan el dispositivo sobre un fondo color café, con tipografía limpia y centrada.",
+      "Planos de cobre e um palco elíptico emolduram o dispositivo em um fundo marrom-escuro, com tipografia limpa e centralizada.",
     ],
-  "Copper stage": ["Escenario de cobre", "Palco de cobre"],
+  "Copper stage": ["Base de cobre", "Base de cobre"],
   "Coral poster": ["Póster coral", "Pôster coral"],
   "Cut paper": ["Papel recortado", "Papel recortado"],
   "Deep blue, sculpted waves and expressive serif type.": [
-    "Azul profundo, olas esculpidas y tipografía con serifas expresiva.",
-    "Azul profundo, ondas esculpidas e tipografia com serifa expressiva.",
+    "Azul profundo, olas esculpidas y una tipografía expresiva con serifas.",
+    "Azul profundo, ondas esculpidas e uma tipografia expressiva com serifa.",
   ],
   "Drafting grid": ["Cuadrícula de dibujo", "Grade de desenho"],
   "Drafting marks": ["Marcas de dibujo", "Marcas de desenho"],
@@ -416,17 +417,17 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   ],
   "Fine topographic curves follow a device on the left, balanced by an elevated serif headline and a side caption.":
     [
-      "Curvas topográficas finas acompañan un dispositivo a la izquierda, equilibrado con un título elevado con serifas y un texto lateral.",
-      "Curvas topográficas finas acompanham um dispositivo à esquerda, equilibrado por um título elevado com serifa e uma legenda lateral.",
+      "Curvas topográficas finas acompañan un dispositivo a la izquierda. Un título con serifas en la parte superior y un texto lateral equilibran la composición.",
+      "Curvas topográficas finas acompanham um dispositivo à esquerda. Um título com serifa na parte superior e uma legenda lateral equilibram a composição.",
     ],
   "Flowing lines · 2 slides": [
     "Líneas fluidas · 2 diapositivas",
     "Linhas fluidas · 2 slides",
   ],
-  "Folded color": ["Color plegado", "Cor dobrada"],
+  "Folded color": ["Pliegues de color", "Dobras de cor"],
   "Folded color. A fresh perspective.": [
-    "Color plegado. Una perspectiva fresca.",
-    "Cor dobrada. Uma nova perspectiva.",
+    "Pliegues de color. Una nueva perspectiva.",
+    "Dobras de cor. Uma nova perspectiva.",
   ],
   "Give the work room to speak.": [
     "Dale espacio a tu trabajo.",
@@ -434,8 +435,8 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   ],
   "Graphite surfaces, precise corner marks and a restrained accent suit detailed interfaces and desktop tools.":
     [
-      "Superficies de grafito, esquinas precisas y un acento discreto para interfaces detalladas y herramientas de escritorio.",
-      "Superfícies de grafite, cantos precisos e um destaque discreto para interfaces detalhadas e ferramentas de desktop.",
+      "Superficies de grafito, marcas precisas en las esquinas y un toque de color discreto para interfaces detalladas y herramientas de escritorio.",
+      "Superfícies de grafite, marcas precisas nos cantos e um toque de cor discreto para interfaces detalhadas e ferramentas de desktop.",
     ],
   Halo: ["Halo", "Halo"],
   "Inset panel": ["Panel interior", "Painel interno"],
@@ -478,13 +479,13 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   ],
   Ribbon: ["Cinta", "Faixa"],
   "Rich plum. A quiet, confident finish.": [
-    "Ciruela intenso. Un acabado tranquilo y seguro.",
-    "Ameixa intenso. Um acabamento tranquilo e confiante.",
+    "Color ciruela intenso. Un acabado sobrio y elegante.",
+    "Um tom ameixa intenso. Um acabamento discreto e elegante.",
   ],
   "Rose-colored scalloped bands run behind a steeply tilted device, with a top headline and a caption in the opposite corner.":
     [
-      "Bandas rosadas onduladas pasan detrás de un dispositivo muy inclinado, con un título arriba y un texto en la esquina opuesta.",
-      "Faixas rosadas onduladas passam atrás de um dispositivo bem inclinado, com um título acima e uma legenda no canto oposto.",
+      "Bandas onduladas de color rosa pasan detrás de un dispositivo muy inclinado, con un título arriba y un texto en la esquina opuesta.",
+      "Faixas onduladas em tons de rosa passam atrás de um dispositivo bem inclinado, com um título acima e uma legenda no canto oposto.",
     ],
   "Scalloped bands": ["Bandas onduladas", "Faixas onduladas"],
   "Sculpted fan patterns surround a diagonal device, framed by a serif headline above and supporting text below.":
@@ -500,7 +501,7 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
     "Color suave, con un hilo de personalidad.",
     "Cor suave, com um fio de personalidade.",
   ],
-  Stage: ["Escenario", "Palco"],
+  Stage: ["Base", "Base"],
   "The original Hen look, with your full screenshot in view.": [
     "El estilo original de Hen, con tu captura completa a la vista.",
     "O estilo original do Hen, com sua captura inteira à vista.",
@@ -520,16 +521,16 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
     "Dois tons. Uma mensagem com personalidade.",
   ],
   "Warm clay. A bolder angle.": [
-    "Arcilla cálida. Un ángulo más atrevido.",
-    "Argila acolhedora. Um ângulo mais ousado.",
+    "Tonos cálidos de arcilla. Un ángulo más atrevido.",
+    "Tons quentes de argila. Um ângulo mais ousado.",
   ],
   "Warm light. Rolling color. One connected story.": [
-    "Luz cálida. Ondas de color. Una historia conectada.",
-    "Luz acolhedora. Ondas de cor. Uma história conectada.",
+    "Luz cálida. Ondas de color. Una historia continua.",
+    "Luz quente. Ondas de cor. Uma história contínua.",
   ],
   "Woven zigzags": ["Zigzags tejidos", "Zigue-zagues tecidos"],
   angled: ["inclinado", "inclinado"],
-  aqua: ["agua", "água"],
+  aqua: ["aguamarina", "verde-água"],
   arch: ["arco", "arco"],
   arcs: ["arcos", "arcos"],
   bands: ["bandas", "faixas"],
@@ -540,12 +541,12 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   caption: ["texto de apoyo", "legenda"],
   "case study": ["caso de estudio", "estudo de caso"],
   checker: ["cuadros", "xadrez"],
-  checkerboard: ["tablero de cuadros", "tabuleiro de xadrez"],
+  checkerboard: ["cuadriculado", "xadrez"],
   circle: ["círculo", "círculo"],
   citrus: ["cítrico", "cítrico"],
   clay: ["arcilla", "argila"],
   clean: ["limpio", "limpo"],
-  "close up": ["primer plano", "close"],
+  "close up": ["primer plano", "primeiro plano"],
   cobalt: ["cobalto", "cobalto"],
   collage: ["collage", "colagem"],
   "color block": ["bloque de color", "bloco de cor"],
@@ -568,7 +569,7 @@ export const discoveryMessages: Record<string, readonly [string, string]> = {
   green: ["verde", "verde"],
   grid: ["cuadrícula", "grade"],
   journal: ["diario", "diário"],
-  laptop: ["laptop notebook", "notebook"],
+  laptop: ["laptop", "notebook"],
   lavender: ["lavanda", "lavanda"],
   leaves: ["hojas", "folhas"],
   left: ["izquierda", "esquerda"],
