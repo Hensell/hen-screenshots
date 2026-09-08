@@ -1,3 +1,4 @@
+import { setDeviceImage } from "../core/device-composition";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { unzipSync } from "fflate";
 import { createProject, createShot, type Asset } from "../core/model";
@@ -45,6 +46,36 @@ beforeEach(() => {
 });
 
 describe("screenshot export workflow", () => {
+  it("decodes every device and renders each language with its own companion image", async () => {
+    const input = fixture(),
+      shot = input.project.shots[0];
+    applyTemplate(input.project, shot.id, "ecosystem");
+    addLanguage(input.project, "en", "es");
+    setDeviceImage(shot, "device:secondary", "tablet", null);
+    setDeviceImage(shot, "device:tertiary", "phone", null);
+    setDeviceImage(shot, "device:secondary", "tablet-es", "es");
+    input.assets.push(...["tablet", "phone", "tablet-es"].map(asset));
+    await buildScreenshotExport({ ...input, languageCodes: ["en", "es"] });
+    const calls = vi.mocked(renderShot).mock.calls;
+    expect(calls).toHaveLength(2);
+    expect(
+      calls.map((call) => call[1].companions!.map((device) => device.assetId)),
+    ).toEqual([
+      ["tablet", "phone"],
+      ["tablet-es", "phone"],
+    ]);
+    for (const call of calls)
+      for (const device of call[1].companions!)
+        expect(call[3]?.get(device.assetId)).toBe(image);
+    expect(loadImage).toHaveBeenCalledTimes(4);
+    expect(calls[0][3]).not.toBe(calls[1][3]);
+    expect(calls[0][3]?.size).toBe(3);
+    expect(calls[0][3]?.has("tablet-es")).toBe(false);
+    input.assets = input.assets.filter((asset) => asset.id !== "phone");
+    await expect(buildScreenshotExport(input)).rejects.toThrow(
+      "screenshot 1 is missing",
+    );
+  });
   it("exports the selected original PNG with its series position", async () => {
     const input = fixture();
     input.shotId = input.project.shots[1].id;

@@ -1,3 +1,4 @@
+import { compositionId } from "./device-composition";
 import { isPanoramaTemplate } from "./panorama-families";
 import { describe, expect, it } from "vitest";
 import {
@@ -129,7 +130,7 @@ describe("adaptive compositions", () => {
         for (const frame of [true, false])
           for (const profile of exportProfiles)
             for (const template of templates.filter(
-              (item) => !isPanoramaTemplate(item.id),
+              (item) => !isPanoramaTemplate(item.id) && !compositionId(item.id),
             )) {
               const project = createProject();
               project.exportProfile = profile.id;
@@ -285,7 +286,7 @@ describe("custom portfolio sizes", () => {
       ] as DeviceFamily[])
         for (const orientation of ["portrait", "landscape"] as const)
           for (const template of templates.filter(
-            (item) => !isPanoramaTemplate(item.id),
+            (item) => !isPanoramaTemplate(item.id) && !compositionId(item.id),
           )) {
             const project = createProject();
             project.exportProfile = "portfolio-custom";

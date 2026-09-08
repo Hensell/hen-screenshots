@@ -1,3 +1,4 @@
+import { compositionId, deviceCompositions } from "./device-composition-spec";
 import {
   isPanoramaTemplate,
   isPanoramaEnd,
@@ -21,7 +22,7 @@ import {
 
 import { isLanguage, MAX_LANGUAGES, type LocalizedShot } from "./localization";
 
-export const SCHEMA_VERSION = 7 as const;
+export const SCHEMA_VERSION = 8 as const;
 export const CANVAS = { width: 1080, height: 1920 } as const;
 export const PLACEMENT_LIMITS = {
   x: { min: -1080, max: 2160 },
@@ -82,10 +83,30 @@ export const templateIds = [
   "candy-club",
   "moonlight",
   "moonlight-end",
+  "sidekick",
+  "handoff",
+  "companion",
+  "duet",
+  "workspace",
+  "desktop-suite",
+  "ecosystem",
+  "constellation",
 ] as const;
 export type TemplateId = (typeof templateIds)[number];
 export type TextElement = "title" | "subtitle";
-export type CanvasElement = "device" | TextElement;
+export type CompanionId = "secondary" | "tertiary";
+export type DeviceElement = "device" | `device:${CompanionId}`;
+export type CanvasElement = DeviceElement | TextElement;
+export type DeviceStyle = Pick<
+  Style,
+  "device" | "deviceOrientation" | "frame" | "camera" | "fit"
+>;
+export interface CompanionDevice {
+  id: CompanionId;
+  assetId: string;
+  style: DeviceStyle;
+  phone: Shot["phone"];
+}
 export const TEXT_OFFSET_LIMITS = { x: 2160, y: 4320 } as const;
 export interface Style {
   titleFont?: BrandFont;
@@ -107,6 +128,7 @@ export interface Style {
   titleSize: number;
 }
 export interface Shot {
+  companions?: CompanionDevice[];
   translations?: Record<string, LocalizedShot>;
   brand?: string;
   id: string;
@@ -118,7 +140,7 @@ export interface Shot {
   textOffsets?: Partial<Record<TextElement, { x: number; y: number }>>;
 }
 export interface Project {
-  schemaVersion: 7;
+  schemaVersion: 8;
   localization?: { source: string; targets: string[] };
   brands?: Record<string, BrandKit>;
   brand?: string;
@@ -182,8 +204,12 @@ export type V3Style = Omit<Style, "device" | "template"> & {
   template: (typeof legacyTemplateIds)[number];
   device: "android" | "ios" | "ipad" | "android-tablet" | "monitor" | "laptop";
 };
+export interface V7Project extends Omit<Project, "schemaVersion" | "shots"> {
+  schemaVersion: 7;
+  shots: Omit<Shot, "companions">[];
+}
 export interface V6Project extends Omit<
-  Project,
+  V7Project,
   "schemaVersion" | "localization"
 > {
   schemaVersion: 6;
@@ -244,6 +270,7 @@ export interface LegacyProject extends Omit<
 export function migrateProject(
   project:
     | Project
+    | V7Project
     | V6Project
     | V5Project
     | V4Project
@@ -256,7 +283,8 @@ export function migrateProject(
   if (
     project.schemaVersion === 4 ||
     project.schemaVersion === 5 ||
-    project.schemaVersion === 6
+    project.schemaVersion === 6 ||
+    project.schemaVersion === 7
   )
     return { ...structuredClone(project), schemaVersion: SCHEMA_VERSION };
   return {
@@ -336,6 +364,7 @@ const v2StyleKeys = [
 const styleKeys = [...v2StyleKeys, "deviceOrientation"];
 type StoredProject =
   | Project
+  | V7Project
   | V6Project
   | V5Project
   | V4Project
@@ -389,7 +418,7 @@ function numeric(
 }
 function validateStyle(
   value: unknown,
-  version: 1 | 2 | 3 | 4 | 5 | 6 | 7,
+  version: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8,
   partial = false,
 ): void {
   const entries = object(
@@ -470,6 +499,7 @@ export function validateProject(
     version !== 4 &&
     version !== 5 &&
     version !== 6 &&
+    version !== 7 &&
     version !== SCHEMA_VERSION
   )
     throw new Error("This project uses an unsupported project version.");
@@ -555,6 +585,12 @@ export function validateProject(
       "subtitle",
       "style",
       "phone",
+      ...(version >= 8 &&
+      value &&
+      typeof value === "object" &&
+      Object.hasOwn(value, "companions")
+        ? ["companions"]
+        : []),
       ...(version >= 7 &&
       value &&
       typeof value === "object" &&
@@ -574,6 +610,48 @@ export function validateProject(
         ? ["brand"]
         : []),
     ]);
+    const composition = compositionId(
+      (shot.style as Partial<Style>).template ?? (raw.style as Style).template,
+    );
+    if (composition) {
+      if (
+        version < 8 ||
+        !Array.isArray(shot.companions) ||
+        shot.companions.length !== deviceCompositions[composition].length - 1
+      )
+        invalid();
+    } else if (Object.hasOwn(shot, "companions")) invalid();
+    const companions = new Set<string>();
+    if (Object.hasOwn(shot, "companions")) {
+      if (
+        !Array.isArray(shot.companions) ||
+        shot.companions.length < 1 ||
+        shot.companions.length > 2
+      )
+        invalid();
+      for (const [index, value] of shot.companions.entries()) {
+        const device = object(value, ["id", "assetId", "style", "phone"]);
+        if (device.id !== (index === 0 ? "secondary" : "tertiary")) invalid();
+        companions.add(device.id as string);
+        identifier(device.assetId);
+        object(device.style, [
+          "device",
+          "deviceOrientation",
+          "frame",
+          "camera",
+          "fit",
+        ]);
+        validateStyle(device.style, version, true);
+        const placement = object(device.phone, ["x", "y", "width", "rotation"]);
+        for (const key of ["x", "y", "width"] as const)
+          numeric(
+            placement[key],
+            PLACEMENT_LIMITS[key].min,
+            PLACEMENT_LIMITS[key].max,
+          );
+        numeric(placement.rotation, -20, 20);
+      }
+    }
     if (Object.hasOwn(shot, "translations")) {
       const targets =
         (raw.localization as Project["localization"])?.targets ?? [];
@@ -585,7 +663,12 @@ export function validateProject(
           "sourceTitle",
           "sourceSubtitle",
           "status",
-          ...["textOffsets", "titleSize", "assetId"].filter(
+          ...[
+            "textOffsets",
+            "titleSize",
+            "assetId",
+            ...(version >= 8 ? ["deviceAssets"] : []),
+          ].filter(
             (key) =>
               item && typeof item === "object" && Object.hasOwn(item, key),
           ),
@@ -603,6 +686,10 @@ export function validateProject(
         if (Object.hasOwn(content, "titleSize"))
           numeric(content.titleSize, 48, 132);
         if (Object.hasOwn(content, "assetId")) identifier(content.assetId);
+        if (Object.hasOwn(content, "deviceAssets")) {
+          const assets = object(content.deviceAssets, [...companions], true);
+          Object.values(assets).forEach(identifier);
+        }
         if (Object.hasOwn(content, "textOffsets")) {
           const offsets = object(
             content.textOffsets,
@@ -671,6 +758,7 @@ export function validateProject(
       if (!start) continue;
       const right = project.shots[++index];
       if (!right) invalid();
+      if (left.companions || right.companions) invalid();
       const other = resolveStyle(project, right);
       if (
         version >= 7 &&

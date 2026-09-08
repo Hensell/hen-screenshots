@@ -1,3 +1,4 @@
+import type { DeviceElement } from "../core/model";
 import { useT } from "../i18n/react";
 import {
   lazy,
@@ -22,6 +23,8 @@ export function Preview({
   project,
   shot,
   image,
+  images,
+  activeDevice,
   onMove,
   onResize,
   onTextMove,
@@ -34,8 +37,14 @@ export function Preview({
   project: Project;
   shot: Shot;
   image?: HTMLImageElement;
-  onMove?: (x: number, y: number) => void;
-  onResize?: (placement: DevicePlacement, shotId: string) => void;
+  images?: ReadonlyMap<string, HTMLImageElement>;
+  activeDevice?: DeviceElement | null;
+  onMove?: (x: number, y: number, element?: DeviceElement) => void;
+  onResize?: (
+    placement: DevicePlacement,
+    shotId: string,
+    element?: DeviceElement,
+  ) => void;
   onSelectElement?: (element: CanvasElement, shotId: string) => void;
   onTextMove?: (
     element: TextElement,
@@ -70,7 +79,12 @@ export function Preview({
       onKeyDown={onKeyDown}
       aria-label={`${shot.title.replace(/\n/g, " ")} — ${shot.subtitle}`}
     >
-      {width > 0 && image ? (
+      {width > 0 &&
+      image &&
+      (shot.companions ?? []).every(
+        (device) =>
+          device.assetId === shot.assetId || images?.has(device.assetId),
+      ) ? (
         <RenderBoundary
           fallback={
             <p role="alert" className="preview-loading">
@@ -91,6 +105,8 @@ export function Preview({
               project={project}
               shot={shot}
               image={image}
+              images={images}
+              activeDevice={activeDevice}
               width={width}
               guides={guides}
               onMove={onMove}

@@ -675,6 +675,7 @@ export function BrandKitDialog({
                           key={item.id}
                           project={preview.project}
                           shot={item}
+                          images={images}
                           image={images.get(item.assetId)}
                         />
                       ))}

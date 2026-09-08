@@ -1,9 +1,10 @@
+import { compositionId } from "./device-composition";
 import { isPanoramaTemplate } from "./panorama-families";
 import { templates } from "./templates";
 
 export const catalogPageSizes = [12, 24, 48] as const;
 export type CatalogPageSize = (typeof catalogPageSizes)[number];
-export type CatalogLayout = "all" | "single" | "panorama";
+export type CatalogLayout = "all" | "single" | "panorama" | "multi-device";
 export type CatalogBackground = "all" | "solid" | "gradient";
 export type CatalogAppearance = "all" | "light" | "dark" | "colorful";
 export type CatalogSort = "recommended" | "name-asc" | "name-desc";
@@ -66,7 +67,9 @@ export function createCatalogIndex<T extends CatalogItem>(items: readonly T[]) {
         item.appearance,
         item.layout === "panorama"
           ? "panorama panoramic connected 2 slides"
-          : "single slide",
+          : item.layout === "multi-device"
+            ? "multiple devices responsive"
+            : "single slide",
         ...(item.keywords ?? []),
       ].join(" "),
     ),
@@ -174,7 +177,9 @@ const catalogItems = templates.map((template) => ({
   ...template,
   layout: isPanoramaTemplate(template.id)
     ? ("panorama" as const)
-    : ("single" as const),
+    : compositionId(template.id)
+      ? ("multi-device" as const)
+      : ("single" as const),
   background: template.style.backgroundMode,
   appearance:
     template.appearance ??

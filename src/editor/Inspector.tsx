@@ -1,3 +1,5 @@
+import { DeviceCompositionInspector } from "./DeviceCompositionInspector";
+import type { DeviceElement } from "../core/model";
 import { useT } from "../i18n/react";
 import {
   localContent,
@@ -104,6 +106,7 @@ export function Inspector({
   shot,
   disabled,
   onReplace,
+  onSelectDevice,
   onTemplates,
   tab,
   onTabChange,
@@ -116,7 +119,8 @@ export function Inspector({
   project: Project;
   shot: Shot;
   disabled: boolean;
-  onReplace: () => void;
+  onReplace: (element?: DeviceElement) => void;
+  onSelectDevice: (element: DeviceElement) => void;
   onTemplates: () => void;
   tab: InspectorTab;
   onTabChange: (tab: InspectorTab) => void;
@@ -794,190 +798,216 @@ export function Inspector({
           tabIndex={0}
           className="inspector-tab-panel"
         >
-          <section className="property-section device-size-section">
-            <div className="section-heading">
-              <h3>{t("Device size")}</h3>
-              <button
-                type="button"
-                className="text-button"
-                aria-label={t("Reset device size")}
-                onClick={() =>
-                  updateShot((target) =>
-                    resizeDevice(
-                      target,
-                      resolveStyle(project, target),
-                      defaultDeviceWidth,
-                    ),
-                  )
-                }
-              >
-                <Icon name="reset" size={14} />
-                {t("Reset size")}
-              </button>
-            </div>
-            {range(
-              "Device size",
-              "width",
-              PLACEMENT_LIMITS.width.min,
-              PLACEMENT_LIMITS.width.max,
-            )}
-            <p className="field-help">
-              {t(
-                "Drag a corner on the canvas, or adjust here. 100% is the template’s original size.",
-              )}
-              {pair ? <> {t("Both slides resize together.")}</> : null}
-            </p>
-          </section>
-          <section className="property-section">
-            <h3>{t("Device frame")}</h3>
-            <p className="section-intro">
-              {pair
-                ? t("Frame and placement are shared by both slides.")
-                : t("Choose a frame for this slide.")}
-            </p>
-            <div
-              className="device-options"
-              role="group"
-              aria-label={t("Device family")}
-            >
-              {Object.entries(deviceNames).map(([device, name]) => (
+          {shot.companions ? (
+            <DeviceCompositionInspector
+              project={project}
+              shot={shot}
+              sourceShot={sourceShot}
+              locale={locale}
+              selectedElement={selectedElement}
+              onSelect={onSelectDevice}
+              onReplace={onReplace}
+              deviceNames={deviceNames}
+            />
+          ) : (
+            <>
+              <section className="property-section device-size-section">
+                <div className="section-heading">
+                  <h3>{t("Device size")}</h3>
+                  <button
+                    type="button"
+                    className="text-button"
+                    aria-label={t("Reset device size")}
+                    onClick={() =>
+                      updateShot((target) =>
+                        resizeDevice(
+                          target,
+                          resolveStyle(project, target),
+                          defaultDeviceWidth,
+                        ),
+                      )
+                    }
+                  >
+                    <Icon name="reset" size={14} />
+                    {t("Reset size")}
+                  </button>
+                </div>
+                {range(
+                  "Device size",
+                  "width",
+                  PLACEMENT_LIMITS.width.min,
+                  PLACEMENT_LIMITS.width.max,
+                )}
+                <p className="field-help">
+                  {t(
+                    "Drag a corner on the canvas, or adjust here. 100% is the template’s original size.",
+                  )}
+                  {pair ? <> {t("Both slides resize together.")}</> : null}
+                </p>
+              </section>
+              <section className="property-section">
+                <h3>{t("Device frame")}</h3>
+                <p className="section-intro">
+                  {pair
+                    ? t("Frame and placement are shared by both slides.")
+                    : t("Choose a frame for this slide.")}
+                </p>
+                <div
+                  className="device-options"
+                  role="group"
+                  aria-label={t("Device family")}
+                >
+                  {Object.entries(deviceNames).map(([device, name]) => (
+                    <button
+                      type="button"
+                      key={device}
+                      aria-pressed={style.device === device}
+                      onClick={() =>
+                        setStyle({
+                          device: device as Style["device"],
+                          ...(device === "card" && style.device !== "card"
+                            ? { deviceOrientation: "landscape" as const }
+                            : {}),
+                        })
+                      }
+                    >
+                      <span className={`device-glyph ${device}`} />
+                      {t(name)}
+                    </button>
+                  ))}
+                </div>
                 <button
                   type="button"
-                  key={device}
-                  aria-pressed={style.device === device}
-                  onClick={() =>
-                    setStyle({
-                      device: device as Style["device"],
-                      ...(device === "card" && style.device !== "card"
-                        ? { deviceOrientation: "landscape" as const }
-                        : {}),
-                    })
-                  }
+                  className="orientation-link"
+                  onClick={() => {
+                    onTabChange("canvas");
+                    tabRefs.current.canvas?.focus({ preventScroll: true });
+                  }}
                 >
-                  <span className={`device-glyph ${device}`} />
-                  {t(name)}
+                  <Icon name="canvas" size={16} />
+                  {t("Canvas & frame orientation")}{" "}
+                  <Icon name="right" size={14} />
                 </button>
-              ))}
-            </div>
-            <button
-              type="button"
-              className="orientation-link"
-              onClick={() => {
-                onTabChange("canvas");
-                tabRefs.current.canvas?.focus({ preventScroll: true });
-              }}
-            >
-              <Icon name="canvas" size={16} />
-              {t("Canvas & frame orientation")} <Icon name="right" size={14} />
-            </button>
-            <label className="check-field">
-              <input
-                type="checkbox"
-                checked={style.frame}
-                onChange={(event) => setStyle({ frame: event.target.checked })}
-              />{" "}
-              {style.device === "card"
-                ? t("Rounded corners")
-                : t("Show device frame")}
-            </label>
-            {style.device !== "card" && (
-              <label className="check-field">
-                <input
-                  type="checkbox"
-                  checked={style.camera}
-                  onChange={(event) =>
-                    setStyle({ camera: event.target.checked })
-                  }
-                />{" "}
-                {style.device === "ios"
-                  ? t("Add Dynamic Island")
-                  : t("Add front camera")}
-              </label>
-            )}
-            <p className="field-help">
-              {style.device === "card"
-                ? t(
-                    "A simple 4:3 card with a soft shadow. Switch orientation for a vertical card.",
-                  )
-                : t(
-                    "Original status and navigation bars stay in your screenshot. Keep the cutout off if one is already visible.",
-                  )}
-            </p>
-            <label className="field">
-              {t("Screenshot fit")}
-              <select
-                value={style.fit}
-                onChange={(event) =>
-                  setStyle({ fit: event.target.value as Style["fit"] })
-                }
-              >
-                <option value="contain">{t("Fit entire screenshot")}</option>
-                <option value="cover">{t("Fill screen · crop edges")}</option>
-              </select>
-            </label>
-            <button type="button" className="text-button" onClick={onReplace}>
-              <Icon name="image" />
-              {pair ? t("Replace panorama image") : t("Replace image")}
-            </button>
-          </section>
-          {locale && (
-            <section className="property-section">
-              <p className="field-help">
-                {t(
-                  "Replacing the screenshot changes only {language}. Its frame and position stay shared.",
-                  { language: languageName(locale) },
+                <label className="check-field">
+                  <input
+                    type="checkbox"
+                    checked={style.frame}
+                    onChange={(event) =>
+                      setStyle({ frame: event.target.checked })
+                    }
+                  />{" "}
+                  {style.device === "card"
+                    ? t("Rounded corners")
+                    : t("Show device frame")}
+                </label>
+                {style.device !== "card" && (
+                  <label className="check-field">
+                    <input
+                      type="checkbox"
+                      checked={style.camera}
+                      onChange={(event) =>
+                        setStyle({ camera: event.target.checked })
+                      }
+                    />{" "}
+                    {style.device === "ios"
+                      ? t("Add Dynamic Island")
+                      : t("Add front camera")}
+                  </label>
                 )}
-              </p>
-              {sourceShot.translations?.[locale]?.assetId && (
+                <p className="field-help">
+                  {style.device === "card"
+                    ? t(
+                        "A simple 4:3 card with a soft shadow. Switch orientation for a vertical card.",
+                      )
+                    : t(
+                        "Original status and navigation bars stay in your screenshot. Keep the cutout off if one is already visible.",
+                      )}
+                </p>
+                <label className="field">
+                  {t("Screenshot fit")}
+                  <select
+                    value={style.fit}
+                    onChange={(event) =>
+                      setStyle({ fit: event.target.value as Style["fit"] })
+                    }
+                  >
+                    <option value="contain">
+                      {t("Fit entire screenshot")}
+                    </option>
+                    <option value="cover">
+                      {t("Fill screen · crop edges")}
+                    </option>
+                  </select>
+                </label>
                 <button
+                  type="button"
                   className="text-button"
-                  onClick={() =>
-                    updateShot((target) => {
-                      delete localContent(target, locale).assetId;
-                    })
-                  }
+                  onClick={() => onReplace("device")}
                 >
-                  <Icon name="reset" size={14} />
-                  {t("Use original image")}
+                  <Icon name="image" />
+                  {pair ? t("Replace panorama image") : t("Replace image")}
                 </button>
+              </section>
+              {locale && (
+                <section className="property-section">
+                  <p className="field-help">
+                    {t(
+                      "Replacing the screenshot changes only {language}. Its frame and position stay shared.",
+                      { language: languageName(locale) },
+                    )}
+                  </p>
+                  {sourceShot.translations?.[locale]?.assetId && (
+                    <button
+                      className="text-button"
+                      onClick={() =>
+                        updateShot((target) => {
+                          delete localContent(target, locale).assetId;
+                        })
+                      }
+                    >
+                      <Icon name="reset" size={14} />
+                      {t("Use original image")}
+                    </button>
+                  )}
+                </section>
               )}
-            </section>
+              <section className="property-section">
+                <div className="section-heading">
+                  <h3>{t("Position & rotation")}</h3>
+                  <button
+                    type="button"
+                    className="text-button"
+                    aria-label={t("Reset device placement")}
+                    onClick={() =>
+                      updateShot((shot) => {
+                        resetComposition(project, shot);
+                      })
+                    }
+                  >
+                    {t("Reset")}
+                  </button>
+                </div>
+                {range(
+                  "Horizontal position",
+                  "x",
+                  PLACEMENT_LIMITS.x.min,
+                  PLACEMENT_LIMITS.x.max,
+                )}
+                {range(
+                  "Vertical position",
+                  "y",
+                  PLACEMENT_LIMITS.y.min,
+                  PLACEMENT_LIMITS.y.max,
+                )}
+                {range("Device rotation", "rotation", -20, 20)}
+                <p className="field-help">
+                  {t(
+                    "Drag the device to move it. Reset restores the template’s size, position, and rotation.",
+                  )}
+                </p>
+              </section>
+            </>
           )}
-          <section className="property-section">
-            <div className="section-heading">
-              <h3>{t("Position & rotation")}</h3>
-              <button
-                type="button"
-                className="text-button"
-                aria-label={t("Reset device placement")}
-                onClick={() =>
-                  updateShot((shot) => {
-                    resetComposition(project, shot);
-                  })
-                }
-              >
-                {t("Reset")}
-              </button>
-            </div>
-            {range(
-              "Horizontal position",
-              "x",
-              PLACEMENT_LIMITS.x.min,
-              PLACEMENT_LIMITS.x.max,
-            )}
-            {range(
-              "Vertical position",
-              "y",
-              PLACEMENT_LIMITS.y.min,
-              PLACEMENT_LIMITS.y.max,
-            )}
-            {range("Device rotation", "rotation", -20, 20)}
-            <p className="field-help">
-              {t(
-                "Drag the device to move it. Reset restores the template’s size, position, and rotation.",
-              )}
-            </p>
-          </section>
         </div>
         <div
           role="tabpanel"

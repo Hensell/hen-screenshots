@@ -17,10 +17,12 @@ function PublicationImage({
   project,
   shot,
   image,
+  images,
 }: {
   project: Project;
   shot: Shot;
   image?: HTMLImageElement;
+  images: ReadonlyMap<string, HTMLImageElement>;
 }) {
   const t = useT();
   const ref = useRef<HTMLDivElement>(null);
@@ -52,7 +54,7 @@ function PublicationImage({
           )}
         </p>
       ) : visible ? (
-        <Preview project={project} shot={shot} image={image} />
+        <Preview project={project} shot={shot} image={image} images={images} />
       ) : (
         <span
           className="publication-placeholder"
@@ -252,6 +254,7 @@ export function PublicationPreview({
                   <PublicationImage
                     project={project}
                     shot={shot}
+                    images={images}
                     image={images.get(shot.assetId)}
                   />
                   <span>
@@ -303,6 +306,7 @@ export function PublicationPreview({
                     <PublicationImage
                       project={project}
                       shot={shot}
+                      images={images}
                       image={images.get(shot.assetId)}
                     />
                   </div>

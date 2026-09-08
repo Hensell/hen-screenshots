@@ -1,3 +1,9 @@
+import { multiDeviceTemplates } from "./multi-device-templates";
+import {
+  compositionId,
+  compositionLayout,
+  configureDevices,
+} from "./device-composition";
 import { halloweenTemplates } from "./halloween-templates";
 import { refitText, resetText } from "./text-placement";
 import { panoramaStart } from "./panorama-families";
@@ -87,6 +93,7 @@ export interface Template {
 
 /** IDs and geometry are part of document v2. Add new IDs for incompatible designs. */
 export const templates: readonly Template[] = [
+  ...multiDeviceTemplates,
   ...halloweenTemplates,
   ...patternTemplates,
   ...showcaseTemplates,
@@ -397,6 +404,8 @@ export function getTemplate(id: TemplateId): Template {
 export function templateLayout(project: Project, style: Style) {
   const template = getTemplate(style.template);
   const canvas = canonicalCanvas(project);
+  if (compositionId(style.template))
+    return { ...template, ...compositionLayout(project, style) };
   if (isPanoramaTemplate(style.template))
     return { ...template, ...panoramaLayout(project, style) };
   if (!legacyTemplateIds.some((id) => id === style.template))
@@ -588,9 +597,22 @@ function collectionLayout(project: Project, style: Style, template: Template) {
 }
 
 export function resetComposition(project: Project, shot: Shot): void {
-  shot.phone = {
-    ...templateLayout(project, resolveStyle(project, shot)).phone,
-  };
+  const id = resolveStyle(project, shot).template;
+  if (compositionId(id)) {
+    if (!shot.companions) configureDevices(project, shot, id);
+    const layout = compositionLayout(
+      project,
+      resolveStyle(project, shot),
+      shot.companions,
+    );
+    shot.phone = { ...layout.phone };
+    shot.companions?.forEach((device, index) => {
+      device.phone = { ...layout.devices[index + 1] };
+    });
+  } else
+    shot.phone = {
+      ...templateLayout(project, resolveStyle(project, shot)).phone,
+    };
 }
 
 /** The caller wraps this in one history edit, so format and reflow undo together. */
@@ -660,6 +682,7 @@ export function applyTemplate(
   if (all) Object.assign(project.style, patch);
   for (const shot of project.shots) {
     if (!all && !targets.has(shot.id)) continue;
+    configureDevices(project, shot, id);
     if (all) {
       for (const key of Object.keys(patch) as (keyof Style)[])
         delete shot.style[key];
@@ -676,7 +699,7 @@ export function templatePreview(
   keepColors: boolean,
 ): Shot {
   const preview = {
-    ...shot,
+    ...structuredClone(shot),
     style: {
       ...project.style,
       ...shot.style,
@@ -684,6 +707,7 @@ export function templatePreview(
     },
     phone: { ...shot.phone },
   };
+  configureDevices(project, preview, id);
   resetComposition(project, preview);
   resetText(preview);
   return preview;

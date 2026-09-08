@@ -1,3 +1,9 @@
+import {
+  companionFor,
+  deviceShot,
+  isDeviceElement,
+} from "../core/device-composition";
+import type { DeviceElement } from "../core/model";
 import { useT } from "../i18n/react";
 import {
   useCallback,
@@ -20,10 +26,16 @@ export interface ArtboardProps {
   project: Project;
   shot: Shot;
   image: HTMLImageElement;
+  images?: ReadonlyMap<string, HTMLImageElement>;
+  activeDevice?: DeviceElement | null;
   width: number;
   guides?: boolean;
-  onMove?: (x: number, y: number) => void;
-  onResize?: (placement: DevicePlacement, shotId: string) => void;
+  onMove?: (x: number, y: number, element?: DeviceElement) => void;
+  onResize?: (
+    placement: DevicePlacement,
+    shotId: string,
+    element?: DeviceElement,
+  ) => void;
   onSelectElement?: (element: CanvasElement, shotId: string) => void;
   onTextMove?: (
     element: TextElement,
@@ -37,6 +49,8 @@ export function Artboard({
   project,
   shot,
   image,
+  images,
+  activeDevice,
   width,
   guides = false,
   onMove,
@@ -74,6 +88,19 @@ export function Artboard({
     },
     [shot.id],
   );
+  // Inspector device selection must not overwrite the owner of a caption crossing a panorama seam.
+  useEffect(() => {
+    if (activeDevice)
+      selectElement(
+        isDeviceElement(activeDevice) &&
+          activeDevice !== "device" &&
+          !companionFor(shot, activeDevice)
+          ? "device"
+          : activeDevice,
+        shot.id,
+        false,
+      );
+  }, [activeDevice, shot, selectElement]);
   const dimensions = previewDimensions(width, canonicalCanvas(project));
 
   useEffect(() => {
@@ -93,6 +120,7 @@ export function Artboard({
           scaleY: size.scale,
         });
         const layer = createScene(project, shot, image, {
+          images,
           guides,
           onMove,
           onResize,
@@ -102,7 +130,7 @@ export function Artboard({
         stage.add(layer);
         layerRef.current = layer;
         if (
-          selectedElement.current !== "device" &&
+          !isDeviceElement(selectedElement.current) &&
           !project.shots
             .find((owner) => owner.id === selectedShotId.current)
             ?.[selectedElement.current].trim()
@@ -131,6 +159,7 @@ export function Artboard({
     project,
     shot,
     image,
+    images,
     width,
     onMove,
     onResize,
@@ -178,24 +207,26 @@ export function Artboard({
           ? (event) => {
               if (
                 onResize &&
-                selectedElement.current === "device" &&
+                isDeviceElement(selectedElement.current) &&
                 !event.metaKey &&
                 !event.ctrlKey &&
                 !event.altKey &&
                 ["+", "=", "-", "_"].includes(event.key)
               ) {
                 event.preventDefault();
-                const next = { ...shot, phone: { ...shot.phone } };
+                const slot = deviceShot(shot, selectedElement.current);
+                const next = { ...slot, phone: { ...slot.phone } };
                 const direction =
                   event.key === "-" || event.key === "_" ? -1 : 1;
                 resizeDevice(
                   next,
-                  resolveStyle(project, shot),
-                  shot.phone.width + direction * (event.shiftKey ? 50 : 10),
+                  resolveStyle(project, slot),
+                  slot.phone.width + direction * (event.shiftKey ? 50 : 10),
                 );
                 onResize(
                   { x: next.phone.x, y: next.phone.y, width: next.phone.width },
                   shot.id,
+                  selectedElement.current,
                 );
                 return;
               }
@@ -203,6 +234,9 @@ export function Artboard({
                 event.preventDefault();
                 const elements: CanvasElement[] = [
                   "device",
+                  ...(shot.companions ?? []).map(
+                    (device) => `device:${device.id}` as DeviceElement,
+                  ),
                   ...(["title", "subtitle"] as const).filter((element) =>
                     shot[element].trim(),
                   ),
@@ -226,12 +260,14 @@ export function Artboard({
               event.preventDefault();
               const step = event.shiftKey ? 10 : 1;
               const element = selectedElement.current;
-              if (element === "device")
+              if (isDeviceElement(element)) {
+                const slot = deviceShot(shot, element);
                 onMove?.(
-                  shot.phone.x + direction[0] * step,
-                  shot.phone.y + direction[1] * step,
+                  slot.phone.x + direction[0] * step,
+                  slot.phone.y + direction[1] * step,
+                  element,
                 );
-              else {
+              } else {
                 const owner =
                   project.shots.find(
                     (item) => item.id === selectedShotId.current,

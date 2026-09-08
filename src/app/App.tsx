@@ -1,3 +1,10 @@
+import { companionFor } from "../core/device-composition";
+import {
+  editDevice,
+  isDeviceElement,
+  setDeviceImage,
+} from "../core/device-composition";
+import type { DeviceElement } from "../core/model";
 import { useT } from "../i18n/react";
 import { LanguageSelector } from "../i18n/LanguageSelector";
 import { DeferredFeature } from "./DeferredFeature";
@@ -148,7 +155,7 @@ export function App() {
   const selectCanvasElement = useCallback(
     (element: CanvasElement, ownerId: string) => {
       setSelectedCanvasElement(element);
-      setInspectorTab(element === "device" ? "device" : "text");
+      setInspectorTab(isDeviceElement(element) ? "device" : "text");
       const editor = useEditor.getState();
       if (editor.selectedId !== ownerId) editor.select(ownerId);
     },
@@ -182,29 +189,40 @@ export function App() {
     },
     [],
   );
-  const moveCanvasDevice = useCallback((x: number, y: number) => {
-    const editor = useEditor.getState();
-    if (!editor.selectedId) return;
-    editor.edit((draft) =>
-      editLinkedShots(draft, editor.selectedId!, (target) => {
-        target.phone.x = Math.max(
-          PLACEMENT_LIMITS.x.min,
-          Math.min(PLACEMENT_LIMITS.x.max, x),
-        );
-        target.phone.y = Math.max(
-          PLACEMENT_LIMITS.y.min,
-          Math.min(PLACEMENT_LIMITS.y.max, y),
-        );
-      }),
-    );
-  }, []);
+  const moveCanvasDevice = useCallback(
+    (x: number, y: number, element: DeviceElement = "device") => {
+      const editor = useEditor.getState();
+      if (!editor.selectedId) return;
+      editor.edit((draft) =>
+        editLinkedShots(draft, editor.selectedId!, (shot) =>
+          editDevice(shot, element, (target) => {
+            target.phone.x = Math.max(
+              PLACEMENT_LIMITS.x.min,
+              Math.min(PLACEMENT_LIMITS.x.max, x),
+            );
+            target.phone.y = Math.max(
+              PLACEMENT_LIMITS.y.min,
+              Math.min(PLACEMENT_LIMITS.y.max, y),
+            );
+          }),
+        ),
+      );
+    },
+    [],
+  );
   const resizeCanvasDevice = useCallback(
-    (placement: DevicePlacement, ownerId: string) => {
+    (
+      placement: DevicePlacement,
+      ownerId: string,
+      element: DeviceElement = "device",
+    ) => {
       useEditor
         .getState()
         .edit((draft) =>
           editLinkedShots(draft, ownerId, (target) =>
-            setDevicePlacement(target, placement),
+            editDevice(target, element, (device) =>
+              setDevicePlacement(device, placement),
+            ),
           ),
         );
     },
@@ -220,6 +238,7 @@ export function App() {
   const imageInput = useRef<HTMLInputElement>(null);
   const backupInput = useRef<HTMLInputElement>(null);
   const undoButton = useRef<HTMLButtonElement>(null);
+  const replaceElement = useRef<DeviceElement>("device");
   const replaceId = useRef<string | null>(null);
   const cancelExport = useRef<AbortController | null>(null);
   const dragCount = useRef(0);
@@ -342,8 +361,14 @@ export function App() {
     slideMenu,
   ]);
 
-  function chooseImages(replacementId?: string) {
+  function chooseImages(
+    replacementId?: string,
+    element: DeviceElement = "device",
+  ) {
     if (busy) return;
+    const replacing = project?.shots.find((item) => item.id === replacementId);
+    replaceElement.current =
+      replacing && companionFor(replacing, element) ? element : "device";
     replaceId.current = replacementId ?? null;
     imageInput.current!.multiple = !replacementId;
     imageInput.current!.click();
@@ -351,6 +376,7 @@ export function App() {
   async function addImages(files: File[]) {
     if (!project || busy || !files.length) return;
     const replacement = replaceId.current;
+    const element = replaceElement.current;
     replaceId.current = null;
     setBusy(replacement ? "Replacing screenshot…" : "Importing screenshots…");
     setNotice(null);
@@ -370,8 +396,7 @@ export function App() {
       const beforeImport = structuredClone(sourceProject!);
       if (replacement)
         editLinkedShots(beforeImport, replacement, (target) => {
-          if (locale) delete localContent(target, locale).assetId;
-          else target.assetId = "replacement-pending";
+          setDeviceImage(target, element, "replacement-pending", locale);
         });
       const usedIds = new Set(referencedAssetIds(beforeImport));
       const existingBytes = assets
@@ -390,8 +415,7 @@ export function App() {
       state.edit((project) => {
         if (replacement) {
           editLinkedShots(project, replacement, (target) => {
-            if (locale) localContent(target, locale).assetId = incoming[0].id;
-            else target.assetId = incoming[0].id;
+            setDeviceImage(target, element, incoming[0].id, locale);
           });
           firstId = replacement;
         } else {
@@ -836,7 +860,16 @@ export function App() {
                   type="button"
                   className="toolbar-button desktop-slide-action"
                   disabled={!shot || !!busy}
-                  onClick={() => shot && chooseImages(shot.id)}
+                  onClick={() =>
+                    shot &&
+                    chooseImages(
+                      shot.id,
+                      selectedCanvasElement &&
+                        isDeviceElement(selectedCanvasElement)
+                        ? selectedCanvasElement
+                        : "device",
+                    )
+                  }
                   title={
                     locale
                       ? t("Replace the {language} image and keep your design", {
@@ -1002,6 +1035,7 @@ export function App() {
                     <Preview
                       project={project}
                       shot={item}
+                      images={images}
                       image={images.get(item.assetId)}
                       small
                     />
@@ -1077,13 +1111,17 @@ export function App() {
                     <span>
                       {pair
                         ? t("Panorama · 2 linked slides")
-                        : t("{device} frame", {
-                            device: t(
-                              deviceNames[
-                                shot.style.device ?? project.style.device
-                              ],
-                            ),
-                          })}
+                        : shot.companions
+                          ? t("{count} devices", {
+                              count: shot.companions.length + 1,
+                            })
+                          : t("{device} frame", {
+                              device: t(
+                                deviceNames[
+                                  shot.style.device ?? project.style.device
+                                ],
+                              ),
+                            })}
                     </span>
                   </div>
                   <div
@@ -1094,10 +1132,17 @@ export function App() {
                         key={item.id}
                         project={project}
                         shot={item}
+                        images={images}
                         image={images.get(item.assetId)}
                         onContextMenu={(event) => contextMenu(event, item.id)}
                         guides={smartGuides}
                         onKeyDown={(event) => menuKeyboard(event, item.id)}
+                        activeDevice={
+                          selectedCanvasElement &&
+                          isDeviceElement(selectedCanvasElement)
+                            ? selectedCanvasElement
+                            : null
+                        }
                         onSelectElement={busy ? undefined : selectCanvasElement}
                         onTextMove={busy ? undefined : moveCanvasText}
                         onMove={busy ? undefined : moveCanvasDevice}
@@ -1262,7 +1307,19 @@ export function App() {
               project={project}
               shot={shot}
               disabled={!!busy}
-              onReplace={() => chooseImages(shot.id)}
+              onReplace={(element) =>
+                chooseImages(
+                  shot.id,
+                  element ??
+                    (selectedCanvasElement &&
+                    isDeviceElement(selectedCanvasElement)
+                      ? selectedCanvasElement
+                      : "device"),
+                )
+              }
+              onSelectDevice={(element) =>
+                selectCanvasElement(element, shot.id)
+              }
               onTemplates={() => setTemplatesOpen(true)}
               onBrandKits={() => setBrandKitsOpen(true)}
               onLanguages={() => setLanguagesOpen(true)}

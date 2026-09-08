@@ -114,6 +114,9 @@ describe("template discovery", () => {
   });
   it("combines dark appearance with composition, category, query and pagination", () => {
     expect(ids({ appearance: "dark" })).toEqual([
+      "handoff",
+      "desktop-suite",
+      "constellation",
       "cobweb",
       "witching-hour",
       "moonlight",
@@ -139,7 +142,7 @@ describe("template discovery", () => {
     expect(ids({ appearance: "light", query: "orbit" })).toEqual([]);
     expect(
       paginateCatalog(browse({ appearance: "dark" }).items, 2, 12),
-    ).toMatchObject({ page: 2, total: 13 });
+    ).toMatchObject({ page: 2, total: 16 });
     expect(ids({ appearance: "colorful", query: "peach" })).toEqual([
       "confetti",
     ]);
@@ -148,10 +151,10 @@ describe("template discovery", () => {
     expect(ids({})).toEqual(templates.map((item) => item.id));
     expect(new Set(ids({})).size).toBe(templates.length);
     expect(browse().counts).toEqual({
-      All: 35,
-      Minimal: 7,
-      Bold: 16,
-      Editorial: 12,
+      All: 43,
+      Minimal: 9,
+      Bold: 19,
+      Editorial: 15,
     });
   });
   it("combines case, accents, whitespace, punctuation, style and descriptive keywords", () => {
@@ -225,22 +228,48 @@ describe("template discovery", () => {
   });
 });
 
+describe("multi-device discovery", () => {
+  it("finds exactly the eight combinations, independently of other compositions", () => {
+    expect(ids({ layout: "multi-device" })).toEqual([
+      "sidekick",
+      "handoff",
+      "companion",
+      "duet",
+      "workspace",
+      "desktop-suite",
+      "ecosystem",
+      "constellation",
+    ]);
+    expect(
+      ids({ layout: "multi-device", query: "desktop tablet mobile" }),
+    ).toEqual(["ecosystem", "constellation"]);
+    expect(
+      ids({ layout: "multi-device", query: "tablet", appearance: "dark" }),
+    ).toEqual(["desktop-suite", "constellation"]);
+  });
+});
 describe("catalog pagination", () => {
   it("slices pages without repeats or omissions and clamps after the result set shrinks", () => {
     const items = browse().items;
     const first = paginateCatalog(items, 1, 12);
     const middle = paginateCatalog(items, 2, 12);
-    const last = paginateCatalog(items, 3, 12);
+    const third = paginateCatalog(items, 3, 12);
+    const last = paginateCatalog(items, 4, 12);
     expect(first).toMatchObject({
       page: 1,
-      pages: 3,
+      pages: 4,
       from: 1,
       to: 12,
-      total: 35,
+      total: 43,
     });
     expect(middle).toMatchObject({ page: 2, from: 13, to: 24 });
-    expect(last).toMatchObject({ page: 3, from: 25, to: 35 });
-    expect([...first.items, ...middle.items, ...last.items]).toEqual(items);
+    expect(last).toMatchObject({ page: 4, from: 37, to: 43 });
+    expect([
+      ...first.items,
+      ...middle.items,
+      ...third.items,
+      ...last.items,
+    ]).toEqual(items);
     expect(
       paginateCatalog(browse({ layout: "panorama" }).items, 2, 12),
     ).toMatchObject({ page: 1, pages: 1, total: 5 });
@@ -260,7 +289,7 @@ describe("catalog pagination", () => {
     expect(paginateCatalog(browse().items, NaN, 24)).toMatchObject({
       page: 1,
       size: 24,
-      total: 35,
+      total: 43,
     });
   });
   it("keeps navigation bounded and exposes both ends of a large catalog", () => {

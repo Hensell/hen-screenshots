@@ -221,7 +221,11 @@ export function panoramaPreview(
   const shared = { ...resolveStyle(project, left), ...patch };
   const phone = panoramaLayout(project, shared).phone;
   return [left, right].map((source, index) => {
-    const { textOffsets: _offsets, ...content } = source;
+    const {
+      textOffsets: _offsets,
+      companions: _companions,
+      ...content
+    } = source;
     return {
       ...content,
       ...(source.translations || left.translations
@@ -237,6 +241,7 @@ export function panoramaPreview(
                 };
                 const {
                   assetId: _asset,
+                  deviceAssets: _deviceAssets,
                   textOffsets: _translatedOffsets,
                   titleSize: _translatedSize,
                   ...words

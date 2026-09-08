@@ -1,3 +1,4 @@
+import { compositionMessages } from "./composition-messages";
 import { appMessages } from "./app-messages";
 import { editorMessages } from "./editor-messages";
 import { dialogMessages } from "./dialog-messages";
@@ -23,6 +24,7 @@ export const messageCatalog: Record<string, readonly [string, string]> = {
   ...landingMessages,
   ...errorMessages,
   ...halloweenMessages,
+  ...compositionMessages,
 };
 
 export function detectInterfaceLocale(

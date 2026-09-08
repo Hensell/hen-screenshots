@@ -1,3 +1,5 @@
+import { deviceShot } from "../core/device-composition";
+import type { DeviceElement } from "../core/model";
 import { isPanoramaEnd, panoramaStart } from "../core/panorama-families";
 import Konva from "konva";
 import { legacyTemplateIds, resolveStyle } from "../core/model";
@@ -14,9 +16,14 @@ import { attachDeviceResize } from "./device-resize";
 import type { DevicePlacement } from "../core/device-placement";
 
 interface SceneOptions {
+  images?: ReadonlyMap<string, HTMLImageElement>;
   guides?: boolean;
-  onMove?: (x: number, y: number) => void;
-  onResize?: (placement: DevicePlacement, shotId: string) => void;
+  onMove?: (x: number, y: number, element?: DeviceElement) => void;
+  onResize?: (
+    placement: DevicePlacement,
+    shotId: string,
+    element?: DeviceElement,
+  ) => void;
   onTextMove?: (
     element: TextElement,
     x: number,
@@ -36,7 +43,12 @@ export function selectSceneElement(
   layer.setAttr("selectedShotId", shotId);
   layer
     .find(".device-transformer")
-    .forEach((node) => node.visible(element === "device"));
+    .forEach((node) =>
+      node.visible(
+        node.getAttr("element") === element &&
+          node.getAttr("shotId") === shotId,
+      ),
+    );
   layer
     .find(".selection-outline")
     .forEach((node) =>
@@ -220,12 +232,6 @@ export function createScene(
     throw new Error("The screenshot has not finished loading.");
   if (!Number.isFinite(shot.phone.x) || !Number.isFinite(shot.phone.y))
     throw new Error("The device position is invalid.");
-  const device = deviceGeometry(
-    style.device,
-    shot.phone.width,
-    style.frame,
-    style.deviceOrientation,
-  );
   const layer = new Konva.Layer({
     listening: Boolean(
       options.onMove || options.onTextMove || options.onResize,
@@ -347,54 +353,91 @@ export function createScene(
     }
     drawTemplateDecoration(layer, style, canvas, template.panel);
 
-    const phone = new Konva.Group({
-      x: shot.phone.x + device.width / 2 - cropOffset,
-      y: shot.phone.y + device.height / 2,
-      offsetX: device.width / 2,
-      offsetY: device.height / 2,
-      rotation: shot.phone.rotation,
-      width: device.width,
-      height: device.height,
-      draggable: Boolean(options.onMove),
-      name: "phone",
-      guideBounds: { x: 0, y: 0, width: device.width, height: device.height },
-    });
-    drawDeviceFrame(phone, device);
-
-    const screen = new Konva.Group({
-      clipFunc(context) {
-        context.beginPath();
-        context.roundRect(
-          device.screen.x,
-          device.screen.y,
-          device.screen.width,
-          device.screen.height,
-          device.screen.radius,
-        );
-        context.closePath();
-      },
-    });
-    screen.add(new Konva.Rect({ ...device.screen, fill: "#FFFFFF" }));
-    screen.add(
-      new Konva.Image({
-        image,
-        ...fitImage(imageWidth, imageHeight, device.screen, style.fit),
-      }),
-    );
-    phone.add(screen);
-
-    // Imported status/navigation bars stay in their original pixels. No synthetic bars.
-    drawDeviceDetails(phone, device, style.camera);
-    if (options.onMove) {
-      makeMovable(phone, "device", options);
-      phone.on("dragend", () =>
-        options.onMove?.(
-          Math.round(phone.x() - device.width / 2 + cropOffset),
-          Math.round(phone.y() - device.height / 2),
-        ),
+    const deviceNodes: {
+      phone: Konva.Group;
+      device: ReturnType<typeof deviceGeometry>;
+      element: DeviceElement;
+    }[] = [];
+    const elements: DeviceElement[] = [
+      "device",
+      ...(shot.companions ?? []).map(
+        (device) => `device:${device.id}` as DeviceElement,
+      ),
+    ];
+    for (const element of elements) {
+      const slot = deviceShot(shot, element);
+      const style = resolveStyle(project, slot);
+      const source =
+        slot.assetId === shot.assetId
+          ? image
+          : options.images?.get(slot.assetId);
+      if (
+        !source?.complete ||
+        source.naturalWidth <= 0 ||
+        source.naturalHeight <= 0
+      )
+        throw new Error("The screenshot has not finished loading.");
+      const imageWidth = source.naturalWidth,
+        imageHeight = source.naturalHeight;
+      const device = deviceGeometry(
+        style.device,
+        slot.phone.width,
+        style.frame,
+        style.deviceOrientation,
       );
+      const phone = new Konva.Group({
+        x: slot.phone.x + device.width / 2 - cropOffset,
+        y: slot.phone.y + device.height / 2,
+        offsetX: device.width / 2,
+        offsetY: device.height / 2,
+        rotation: slot.phone.rotation,
+        width: device.width,
+        height: device.height,
+        draggable: Boolean(options.onMove),
+        name: element === "device" ? "phone scene-device" : "scene-device",
+        element,
+        shotId: shot.id,
+        guideBounds: { x: 0, y: 0, width: device.width, height: device.height },
+      });
+      drawDeviceFrame(phone, device);
+
+      const screen = new Konva.Group({
+        clipFunc(context) {
+          context.beginPath();
+          context.roundRect(
+            device.screen.x,
+            device.screen.y,
+            device.screen.width,
+            device.screen.height,
+            device.screen.radius,
+          );
+          context.closePath();
+        },
+      });
+      screen.add(new Konva.Rect({ ...device.screen, fill: "#FFFFFF" }));
+      screen.add(
+        new Konva.Image({
+          image: source,
+          ...fitImage(imageWidth, imageHeight, device.screen, style.fit),
+        }),
+      );
+      phone.add(screen);
+
+      // Imported status/navigation bars stay in their original pixels. No synthetic bars.
+      drawDeviceDetails(phone, device, style.camera);
+      if (options.onMove) {
+        makeMovable(phone, element, options, shot.id);
+        phone.on("dragend", () =>
+          options.onMove?.(
+            Math.round(phone.x() - device.width / 2 + cropOffset),
+            Math.round(phone.y() - device.height / 2),
+            element,
+          ),
+        );
+      }
+      layer.add(phone);
+      deviceNodes.push({ phone, device, element });
     }
-    layer.add(phone);
     // Both crops draw the same captions, so freely moved text can cross the join.
     for (const owner of (panoramic ? panoramaPair(project, shot.id) : null) ?? [
       shot,
@@ -441,7 +484,7 @@ export function createScene(
       });
     }
     if (style.template === "classic") {
-      phone.moveToTop();
+      deviceNodes[0].phone.moveToTop();
       // Keep historical layering until the author explicitly repositions text.
       for (const element of ["title", "subtitle"] as const)
         if (shot.textOffsets?.[element])
@@ -450,17 +493,19 @@ export function createScene(
     if (options.guides && (options.onMove || options.onTextMove))
       attachSceneGuides(layer, canvas, panoramic ? 2 : 1, cropOffset);
     if (options.onResize)
-      attachDeviceResize(
-        layer,
-        phone,
-        device,
-        cropOffset,
-        (placement) => options.onResize?.(placement, shot.id),
-        () => {
-          selectSceneElement(layer, "device", shot.id);
-          options.onSelectElement?.("device", shot.id);
-        },
-      );
+      for (const { phone, device, element } of deviceNodes) {
+        attachDeviceResize(
+          layer,
+          phone,
+          device,
+          cropOffset,
+          (placement) => options.onResize?.(placement, shot.id, element),
+          () => {
+            selectSceneElement(layer, element, shot.id);
+            options.onSelectElement?.(element, shot.id);
+          },
+        ).setAttrs({ element, shotId: shot.id });
+      }
     return layer;
   } catch (error) {
     layer.destroy();

@@ -29,7 +29,7 @@ describe("version 3 project migration", () => {
     const source = structuredClone(existing);
     expect(migrateProject(source)).toEqual({
       ...existing,
-      schemaVersion: 7,
+      schemaVersion: 8,
       customSize: { width: 1600, height: 1200 },
     });
     expect(source).toEqual(existing);

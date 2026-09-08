@@ -1,0 +1,38 @@
+.composition-device-list {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+}
+.composition-device-list button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #d4d9ce;
+  border-radius: 7px;
+  background: #faf9f4;
+  color: inherit;
+}
+.composition-device-list button[aria-pressed="true"] {
+  border-color: #b7472e;
+  box-shadow: inset 0 0 0 1px #b7472e;
+  background: #f0f2e9;
+}
+.composition-device-list button > span:nth-child(2) {
+  flex: 1;
+}
+.composition-device-list small {
+  display: block;
+  font-size: 11px;
+  opacity: 0.65;
+  margin-top: 3px;
+}
+.composition-device-list .device-glyph {
+  flex-shrink: 0;
+}
+.composition-replace {
+  width: 100%;
+  justify-content: center;
+}

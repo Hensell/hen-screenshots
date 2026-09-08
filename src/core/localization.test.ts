@@ -38,7 +38,7 @@ describe("linked language versions", () => {
       shots: [createShot("image", 0)],
     };
     const before = structuredClone(original);
-    expect(migrateProject(original)).toEqual({ ...before, schemaVersion: 7 });
+    expect(migrateProject(original)).toEqual({ ...before, schemaVersion: 8 });
     expect(original).toEqual(before);
     expect(migrateProject(original).localization).toBeUndefined();
   });

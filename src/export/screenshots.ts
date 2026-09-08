@@ -85,14 +85,27 @@ export async function buildScreenshotExport({
       onProgress(
         `Rendering ${languageIndex * shots.length + index + 1} of ${shots.length * locales.length}…`,
       );
-      const asset = sources.get(item.assetId);
-      if (!asset)
-        throw new Error(
-          `The original image for screenshot ${index + 1} is missing. Replace it and try again.`,
-        );
-      const image = cache.get(asset.id) ?? (await loadImage(asset));
-      signal.throwIfAborted();
-      png = await renderShot(version, item, image);
+      // Keep newly decoded language images scoped to one scene, not the entire export.
+      const sceneImages = new Map<string, HTMLImageElement>();
+      for (const id of [
+        item.assetId,
+        ...(item.companions ?? []).map((device) => device.assetId),
+      ]) {
+        const asset = sources.get(id);
+        if (!asset)
+          throw new Error(
+            `The original image for screenshot ${index + 1} is missing. Replace it and try again.`,
+          );
+        if (!sceneImages.has(id))
+          sceneImages.set(id, cache.get(id) ?? (await loadImage(asset)));
+        signal.throwIfAborted();
+      }
+      png = await renderShot(
+        version,
+        item,
+        sceneImages.get(item.assetId)!,
+        sceneImages,
+      );
       signal.throwIfAborted();
       exportedBytes += png.size;
       if (exportedBytes > 250 * 1024 * 1024)

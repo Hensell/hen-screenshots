@@ -1,3 +1,4 @@
+import { compositionId } from "../core/device-composition-spec";
 import { useT } from "../i18n/react";
 import { panoramaStart } from "../core/panorama-families";
 import {
@@ -111,7 +112,9 @@ const TemplateCard = memo(function TemplateCard({
           <span className="template-category">
             {isPanoramaTemplate(template.id)
               ? t("2-slide panorama")
-              : t(template.category)}
+              : compositionId(template.id)
+                ? t("Multiple devices")
+                : t(template.category)}
           </span>
           <span className="template-check">
             {selected && <Icon name="check" size={14} />}
@@ -127,6 +130,7 @@ const TemplateCard = memo(function TemplateCard({
                 <Preview
                   project={previewProject}
                   shot={preview}
+                  images={images}
                   image={images.get(preview.assetId)}
                   small
                 />
@@ -222,7 +226,9 @@ export function TemplateGallery({
             t(
               entry.item.layout === "panorama"
                 ? "2-slide panorama"
-                : "Single slide",
+                : entry.item.layout === "multi-device"
+                  ? "Multiple devices"
+                  : "Single slide",
             ),
             ...(entry.item.keywords ?? []).map((keyword) => t(keyword)),
           ].join(" "),
@@ -462,6 +468,7 @@ export function TemplateGallery({
             >
               <option value="all">{t("Any composition")}</option>
               <option value="single">{t("Single slide")}</option>
+              <option value="multi-device">{t("Multiple devices")}</option>
               <option value="panorama">{t("2-slide panorama")}</option>
             </select>
           </label>
@@ -746,7 +753,9 @@ export function TemplateGallery({
                 : pair && !all
                   ? t("Both slides become independent. Undo anytime.")
                   : t(
-                      "The layout resets. Your text, images, and frames are preserved.",
+                      compositionId(selected)
+                        ? "The template sets up each device. Your text and matching screenshots are preserved."
+                        : "The layout resets. Your text, images, and frames are preserved.",
                     )}
           </p>
           {!selectedInResults && (

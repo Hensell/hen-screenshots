@@ -13,8 +13,10 @@ export async function renderShot(
   project: Project,
   shot: Shot,
   image: HTMLImageElement,
+  images?: ReadonlyMap<string, HTMLImageElement>,
 ): Promise<Blob> {
   // Freeze the requested revision before font loading or PNG encoding can yield.
+  const sources = new Map(images);
   const snapshot = structuredClone({ project, shot });
   const profile = resolveExportProfile(snapshot.project);
   const dimensions = { width: profile.width, height: profile.height };
@@ -29,7 +31,9 @@ export async function renderShot(
       scaleX: dimensions.width / 1080,
       scaleY: dimensions.width / 1080,
     });
-    stage.add(createScene(snapshot.project, snapshot.shot, image));
+    stage.add(
+      createScene(snapshot.project, snapshot.shot, image, { images: sources }),
+    );
     stage.draw();
     const canvas = stage.toCanvas({
       ...dimensions,

@@ -27,6 +27,7 @@ export const languageName = (code: string) =>
 export const isLanguage = (code: unknown): code is string =>
   languages.some(([id]) => id === code);
 export interface LocalizedShot {
+  deviceAssets?: Partial<Record<"secondary" | "tertiary", string>>;
   title: string;
   subtitle: string;
   sourceTitle: string;
@@ -122,6 +123,15 @@ export function localizedProject(
             title: content.title,
             subtitle: content.subtitle,
             assetId: content.assetId ?? shot.assetId,
+            ...(shot.companions
+              ? {
+                  companions: shot.companions.map((device) => ({
+                    ...device,
+                    assetId:
+                      content.deviceAssets?.[device.id] ?? device.assetId,
+                  })),
+                }
+              : {}),
             textOffsets: { ...shot.textOffsets, ...content.textOffsets },
             style: {
               ...shot.style,
@@ -140,9 +150,11 @@ export function referencedAssetIds(project: Project) {
     ...new Set(
       project.shots.flatMap((shot) => [
         shot.assetId,
-        ...Object.values(shot.translations ?? {}).flatMap((content) =>
-          content.assetId ? [content.assetId] : [],
-        ),
+        ...(shot.companions ?? []).map((device) => device.assetId),
+        ...Object.values(shot.translations ?? {}).flatMap((content) => [
+          ...(content.assetId ? [content.assetId] : []),
+          ...Object.values(content.deviceAssets ?? {}),
+        ]),
       ]),
     ),
   ];

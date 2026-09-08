@@ -10,7 +10,14 @@ export function useImages(assets: Asset[], shots: Shot[] = []) {
   const [error, setError] = useState<string | null>(null);
   // Editing captions or reordering slides must not restart image decoding.
   const references = JSON.stringify(
-    [...new Set(shots.map((shot) => shot.assetId))].sort(),
+    [
+      ...new Set(
+        shots.flatMap((shot) => [
+          shot.assetId,
+          ...(shot.companions ?? []).map((device) => device.assetId),
+        ]),
+      ),
+    ].sort(),
   );
   useEffect(() => {
     const controller = new AbortController();
