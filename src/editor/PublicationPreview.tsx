@@ -90,15 +90,18 @@ export function PublicationPreview({
   );
   const profile = resolveExportProfile(project);
   const portfolio = projectPurpose(project) === "portfolio";
+  const banners = projectPurpose(project) === "banners";
   const [viewport, setViewport] = useState(
     portfolio || profile.category !== "phone" ? 760 : 390,
   );
   const [width, setWidth] = useState(0);
-  const destination = portfolio
-    ? t("Portfolio")
-    : profile.store === "apple"
-      ? "App Store"
-      : "Google Play";
+  const destination = banners
+    ? t("Google Play banners")
+    : portfolio
+      ? t("Portfolio")
+      : profile.store === "apple"
+        ? "App Store"
+        : "Google Play";
   const ratio = profile.width / profile.height;
   const tileWidth = Math.max(
     1,
@@ -229,13 +232,17 @@ export function PublicationPreview({
           }
         >
           <div className="publication-sitebar">
-            <Icon name={portfolio ? "canvas" : "phone"} size={15} />
+            <Icon name={portfolio || banners ? "canvas" : "phone"} size={15} />
             <span>{t("{destination} preview", { destination })}</span>
           </div>
           <div className="publication-app">
             <h3>{project.name || t("Untitled app")}</h3>
             <p>
-              {portfolio ? t("Project cards") : t("Screenshots")}
+              {banners
+                ? t("Banners")
+                : portfolio
+                  ? t("Project cards")
+                  : t("Screenshots")}
               <span>{project.shots.length}</span>
             </p>
           </div>
@@ -274,7 +281,9 @@ export function PublicationPreview({
                 role="region"
                 aria-roledescription={t("carousel")}
                 aria-label={t(
-                  "{destination} screenshots. Use arrow keys or swipe to browse.",
+                  banners
+                    ? "Banner designs. Use arrow keys or swipe to browse."
+                    : "{destination} screenshots. Use arrow keys or swipe to browse.",
                   { destination },
                 )}
                 tabIndex={0}
@@ -329,7 +338,9 @@ export function PublicationPreview({
           {portfolio
             ? t("Preview how your exported cards look on a website.")
             : t(
-                "Check how your screenshots read. Store layouts and spacing vary by device.",
+                banners
+                  ? "Check your banner at a smaller size. Google Play may crop or overlay parts of the artwork."
+                  : "Check how your screenshots read. Store layouts and spacing vary by device.",
               )}{" "}
           {width < viewport - 2 && t("Scaled to fit your screen.")}
         </p>
@@ -337,7 +348,9 @@ export function PublicationPreview({
           project.shots.length > profile.maxCount && (
             <p className="publication-limit">
               {t(
-                "Showing all {count} slides. This store slot accepts up to {max} screenshots.",
+                banners
+                  ? "Google Play uses one banner per format and language. Select the design you want and export it individually."
+                  : "Showing all {count} slides. This store slot accepts up to {max} screenshots.",
                 { count: project.shots.length, max: profile.maxCount },
               )}
             </p>

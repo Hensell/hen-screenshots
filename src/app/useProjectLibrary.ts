@@ -1,3 +1,4 @@
+import { bannerTemplates } from "../core/banner-templates";
 import { useEffect, useState } from "react";
 import {
   createProject,
@@ -100,13 +101,27 @@ export function useProjectLibrary({
   }
   function newProject(purpose: ProjectPurpose) {
     const project = createProject(
-      purpose === "portfolio" ? "Untitled portfolio" : "Untitled app",
+      purpose === "banners"
+        ? "Untitled banners"
+        : purpose === "portfolio"
+          ? "Untitled portfolio"
+          : "Untitled app",
     );
     if (purpose === "portfolio") {
       project.exportProfile = "portfolio-card";
       project.style.device = "card";
       project.style.deviceOrientation = "landscape";
       project.style.template = "studio";
+    }
+    if (purpose === "banners") {
+      project.exportProfile = "play-feature-graphic";
+      Object.assign(project.style, bannerTemplates[0].style, {
+        device: "card",
+        deviceOrientation: "landscape",
+        frame: false,
+        camera: false,
+        fit: "contain",
+      });
     }
     setLibraryPurpose(purpose);
     onOpen({ project, assets: [], revision: 0 });

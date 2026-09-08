@@ -75,6 +75,22 @@ export function NewProjectDialog({
           </p>
           <small>{t("Cards, squares & wide layouts · Custom sizes")}</small>
         </button>
+        <button className="purpose-banner" onClick={() => onCreate("banners")}>
+          <div className="purpose-art purpose-art-banner" aria-hidden="true">
+            <span />
+            <span />
+          </div>
+          <div>
+            <strong>
+              {t("Banners")}
+              <Icon name="arrow" />
+            </strong>
+            <p>
+              {t("Create Google Play feature graphics and Android TV banners.")}
+            </p>
+            <small>{t("Fixed store sizes · Upload your image or icon")}</small>
+          </div>
+        </button>
       </div>
     </dialog>
   );

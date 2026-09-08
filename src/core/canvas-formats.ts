@@ -1,11 +1,12 @@
 import {
   getExportProfile,
+  isBannerProfile,
   resolveExportProfile,
   type ExportProfileId,
 } from "./export-profiles";
 import type { Project } from "./model";
 
-export type ProjectPurpose = "stores" | "portfolio";
+export type ProjectPurpose = "stores" | "portfolio" | "banners";
 export type CanvasOrientation = "portrait" | "landscape" | "square";
 export type Store = "apple" | "google";
 type OrientationProfiles = Partial<Record<CanvasOrientation, ExportProfileId>>;
@@ -144,6 +145,7 @@ export const portfolioFormats: readonly PortfolioFormat[] = [
 export function projectPurpose(
   project: Pick<Project, "exportProfile">,
 ): ProjectPurpose {
+  if (isBannerProfile(project.exportProfile)) return "banners";
   return getExportProfile(project.exportProfile).store === "presentation"
     ? "portfolio"
     : "stores";

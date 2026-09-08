@@ -1963,3 +1963,55 @@ svg {
   font-size: 11px;
   line-height: 1.5;
 }
+
+/* Banners are a separate workspace with fixed store formats. */
+.purpose-options > .purpose-banner {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  padding: 12px;
+}
+.purpose-banner strong {
+  margin-top: 0;
+}
+.purpose-banner p {
+  margin-bottom: 10px;
+}
+.purpose-art-banner {
+  height: 112px;
+  background: #eee4d4;
+  padding: 18px;
+}
+.purpose-art-banner span:first-child {
+  width: 55px;
+  height: 7px;
+  box-shadow: 0 12px 0 #506746;
+}
+.purpose-art-banner span:last-child {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  transform: rotate(-10deg);
+  background: #a7b895;
+}
+.library-purpose {
+  flex-wrap: wrap;
+}
+@media (max-width: 560px) {
+  .purpose-options > .purpose-banner {
+    grid-template-columns: 82px minmax(0, 1fr);
+    gap: 8px;
+  }
+  .purpose-art-banner {
+    height: 112px;
+    padding: 10px;
+  }
+  .purpose-art-banner span:first-child {
+    display: none;
+  }
+  .library-purpose {
+    gap: 10px;
+  }
+}

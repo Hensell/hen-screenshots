@@ -1,3 +1,4 @@
+import { isBannerProfile } from "../core/export-profiles";
 import { companionFor } from "../core/device-composition";
 import {
   editDevice,
@@ -128,6 +129,7 @@ export function App() {
     () => sourceProject && localizedProject(sourceProject, locale),
     [sourceProject, locale],
   );
+  const banners = !!project && isBannerProfile(project.exportProfile);
   const [languagesOpen, setLanguagesOpen] = useState(false);
   const [newProjectOpen, setNewProjectOpen] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
@@ -421,6 +423,10 @@ export function App() {
         } else {
           incoming.forEach((asset) => {
             const next = createShot(asset.id, project.shots.length);
+            if (isBannerProfile(project.exportProfile)) {
+              next.title = "Your app, at a glance.";
+              next.subtitle = "A little more to love, every day.";
+            }
             resetComposition(project, next);
             firstId ??= next.id;
             project.shots.push(next);
@@ -431,7 +437,14 @@ export function App() {
       setNotice({
         message: replacement
           ? `${replacedIds.size === 2 ? "Panorama image" : "Image"} replaced. Your layout is preserved. Undo anytime.`
-          : `${incoming.length} screenshot${incoming.length === 1 ? "" : "s"} added. Start with the headline.`,
+          : banners
+            ? t(
+                incoming.length === 1
+                  ? "{count} banner added. Start with the headline."
+                  : "{count} banners added. Start with the headline.",
+                { count: incoming.length },
+              )
+            : `${incoming.length} screenshot${incoming.length === 1 ? "" : "s"} added. Start with the headline.`,
       });
     } catch (error) {
       setNotice({ message: errorMessage(error), error: true });
@@ -940,9 +953,11 @@ export function App() {
                 <span>
                   <small>
                     {t(
-                      projectPurpose(project) === "stores"
-                        ? "App stores"
-                        : "Portfolio",
+                      banners
+                        ? "Banners"
+                        : projectPurpose(project) === "stores"
+                          ? "App stores"
+                          : "Portfolio",
                     )}{" "}
                     {t("· Canvas")}
                   </small>
@@ -1005,11 +1020,11 @@ export function App() {
           </div>
           <aside
             className="filmstrip"
-            aria-label={t("Screenshot series")}
+            aria-label={t(banners ? "Banner designs" : "Screenshot series")}
             tabIndex={0}
           >
             <div className="filmstrip-heading">
-              <h2>{t("Slides")}</h2>
+              <h2>{t(banners ? "Banners" : "Slides")}</h2>
               <span>
                 {project.shots.length}/{LIMITS.shots}
               </span>
@@ -1072,7 +1087,7 @@ export function App() {
                 onClick={() => chooseImages()}
               >
                 <Icon name="plus" size={22} />
-                <span>{t("Add captures")}</span>
+                <span>{t(banners ? "Add banner" : "Add captures")}</span>
               </button>
             </div>
           </aside>
@@ -1115,13 +1130,15 @@ export function App() {
                           ? t("{count} devices", {
                               count: shot.companions.length + 1,
                             })
-                          : t("{device} frame", {
-                              device: t(
-                                deviceNames[
-                                  shot.style.device ?? project.style.device
-                                ],
-                              ),
-                            })}
+                          : banners
+                            ? t("Image or icon")
+                            : t("{device} frame", {
+                                device: t(
+                                  deviceNames[
+                                    shot.style.device ?? project.style.device
+                                  ],
+                                ),
+                              })}
                     </span>
                   </div>
                   <div
@@ -1275,7 +1292,11 @@ export function App() {
                     {t("center stage.")}
                   </h1>
                   <p>
-                    {t("Drop your screenshots here.")}
+                    {t(
+                      banners
+                        ? "Drop your image or icon here."
+                        : "Drop your screenshots here.",
+                    )}
                     <br />
                     {t("We'll give each one its own canvas.")}
                   </p>
@@ -1285,7 +1306,7 @@ export function App() {
                     onClick={() => chooseImages()}
                   >
                     <Icon name="plus" />
-                    {t("Choose screenshots")}
+                    {t(banners ? "Upload image or icon" : "Choose screenshots")}
                   </button>
                   <small>{t("PNG, JPEG, or WebP · Up to 20 MB each")}</small>
                 </div>

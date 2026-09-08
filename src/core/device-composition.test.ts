@@ -40,7 +40,9 @@ describe("multi-device compositions", () => {
   it.each(Object.entries(deviceCompositions))(
     "fits all devices in %s across every export profile",
     (id, families) => {
-      for (const profile of exportProfiles) {
+      for (const profile of exportProfiles.filter(
+        (item) => item.category !== "banner",
+      )) {
         const p = fixture();
         p.exportProfile = profile.id;
         p.customSize = { width: 2560, height: 640 };

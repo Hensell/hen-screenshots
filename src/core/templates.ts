@@ -1,3 +1,8 @@
+import {
+  bannerTemplates,
+  bannerLayout,
+  isBannerTemplate,
+} from "./banner-templates";
 import { multiDeviceTemplates } from "./multi-device-templates";
 import {
   compositionId,
@@ -395,7 +400,7 @@ export const templates: readonly Template[] = [
 ];
 
 export function getTemplate(id: TemplateId): Template {
-  const template = templates.find(
+  const template = [...templates, ...bannerTemplates].find(
     (item) => item.id === (panoramaStart(id) ?? id),
   );
   if (!template) throw new Error("This template is not supported.");
@@ -406,6 +411,8 @@ export function getTemplate(id: TemplateId): Template {
 export function templateLayout(project: Project, style: Style) {
   const template = getTemplate(style.template);
   const canvas = canonicalCanvas(project);
+  if (isBannerTemplate(style.template))
+    return { ...template, ...bannerLayout(project, style) };
   if (compositionId(style.template))
     return { ...template, ...compositionLayout(project, style) };
   if (isPanoramaTemplate(style.template))

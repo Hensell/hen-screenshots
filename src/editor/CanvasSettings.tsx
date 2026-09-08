@@ -3,6 +3,9 @@ import { useId, useState, type ReactNode } from "react";
 import { errorMessage, type Project } from "../core/model";
 import { changeCustomSize, changeExportProfile } from "../core/templates";
 import {
+  BANNER_REVIEW_DATE,
+  isBannerProfile,
+  exportProfiles,
   CUSTOM_SIZE_LIMITS,
   getExportProfile,
   PROFILE_REVIEW_DATE,
@@ -223,6 +226,48 @@ export function CanvasSettings({
   function select(id: ExportProfileId) {
     edit((draft) => changeExportProfile(draft, id));
   }
+  if (isBannerProfile(project.exportProfile))
+    return (
+      <section className="property-section export-format canvas-settings">
+        <h3>{t("Google Play banners")}</h3>
+        <label className="field">
+          {t("Banner format")}
+          <select
+            value={profile.id}
+            onChange={(event) => select(event.target.value as ExportProfileId)}
+          >
+            {exportProfiles
+              .filter((item) => isBannerProfile(item.id))
+              .map((item) => (
+                <option key={item.id} value={item.id}>
+                  {t(item.name)}
+                </option>
+              ))}
+          </select>
+        </label>
+        <strong className="format-dimensions">
+          {profile.width} × {profile.height}
+        </strong>
+        <p className="field-help">{t("RGB PNG · No transparency")}</p>
+        <p className="field-help">{t(profile.note)}</p>
+        <p className="field-help">
+          {t(
+            "Keep key text and artwork away from the edges. Google Play may crop or overlay parts of the banner.",
+          )}
+        </p>
+        <a
+          className="source-link"
+          href={profile.source}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {t("Google Play requirements")} ↗
+        </a>
+        <p className="field-help">
+          {t("Checked {date}", { date: BANNER_REVIEW_DATE })}
+        </p>
+      </section>
+    );
   return (
     <section className="property-section export-format canvas-settings">
       <h3>{portfolio ? t("Portfolio canvas") : t("Store screenshots")}</h3>

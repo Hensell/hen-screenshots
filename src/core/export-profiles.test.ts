@@ -55,7 +55,8 @@ describe("store export profiles", () => {
         validateDimensions(profile, profile.width * 2, profile.height * 2),
       ).toThrow();
       if (profile.store === "apple") expect(profile.maxCount).toBe(10);
-      if (profile.store === "google") expect(profile.maxCount).toBe(8);
+      if (profile.store === "google")
+        expect(profile.maxCount).toBe(profile.category === "banner" ? 1 : 8);
     }
     expect(() =>
       validateDimensions(
@@ -128,7 +129,9 @@ describe("adaptive compositions", () => {
     (device) => {
       for (const orientation of ["portrait", "landscape"] as const)
         for (const frame of [true, false])
-          for (const profile of exportProfiles)
+          for (const profile of exportProfiles.filter(
+            (item) => item.category !== "banner",
+          ))
             for (const template of templates.filter(
               (item) => !isPanoramaTemplate(item.id) && !compositionId(item.id),
             )) {

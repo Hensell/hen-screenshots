@@ -1,3 +1,4 @@
+import { isBannerProfile } from "../core/export-profiles";
 import { DeviceCompositionInspector } from "./DeviceCompositionInspector";
 import type { DeviceElement } from "../core/model";
 import { useT } from "../i18n/react";
@@ -131,6 +132,7 @@ export function Inspector({
   locale: string | null;
 }) {
   const t = useT();
+  const banners = isBannerProfile(project.exportProfile);
   const panelId = useId();
   const inspectorRef = useRef<HTMLElement>(null);
   const tabRefs = useRef<Partial<Record<InspectorTab, HTMLButtonElement>>>({});
@@ -232,7 +234,7 @@ export function Inspector({
       ref={inspectorRef}
       id="slide-inspector"
       className="inspector inspector-tabbed"
-      aria-label={t("Screenshot properties")}
+      aria-label={t(banners ? "Banner properties" : "Screenshot properties")}
       tabIndex={0}
     >
       <div className="inspector-header">
@@ -241,7 +243,7 @@ export function Inspector({
             <h2>
               {tab === "canvas"
                 ? t("Project canvas")
-                : t("Slide {number}", {
+                : t(banners ? "Banner {number}" : "Slide {number}", {
                     number: String(project.shots.indexOf(shot) + 1).padStart(
                       2,
                       "0",
@@ -304,8 +306,11 @@ export function Inspector({
                 tabRefs.current[inspectorTabs[next].id]?.focus();
               }}
             >
-              <Icon name={item.icon} size={17} />
-              {t(item.label)}
+              <Icon
+                name={banners && item.id === "device" ? "image" : item.icon}
+                size={17}
+              />
+              {t(banners && item.id === "device" ? "Image" : item.label)}
             </button>
           ))}
         </div>
@@ -522,7 +527,9 @@ export function Inspector({
             <h3>{t("Keep the series together")}</h3>
             <p className="field-help">
               {t(
-                "Use these colors, typography, and frame across every screenshot. Templates and text are preserved. Devices are resized to fit if their shape changes.",
+                banners
+                  ? "Use these colors and typography across every banner. Templates, text, and image positions are preserved."
+                  : "Use these colors, typography, and frame across every screenshot. Templates and text are preserved. Devices are resized to fit if their shape changes.",
               )}
             </p>
             <button
@@ -813,11 +820,13 @@ export function Inspector({
             <>
               <section className="property-section device-size-section">
                 <div className="section-heading">
-                  <h3>{t("Device size")}</h3>
+                  <h3>{t(banners ? "Image size" : "Device size")}</h3>
                   <button
                     type="button"
                     className="text-button"
-                    aria-label={t("Reset device size")}
+                    aria-label={t(
+                      banners ? "Reset image size" : "Reset device size",
+                    )}
                     onClick={() =>
                       updateShot((target) =>
                         resizeDevice(
@@ -833,7 +842,7 @@ export function Inspector({
                   </button>
                 </div>
                 {range(
-                  "Device size",
+                  banners ? "Image size" : "Device size",
                   "width",
                   PLACEMENT_LIMITS.width.min,
                   PLACEMENT_LIMITS.width.max,
@@ -846,99 +855,112 @@ export function Inspector({
                 </p>
               </section>
               <section className="property-section">
-                <h3>{t("Device frame")}</h3>
-                <p className="section-intro">
-                  {pair
-                    ? t("Frame and placement are shared by both slides.")
-                    : t("Choose a frame for this slide.")}
-                </p>
-                <div
-                  className="device-options"
-                  role="group"
-                  aria-label={t("Device family")}
-                >
-                  {Object.entries(deviceNames).map(([device, name]) => (
+                {banners ? (
+                  <>
+                    <h3>{t("Image or icon")}</h3>
+                    <p className="field-help">
+                      {t(
+                        "Your image keeps its proportions and transparency. The exported banner has an opaque background.",
+                      )}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h3>{t("Device frame")}</h3>
+                    <p className="section-intro">
+                      {pair
+                        ? t("Frame and placement are shared by both slides.")
+                        : t("Choose a frame for this slide.")}
+                    </p>
+                    <div
+                      className="device-options"
+                      role="group"
+                      aria-label={t("Device family")}
+                    >
+                      {Object.entries(deviceNames).map(([device, name]) => (
+                        <button
+                          type="button"
+                          key={device}
+                          aria-pressed={style.device === device}
+                          onClick={() =>
+                            setStyle({
+                              device: device as Style["device"],
+                              ...(device === "card" && style.device !== "card"
+                                ? { deviceOrientation: "landscape" as const }
+                                : {}),
+                            })
+                          }
+                        >
+                          <span className={`device-glyph ${device}`} />
+                          {t(name)}
+                        </button>
+                      ))}
+                    </div>
                     <button
                       type="button"
-                      key={device}
-                      aria-pressed={style.device === device}
-                      onClick={() =>
-                        setStyle({
-                          device: device as Style["device"],
-                          ...(device === "card" && style.device !== "card"
-                            ? { deviceOrientation: "landscape" as const }
-                            : {}),
-                        })
-                      }
+                      className="orientation-link"
+                      onClick={() => {
+                        onTabChange("canvas");
+                        tabRefs.current.canvas?.focus({ preventScroll: true });
+                      }}
                     >
-                      <span className={`device-glyph ${device}`} />
-                      {t(name)}
+                      <Icon name="canvas" size={16} />
+                      {t("Canvas & frame orientation")}{" "}
+                      <Icon name="right" size={14} />
                     </button>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="orientation-link"
-                  onClick={() => {
-                    onTabChange("canvas");
-                    tabRefs.current.canvas?.focus({ preventScroll: true });
-                  }}
-                >
-                  <Icon name="canvas" size={16} />
-                  {t("Canvas & frame orientation")}{" "}
-                  <Icon name="right" size={14} />
-                </button>
-                <label className="check-field">
-                  <input
-                    type="checkbox"
-                    checked={style.frame}
-                    onChange={(event) =>
-                      setStyle({ frame: event.target.checked })
-                    }
-                  />{" "}
-                  {style.device === "card"
-                    ? t("Rounded corners")
-                    : t("Show device frame")}
-                </label>
-                {style.device !== "card" && (
-                  <label className="check-field">
-                    <input
-                      type="checkbox"
-                      checked={style.camera}
-                      onChange={(event) =>
-                        setStyle({ camera: event.target.checked })
-                      }
-                    />{" "}
-                    {style.device === "ios"
-                      ? t("Add Dynamic Island")
-                      : t("Add front camera")}
-                  </label>
+                    <label className="check-field">
+                      <input
+                        type="checkbox"
+                        checked={style.frame}
+                        onChange={(event) =>
+                          setStyle({ frame: event.target.checked })
+                        }
+                      />{" "}
+                      {style.device === "card"
+                        ? t("Rounded corners")
+                        : t("Show device frame")}
+                    </label>
+                    {style.device !== "card" && (
+                      <label className="check-field">
+                        <input
+                          type="checkbox"
+                          checked={style.camera}
+                          onChange={(event) =>
+                            setStyle({ camera: event.target.checked })
+                          }
+                        />{" "}
+                        {style.device === "ios"
+                          ? t("Add Dynamic Island")
+                          : t("Add front camera")}
+                      </label>
+                    )}
+                    <p className="field-help">
+                      {style.device === "card"
+                        ? t(
+                            "A simple 4:3 card with a soft shadow. Switch orientation for a vertical card.",
+                          )
+                        : t(
+                            "Original status and navigation bars stay in your screenshot. Keep the cutout off if one is already visible.",
+                          )}
+                    </p>
+                    <label className="field">
+                      {t("Screenshot fit")}
+                      <select
+                        value={style.fit}
+                        onChange={(event) =>
+                          setStyle({ fit: event.target.value as Style["fit"] })
+                        }
+                      >
+                        <option value="contain">
+                          {t("Fit entire screenshot")}
+                        </option>
+                        <option value="cover">
+                          {t("Fill screen · crop edges")}
+                        </option>
+                      </select>
+                    </label>
+                  </>
                 )}
-                <p className="field-help">
-                  {style.device === "card"
-                    ? t(
-                        "A simple 4:3 card with a soft shadow. Switch orientation for a vertical card.",
-                      )
-                    : t(
-                        "Original status and navigation bars stay in your screenshot. Keep the cutout off if one is already visible.",
-                      )}
-                </p>
-                <label className="field">
-                  {t("Screenshot fit")}
-                  <select
-                    value={style.fit}
-                    onChange={(event) =>
-                      setStyle({ fit: event.target.value as Style["fit"] })
-                    }
-                  >
-                    <option value="contain">
-                      {t("Fit entire screenshot")}
-                    </option>
-                    <option value="cover">
-                      {t("Fill screen · crop edges")}
-                    </option>
-                  </select>
-                </label>
                 <button
                   type="button"
                   className="text-button"
@@ -977,7 +999,11 @@ export function Inspector({
                   <button
                     type="button"
                     className="text-button"
-                    aria-label={t("Reset device placement")}
+                    aria-label={t(
+                      banners
+                        ? "Reset image placement"
+                        : "Reset device placement",
+                    )}
                     onClick={() =>
                       updateShot((shot) => {
                         resetComposition(project, shot);
@@ -999,10 +1025,17 @@ export function Inspector({
                   PLACEMENT_LIMITS.y.min,
                   PLACEMENT_LIMITS.y.max,
                 )}
-                {range("Device rotation", "rotation", -20, 20)}
+                {range(
+                  banners ? "Image rotation" : "Device rotation",
+                  "rotation",
+                  -20,
+                  20,
+                )}
                 <p className="field-help">
                   {t(
-                    "Drag the device to move it. Reset restores the template’s size, position, and rotation.",
+                    banners
+                      ? "Drag the image to move it. Reset restores the template’s size, position, and rotation."
+                      : "Drag the device to move it. Reset restores the template’s size, position, and rotation.",
                   )}
                 </p>
               </section>

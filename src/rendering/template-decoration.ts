@@ -1,3 +1,4 @@
+import { drawBannerDecoration } from "./banner-decoration";
 import { drawCompositionDecoration } from "./composition-decoration";
 import Konva from "konva";
 import { drawHolidayDecoration } from "./holiday-decoration";
@@ -212,6 +213,7 @@ export function drawTemplateDecoration(
   panel: Rect,
 ) {
   const h = canvas.height;
+  drawBannerDecoration(layer, style, panel);
   drawCompositionDecoration(layer, style, panel);
   drawHolidayDecoration(layer, style, h, panel);
   drawHalloweenDecoration(layer, style, h, panel);

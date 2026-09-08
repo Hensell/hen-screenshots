@@ -77,6 +77,21 @@ The download dialog explains the size before starting: roughly **112–120 MB pe
 
 Translations support up to **10 languages per project**. The initial language list uses scripts covered by the bundled fonts; RTL and CJK typesetting are not yet offered. PNG ZIP exports are limited to 250 MB before packaging; split larger exports into smaller batches.
 
+## Google Play banners
+
+Choose **New project → Banners** to create store artwork in a separate workspace. Start by uploading an image or app icon (PNG, JPEG, or still WebP), then choose one of six banner templates: **Signal, Brand Orbit, Wordmark, Coral Ribbon, Dusk, and Paper Parade**.
+
+| Format | Export size | Used for |
+| --- | --- | --- |
+| Feature graphic | **1024 × 500 px** | Required for your Google Play listing |
+| Android TV banner | **1280 × 720 px** | Required for Android TV apps |
+
+Use **Canvas → Banner format** to switch between these fixed sizes. Drag the image or text, resize the image, and use the reset controls to return to the template's placement. Transparent source images retain their shape against the artwork; every exported banner is an **opaque 24-bit RGB PNG**. Brand kits, language versions, local saving, and project backups work here too.
+
+You can keep several alternatives in one project. Select and export the design you want; Google Play uses one banner per format and language. Selecting multiple languages creates a ZIP with a folder per language. Keep essential text and artwork away from the edges, which Google Play may crop or overlay. A feature graphic should communicate your app's experience; avoid simply enlarging its icon.
+
+Dimensions and file requirements checked on **September 8, 2026** against [Google Play's official preview asset requirements](https://support.google.com/googleplay/android-developer/answer/9866151?hl=en).
+
 ## Your screenshots stay with you
 
 **Brand kits** are available from the project library and **Design → Brand kit**. Start with **New kit**, capture your existing design with **From slide**, or import a `.henbrand` file. Choose Manrope or Fraunces for each text role, save the kit, and choose where to apply it. Your captions, device positions, templates, and export dimensions stay intact. The kit’s logo identifies the app in your library; it is not automatically placed on screenshots.

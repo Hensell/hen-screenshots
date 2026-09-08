@@ -1,3 +1,4 @@
+import { isBannerProfile } from "../core/export-profiles";
 import { deviceShot } from "../core/device-composition";
 import type { DeviceElement } from "../core/model";
 import { isPanoramaEnd, panoramaStart } from "../core/panorama-families";
@@ -399,7 +400,8 @@ export function createScene(
         shotId: shot.id,
         guideBounds: { x: 0, y: 0, width: device.width, height: device.height },
       });
-      drawDeviceFrame(phone, device);
+      const banner = isBannerProfile(project.exportProfile);
+      if (!banner) drawDeviceFrame(phone, device);
 
       const screen = new Konva.Group({
         clipFunc(context) {
@@ -414,7 +416,12 @@ export function createScene(
           context.closePath();
         },
       });
-      screen.add(new Konva.Rect({ ...device.screen, fill: "#FFFFFF" }));
+      screen.add(
+        new Konva.Rect({
+          ...device.screen,
+          fill: banner ? "rgba(0,0,0,0)" : "#FFFFFF",
+        }),
+      );
       screen.add(
         new Konva.Image({
           image: source,
@@ -424,7 +431,7 @@ export function createScene(
       phone.add(screen);
 
       // Imported status/navigation bars stay in their original pixels. No synthetic bars.
-      drawDeviceDetails(phone, device, style.camera);
+      if (!banner) drawDeviceDetails(phone, device, style.camera);
       if (options.onMove) {
         makeMovable(phone, element, options, shot.id);
         phone.on("dragend", () =>

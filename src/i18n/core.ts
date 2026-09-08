@@ -1,3 +1,4 @@
+import { bannerMessages } from "./banner-messages";
 import { compositionMessages } from "./composition-messages";
 import { appMessages } from "./app-messages";
 import { editorMessages } from "./editor-messages";
@@ -27,6 +28,7 @@ export const messageCatalog: Record<string, readonly [string, string]> = {
   ...halloweenMessages,
   ...holidayMessages,
   ...compositionMessages,
+  ...bannerMessages,
 };
 
 export function detectInterfaceLocale(

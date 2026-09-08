@@ -30,6 +30,7 @@ export function ExportDialog({
 }) {
   const [exportLanguages, setExportLanguages] = useState([currentLanguage]);
   const t = useT();
+  const banners = profile.category === "banner";
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current!;
@@ -95,7 +96,7 @@ export function ExportDialog({
             <img
               className="export-preview"
               src={file.url}
-              alt={t("Exported screenshot")}
+              alt={t(banners ? "Exported banner" : "Exported screenshot")}
               width={profile.width}
               height={profile.height}
             />
@@ -146,7 +147,13 @@ export function ExportDialog({
             onClick={() => void onExport(false, exportLanguages)}
           >
             <Icon name="image" />
-            {t(pair ? "Export this panorama" : "Export this screenshot")}
+            {t(
+              banners
+                ? "Export this banner"
+                : pair
+                  ? "Export this panorama"
+                  : "Export this screenshot",
+            )}
             <span>
               {exportLanguages.length > 1
                 ? "ZIP"
@@ -162,9 +169,13 @@ export function ExportDialog({
           >
             <Icon name="download" />
             {t(
-              count === 1
-                ? "Export {count} screenshot"
-                : "Export all {count} screenshots",
+              banners
+                ? count === 1
+                  ? "Export {count} banner"
+                  : "Export all {count} banners"
+                : count === 1
+                  ? "Export {count} screenshot"
+                  : "Export all {count} screenshots",
               { count },
             )}
             <span>ZIP</span>
@@ -177,7 +188,9 @@ export function ExportDialog({
           {count > profile.maxCount && (
             <strong>
               {t(
-                "This series has {count} screenshots; the selected destination allows {max}. Export one at a time or reduce the series.",
+                banners
+                  ? "Google Play uses one banner per format and language. Select the design you want and export it individually."
+                  : "This series has {count} screenshots; the selected destination allows {max}. Export one at a time or reduce the series.",
                 { count, max: profile.maxCount },
               )}
             </strong>

@@ -162,20 +162,21 @@ describe("panorama creation and editing", () => {
     expect(linkedShots(project, "missing")).toEqual([]);
   });
 
-  it.each(exportProfiles.map((profile) => profile.id))(
-    "keeps one shared scene when reflowing to %s",
-    (profile) => {
-      const project = projectWithShots(1);
-      applyPanorama(project, project.shots[0].id);
-      changeExportProfile(project, profile);
-      const pair = assertPair(project, project.shots[0].id);
-      const left = templateLayout(project, resolveStyle(project, pair[0]));
-      const right = templateLayout(project, resolveStyle(project, pair[1]));
-      expect(left.phone).toEqual(right.phone);
-      expect(left.title.x).not.toBe(right.title.x);
-      expect(pair[0].phone).toEqual(left.phone);
-    },
-  );
+  it.each(
+    exportProfiles
+      .filter((item) => item.category !== "banner")
+      .map((profile) => profile.id),
+  )("keeps one shared scene when reflowing to %s", (profile) => {
+    const project = projectWithShots(1);
+    applyPanorama(project, project.shots[0].id);
+    changeExportProfile(project, profile);
+    const pair = assertPair(project, project.shots[0].id);
+    const left = templateLayout(project, resolveStyle(project, pair[0]));
+    const right = templateLayout(project, resolveStyle(project, pair[1]));
+    expect(left.phone).toEqual(right.phone);
+    expect(left.title.x).not.toBe(right.title.x);
+    expect(pair[0].phone).toEqual(left.phone);
+  });
 });
 
 describe("panorama document invariants", () => {
@@ -252,7 +253,9 @@ describe("panorama spread geometry", () => {
         profile: ExportProfileId;
         custom?: { width: number; height: number };
       }[] = [
-        ...exportProfiles.map((profile) => ({ profile: profile.id })),
+        ...exportProfiles
+          .filter((item) => item.category !== "banner")
+          .map((profile) => ({ profile: profile.id })),
         ...[
           { width: 4096, height: 1024 },
           { width: 1024, height: 4096 },

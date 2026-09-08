@@ -1,3 +1,5 @@
+import { bannerTemplates } from "../core/banner-templates";
+import { isBannerProfile } from "../core/export-profiles";
 import { compositionId } from "../core/device-composition-spec";
 import { useT } from "../i18n/react";
 import { panoramaStart } from "../core/panorama-families";
@@ -34,6 +36,7 @@ import {
   paginateCatalog,
   queryCatalog,
   templateCatalogIndex,
+  bannerCatalogIndex,
   normalizeSearch,
   type CatalogFilters,
   type CatalogPageSize,
@@ -180,6 +183,11 @@ export function TemplateGallery({
 }) {
   const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
+  const banners = isBannerProfile(project.exportProfile);
+  const availableTemplates = banners ? bannerTemplates : templates;
+  const catalogIndex = isBannerProfile(project.exportProfile)
+    ? bannerCatalogIndex
+    : templateCatalogIndex;
   const favorites = useSyncExternalStore(
     subscribeTemplateFavorites,
     getTemplateFavorites,
@@ -207,7 +215,7 @@ export function TemplateGallery({
   const revealSelected = useRef(false);
   const localizedIndex = useMemo(
     () =>
-      templateCatalogIndex.map((entry) => ({
+      catalogIndex.map((entry) => ({
         ...entry,
         text: `${entry.text} ${normalizeSearch(
           [
@@ -234,13 +242,13 @@ export function TemplateGallery({
           ].join(" "),
         )}`,
       })),
-    [t],
+    [t, catalogIndex],
   );
   const results = useMemo(
     () => queryCatalog(localizedIndex, filters, favorites.ids),
     [localizedIndex, filters, favorites.ids],
   );
-  const favoriteCount = templateCatalogIndex.filter(({ item }) =>
+  const favoriteCount = catalogIndex.filter(({ item }) =>
     favorites.ids.has(item.id),
   ).length;
   const pagination = useMemo(
@@ -283,7 +291,7 @@ export function TemplateGallery({
   };
   const showSelected = () => {
     revealSelected.current = true;
-    const items = selectedInResults ? results.items : templates;
+    const items = selectedInResults ? results.items : availableTemplates;
     if (!selectedInResults) setFilters(defaultCatalogFilters);
     setCatalogPage(
       Math.floor(items.findIndex((item) => item.id === selected) / pageSize) +
@@ -348,9 +356,14 @@ export function TemplateGallery({
         <div>
           <h2 id="template-heading">{t("Template library")}</h2>
           <p>
-            {t("{count} designs. Previewed with your screenshots and canvas.", {
-              count: templates.length,
-            })}
+            {t(
+              banners
+                ? "{count} banner designs. Previewed with your image and canvas."
+                : "{count} designs. Previewed with your screenshots and canvas.",
+              {
+                count: availableTemplates.length,
+              },
+            )}
           </p>
         </div>
         <button
@@ -456,22 +469,24 @@ export function TemplateGallery({
               </button>
             ))}
           </fieldset>
-          <label className="catalog-filter-field">
-            {t("Composition")}
-            <select
-              value={filters.layout}
-              onChange={(event) =>
-                updateFilters({
-                  layout: event.target.value as CatalogFilters["layout"],
-                })
-              }
-            >
-              <option value="all">{t("Any composition")}</option>
-              <option value="single">{t("Single slide")}</option>
-              <option value="multi-device">{t("Multiple devices")}</option>
-              <option value="panorama">{t("2-slide panorama")}</option>
-            </select>
-          </label>
+          {!banners && (
+            <label className="catalog-filter-field">
+              {t("Composition")}
+              <select
+                value={filters.layout}
+                onChange={(event) =>
+                  updateFilters({
+                    layout: event.target.value as CatalogFilters["layout"],
+                  })
+                }
+              >
+                <option value="all">{t("Any composition")}</option>
+                <option value="single">{t("Single slide")}</option>
+                <option value="multi-device">{t("Multiple devices")}</option>
+                <option value="panorama">{t("2-slide panorama")}</option>
+              </select>
+            </label>
+          )}
           <label className="catalog-filter-field">
             {t("Background")}
             <select
@@ -499,7 +514,11 @@ export function TemplateGallery({
             </button>
           )}
           <p className="catalog-filter-note">
-            {t("Every template adapts to your project’s device and format.")}
+            {t(
+              banners
+                ? "Every banner design adapts to the selected Google Play format."
+                : "Every template adapts to your project’s device and format.",
+            )}
           </p>
         </aside>
         <section className="catalog-results" aria-label={t("Template results")}>
@@ -607,7 +626,9 @@ export function TemplateGallery({
             className="template-gallery"
             ref={galleryRef}
             role="group"
-            aria-label={t("Screenshot templates")}
+            aria-label={t(
+              banners ? "Banner templates" : "Screenshot templates",
+            )}
           >
             {pagination.items.map((template) => (
               <TemplateCard
@@ -755,7 +776,9 @@ export function TemplateGallery({
                   : t(
                       compositionId(selected)
                         ? "The template sets up each device. Your text and matching screenshots are preserved."
-                        : "The layout resets. Your text, images, and frames are preserved.",
+                        : banners
+                          ? "The layout resets. Your text and images are preserved."
+                          : "The layout resets. Your text, images, and frames are preserved.",
                     )}
           </p>
           {!selectedInResults && (
@@ -773,7 +796,9 @@ export function TemplateGallery({
               onChange={(event) => setAll(event.target.value === "all")}
             >
               <option value="selected">
-                {pair ? t("This pair (2 slides)") : t("This screenshot")}
+                {pair
+                  ? t("This pair (2 slides)")
+                  : t(banners ? "This banner" : "This screenshot")}
               </option>
               <option value="all" disabled={panoramic}>
                 {t("Whole series ({count})", { count: project.shots.length })}

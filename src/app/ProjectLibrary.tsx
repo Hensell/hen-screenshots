@@ -98,13 +98,19 @@ export function ProjectLibrary({
           role="group"
           aria-label={t("Project workspace")}
         >
-          {(["stores", "portfolio"] as const).map((purpose) => (
+          {(["stores", "portfolio", "banners"] as const).map((purpose) => (
             <button
               key={purpose}
               aria-pressed={libraryPurpose === purpose}
               onClick={() => setLibraryPurpose(purpose)}
             >
-              {t(purpose === "stores" ? "App stores" : "Portfolio")}
+              {t(
+                purpose === "banners"
+                  ? "Banners"
+                  : purpose === "stores"
+                    ? "App stores"
+                    : "Portfolio",
+              )}
               <span>
                 {
                   projects.filter((item) => projectPurpose(item) === purpose)
@@ -131,7 +137,12 @@ export function ProjectLibrary({
                   }}
                 >
                   <span>{item.name || t("Untitled app")}</span>
-                  <Icon name="phone" size={70} />
+                  <Icon
+                    name={
+                      projectPurpose(item) === "banners" ? "canvas" : "phone"
+                    }
+                    size={70}
+                  />
                   <span className="cover-rule" />
                 </div>
                 <div className="project-card-details">
@@ -139,9 +150,13 @@ export function ProjectLibrary({
                     <strong>{item.name || t("Untitled app")}</strong>
                     <small>
                       {t(
-                        item.shots.length === 1
-                          ? "{count} screenshot"
-                          : "{count} screenshots",
+                        projectPurpose(item) === "banners"
+                          ? item.shots.length === 1
+                            ? "{count} banner"
+                            : "{count} banners"
+                          : item.shots.length === 1
+                            ? "{count} screenshot"
+                            : "{count} screenshots",
                         { count: item.shots.length },
                       )}{" "}
                       ·{" "}
@@ -164,9 +179,11 @@ export function ProjectLibrary({
             <Icon name="folder" size={28} />
             <div>
               <h3>
-                {libraryPurpose === "stores"
-                  ? t("A place for your next launch.")
-                  : t("A place for your best work.")}
+                {libraryPurpose === "banners"
+                  ? t("A place for your next banner.")
+                  : libraryPurpose === "stores"
+                    ? t("A place for your next launch.")
+                    : t("A place for your best work.")}
               </h3>
               <p>
                 {t(

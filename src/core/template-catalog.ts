@@ -1,3 +1,4 @@
+import { bannerTemplates } from "./banner-templates";
 import { compositionId } from "./device-composition";
 import { isPanoramaTemplate } from "./panorama-families";
 import { templates } from "./templates";
@@ -173,20 +174,25 @@ export function catalogPageNumbers(
   return result;
 }
 
-const catalogItems = templates.map((template) => ({
-  ...template,
-  layout: isPanoramaTemplate(template.id)
-    ? ("panorama" as const)
-    : compositionId(template.id)
-      ? ("multi-device" as const)
-      : ("single" as const),
-  background: template.style.backgroundMode,
-  appearance:
-    template.appearance ??
-    (template.keywords?.includes("dark")
-      ? "dark"
-      : template.keywords?.includes("colorful") || template.id === "split"
-        ? "colorful"
-        : "light"),
-}));
-export const templateCatalogIndex = createCatalogIndex(catalogItems);
+function catalogItems(items: typeof templates) {
+  return items.map((template) => ({
+    ...template,
+    layout: isPanoramaTemplate(template.id)
+      ? ("panorama" as const)
+      : compositionId(template.id)
+        ? ("multi-device" as const)
+        : ("single" as const),
+    background: template.style.backgroundMode,
+    appearance:
+      template.appearance ??
+      (template.keywords?.includes("dark")
+        ? "dark"
+        : template.keywords?.includes("colorful") || template.id === "split"
+          ? "colorful"
+          : "light"),
+  }));
+}
+export const templateCatalogIndex = createCatalogIndex(catalogItems(templates));
+export const bannerCatalogIndex = createCatalogIndex(
+  catalogItems(bannerTemplates),
+);

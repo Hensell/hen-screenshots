@@ -4,12 +4,16 @@ export const APPLE_SCREENSHOTS =
   "https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/";
 export const PLAY_SCREENSHOTS =
   "https://support.google.com/googleplay/android-developer/answer/9866151?hl=en";
+export const BANNER_REVIEW_DATE = "2026-09-08";
+export function isBannerProfile(id: string): boolean {
+  return id === "play-feature-graphic" || id === "play-tv-banner";
+}
 export const PROFILE_REVIEW_DATE = "2026-09-06";
 interface ProfileDefinition {
   id: string;
   name: string;
   store: "apple" | "google" | "presentation";
-  category: "phone" | "tablet" | "desktop";
+  category: "phone" | "tablet" | "desktop" | "banner";
   width: number;
   height: number;
   maxCount: number;
@@ -42,6 +46,28 @@ export function validateCustomSize(size: {
 
 // Fixed, dated store presets. IDs include their device slot, not just an aspect ratio.
 export const exportProfiles = [
+  {
+    id: "play-feature-graphic",
+    name: "Google Play · Feature graphic",
+    store: "google",
+    category: "banner",
+    width: 1024,
+    height: 500,
+    maxCount: 1,
+    note: "Required for your store listing. Upload one feature graphic per language: 1024 × 500 pixels, without transparency.",
+    source: PLAY_SCREENSHOTS,
+  },
+  {
+    id: "play-tv-banner",
+    name: "Google Play · Android TV banner",
+    store: "google",
+    category: "banner",
+    width: 1280,
+    height: 720,
+    maxCount: 1,
+    note: "Required only for Android TV apps. Upload one banner per language: 1280 × 720 pixels, without transparency.",
+    source: PLAY_SCREENSHOTS,
+  },
   {
     id: "play-phone-portrait",
     name: "Google Play · Phone · Portrait",
@@ -321,6 +347,22 @@ export function validateDimensions(
     throw new Error(
       "The exported image does not match the selected preset dimensions.",
     );
+  if (isBannerProfile(profile.id)) {
+    const expected =
+      profile.id === "play-feature-graphic" ? [1024, 500] : [1280, 720];
+    if (
+      profile.store !== "google" ||
+      profile.category !== "banner" ||
+      width !== expected[0] ||
+      height !== expected[1]
+    )
+      throw new Error(
+        "Google Play banners must use their exact required dimensions.",
+      );
+    return;
+  }
+  if (profile.category === "banner")
+    throw new Error("This banner format is not supported.");
   if (profile.store === "presentation") validateCustomSize({ width, height });
   if (profile.store === "google") {
     const short = Math.min(width, height),

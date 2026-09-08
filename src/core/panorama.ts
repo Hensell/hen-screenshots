@@ -50,7 +50,11 @@ export function editLinkedShots(
   linkedShots(project, shotId).forEach(recipe);
 }
 export function shotCapacity(project: Project): number {
-  return Math.min(LIMITS.shots, resolveExportProfile(project).maxCount);
+  const profile = resolveExportProfile(project);
+  // Banner projects can keep alternatives; publishing still uses one per language.
+  return profile.category === "banner"
+    ? LIMITS.shots
+    : Math.min(LIMITS.shots, profile.maxCount);
 }
 
 export const panoramaStyle = {

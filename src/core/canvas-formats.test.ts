@@ -31,7 +31,11 @@ describe("separate canvas workflows", () => {
       const slot = storeSlotForProfile(profile.id);
       const format = portfolioFormatForProfile(profile.id);
       expect(purpose).toBe(
-        profile.store === "presentation" ? "portfolio" : "stores",
+        profile.category === "banner"
+          ? "banners"
+          : profile.store === "presentation"
+            ? "portfolio"
+            : "stores",
       );
       expect(Boolean(slot)).toBe(purpose === "stores");
       expect(Boolean(format)).toBe(purpose === "portfolio");

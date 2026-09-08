@@ -7,6 +7,7 @@ import {
 } from "./panorama-families";
 import {
   DEFAULT_CUSTOM_SIZE,
+  isBannerProfile,
   DEFAULT_EXPORT_PROFILE,
   exportProfiles,
   validateCustomSize,
@@ -99,6 +100,12 @@ export const templateIds = [
   "firework",
   "countdown",
   "first-light",
+  "banner-signal",
+  "banner-orbit",
+  "banner-editorial",
+  "banner-ribbon",
+  "banner-dusk",
+  "banner-confetti",
 ] as const;
 export type TemplateId = (typeof templateIds)[number];
 export type TextElement = "title" | "subtitle";
@@ -342,7 +349,16 @@ export function createShot(assetId: string, index: number): Shot {
   };
 }
 export function resolveStyle(project: Project, shot: Shot): Style {
-  return { ...project.style, ...shot.style };
+  const style = { ...project.style, ...shot.style };
+  // Banners contain artwork, never a device shell, including after applying a brand kit.
+  if (isBannerProfile(project.exportProfile)) {
+    style.device = "card";
+    style.deviceOrientation = "landscape";
+    style.frame = false;
+    style.camera = false;
+    style.fit = "contain";
+  }
+  return style;
 }
 export function errorMessage(error: unknown): string {
   return error instanceof Error
