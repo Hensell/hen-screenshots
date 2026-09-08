@@ -404,10 +404,13 @@ export function createScene(
         interaction: options,
         fitWords,
         fontSize: style.titleSize * template.fontScale,
-        weight:
-          template.titleWeight ??
-          (style.template === "classic" ? "700" : "800"),
-        fontFamily: template.titleFont,
+        weight: style.titleFont
+          ? style.titleFont === "Fraunces"
+            ? "600"
+            : "800"
+          : (template.titleWeight ??
+            (style.template === "classic" ? "700" : "800")),
+        fontFamily: style.titleFont ?? template.titleFont,
         lineHeight: template.lineHeight,
         color: style.textColor,
         accent: style.accentTitle ? style.accentColor : undefined,
@@ -422,7 +425,8 @@ export function createScene(
         interaction: options,
         fitWords,
         fontSize: template.subtitleSize,
-        weight: "400",
+        weight: style.bodyFont === "Fraunces" ? "600" : "400",
+        fontFamily: style.bodyFont,
         color: style.textColor,
         align: style.align,
         opacity: style.template === "classic" ? 0.78 : 0.88,

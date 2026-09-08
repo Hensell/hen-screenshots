@@ -25,6 +25,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 - **Make the composition yours.** Customize captions, colors, typography, and backgrounds. Drag devices and text independently, or use the keyboard. Reset positions whenever you want.
 - **Line things up.** Smart guides snap devices and text to centers, edges, margins, and nearby objects, including across panoramas. Hold Alt/Option to move freely, or turn guides off.
 - **Preview before publishing.** Review store screenshots in a swipeable carousel or portfolio cards in a website grid. Check compact, phone, and wide reading sizes, then jump back to any slide to edit it.
+- **One brand, every project.** Save an app’s palette, headline and supporting fonts, and identifying logo in a reusable brand kit. Preview it on your screenshots and apply it to a slide, linked panorama, or entire series.
 - **Edit a whole series.** Apply a template to one slide or the series. Replace an image while keeping its design, duplicate and reorder slides, and undo or redo changes.
 - **Export for the destination.** Separate **App stores** and **Portfolio** workspaces keep store presets apart from cards, square formats, widescreen covers, and custom dimensions.
 - **Keep your work.** Projects save automatically in your browser. Download an editable project file with its original images for backup or transfer.
@@ -49,6 +50,10 @@ Design the pair together, keep a different caption on each slide, and export two
 **Before exporting:** open **Preview** beside Export to check small-screen readability and the spacing between panorama slides. Use the carousel's arrow keys, Home/End, or swipe. This is a reading-size simulation; store layouts vary. Guides and preview controls never appear in exported images.
 
 ## Your screenshots stay with you
+
+**Brand kits** are available from the project library and **Design → Brand kit**. Start with **New kit**, capture your existing design with **From slide**, or import a `.henbrand` file. Choose Manrope or Fraunces for each text role, save the kit, and choose where to apply it. Your captions, device positions, templates, and export dimensions stay intact. The kit’s logo identifies the app in your library; it is not automatically placed on screenshots.
+
+Projects keep independent copies of applied kits. Editing or deleting a library kit does not change earlier work. Export a kit to move it between browsers; project backups also include their applied brands and logos. **Recover project’s brand** saves an embedded copy back into your library.
 
 Image processing, preview rendering, project storage, and exports happen in your browser. There is no account, screenshot upload service, or cloud synchronization. Fonts are bundled locally.
 
@@ -105,7 +110,7 @@ The landing page is static HTML and CSS. The React editor loads at `/studio/`. A
 
 The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 13 templates.
 
-Autosave checks revisions to prevent one tab from overwriting another tab's changes. Project files use schema 5 and support migration from versions 1–4. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, and export profiles.
+Autosave checks revisions to prevent one tab from overwriting another tab's changes. Brand kit updates use revision checks too. Project files use schema 6 and support migration from versions 1–5. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots and portability, and export profiles.
 
 ### Deployment
 

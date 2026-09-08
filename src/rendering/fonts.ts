@@ -42,8 +42,10 @@ export async function ensureSceneFonts(
   shot: Shot,
 ): Promise<void> {
   await ensureManrope();
+  const style = resolveStyle(project, shot);
   if (
-    getTemplate(resolveStyle(project, shot).template).titleFont !== "Fraunces"
+    (style.titleFont ?? getTemplate(style.template).titleFont) !== "Fraunces" &&
+    style.bodyFont !== "Fraunces"
   )
     return;
   loadingSerif ??= (async () => {

@@ -4,6 +4,8 @@ import { createProject, createShot, defaultStyle, LIMITS } from "../core/model";
 import type { Asset } from "../core/model";
 import { exportProject, importProject } from "./backup";
 import { applyTemplate } from "../core/templates";
+import { applyBrandKit, appliedBrand } from "../core/brand-application";
+import { newBrandKit } from "../core/brand-kit";
 
 const imageBytes = Uint8Array.from(
   atob(
@@ -58,6 +60,46 @@ async function changedBackup(
 }
 
 describe("portable project backups", () => {
+  it("keeps independent brand revisions, logos and font overrides inside the project file", async () => {
+    const project = document();
+    const kit = {
+      ...newBrandKit("Portable brand"),
+      logo: `data:image/png;base64,${btoa(String.fromCharCode(...imageBytes))}`,
+    };
+    kit.fonts.title = "Fraunces";
+    applyBrandKit(project, kit, undefined, true);
+    kit.revision++;
+    kit.colors.text = "#123456";
+    applyBrandKit(project, kit, project.shots[1].id);
+    const file = new File(
+      [await exportProject(project, [image()])],
+      "branded.henscreenshots",
+    );
+    const restored = await importProject(file);
+    expect(restored.project.brands).toEqual(project.brands);
+    expect(restored.project.shots.map((shot) => shot.brand)).toEqual(
+      project.shots.map((shot) => shot.brand),
+    );
+    expect(
+      appliedBrand(restored.project, restored.project.shots[0])!.revision,
+    ).toBe(1);
+    expect(
+      appliedBrand(restored.project, restored.project.shots[1])!.colors.text,
+    ).toBe("#123456");
+    expect(restored.project.shots[0].style.titleFont).toBe("Fraunces");
+  });
+  it("restores a schema 5 backup without changing its text placement or font defaults", async () => {
+    const file = await changedBackup((value) => {
+      value.schemaVersion = value.project.schemaVersion = 5;
+      value.project.shots[0].textOffsets = { title: { x: 90, y: -75 } };
+    });
+    const restored = await importProject(file);
+    expect(restored.project.schemaVersion).toBe(6);
+    expect(restored.project.shots[0].textOffsets).toEqual({
+      title: { x: 90, y: -75 },
+    });
+    expect(restored.project.style.titleFont).toBeUndefined();
+  });
   it("round-trips independent panorama text positions through backup and restore", async () => {
     const project = document();
     applyTemplate(project, project.shots[0].id, "tidal");
@@ -76,14 +118,14 @@ describe("portable project backups", () => {
     expect(restored.project.shots.map((s) => s.phone)).toEqual(
       project.shots.map((s) => s.phone),
     );
-    expect(restored.project.schemaVersion).toBe(5);
+    expect(restored.project.schemaVersion).toBe(6);
   });
   it("opens a version 4 backup without changing its saved composition", async () => {
     const backup = await changedBackup((value) => {
       value.schemaVersion = value.project.schemaVersion = 4;
     });
     const restored = await importProject(backup);
-    expect(restored.project.schemaVersion).toBe(5);
+    expect(restored.project.schemaVersion).toBe(6);
     expect(restored.project.shots[0].phone).toEqual(document().shots[0].phone);
     expect(restored.project.shots[0].textOffsets).toBeUndefined();
   });
@@ -163,9 +205,9 @@ describe("portable project backups", () => {
         unzipSync(new Uint8Array(await blob.arrayBuffer()))["project.json"],
       ),
     );
-    expect(archived.schemaVersion).toBe(5);
-    expect(archived.project.schemaVersion).toBe(5);
-    expect(restored.project.schemaVersion).toBe(5);
+    expect(archived.schemaVersion).toBe(6);
+    expect(archived.project.schemaVersion).toBe(6);
+    expect(restored.project.schemaVersion).toBe(6);
     expect(restored.project.style).toEqual(original.style);
     expect(restored.project.exportProfile).toBe("apple-mac");
     expect(restored.project.id).not.toBe(original.id);
@@ -215,7 +257,7 @@ describe("portable project backups", () => {
       delete value.project.shots[1].phone.rotation;
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(5);
+    expect(restored.project.schemaVersion).toBe(6);
     expect(restored.project.style).toEqual({
       ...defaultStyle,
       background: "#ACBD12",
@@ -238,7 +280,7 @@ describe("portable project backups", () => {
         unzipSync(new Uint8Array(await upgraded.arrayBuffer()))["project.json"],
       ),
     );
-    expect(upgradedMetadata.schemaVersion).toBe(5);
+    expect(upgradedMetadata.schemaVersion).toBe(6);
     expect(upgradedMetadata.project).toEqual(restored.project);
   });
   it("round-trips portfolio cards and custom dimensions, including a saved size while another preset is selected", async () => {
@@ -259,7 +301,7 @@ describe("portable project backups", () => {
         "portfolio.henscreenshots",
       );
       const restored = await importProject(file);
-      expect(restored.project.schemaVersion).toBe(5);
+      expect(restored.project.schemaVersion).toBe(6);
       expect(restored.project.exportProfile).toBe(profile);
       expect(restored.project.customSize).toEqual(original.customSize);
       expect(restored.project.style).toEqual(original.style);
@@ -286,7 +328,7 @@ describe("portable project backups", () => {
       };
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(5);
+    expect(restored.project.schemaVersion).toBe(6);
     expect(restored.project.exportProfile).toBe("apple-ipad13-landscape");
     expect(restored.project.customSize).toEqual({ width: 1600, height: 1200 });
     expect(restored.project.style).toMatchObject({
@@ -382,7 +424,7 @@ describe("portable project backups", () => {
       original = structuredClone(value.project);
     });
     const restored = await importProject(file);
-    expect(restored.project.schemaVersion).toBe(5);
+    expect(restored.project.schemaVersion).toBe(6);
     expect(restored.project.exportProfile).toBe("play-phone-portrait");
     expect(restored.project.style).toEqual({
       ...original.style,
@@ -505,13 +547,13 @@ describe("portable project backups", () => {
     [
       "unsupported version",
       (value: any) => {
-        value.schemaVersion = 6;
+        value.schemaVersion = 7;
       },
     ],
     [
       "future project version",
       (value: any) => {
-        value.project.schemaVersion = 6;
+        value.project.schemaVersion = 7;
       },
     ],
     [
@@ -521,7 +563,7 @@ describe("portable project backups", () => {
       },
     ],
     [
-      "legacy project under a version 5 envelope",
+      "legacy project under a version 6 envelope",
       (value: any) => {
         value.project.schemaVersion = 1;
       },

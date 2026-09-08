@@ -11,6 +11,8 @@ import {
 import { linkedShots, panoramaPair } from "../core/panorama";
 import { CanvasSettings } from "./CanvasSettings";
 import { resetText } from "../core/text-placement";
+import { appliedBrand } from "../core/brand-application";
+import { BrandBadge } from "./BrandKitDialog";
 
 export type InspectorTab = "design" | "text" | "device" | "canvas";
 const inspectorTabs = [
@@ -92,6 +94,7 @@ export function Inspector({
   onTabChange,
   selectedElement,
   onPreview,
+  onBrandKits,
 }: {
   project: Project;
   shot: Shot;
@@ -102,6 +105,7 @@ export function Inspector({
   onTabChange: (tab: InspectorTab) => void;
   selectedElement: CanvasElement | null;
   onPreview: () => void;
+  onBrandKits: () => void;
 }) {
   const panelId = useId();
   const inspectorRef = useRef<HTMLElement>(null);
@@ -111,6 +115,7 @@ export function Inspector({
   }, [tab]);
   const { edit, endGroup } = useEditor();
   const style = resolveStyle(project, shot);
+  const brand = appliedBrand(project, shot);
   const pair = panoramaPair(project, shot.id);
   const surfaceLabel = getTemplate(style.template).surfaceLabel;
   const secondaryLabel =
@@ -270,6 +275,32 @@ export function Inspector({
             >
               Change
               <Icon name="layout" size={15} />
+            </button>
+          </section>
+          <section className="property-section">
+            <div className="brand-property-heading">
+              <h3>Brand kit</h3>
+              <Icon name="brand" size={17} />
+            </div>
+            <button
+              type="button"
+              className="brand-property-selector"
+              onClick={onBrandKits}
+            >
+              {brand ? (
+                <BrandBadge kit={brand} />
+              ) : (
+                <Icon name="brand" size={28} />
+              )}
+              <span>
+                <strong>{brand?.name ?? "Choose your app’s brand"}</strong>
+                <small>
+                  {brand
+                    ? "Applied copy · Manage & reapply"
+                    : "Colors and fonts, ready to reuse"}
+                </small>
+              </span>
+              <Icon name="right" size={15} />
             </button>
           </section>
           <section className="property-section">

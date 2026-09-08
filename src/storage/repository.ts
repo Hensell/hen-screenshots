@@ -1,5 +1,6 @@
 import Dexie from "dexie";
 import type { Table } from "dexie";
+import { validateBrandKit, type BrandKit } from "../core/brand-kit";
 import { migrateProject } from "../core/model";
 import type {
   Asset,
@@ -9,13 +10,15 @@ import type {
   V2Project,
   V3Project,
   V4Project,
+  V5Project,
 } from "../core/model";
 
 interface ProjectRow {
   id: string;
   updatedAt: number;
   revision: number;
-  project: Project | V4Project | V3Project | V2Project | LegacyProject;
+  project:
+    Project | V5Project | V4Project | V3Project | V2Project | LegacyProject;
 }
 interface AssetRow extends Asset {
   projectId: string;
@@ -31,6 +34,7 @@ function storedProject(project: ProjectRow["project"]): Project {
 }
 
 class ProjectDatabase extends Dexie {
+  brandKits!: Table<BrandKit, string>;
   projects!: Table<ProjectRow, string>;
   assets!: Table<AssetRow, [string, string]>;
   constructor() {
@@ -60,9 +64,68 @@ class ProjectDatabase extends Dexie {
             row.project = storedProject(row.project);
           }),
       );
+    this.version(5)
+      .stores({
+        projects: "id, updatedAt",
+        assets: "[projectId+id], projectId",
+        brandKits: "id, updatedAt",
+      })
+      .upgrade((transaction) =>
+        transaction
+          .table<ProjectRow, string>("projects")
+          .toCollection()
+          .modify((row) => {
+            row.project = storedProject(row.project);
+          }),
+      );
   }
 }
 const db = new ProjectDatabase();
+
+export async function listBrandKits(): Promise<BrandKit[]> {
+  const kits = await db.brandKits.orderBy("updatedAt").reverse().toArray();
+  kits.forEach(validateBrandKit);
+  return kits;
+}
+
+/** One revision wins, including when two browser tabs edit the same kit. */
+export async function saveBrandKit(
+  kit: BrandKit,
+  expectedRevision: number,
+): Promise<BrandKit> {
+  validateBrandKit(kit);
+  if (!Number.isSafeInteger(expectedRevision) || expectedRevision < 0)
+    throw new Error("Invalid brand kit revision.");
+  return db.transaction("rw", db.brandKits, async () => {
+    const current = await db.brandKits.get(kit.id);
+    if ((current?.revision ?? 0) !== expectedRevision)
+      throw new Error(
+        "This brand kit changed in another tab. Reopen it before saving.",
+      );
+    const saved = {
+      ...structuredClone(kit),
+      name: kit.name.trim(),
+      revision: expectedRevision + 1,
+      updatedAt: Date.now(),
+    };
+    await db.brandKits.put(saved);
+    return saved;
+  });
+}
+
+export async function deleteBrandKit(
+  id: string,
+  expectedRevision: number,
+): Promise<void> {
+  await db.transaction("rw", db.brandKits, async () => {
+    const current = await db.brandKits.get(id);
+    if (current && current.revision !== expectedRevision)
+      throw new Error(
+        "This brand kit changed in another tab. Reopen it before deleting.",
+      );
+    await db.brandKits.delete(id);
+  });
+}
 
 export class ConflictError extends Error {
   constructor() {

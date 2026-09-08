@@ -11,8 +11,15 @@ import {
   validateCustomSize,
 } from "./export-profiles";
 import type { ExportProfileId } from "./export-profiles";
+import {
+  brandFonts,
+  brandSnapshotKey,
+  validateBrandKit,
+  type BrandKit,
+  type BrandFont,
+} from "./brand-kit";
 
-export const SCHEMA_VERSION = 5 as const;
+export const SCHEMA_VERSION = 6 as const;
 export const CANVAS = { width: 1080, height: 1920 } as const;
 export const PLACEMENT_LIMITS = {
   x: { min: -1080, max: 2160 },
@@ -55,6 +62,8 @@ export type TextElement = "title" | "subtitle";
 export type CanvasElement = "device" | TextElement;
 export const TEXT_OFFSET_LIMITS = { x: 2160, y: 4320 } as const;
 export interface Style {
+  titleFont?: BrandFont;
+  bodyFont?: BrandFont;
   background: string;
   textColor: string;
   device: DeviceFamily;
@@ -72,6 +81,7 @@ export interface Style {
   titleSize: number;
 }
 export interface Shot {
+  brand?: string;
   id: string;
   assetId: string;
   title: string;
@@ -81,7 +91,9 @@ export interface Shot {
   textOffsets?: Partial<Record<TextElement, { x: number; y: number }>>;
 }
 export interface Project {
-  schemaVersion: 5;
+  schemaVersion: 6;
+  brands?: Record<string, BrandKit>;
+  brand?: string;
   exportProfile: ExportProfileId;
   customSize: { width: number; height: number };
   id: string;
@@ -142,7 +154,13 @@ export type V3Style = Omit<Style, "device" | "template"> & {
   template: (typeof legacyTemplateIds)[number];
   device: "android" | "ios" | "ipad" | "android-tablet" | "monitor" | "laptop";
 };
-export interface V4Project extends Omit<Project, "schemaVersion" | "shots"> {
+export interface V5Project extends Omit<
+  Project,
+  "schemaVersion" | "brands" | "brand"
+> {
+  schemaVersion: 5;
+}
+export interface V4Project extends Omit<V5Project, "schemaVersion" | "shots"> {
   schemaVersion: 4;
   shots: Omit<Shot, "textOffsets">[];
 }
@@ -190,11 +208,12 @@ export interface LegacyProject extends Omit<
 
 /** Add presentation defaults without changing an existing project's content or identity. */
 export function migrateProject(
-  project: Project | V4Project | V3Project | V2Project | LegacyProject,
+  project:
+    Project | V5Project | V4Project | V3Project | V2Project | LegacyProject,
 ): Project {
   validateProject(project);
   if (project.schemaVersion === SCHEMA_VERSION) return project;
-  if (project.schemaVersion === 4)
+  if (project.schemaVersion === 4 || project.schemaVersion === 5)
     return { ...structuredClone(project), schemaVersion: SCHEMA_VERSION };
   return {
     ...project,
@@ -272,7 +291,7 @@ const v2StyleKeys = [
 ];
 const styleKeys = [...v2StyleKeys, "deviceOrientation"];
 type StoredProject =
-  Project | V4Project | V3Project | V2Project | LegacyProject;
+  Project | V5Project | V4Project | V3Project | V2Project | LegacyProject;
 type RecordValue = Record<string, unknown>;
 
 function invalid(): never {
@@ -320,12 +339,26 @@ function numeric(
 }
 function validateStyle(
   value: unknown,
-  version: 1 | 2 | 3 | 4 | 5,
+  version: 1 | 2 | 3 | 4 | 5 | 6,
   partial = false,
 ): void {
   const entries = object(
     value,
-    version === 1 ? legacyStyleKeys : version === 2 ? v2StyleKeys : styleKeys,
+    version === 1
+      ? legacyStyleKeys
+      : version === 2
+        ? v2StyleKeys
+        : [
+            ...styleKeys,
+            ...(version >= 6
+              ? ["titleFont", "bodyFont"].filter(
+                  (key) =>
+                    value &&
+                    typeof value === "object" &&
+                    Object.hasOwn(value, key),
+                )
+              : []),
+          ],
     partial,
   );
   for (const [key, item] of Object.entries(entries)) {
@@ -366,6 +399,8 @@ function validateStyle(
         template: [...(version >= 4 ? templateIds : legacyTemplateIds)],
         backgroundMode: ["solid", "gradient"],
         texture: ["none", "dots"],
+        titleFont: [...brandFonts],
+        bodyFont: [...brandFonts],
       };
       if (typeof item !== "string" || !allowed[key]?.includes(item)) invalid();
     }
@@ -383,6 +418,7 @@ export function validateProject(
     version !== 2 &&
     version !== 3 &&
     version !== 4 &&
+    version !== 5 &&
     version !== SCHEMA_VERSION
   )
     throw new Error("This project uses an unsupported project version.");
@@ -396,6 +432,9 @@ export function validateProject(
     "shots",
     ...(version >= 3 ? ["exportProfile"] : []),
     ...(version >= 4 ? ["customSize"] : []),
+    ...(version >= 6
+      ? ["brands", "brand"].filter((key) => Object.hasOwn(value, key))
+      : []),
   ]);
   identifier(raw.id);
   textValue(raw.name, 80, 1);
@@ -418,6 +457,29 @@ export function validateProject(
     });
   }
   validateStyle(raw.style, version);
+  if (Object.hasOwn(raw, "brands")) {
+    if (
+      !raw.brands ||
+      typeof raw.brands !== "object" ||
+      Array.isArray(raw.brands)
+    )
+      invalid();
+    const entries = Object.entries(raw.brands);
+    if (entries.length > LIMITS.shots + 1) invalid();
+    for (const [key, kit] of entries) {
+      validateBrandKit(kit);
+      if (key !== brandSnapshotKey(kit)) invalid();
+    }
+  }
+  const validateBrandReference = (key: unknown) => {
+    if (
+      typeof key !== "string" ||
+      !raw.brands ||
+      !Object.hasOwn(raw.brands, key)
+    )
+      invalid();
+  };
+  if (Object.hasOwn(raw, "brand")) validateBrandReference(raw.brand);
   if (!Array.isArray(raw.shots) || raw.shots.length > LIMITS.shots) invalid();
   const ids = new Set<string>();
   for (const value of raw.shots) {
@@ -428,13 +490,20 @@ export function validateProject(
       "subtitle",
       "style",
       "phone",
-      ...(version === 5 &&
+      ...(version >= 5 &&
       value &&
       typeof value === "object" &&
       Object.hasOwn(value, "textOffsets")
         ? ["textOffsets"]
         : []),
+      ...(version >= 6 &&
+      value &&
+      typeof value === "object" &&
+      Object.hasOwn(value, "brand")
+        ? ["brand"]
+        : []),
     ]);
+    if (Object.hasOwn(shot, "brand")) validateBrandReference(shot.brand);
     if (Object.hasOwn(shot, "textOffsets")) {
       const offsets = object(shot.textOffsets, ["title", "subtitle"], true);
       for (const offset of Object.values(offsets)) {
@@ -488,7 +557,7 @@ export function validateProject(
       if (
         other.template !== panoramaFamilies[start] ||
         left.assetId !== right.assetId ||
-        (styleKeys as (keyof Style)[]).some(
+        ([...styleKeys, "titleFont", "bodyFont"] as (keyof Style)[]).some(
           (key) => key !== "template" && style[key] !== other[key],
         ) ||
         (["x", "y", "width", "rotation"] as const).some(

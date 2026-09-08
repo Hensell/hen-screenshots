@@ -34,6 +34,8 @@ import { Preview } from "../editor/Preview";
 import { Inspector, deviceNames, type InspectorTab } from "../editor/Inspector";
 import { TemplateGallery } from "../editor/TemplateGallery";
 import { PublicationPreview } from "../editor/PublicationPreview";
+import { BrandKitDialog } from "../editor/BrandKitDialog";
+import { applyBrandKit } from "../core/brand-application";
 import {
   applyTemplate,
   getTemplate,
@@ -96,6 +98,7 @@ export function App() {
   const [exportOpen, setExportOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
   const [publicationOpen, setPublicationOpen] = useState(false);
+  const [brandKitsOpen, setBrandKitsOpen] = useState(false);
   const [smartGuides, setSmartGuides] = useState(true);
   const [inspectorTab, setInspectorTab] = useState<InspectorTab>("design");
   const [selectedCanvasElement, setSelectedCanvasElement] =
@@ -281,6 +284,7 @@ export function App() {
         exportOpen ||
         templatesOpen ||
         publicationOpen ||
+        brandKitsOpen ||
         deleteTarget ||
         slideMenu
       )
@@ -301,6 +305,7 @@ export function App() {
     exportOpen,
     templatesOpen,
     publicationOpen,
+    brandKitsOpen,
     deleteTarget,
     slideMenu,
   ]);
@@ -516,7 +521,8 @@ export function App() {
       deleteTarget ||
       templatesOpen ||
       exportOpen ||
-      publicationOpen
+      publicationOpen ||
+      brandKitsOpen
     )
       return;
     const bounds = opener.getBoundingClientRect();
@@ -781,6 +787,14 @@ export function App() {
               >
                 <Icon name="upload" />
                 Open project file
+              </button>
+              <button
+                className="button secondary"
+                disabled={!!busy}
+                onClick={() => setBrandKitsOpen(true)}
+              >
+                <Icon name="brand" />
+                Brand kits
               </button>
             </div>
             <p className="local-note">
@@ -1260,6 +1274,7 @@ export function App() {
               disabled={!!busy}
               onReplace={() => chooseImages(shot.id)}
               onTemplates={() => setTemplatesOpen(true)}
+              onBrandKits={() => setBrandKitsOpen(true)}
               tab={inspectorTab}
               onTabChange={(tab) => {
                 state.endGroup();
@@ -1274,6 +1289,16 @@ export function App() {
             />
           ) : (
             <aside className="inspector inspector-empty">
+              <section className="property-section">
+                <button
+                  className="button secondary"
+                  disabled={!!busy}
+                  onClick={() => setBrandKitsOpen(true)}
+                >
+                  <Icon name="brand" />
+                  Brand kits
+                </button>
+              </section>
               <fieldset disabled={!!busy} className="inspector-fields">
                 <CanvasSettings project={project} />
               </fieldset>
@@ -1334,6 +1359,23 @@ export function App() {
             state.select(id);
             setSelectedCanvasElement(null);
             setPublicationOpen(false);
+          }}
+        />
+      )}
+      {brandKitsOpen && (
+        <BrandKitDialog
+          project={project}
+          shot={shot}
+          images={images}
+          onClose={() => setBrandKitsOpen(false)}
+          onApply={(kit, all) => {
+            state.edit((draft) =>
+              applyBrandKit(draft, kit, selectedId ?? undefined, all),
+            );
+            setBrandKitsOpen(false);
+            setNotice({
+              message: `${kit.name} applied to ${all ? "the project" : pair ? "both linked slides" : "this slide"}. Undo anytime.`,
+            });
           }}
         />
       )}

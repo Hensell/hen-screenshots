@@ -9,8 +9,8 @@ import {
 } from "../core/model";
 import type { Asset, LoadedProject, Project } from "../core/model";
 
-const MANIFEST_LIMIT = 256 * 1024;
-const ARCHIVE_LIMIT = LIMITS.totalBytes + 1024 * 1024;
+const MANIFEST_LIMIT = 3 * 1024 * 1024;
+const ARCHIVE_LIMIT = LIMITS.totalBytes + MANIFEST_LIMIT + 1024 * 1024;
 const extensions: Record<Asset["mime"], string> = {
   "image/png": "png",
   "image/jpeg": "jpg",
@@ -87,6 +87,7 @@ function manifest(value: unknown): Manifest {
       raw.schemaVersion !== 2 &&
       raw.schemaVersion !== 3 &&
       raw.schemaVersion !== 4 &&
+      raw.schemaVersion !== 5 &&
       raw.schemaVersion !== SCHEMA_VERSION)
   )
     fail("This backup uses an unsupported project version.");
@@ -191,7 +192,7 @@ export async function exportProject(
 /** Read a bounded app backup, validate its real images, and return a new unsaved project. */
 export async function importProject(file: File): Promise<LoadedProject> {
   if (file.size < 22 || file.size > ARCHIVE_LIMIT)
-    fail("Choose a valid project backup no larger than 121 MB.");
+    fail("Choose a valid project backup no larger than 124 MB.");
   const bytes = new Uint8Array(await file.arrayBuffer());
   const entries = new Map<string, UnzipFileInfo>();
   let total = 0;

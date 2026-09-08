@@ -29,7 +29,7 @@ describe("version 3 project migration", () => {
     const source = structuredClone(existing);
     expect(migrateProject(source)).toEqual({
       ...existing,
-      schemaVersion: 5,
+      schemaVersion: 6,
       customSize: { width: 1600, height: 1200 },
     });
     expect(source).toEqual(existing);
@@ -74,7 +74,7 @@ describe("version 3 project migration", () => {
     const inspector = new Dexie("hen-screenshots");
     await inspector.open();
     try {
-      expect(inspector.verno).toBe(4);
+      expect(inspector.verno).toBe(5);
       expect(
         (await inspector.table("projects").get(existing.id)).project,
       ).toEqual(loaded.project);

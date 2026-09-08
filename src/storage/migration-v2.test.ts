@@ -31,7 +31,7 @@ describe("version 2 project migration", () => {
     expect(source).toEqual(existing);
     expect(migrated).toEqual({
       ...existing,
-      schemaVersion: 5,
+      schemaVersion: 6,
       customSize: { width: 1600, height: 1200 },
       exportProfile: "play-phone-portrait",
       style: { ...existing.style, deviceOrientation: "portrait" },
@@ -88,7 +88,7 @@ describe("version 2 project migration", () => {
     );
     expect(await loadProject(blankName.id)).toMatchObject({
       revision: 3,
-      project: { id: blankName.id, name: "Untitled app", schemaVersion: 5 },
+      project: { id: blankName.id, name: "Untitled app", schemaVersion: 6 },
     });
     expect(
       (await listProjects()).find(({ project }) => project.id === blankName.id)
@@ -98,7 +98,7 @@ describe("version 2 project migration", () => {
     const inspector = new Dexie("hen-screenshots");
     await inspector.open();
     try {
-      expect(inspector.verno).toBe(4);
+      expect(inspector.verno).toBe(5);
       expect(
         (await inspector.table("projects").get(blankName.id)).project.name,
       ).toBe("Untitled app");
