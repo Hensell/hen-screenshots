@@ -160,7 +160,7 @@ export function App() {
   const replaceId = useRef<string | null>(null);
   const cancelExport = useRef(false);
   const dragCount = useRef(0);
-  const { images, error: imageError } = useImages(assets);
+  const { images, error: imageError } = useImages(assets, project?.shots);
   const shot = project?.shots.find((shot) => shot.id === selectedId);
 
   const pair = project && shot ? panoramaPair(project, shot.id) : null;
@@ -1377,6 +1377,8 @@ function ExportDialog({
     <dialog
       ref={ref}
       className="export-dialog"
+      aria-labelledby="export-heading"
+      aria-describedby="export-description"
       onCancel={(event) => {
         event.preventDefault();
         if (busy) onCancel();
@@ -1395,7 +1397,7 @@ function ExportDialog({
         </button>
       </div>
       <p className="eyebrow">READY FOR A FIRST IMPRESSION</p>
-      <h2>
+      <h2 id="export-heading">
         {file ? (
           "Your export is ready."
         ) : (
@@ -1406,7 +1408,7 @@ function ExportDialog({
           </>
         )}
       </h2>
-      <p className="dialog-copy">
+      <p className="dialog-copy" id="export-description">
         {profile.width} × {profile.height} pixels · RGB PNG without
         transparency.
         <br />

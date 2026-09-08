@@ -1,137 +1,131 @@
 # Hen Screenshots
 
-A web app for creating polished screenshots for app stores, portfolios, and websites. Includes simple cards and frames for phones, tablets, monitors, and laptops.
+**Your app. Beautifully presented.**
 
-**Free forever. No account. No watermarks.** Every template, frame, and full-resolution export is included.
+Turn raw screenshots into polished App Store images, Google Play listings, and portfolio mockups. Pick a template, make it yours, and export straight from your browser.
 
-Public name: **Hen Screenshots**.
+**Free forever. No account. No watermarks.** Every template, device frame, and full-resolution export is included.
 
-Website: [screenshots.hensell.dev](https://screenshots.hensell.dev/) · [Open studio](https://screenshots.hensell.dev/studio/).
+[**Open the studio →**](https://screenshots.hensell.dev/studio/) · [Explore the website](https://screenshots.hensell.dev/) · [Share feedback](mailto:hensell@hensell.dev?subject=Hen%20Screenshots%20feedback)
 
-Repository: [Hensell/hen-screenshots](https://github.com/Hensell/hen-screenshots).
+<p align="center">
+  <img src="public/examples/halo.webp" width="24%" alt="Halo: a bold headline and phone against a dark background with a warm circular accent." />
+  <img src="public/examples/studio.webp" width="24%" alt="Studio: a clean, softly framed app screenshot with generous space." />
+  <img src="public/examples/split.webp" width="24%" alt="Split: a playful app presentation with warm blocks of color." />
+  <img src="public/examples/gallery.webp" width="24%" alt="Gallery: an oversized screenshot with an editorial caption." />
+</p>
 
-**App screenshot studio** — _Your app. Beautifully presented._
+<p align="center"><em>Real exports made in Hen Screenshots, featuring FrogHappy.</em></p>
 
-See the [brand identity](docs/brand-identity.md), [visual showcase](brand/index.html), and [initial name research](docs/name-check.md).
+## Make something worth showing
 
-The [proposed architecture](docs/architecture.md) defines the editor model, persistence, export pipeline, and implementation sequence.
+- **A template for your story.** 13 designs, from quiet editorial layouts to bold posters, including three panoramas that connect two slides into one scene.
+- **Find your look quickly.** Search by name, color, or visual idea. Filter by style, composition, and background, sort results, and browse 12, 24, or 48 templates per page. Previews use your own screenshots.
+- **Choose the right frame.** iPhone, Android phone, iPad, Android tablet, monitor, laptop, or a simple screenshot card.
+- **Make the composition yours.** Customize captions, colors, typography, and backgrounds. Drag devices and text independently, or use the keyboard. Reset positions whenever you want.
+- **Edit a whole series.** Apply a template to one slide or the series. Replace an image while keeping its design, duplicate and reorder slides, and undo or redo changes.
+- **Export for the destination.** Separate **App stores** and **Portfolio** workspaces keep store presets apart from cards, square formats, widescreen covers, and custom dimensions.
+- **Keep your work.** Projects save automatically in your browser. Download an editable project file with its original images for backup or transfer.
 
-The editor includes **iPhone, Android phone, iPad, Android tablet, monitor, and laptop** frames. The [device specification](docs/device-frames.md) defines the iOS and Android families and the direction of the catalog. The [v0.1 scope](docs/editor-v0.1.md) separates implemented features from later iterations.
+### Two slides. One bigger story.
 
-The [v0.2 template iteration](docs/templates-v0.2.md) adds **Classic, Spotlight, Tilt, and Editorial**, with previews using your screenshots, individual or series-wide application, gradients, texture, accent typography, and rotation. Earlier projects and backups remain compatible.
+<p align="center">
+  <img src="public/examples/panorama-left.webp" width="35%" alt="Left half of a Panorama: Small habits. A bigger story. A tilted phone crosses the slide boundary." />
+  <img src="public/examples/panorama-right.webp" width="35%" alt="Right half: the phone and warm ribbon continue into the caption Every day, a little brighter." />
+</p>
 
-The [v0.3 iteration](docs/devices-and-exports-v0.3.md) adapts all four templates to desktop and tablet devices and adds **15 export presets** for the App Store, Google Play, and web presentations. It verifies the dimensions and opaque RGB format of each generated PNG.
+Design the pair together, keep a different caption on each slide, and export two separate PNGs in a ZIP. **Panorama**, **Daybreak**, and **Tidal** each offer a different take on the continuous scene.
 
-The [v0.4 portfolio iteration](docs/portfolio-v0.4.md) adds **4:3, square, and portrait cards**, custom dimensions, and a simple frame with rounded corners. Create a **Portfolio** project to choose a format for a project cover or website card.
+## From capture to export
 
-The [v0.5 template collection](docs/catalog-v0.5.md) adds **Studio, Split, Halo, and Gallery**, plus search, style filters, and previews of the whole series using your own screenshots.
+1. [Open the studio](https://screenshots.hensell.dev/studio/), create an **App stores** or **Portfolio** project, and add PNG, JPEG, or still WebP screenshots.
+2. Choose a template and frame. Use **Design**, **Text**, **Device**, and **Canvas** to adjust the result. Drag text or devices on the canvas; their reset controls return them to the template position.
+3. Click **Export** to download a PNG, a panorama pair, or the whole series as a ZIP. Use **Project file** to keep an editable backup too.
 
-The **Template library** supports keyword search (names, colors, and visual ideas), style categories, composition and background filters, and curated or alphabetical sorting. Browse 12, 24, or 48 templates per page; your selection stays available as you browse, with **Show selected** to find it again. Mobile filters collapse behind a labeled button. Catalog pagination and series-preview navigation are independent.
+**Keyboard:** focus the preview and press **Enter** to select an object. Move it with the arrow keys; hold **Shift** for larger steps. Outside text fields, **⌘/Ctrl + Z** undoes changes and **⌘/Ctrl + Shift + Z** redoes them.
 
-Catalog metadata is indexed once, and only the current page's cards are mounted; canvas previews render as they approach the visible area. Search and pagination are tested with 10,000 synthetic catalog entries. New designs can add searchable `keywords` in `src/core/templates.ts`; categories and counts are derived from catalog metadata. This is a local catalog, with no server search or project-format changes.
+## Your screenshots stay with you
 
-The [v0.6 panorama iteration](docs/panorama-and-workspaces-v0.6.md) adds a continuous **two-slide Panorama** and separate **App stores / Portfolio** project workflows, each with its own format and orientation controls.
+Image processing, preview rendering, project storage, and exports happen in your browser. There is no account, screenshot upload service, or cloud synchronization. Fonts are bundled locally.
 
-## Run the editor
+Projects belong to the browser and site where you created them. Clearing site data removes those local projects. To move to another browser, computer, or domain, download **Project file** (`.henscreenshots`), then choose **Open project file** in the other studio. Importing a backup creates a new copy.
 
-Requires Node.js 22.12 or later.
+| Item                            | Current limit                                                |
+| ------------------------------- | ------------------------------------------------------------ |
+| Slides per project              | 20                                                           |
+| Source image                    | 20 MB and 24 megapixels                                      |
+| Source images used by a project | 120 MB combined                                              |
+| Custom portfolio canvas         | 256–4096 px per side, up to a 4:1 aspect ratio               |
+| Store series export             | 8 images for a Google Play device slot; 10 for an Apple slot |
+
+Exports are opaque 24-bit RGB PNGs at the selected dimensions. Store presets include links to the requirements for their device slots; screenshots and content still need to be appropriate for your app and destination. See the [export profiles](src/core/export-profiles.ts).
+
+## Run locally
+
+Requires **Node.js 22.12+**. The project pins Node **22.21.1** in [`.node-version`](.node-version).
 
 ```sh
+git clone https://github.com/Hensell/hen-screenshots.git
+cd hen-screenshots
 npm ci
 npm run dev
 ```
 
-Open the [landing page](http://127.0.0.1:5174/) or go straight to the [local studio](http://127.0.0.1:5174/studio/). Create an **App stores** or **Portfolio** project and import PNG, JPEG, or WebP images. Each screenshot gets its own canvas; original images are kept in the browser.
+Open [localhost:5174](http://127.0.0.1:5174/) for the landing page or [localhost:5174/studio/](http://127.0.0.1:5174/studio/) for the editor.
 
-The landing page introduces the editor with real examples, templates, Panorama, portfolio formats, the free-forever commitment, and an FAQ. It is static HTML and CSS; the React editor loads only at `/studio/`. Existing `/?project=…` bookmarks redirect to `/studio/?project=…` on the same origin, preserving saved projects.
+| Command                | What it does                                                  |
+| ---------------------- | ------------------------------------------------------------- |
+| `npm run dev`          | Start the local Vite server on port 5174                      |
+| `npm test`             | Run the Vitest suite                                          |
+| `npm run check`        | Run tests, TypeScript checks, and the production build        |
+| `npm run build`        | Type-check and build production assets                        |
+| `npm run preview`      | Serve the build locally; stop the dev server first            |
+| `npm run deploy:check` | Build and validate a Cloudflare deployment without publishing |
+| `npm run deploy`       | Build and publish using an authenticated Wrangler session     |
 
-```sh
-npm run check         # Run tests, TypeScript checks, and the production build
-npm run preview       # Serve the build locally with the dev server stopped
-npm run deploy:check  # Build and validate with Wrangler without deploying
-npm run deploy        # Deploy to Cloudflare using an authenticated Wrangler session
-```
+## How it is built
 
-The official plugin generates `dist/wrangler.json` and prepares the frontend for **Cloudflare Workers Static Assets**, without backend Worker logic or bindings. `dist/` contains only application assets; local screenshots, databases, and FrogHappy tools are excluded.
+**React · TypeScript · Vite · Konva · Zustand · Dexie / IndexedDB · Cloudflare**
 
-Projects are stored per browser and origin. Use **Project file** to download a `.henscreenshots` file and **Open project file** to restore it as a copy in another browser, domain, or computer. Clearing site data also deletes its local projects.
+The landing page is static HTML and CSS. The React editor loads at `/studio/`. A shared Konva scene renders editor previews, template thumbnails, and full-resolution exports, so they use the same composition rules.
 
-## Audience and product direction
+| Directory        | Responsibility                                                 |
+| ---------------- | -------------------------------------------------------------- |
+| `src/app/`       | Project library, editor shell, dialogs, and user actions       |
+| `src/core/`      | Project schema, templates, catalog search, and export profiles |
+| `src/editor/`    | Editing state, undo/redo, inspector, and template library      |
+| `src/rendering/` | Shared scene, device frames, typography, and decorations       |
+| `src/assets/`    | Image validation and decoding                                  |
+| `src/storage/`   | IndexedDB persistence, migrations, and project backups         |
+| `src/export/`    | PNG rendering and export validation                            |
 
-- The project's creator is its first user, preparing screenshots for his own apps.
-- The first version will be validated through that real-world use and polished before being shared with others.
-- The web editor is free forever. An open-source release is still being considered; licensing has not been decided yet.
+The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 13 templates.
 
-## Project decisions
+Autosave checks revisions to prevent one tab from overwriting another tab's changes. Project files use schema 5 and support migration from versions 1–4. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, and export profiles.
 
-- Deployment target: **Cloudflare**.
-- Implemented foundation: **React + TypeScript + Vite** as a single-page application (SPA).
-- Implemented editor: **Konva** with a React component and a shared scene for browser preview and export.
-- Two device families supported from the start: **iOS and Android**, each with its own composition presets. The frame family is selected independently of the export destination and dimensions.
-- Local storage through IndexedDB in the first version.
-- A possible desktop version using Tauri later, reusing the web editor.
+### Deployment
 
-## Proposed first version
+The public app runs on **Cloudflare Workers Static Assets**. **Workers Builds** is connected to this repository: each push to `main` runs `npm run check`, then deploys with `npx wrangler deploy` if the checks pass.
 
-Goal: create, save, reopen, and export a consistent series of promotional images for your own app.
+See [deployment instructions](docs/deployment.md) for build settings, custom domains, manual deployment, and rollback. There is no application backend or database service to provision.
 
-1. Choose an App stores or Portfolio project, select its canvas size and orientation, and import multiple screenshots.
-2. Choose a template and its iOS or Android variant, then customize colors, typography, background, and phone frame for the whole series.
-3. Edit each image's text and composition, with options to duplicate, reorder, and undo changes.
-4. Save automatically in the browser, with project download and import—including source images—for backup and transfer.
-5. Export a single image as PNG, a linked panorama as two PNGs in a ZIP, or the series as ZIP at the selected dimensions.
+## Feedback and contributing
 
-Accounts, synchronization, collaboration, AI generation, and 3D scenes are outside the current scope.
+Built by [Hensell](https://hensell.dev) for his own apps, and for the things you are building too.
 
-Initial validation: use real screenshots from one of the creator's apps, prepare a series, close and reopen the project, restore it from a backup, and visually verify the export and its dimensions. Check both frame families without distorting screenshots or duplicating status bars, navigation bars, or camera cutouts.
+Enjoying it? Found a bug? Have a template in mind? [Open an issue](https://github.com/Hensell/hen-screenshots/issues) or email [hensell@hensell.dev](mailto:hensell@hensell.dev?subject=Hen%20Screenshots%20feedback). For bugs, include your browser, the steps to reproduce, and what you expected. Only attach screenshots or project files you are comfortable sharing publicly.
 
-The core workflow and series editing are implemented. Future iterations will expand the composition catalog and size profiles based on real-world use with FrogHappy.
+For code contributions, keep changes focused and run `npm run check`. Check rendering changes in both the preview and a PNG export, and check UI changes on mobile. New templates need a catalog entry and search keywords in [`src/core/templates.ts`](src/core/templates.ts), with any new scene behavior in `src/rendering/`.
 
-## Deployment
+**License status:** the hosted editor is free to use forever. An open-source license for the application code has not been selected yet. Bundled fonts retain their [Manrope](brand/fonts/OFL.txt) and [Fraunces](brand/fonts/OFL-Fraunces.txt) licenses.
 
-Production runs on **Cloudflare Workers Static Assets** at [screenshots.hensell.dev](https://screenshots.hensell.dev/), with the editor at `/studio/`. The Worker is named `hen-screenshots`; its custom domain is declared in `wrangler.jsonc`. Cloudflare manages the domain's DNS record and HTTPS certificate.
+## Project notes
 
-**Cloudflare Workers Builds** connects directly to `Hensell/hen-screenshots` on GitHub. Every push to `main` automatically installs dependencies, runs the tests and production build, then deploys if they pass. Build settings live in Cloudflare under **Workers & Pages → hen-screenshots → Settings → Build**:
+- [Architecture and original implementation plan](docs/architecture.md)
+- [Brand identity](docs/brand-identity.md)
+- [Device frame design](docs/device-frames.md)
+- [Store export presets](docs/devices-and-exports-v0.3.md)
+- [Portfolio formats](docs/portfolio-v0.4.md)
+- [Panoramas and workspace separation](docs/panorama-and-workspaces-v0.6.md)
 
-| Setting                      | Value                                |
-| ---------------------------- | ------------------------------------ |
-| Production branch            | `main`                               |
-| Root directory               | `/`                                  |
-| Build command                | `npm run check`                      |
-| Deploy command               | `npx wrangler deploy`                |
-| Non-production branch builds | Disabled                             |
-| Node.js                      | `22.21.1`, pinned in `.node-version` |
-
-Build authentication is managed by Cloudflare's existing Git integration. No deployment credentials are stored in the repository. For a manual deployment from an authenticated local checkout, run `npm run check` followed by `npx wrangler deploy`. Roll back from the Worker's **Deployments** page, or revert the offending commit on `main` and push it to trigger a corrected deployment.
-
-Screenshot processing, project storage, and PNG/ZIP exports run in the browser. Existing localhost projects do not transfer automatically to the public domain: download **Project file** locally, then use **Open project file** in the hosted studio.
-
-Official references:
-
-- [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/)
-- [Build configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/)
-- [Custom domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)
-
-## Status
-
-A working editor for personal use: local projects, up to 20 screenshots, 13 adaptive templates, including three two-slide panoramas, six device frames and simple cards, orientation, colors, text, editable composition, undo/redo, backup/restore, and PNG/ZIP export using the selected preset. The public editor is hosted on Cloudflare.
-
-The editor saves documents using schema 5 and migrates v1/v2/v3/v4 projects and backups. The gallery, editor, and export share the same scene. Store limits are 8 images per device type on Google Play and 10 per Apple screenshot slot; the app prevents ZIP exports that exceed the destination's limit.
-
-The [first FrogHappy capture session](docs/capture-session.md) provides five Android images with sample data and a reproducible workflow for validating the editor.
-
-### Expressive collection
-
-**Daybreak** joins two slides with warm color waves and a tilted device. **Tidal** combines a deep blue panorama, flowing contour lines, and serif headlines. **Bloom** uses botanical silhouettes and a soft arch; **Punch** brings coral poster typography and a contrasting device stage. All four use editable colors and vector decorations rendered by the same scene in previews and PNG exports. Applying a template preserves your screenshots, captions, and device settings.
-
-Panorama pairs share one image and composition while keeping independent captions. Switching between panorama styles preserves the pair; applying a single-slide template separates both slides. Existing templates and version 4 project files remain supported.
-
-The editor bundles a static Fraunces 600 headline face (optical size 48, generated from the upstream variable font) from [Fraunces](https://github.com/google/fonts/tree/main/ofl/fraunces) for editorial headlines under the [SIL Open Font License](brand/fonts/OFL-Fraunces.txt), alongside Manrope. Fonts load locally before measuring captions or exporting; no external font service is required.
-
-### Move text on the canvas
-
-The editor keeps templates, image replacement, duplication, canvas size, and undo/redo in a top toolbar. The inspector has four tabs: **Design** for templates and colors, **Text** for captions and typography, **Device** for frames and placement, and **Canvas** for export sizes and orientation. Selecting an object on the canvas opens its tools. Canvas and frame orientation remain together, with their slide/series scope labeled. On smaller screens, **Edit slide** and **Preview** move between the canvas and tools.
-
-Drag a headline or supporting text to position it independently of the device. In a panorama, text can also cross the slide boundary while retaining its own reset control. The **Text** tab has a **Reset position** button below each text field; each returns only that text to its template position. Undo and redo include text movement and resets.
-
-For keyboard editing, focus the canvas, press **Enter** to choose an object, and move it with the arrow keys (**Shift** moves it farther). Positions persist locally, in project backups, and in PNG exports. Applying a template or changing the canvas format restores the template's text placement; replacing an image preserves it. Version 5 project files store text offsets and automatically upgrade earlier documents without changing their saved composition.
+These notes record design decisions and earlier milestones; the sections above describe the current app.
