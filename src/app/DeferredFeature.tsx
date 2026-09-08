@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import {
   Component,
   Suspense,
@@ -30,6 +31,7 @@ function FeatureStatus({
   failed?: boolean;
   onClose: () => void;
 }) {
+  const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
   const heading = useId();
   useEffect(() => {
@@ -53,16 +55,18 @@ function FeatureStatus({
     >
       <h2 id={heading}>
         {failed
-          ? `Couldn’t open ${label.toLowerCase()}.`
-          : `Opening ${label.toLowerCase()}…`}
+          ? t("Couldn’t open {feature}.", { feature: t(label) })
+          : t("Opening {feature}…", { feature: t(label) })}
       </h2>
       <p className="dialog-copy" role={failed ? "alert" : "status"}>
         {failed
-          ? "Your project is still open. You can keep editing. Save your changes, then reload the page to try again."
-          : "Preparing your tools. Your project stays right here."}
+          ? t(
+              "Your project is still open. You can keep editing. Save your changes, then reload the page to try again.",
+            )
+          : t("Preparing your tools. Your project stays right here.")}
       </p>
       <button className="button secondary full" onClick={onClose}>
-        {failed ? "Back to editing" : "Cancel"}
+        {failed ? t("Back to editing") : t("Cancel")}
       </button>
     </dialog>
   );

@@ -30,6 +30,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 - **Edit a whole series.** Apply a template to one slide or the series. Replace an image while keeping its design, duplicate and reorder slides, and undo or redo changes.
 - **Export for the destination.** Separate **App stores** and **Portfolio** workspaces keep store presets apart from cards, square formats, widescreen covers, and custom dimensions.
 - **Keep your work.** Projects save automatically in your browser. Download an editable project file with its original images for backup or transfer.
+- **Use your language.** The website and editor are available in English, Spanish, and Brazilian Portuguese. The language selector remembers your choice on this browser; screenshot texts and their language versions stay independent.
 
 The newest collection adds **Zest, Cabana, Contour, Cherry, Terracotta, Blueprint, Stitch, and Parade**: citrus stripes, aqua awnings, topographic curves, cherry checks, clay fans, cobalt grids, lilac zigzags, and burgundy scallops. Devices sit high, low, to either side, or on a diagonal, with separate space for captions. Search **stripes**, **checker**, **left**, or **diagonal** to find a composition. Open **Templates → Appearance → Dark** to browse all ten dark templates. Every design remains editable and adapts to the project's frame and canvas.
 
@@ -53,6 +54,8 @@ Design the pair together, keep a different caption on each slide, and export two
 **Before exporting:** open **Preview** beside Export to check small-screen readability and the spacing between panorama slides. Use the carousel's arrow keys, Home/End, or swipe. This is a reading-size simulation; store layouts vary. Guides and preview controls never appear in exported images.
 
 ## One design, every language
+
+The **Website language** selector changes the interface, including the landing page, project library, editor, and dialogs. It starts with your browser's preferred supported language and remembers an explicit choice. This is separate from **Languages** inside a project, which manages the text you export in your screenshots.
 
 Open **Languages** in the studio toolbar, choose the language of your original captions, and add a language version. The original text and translation appear side by side. Everything saves automatically. The toolbar’s language selector changes the canvas, thumbnails, inspector, and publication preview together.
 

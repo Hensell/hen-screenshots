@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import { useId, useState, type ReactNode } from "react";
 import { errorMessage, type Project } from "../core/model";
 import { changeCustomSize, changeExportProfile } from "../core/templates";
@@ -27,6 +28,7 @@ import { useEditor } from "./store";
 import "./canvas-settings.css";
 
 function CustomSize({ project }: { project: Project }) {
+  const t = useT();
   const edit = useEditor((state) => state.edit);
   const [width, setWidth] = useState(String(project.customSize.width));
   const [height, setHeight] = useState(String(project.customSize.height));
@@ -56,11 +58,11 @@ function CustomSize({ project }: { project: Project }) {
     >
       <div className="custom-size-fields">
         <label className="field">
-          Width{" "}
+          {t("Width")}{" "}
           <span className="input-unit">
             <input
               type="number"
-              aria-label="Canvas width"
+              aria-label={t("Canvas width")}
               aria-describedby={`${helpId}${error ? ` ${errorId}` : ""}`}
               aria-invalid={error ? true : undefined}
               required
@@ -77,11 +79,11 @@ function CustomSize({ project }: { project: Project }) {
           </span>
         </label>
         <label className="field">
-          Height{" "}
+          {t("Height")}{" "}
           <span className="input-unit">
             <input
               type="number"
-              aria-label="Canvas height"
+              aria-label={t("Canvas height")}
               aria-describedby={`${helpId}${error ? ` ${errorId}` : ""}`}
               aria-invalid={error ? true : undefined}
               required
@@ -100,7 +102,7 @@ function CustomSize({ project }: { project: Project }) {
       </div>
       {error && (
         <p id={errorId} role="alert" className="size-error">
-          {error}
+          {t(error)}
         </p>
       )}
       <button
@@ -108,16 +110,17 @@ function CustomSize({ project }: { project: Project }) {
         className="button secondary full"
         disabled={unchanged}
       >
-        Apply size
+        {t("Apply size")}
       </button>
       <p id={helpId} className="field-help">
-        256–4096 px per side. Up to 4:1 in either direction.
+        {t("256–4096 px per side. Up to 4:1 in either direction.")}
       </p>
     </form>
   );
 }
 
 function OrientationSettings({ project }: { project: Project }) {
+  const t = useT();
   const edit = useEditor((state) => state.edit);
   const helpId = useId();
   const orientation = canvasOrientation(project);
@@ -140,15 +143,16 @@ function OrientationSettings({ project }: { project: Project }) {
   }
   return (
     <fieldset className="canvas-orientation" aria-describedby={helpId}>
-      <legend>Canvas orientation</legend>
+      <legend>{t("Canvas orientation")}</legend>
       <p id={helpId} className="orientation-scope">
-        Export size · All slides
+        {t("Export size · All slides")}
       </p>
       {orientation === "square" ? (
         <div className="canvas-square-note">
           <span className="canvas-shape square" aria-hidden="true" />
           <span>
-            Square canvas <small>Both sides are equal</small>
+            {t("Square canvas")}
+            <small>{t("Both sides are equal")}</small>
           </span>
         </div>
       ) : (
@@ -166,7 +170,11 @@ function OrientationSettings({ project }: { project: Project }) {
                 <button
                   key={value}
                   type="button"
-                  aria-label={`${label} canvas`}
+                  aria-label={t(
+                    value === "portrait"
+                      ? "Portrait canvas"
+                      : "Landscape canvas",
+                  )}
                   aria-pressed={orientation === value}
                   disabled={!size}
                   onClick={() => setOrientation(value)}
@@ -176,9 +184,11 @@ function OrientationSettings({ project }: { project: Project }) {
                     aria-hidden="true"
                   />
                   <span>
-                    {label}
+                    {t(label)}
                     <small>
-                      {size ? `${size.width} × ${size.height}` : "Unavailable"}
+                      {size
+                        ? `${size.width} × ${size.height}`
+                        : t("Unavailable")}
                     </small>
                   </span>
                 </button>
@@ -187,7 +197,7 @@ function OrientationSettings({ project }: { project: Project }) {
           </div>
           {landscapeOnly && (
             <p className="field-help">
-              This device uses landscape screenshots.
+              {t("This device uses landscape screenshots.")}
             </p>
           )}
         </>
@@ -203,6 +213,7 @@ export function CanvasSettings({
   project: Project;
   frameOrientation?: ReactNode;
 }) {
+  const t = useT();
   const edit = useEditor((state) => state.edit);
   const profile = resolveExportProfile(project);
   const portfolio = projectPurpose(project) === "portfolio";
@@ -214,10 +225,10 @@ export function CanvasSettings({
   }
   return (
     <section className="property-section export-format canvas-settings">
-      <h3>{portfolio ? "Portfolio canvas" : "Store screenshots"}</h3>
+      <h3>{portfolio ? t("Portfolio canvas") : t("Store screenshots")}</h3>
       {portfolio ? (
         <label className="field">
-          Canvas format
+          {t("Canvas format")}
           <select
             value={format?.id}
             onChange={(event) =>
@@ -226,7 +237,7 @@ export function CanvasSettings({
           >
             {portfolioFormats.map((item) => (
               <option key={item.id} value={item.id}>
-                {item.name}
+                {t(item.name)}
               </option>
             ))}
           </select>
@@ -234,7 +245,7 @@ export function CanvasSettings({
       ) : (
         <>
           <label className="field">
-            Store
+            {t("Store")}
             <select
               value={profile.store}
               onChange={(event) =>
@@ -251,7 +262,7 @@ export function CanvasSettings({
             </select>
           </label>
           <label className="field">
-            Device size
+            {t("Device size")}
             <select
               value={slot?.id}
               onChange={(event) =>
@@ -262,7 +273,7 @@ export function CanvasSettings({
                 .filter((item) => item.store === profile.store)
                 .map((item) => (
                   <option key={item.id} value={item.id}>
-                    {item.name}
+                    {t(item.name)}
                   </option>
                 ))}
             </select>
@@ -281,10 +292,10 @@ export function CanvasSettings({
       )}
       <p className="format-dimensions">
         {profile.width} × {profile.height}
-        <span>RGB PNG · No transparency</span>
+        <span>{t("RGB PNG · No transparency")}</span>
       </p>
       <p className="field-help">
-        Size changes refit the whole series. Undo anytime.
+        {t("Size changes refit the whole series. Undo anytime.")}
       </p>
       {profile.source && (
         <a
@@ -293,7 +304,8 @@ export function CanvasSettings({
           target="_blank"
           rel="noopener noreferrer"
         >
-          Store size requirements ↗ <span>Checked {PROFILE_REVIEW_DATE}</span>
+          {t("Store size requirements ↗")}
+          <span>{t("Checked {date}", { date: PROFILE_REVIEW_DATE })}</span>
         </a>
       )}
     </section>

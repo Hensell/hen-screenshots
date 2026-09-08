@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import { useEffect, useRef } from "react";
 import type { ProjectPurpose } from "../core/canvas-formats";
 import { Icon } from "./Icon";
@@ -9,6 +10,7 @@ export function NewProjectDialog({
   onCreate: (purpose: ProjectPurpose) => void;
   onClose: () => void;
 }) {
+  const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current!;
@@ -30,18 +32,18 @@ export function NewProjectDialog({
       }}
     >
       <header className="dialog-heading">
-        <p className="eyebrow">A SPACE FOR YOUR NEXT PROJECT</p>
+        <p className="eyebrow">{t("A SPACE FOR YOUR NEXT PROJECT")}</p>
         <button
           className="icon-button"
-          aria-label="Close new project"
+          aria-label={t("Close new project")}
           onClick={onClose}
         >
           <Icon name="close" />
         </button>
       </header>
-      <h2 id="new-project-heading">Where will your work live?</h2>
+      <h2 id="new-project-heading">{t("Where will your work live?")}</h2>
       <p className="dialog-copy">
-        Choose a workspace. Each one has its own canvas formats.
+        {t("Choose a workspace. Each one has its own canvas formats.")}
       </p>
       <div className="purpose-options">
         <button onClick={() => onCreate("stores")}>
@@ -51,10 +53,11 @@ export function NewProjectDialog({
             <span />
           </div>
           <strong>
-            App stores <Icon name="arrow" />
+            {t("App stores")}
+            <Icon name="arrow" />
           </strong>
-          <p>Tell your app’s story on the App Store and Google Play.</p>
-          <small>Store sizes · Phones, tablets & desktop</small>
+          <p>{t("Tell your app’s story on the App Store and Google Play.")}</p>
+          <small>{t("Store sizes · Phones, tablets & desktop")}</small>
         </button>
         <button onClick={() => onCreate("portfolio")}>
           <div className="purpose-art purpose-art-portfolio" aria-hidden="true">
@@ -62,10 +65,13 @@ export function NewProjectDialog({
             <span />
           </div>
           <strong>
-            Portfolio <Icon name="arrow" />
+            {t("Portfolio")}
+            <Icon name="arrow" />
           </strong>
-          <p>Present your work in case studies, websites and social posts.</p>
-          <small>Cards, square & wide · Custom sizes</small>
+          <p>
+            {t("Present your work in case studies, websites and social posts.")}
+          </p>
+          <small>{t("Cards, square & wide · Custom sizes")}</small>
         </button>
       </div>
     </dialog>

@@ -1,3 +1,5 @@
+import { useT } from "../i18n/react";
+import { LanguageSelector } from "../i18n/LanguageSelector";
 import { DeferredFeature } from "./DeferredFeature";
 import { useProjectLibrary } from "./useProjectLibrary";
 import { ProjectLibrary } from "./ProjectLibrary";
@@ -98,6 +100,10 @@ function Brand() {
 }
 
 export function App() {
+  const t = useT();
+  useEffect(() => {
+    document.title = t("Your studio — Hen Screenshots");
+  }, [t]);
   const state = useEditor();
   const {
     project: sourceProject,
@@ -469,7 +475,7 @@ export function App() {
     } catch (error) {
       if (!controller.signal.aborted) {
         setNotice({
-          message: `Export couldn't finish. ${errorMessage(error)}`,
+          message: `Export couldn’t finish. ${errorMessage(error)}`,
           error: true,
         });
         setExportOpen(false);
@@ -578,8 +584,8 @@ export function App() {
         {project ? (
           <button
             className="brand-home"
-            aria-label="Back to projects"
-            title="Back to projects"
+            aria-label={t("Back to projects")}
+            title={t("Back to projects")}
             disabled={!!busy}
             onClick={() => void backToProjects()}
           >
@@ -587,18 +593,18 @@ export function App() {
             <Brand />
           </button>
         ) : (
-          <a href="/" aria-label="Hen Screenshots home">
+          <a href="/" aria-label={t("Hen Screenshots home")}>
             <Brand />
           </a>
         )}
         {project ? (
           <>
             <div className="editor-project">
-              <label className="project-name-field" title="Rename project">
+              <label className="project-name-field" title={t("Rename project")}>
                 <input
                   className="editor-project-name"
-                  aria-label="Project name"
-                  title="Rename project"
+                  aria-label={t("Project name")}
+                  title={t("Rename project")}
                   maxLength={80}
                   size={Math.max(12, Math.min(project.name.length + 2, 40))}
                   value={project.name}
@@ -623,28 +629,32 @@ export function App() {
                 role="status"
               >
                 {status === "saved" && <Icon name="check" size={14} />}
-                {savingText}
+                {t(savingText)}
               </span>
             </div>
             <div className="editor-file-actions">
+              <LanguageSelector />
               <button
                 className="button quiet project-download"
-                aria-label="Download project file"
-                title="Download an editable .henscreenshots backup"
+                aria-label={t("Download project file")}
+                title={t("Download an editable .henscreenshots backup")}
                 disabled={!!busy}
                 onClick={() => void backup()}
               >
                 <Icon name="folder" />
-                <span className="download-label">Download project</span>
-                <span className="download-label-compact">Project file</span>
+                <span className="download-label">{t("Download project")}</span>
+                <span className="download-label-compact">
+                  {t("Project file")}
+                </span>
               </button>
               <button
                 className="button secondary publication-button"
-                aria-label="Publication preview"
+                aria-label={t("Publication preview")}
                 disabled={!shot || !!busy || !!imageError}
                 onClick={() => setPublicationOpen(true)}
               >
-                <Icon name="eye" /> Preview
+                <Icon name="eye" />
+                {t("Preview")}
               </button>
               <button
                 className="button primary"
@@ -655,12 +665,16 @@ export function App() {
                 }}
               >
                 <Icon name="download" />
-                Export
+                {t("Export")}
               </button>
             </div>
           </>
         ) : (
-          <span className="header-note">App screenshot studio</span>
+          <>
+            {" "}
+            <span className="header-note">{t("App screenshot studio")}</span>
+            <LanguageSelector />{" "}
+          </>
         )}
       </header>
       {notice && (
@@ -668,19 +682,19 @@ export function App() {
           className={`notice ${notice.error ? "notice-error" : ""}`}
           role={notice.error ? "alert" : "status"}
         >
-          <span>{notice.message}</span>
+          <span>{t(notice.message)}</span>
           {readyFile && !notice.error && (
             <a
               className="text-button download-again"
               href={readyFile.url}
               download={readyFile.name}
             >
-              Save file
+              {t("Save file")}
             </a>
           )}
           <button
             className="icon-button"
-            aria-label="Dismiss message"
+            aria-label={t("Dismiss message")}
             onClick={() => setNotice(null)}
           >
             <Icon name="close" size={16} />
@@ -690,7 +704,7 @@ export function App() {
       {saveError && project && (
         <div className="save-error" role="alert">
           <span>
-            <strong>Your changes are still here.</strong> {saveError}
+            <strong>{t("Your changes are still here.")}</strong> {t(saveError)}
           </span>
           <div>
             <button
@@ -698,7 +712,7 @@ export function App() {
               disabled={!!busy}
               onClick={() => void saveNow()}
             >
-              Retry saving
+              {t("Retry saving")}
             </button>
             <button
               className="text-button"
@@ -711,27 +725,29 @@ export function App() {
                 window.history.replaceState(null, "", url);
               }}
             >
-              Save as a copy
+              {t("Save as a copy")}
             </button>
             <button
               className="text-button"
               disabled={!!busy}
               onClick={() => void backup()}
             >
-              Download project
+              {t("Download project")}
             </button>
           </div>
         </div>
       )}
       {imageError && project && (
         <div className="notice notice-error" role="alert">
-          Couldn't load an image: {imageError}. Replace the affected screenshot
-          or reopen the project.
+          {t(
+            "Couldn’t load an image: {error}. Replace the affected screenshot or reopen the project.",
+            { error: t(imageError) },
+          )}
         </div>
       )}
       {loading ? (
         <main className="loading-page" role="status">
-          Opening your studio…
+          {t("Opening your studio…")}
         </main>
       ) : !project ? (
         <ProjectLibrary
@@ -773,18 +789,18 @@ export function App() {
             void addImages(Array.from(event.dataTransfer.files));
           }}
         >
-          <div className="editor-toolbar" aria-label="Project tools">
+          <div className="editor-toolbar" aria-label={t("Project tools")}>
             <div className="editing-actions">
               <div
                 className="history-actions"
                 role="group"
-                aria-label="Edit history"
+                aria-label={t("Edit history")}
               >
                 <button
                   className="icon-button"
-                  aria-label="Undo"
+                  aria-label={t("Undo")}
                   ref={undoButton}
-                  title="Undo (⌘/Ctrl Z)"
+                  title={t("Undo (⌘/Ctrl Z)")}
                   disabled={!state.past.length || !!busy}
                   onClick={state.undo}
                 >
@@ -792,8 +808,8 @@ export function App() {
                 </button>
                 <button
                   className="icon-button"
-                  aria-label="Redo"
-                  title="Redo (⌘/Ctrl Shift Z)"
+                  aria-label={t("Redo")}
+                  title={t("Redo (⌘/Ctrl Shift Z)")}
                   disabled={!state.future.length || !!busy}
                   onClick={state.redo}
                 >
@@ -803,7 +819,7 @@ export function App() {
               <div
                 className="slide-tools"
                 role="group"
-                aria-label="Slide tools"
+                aria-label={t("Slide tools")}
               >
                 <button
                   type="button"
@@ -811,7 +827,8 @@ export function App() {
                   disabled={!shot || !!busy || !images.get(shot.assetId)}
                   onClick={() => setTemplatesOpen(true)}
                 >
-                  <Icon name="layout" size={18} /> Templates
+                  <Icon name="layout" size={18} />
+                  {t("Templates")}
                 </button>
                 <button
                   type="button"
@@ -820,11 +837,14 @@ export function App() {
                   onClick={() => shot && chooseImages(shot.id)}
                   title={
                     locale
-                      ? `Replace the ${languageName(locale)} image and keep your design`
-                      : "Replace the image and keep your design"
+                      ? t("Replace the {language} image and keep your design", {
+                          language: languageName(locale),
+                        })
+                      : t("Replace the image and keep your design")
                   }
                 >
-                  <Icon name="image" size={18} /> Replace image
+                  <Icon name="image" size={18} />
+                  {t("Replace image")}
                 </button>
                 <button
                   type="button"
@@ -836,14 +856,17 @@ export function App() {
                       shotCapacity(project)
                   }
                   onClick={() => shot && duplicate(shot.id)}
-                  aria-label={pair ? "Duplicate panorama" : "Duplicate slide"}
+                  aria-label={t(
+                    pair ? "Duplicate panorama" : "Duplicate slide",
+                  )}
                 >
-                  <Icon name="copy" size={18} /> Duplicate
+                  <Icon name="copy" size={18} />
+                  {t("Duplicate")}
                 </button>
                 <button
                   type="button"
                   className="toolbar-button compact-slide-actions"
-                  aria-label="Selected slide actions"
+                  aria-label={t("Selected slide actions")}
                   aria-haspopup="menu"
                   aria-expanded={
                     !!slideMenu &&
@@ -856,30 +879,37 @@ export function App() {
                     if (shot) showSlideMenu(shot.id, event.currentTarget);
                   }}
                 >
-                  <Icon name="more" size={18} /> Slide
+                  <Icon name="more" size={18} />
+                  {t("Slide")}
                 </button>
               </div>
             </div>
             <div
               className="project-context-tools"
               role="group"
-              aria-label="Canvas and languages"
+              aria-label={t("Canvas and languages")}
             >
               <button
                 type="button"
                 className="canvas-format-button"
                 onClick={() => openInspector("canvas")}
                 disabled={!!busy || !shot}
-                aria-label={`Canvas settings: ${resolveExportProfile(project).name}, ${resolveExportProfile(project).width} × ${resolveExportProfile(project).height}`}
-                title="Change canvas size and orientation for this project"
+                aria-label={t("Canvas settings: {name}, {width} × {height}", {
+                  name: t(resolveExportProfile(project).name),
+                  width: resolveExportProfile(project).width,
+                  height: resolveExportProfile(project).height,
+                })}
+                title={t("Change canvas size and orientation for this project")}
               >
                 <Icon name="canvas" size={17} />
                 <span>
                   <small>
-                    {projectPurpose(project) === "stores"
-                      ? "App stores"
-                      : "Portfolio"}{" "}
-                    · Canvas
+                    {t(
+                      projectPurpose(project) === "stores"
+                        ? "App stores"
+                        : "Portfolio",
+                    )}{" "}
+                    {t("· Canvas")}
                   </small>
                   <strong>
                     {resolveExportProfile(project).width} ×{" "}
@@ -893,10 +923,10 @@ export function App() {
               >
                 {project.localization && (
                   <label className="language-switch">
-                    <span>{locale ? "Text language" : "Original text"}</span>
+                    <span>{t(locale ? "Text language" : "Original text")}</span>
                     <select
-                      aria-label="Editing language"
-                      title={`${languageName(locale ?? project.localization.source)}${locale ? "" : " · Original"}`}
+                      aria-label={t("Editing language")}
+                      title={`${languageName(locale ?? project.localization.source)}${locale ? "" : ` · ${t("Original")}`}`}
                       value={locale ?? project.localization.source}
                       disabled={!!busy}
                       onChange={(event) => {
@@ -924,25 +954,27 @@ export function App() {
                   className="language-manage"
                   disabled={!!busy || !shot}
                   onClick={() => setLanguagesOpen(true)}
-                  aria-label="Manage languages"
-                  title="Add or manage language versions"
+                  aria-label={t("Manage languages")}
+                  title={t("Add or manage language versions")}
                 >
                   <Icon
                     name={project.localization ? "plus" : "languages"}
                     size={18}
                   />
-                  <span>{project.localization ? "Manage" : "Languages"}</span>
+                  <span>
+                    {t(project.localization ? "Manage" : "Languages")}
+                  </span>
                 </button>
               </div>
             </div>
           </div>
           <aside
             className="filmstrip"
-            aria-label="Screenshot series"
+            aria-label={t("Screenshot series")}
             tabIndex={0}
           >
             <div className="filmstrip-heading">
-              <h2>Slides</h2>
+              <h2>{t("Slides")}</h2>
               <span>
                 {project.shots.length}/{LIMITS.shots}
               </span>
@@ -957,7 +989,10 @@ export function App() {
                 >
                   <button
                     className="shot-thumbnail"
-                    aria-label={`Select screenshot ${index + 1}: ${item.title.replace(/\n/g, " ")}`}
+                    aria-label={t("Select screenshot {number}: {title}", {
+                      number: index + 1,
+                      title: item.title.replace(/\n/g, " "),
+                    })}
                     aria-current={item.id === selectedId ? "true" : undefined}
                     disabled={!!busy}
                     onClick={() => state.select(item.id)}
@@ -975,7 +1010,9 @@ export function App() {
                     </span>
                     <button
                       className="shot-options icon-button"
-                      aria-label={`Actions for slide ${index + 1}`}
+                      aria-label={t("Actions for slide {number}", {
+                        number: index + 1,
+                      })}
                       aria-haspopup="menu"
                       aria-expanded={slideMenu?.shotId === item.id}
                       aria-controls={
@@ -999,14 +1036,14 @@ export function App() {
                 onClick={() => chooseImages()}
               >
                 <Icon name="plus" size={22} />
-                <span>Add captures</span>
+                <span>{t("Add captures")}</span>
               </button>
             </div>
           </aside>
           <section
             id="composition-canvas"
             className="workspace"
-            aria-label="Composition canvas"
+            aria-label={t("Composition canvas")}
             tabIndex={0}
           >
             <div
@@ -1037,8 +1074,14 @@ export function App() {
                     </span>
                     <span>
                       {pair
-                        ? "Panorama · 2 linked slides"
-                        : `${deviceNames[shot.style.device ?? project.style.device]} frame`}
+                        ? t("Panorama · 2 linked slides")
+                        : t("{device} frame", {
+                            device: t(
+                              deviceNames[
+                                shot.style.device ?? project.style.device
+                              ],
+                            ),
+                          })}
                     </span>
                   </div>
                   <div
@@ -1061,8 +1104,9 @@ export function App() {
                     ))}
                   </div>
                   <p className="canvas-edit-help">
-                    Drag to move · Corners resize · Enter selects · Arrows move
-                    · + / − resize
+                    {t(
+                      "Drag to move · Corners resize · Enter selects · Arrows move · + / − resize",
+                    )}
                   </p>
                   <div className="canvas-guide-tools">
                     <label>
@@ -1074,19 +1118,21 @@ export function App() {
                           setSmartGuides(event.target.checked)
                         }
                       />
-                      Smart guides
+                      {t("Smart guides")}
                     </label>
                     <span>
                       {smartGuides
-                        ? "Align edges, centers and margins. Alt/Option moves freely."
-                        : "Move freely. Turn on guides for alignment."}
+                        ? t(
+                            "Align edges, centers and margins. Alt/Option moves freely.",
+                          )
+                        : t("Move freely. Turn on guides for alignment.")}
                     </span>
                   </div>
                   {pair && (
                     <div
                       className="panorama-selection"
                       role="group"
-                      aria-label="Edit panorama captions"
+                      aria-label={t("Edit panorama captions")}
                     >
                       {pair.map((item, index) => (
                         <button
@@ -1095,7 +1141,11 @@ export function App() {
                           disabled={!!busy}
                           onClick={() => state.select(item.id)}
                         >
-                          Edit {index === 0 ? "left" : "right"} slide{" "}
+                          {t(
+                            index === 0
+                              ? "Edit left slide"
+                              : "Edit right slide",
+                          )}{" "}
                           <span>
                             {String(project.shots.indexOf(item) + 1).padStart(
                               2,
@@ -1114,7 +1164,7 @@ export function App() {
                           ? project.shots.indexOf(pair[0])
                           : selectedIndex) === 0 || !!busy
                       }
-                      aria-label="Move screenshot earlier"
+                      aria-label={t("Move screenshot earlier")}
                       onClick={() => reorder(-1)}
                     >
                       <Icon name="left" />
@@ -1129,14 +1179,14 @@ export function App() {
                       onClick={() => duplicate(shot.id)}
                     >
                       <Icon name="copy" />
-                      {pair ? "Duplicate panorama" : "Duplicate"}
+                      {t(pair ? "Duplicate panorama" : "Duplicate")}
                     </button>
                     <button
                       className="icon-button"
                       disabled={!!busy}
-                      aria-label={
-                        pair ? "Remove panorama" : "Remove screenshot"
-                      }
+                      aria-label={t(
+                        pair ? "Remove panorama" : "Remove screenshot",
+                      )}
                       onClick={() => {
                         setDeleteTarget({
                           projectId: project.id,
@@ -1154,7 +1204,7 @@ export function App() {
                           : selectedIndex) ===
                           project.shots.length - 1 || !!busy
                       }
-                      aria-label="Move screenshot later"
+                      aria-label={t("Move screenshot later")}
                       onClick={() => reorder(1)}
                     >
                       <Icon name="right" />
@@ -1169,16 +1219,18 @@ export function App() {
                       <Icon name="image" size={38} />
                     </span>
                   </div>
-                  <p className="eyebrow">LET'S FRAME YOUR FIRST IMPRESSION</p>
+                  <p className="eyebrow">
+                    {t("LET'S FRAME YOUR FIRST IMPRESSION")}
+                  </p>
                   <h1>
-                    Your app takes
+                    {t("Your app takes")}
                     <br />
-                    center stage.
+                    {t("center stage.")}
                   </h1>
                   <p>
-                    Drop your screenshots here.
+                    {t("Drop your screenshots here.")}
                     <br />
-                    We'll give each one its own canvas.
+                    {t("We'll give each one its own canvas.")}
                   </p>
                   <button
                     className="button primary"
@@ -1186,14 +1238,14 @@ export function App() {
                     onClick={() => chooseImages()}
                   >
                     <Icon name="plus" />
-                    Choose screenshots
+                    {t("Choose screenshots")}
                   </button>
-                  <small>PNG, JPG or WebP · Up to 20 MB each</small>
+                  <small>{t("PNG, JPG or WebP · Up to 20 MB each")}</small>
                 </div>
               )}
             </div>
             <div className="workspace-footer">
-              <span>{busy ?? "Made with a little care."}</span>
+              <span>{t(busy ?? "Made with a little care.")}</span>
               <a
                 href="https://hensell.dev"
                 target="_blank"
@@ -1234,7 +1286,7 @@ export function App() {
                   onClick={() => setBrandKitsOpen(true)}
                 >
                   <Icon name="brand" />
-                  Brand kits
+                  {t("Brand kits")}
                 </button>
               </section>
               <fieldset disabled={!!busy} className="inspector-fields">
@@ -1243,9 +1295,9 @@ export function App() {
               <div className="privacy-note">
                 <Icon name="folder" />
                 <p>
-                  Saved on this device.
+                  {t("Saved on this device.")}
                   <br />
-                  Download a project file for a portable backup.
+                  {t("Download a project file for a portable backup.")}
                 </p>
               </div>
             </aside>
@@ -1253,7 +1305,7 @@ export function App() {
           {dragging && (
             <div className="drop-overlay">
               <Icon name="upload" size={38} />
-              <strong>Drop to add your screenshots</strong>
+              <strong>{t("Drop to add your screenshots")}</strong>
             </div>
           )}
         </main>
@@ -1261,7 +1313,7 @@ export function App() {
       {busy && !exportOpen && (
         <div className="work-progress" role="status">
           <span className="spinner" />
-          {busy}
+          {t(busy)}
         </div>
       )}
       {exportOpen && project && (
@@ -1370,7 +1422,16 @@ export function App() {
         !exportOpen && (
           <SlideActionsMenu
             target={slideMenu}
-            label={`${menuShots.length === 2 ? "Slides" : "Slide"} ${menuShots.map((item) => String(project.shots.indexOf(item) + 1).padStart(2, "0")).join("–")}`}
+            label={t(
+              menuShots.length === 2 ? "Slides {numbers}" : "Slide {numbers}",
+              {
+                numbers: menuShots
+                  .map((item) =>
+                    String(project.shots.indexOf(item) + 1).padStart(2, "0"),
+                  )
+                  .join("–"),
+              },
+            )}
             panorama={menuShots.length === 2}
             canDuplicate={
               project.shots.length + menuShots.length <= shotCapacity(project)

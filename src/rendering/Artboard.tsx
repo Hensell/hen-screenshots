@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import {
   useCallback,
   useEffect,
@@ -43,6 +44,7 @@ export function Artboard({
   onTextMove,
   onSelectElement,
 }: ArtboardProps) {
+  const t = useT();
   const container = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
@@ -140,10 +142,15 @@ export function Artboard({
   return (
     <div
       role="group"
-      aria-label={`Screenshot preview: ${shot.title || "Untitled screenshot"}`}
+      aria-label={t("Screenshot preview: {title}", {
+        title: shot.title || t("Untitled screenshot"),
+      })}
       aria-description={
         editable
-          ? `${selectedLabel} selected. Drag to move. Drag a device corner to resize. Enter switches objects. Arrow keys move the selected object. Plus and minus resize the device. Hold Shift for larger steps.`
+          ? t(
+              "{element} selected. Drag to move. Drag a device corner to resize. Enter switches objects. Arrow keys move the selected object. Plus and minus resize the device. Hold Shift for larger steps.",
+              { element: t(selectedLabel) },
+            )
           : undefined
       }
       aria-busy={!ready && !error}
@@ -268,7 +275,7 @@ export function Artboard({
             textAlign: "center",
           }}
         >
-          {error}
+          {t(error)}
         </div>
       )}
       {!ready && !error && (
@@ -284,7 +291,7 @@ export function Artboard({
             fontSize: 12,
           }}
         >
-          Preparing preview…
+          {t("Preparing preview…")}
         </div>
       )}
     </div>

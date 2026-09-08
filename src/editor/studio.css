@@ -7,6 +7,8 @@
 }
 .filmstrip-heading {
   margin-bottom: 18px;
+  flex-wrap: wrap;
+  row-gap: 5px;
 }
 .shot-item {
   border-radius: 7px;
@@ -109,6 +111,7 @@
 }
 .inspector-tabs button {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 6px;
@@ -410,7 +413,8 @@
     padding-block: 10px;
   }
   .inspector-tabs button {
-    flex-direction: row;
+    flex-direction: column;
+    gap: 3px;
     min-height: 44px;
     font-size: 10px;
   }

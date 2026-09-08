@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import { useEffect, useRef, useState } from "react";
 import type { Project } from "../core/model";
 import { errorMessage } from "../core/model";
@@ -56,6 +57,7 @@ export function LanguagesDialog({
   onEdit: Edit;
   onSelect: (id: string) => void;
 }) {
+  const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
   useModal(ref);
   const [source, setSource] = useState(project.localization?.source ?? "en");
@@ -90,21 +92,24 @@ export function LanguagesDialog({
     >
       <header className="languages-heading">
         <div>
-          <span className="eyebrow">YOUR SERIES, IN MORE WORDS</span>
-          <h2 id="languages-title">Languages</h2>
-          <p>One shared design. A version for every audience.</p>
+          <span className="eyebrow">{t("YOUR SERIES, IN MORE WORDS")}</span>
+          <h2 id="languages-title">{t("Languages")}</h2>
+          <p>{t("One shared design. A version for every audience.")}</p>
         </div>
         <button
           className="icon-button"
-          aria-label="Close languages"
+          aria-label={t("Close languages")}
           onClick={onClose}
         >
           <Icon name="close" />
         </button>
       </header>
       <div className="languages-body">
-        <aside className="languages-sidebar" aria-label="Project languages">
-          <h3>Original language</h3>
+        <aside
+          className="languages-sidebar"
+          aria-label={t("Project languages")}
+        >
+          <h3>{t("Original language")}</h3>
           {project.localization ? (
             <button
               className={`language-choice ${!selectedLocale ? "active" : ""}`}
@@ -114,14 +119,14 @@ export function LanguagesDialog({
               <span className="language-code">{sourceLanguage}</span>
               <span>
                 <strong>{languageName(sourceLanguage)}</strong>
-                <small>Original text</small>
+                <small>{t("Original text")}</small>
               </span>
             </button>
           ) : (
             <label className="field">
-              <span className="sr-only">Original language</span>
+              <span className="sr-only">{t("Original language")}</span>
               <select
-                aria-label="Original language"
+                aria-label={t("Original language")}
                 value={source}
                 onChange={(event) => setSource(event.target.value)}
               >
@@ -134,10 +139,10 @@ export function LanguagesDialog({
             </label>
           )}
           <h3 className="translations-heading">
-            Translations{" "}
+            {t("Translations")}{" "}
             <span>{project.localization?.targets.length ?? 0}</span>
           </h3>
-          <nav aria-label="Language versions">
+          <nav aria-label={t("Language versions")}>
             {project.localization?.targets.map((code) => (
               <button
                 key={code}
@@ -152,12 +157,12 @@ export function LanguagesDialog({
                 <span>
                   <strong>{languageName(code)}</strong>
                   <small>
-                    {
-                      project.shots.filter(
+                    {t("{reviewed} / {total} reviewed", {
+                      reviewed: project.shots.filter(
                         (shot) => localeStatus(shot, code) === "reviewed",
-                      ).length
-                    }{" "}
-                    / {project.shots.length} reviewed
+                      ).length,
+                      total: project.shots.length,
+                    })}
                   </small>
                 </span>
               </button>
@@ -165,7 +170,7 @@ export function LanguagesDialog({
           </nav>
           {!project.localization?.targets.length && (
             <p className="field-help">
-              Add a language to start with a copy of your original text.
+              {t("Add a language to start with a copy of your original text.")}
             </p>
           )}
           <form
@@ -183,9 +188,9 @@ export function LanguagesDialog({
             }}
           >
             <label className="field">
-              Add a language
+              {t("Add a language")}
               <select
-                aria-label="New language"
+                aria-label={t("New language")}
                 value={selectedTarget}
                 onChange={(event) => setTarget(event.target.value)}
                 disabled={
@@ -208,27 +213,39 @@ export function LanguagesDialog({
               }
             >
               <Icon name="plus" size={16} />
-              Add language
+              {t("Add language")}
             </button>
           </form>
           <p className="field-help">
-            Colors, frames and device positions stay linked across languages.
+            {t(
+              "Colors, frames and device positions stay linked across languages.",
+            )}
           </p>
         </aside>
-        <section className="language-content" aria-label="Translation editor">
+        <section
+          className="language-content"
+          aria-label={t("Translation editor")}
+        >
           <div className="language-content-heading">
             <div>
               <h3>
                 {selectedLocale
                   ? languageName(selectedLocale)
-                  : "Your original text"}
+                  : t("Your original text")}
               </h3>
               <p>
                 {selectedLocale
-                  ? `${reviewed} of ${project.shots.length} slides reviewed. Changes are saved as you type.`
+                  ? t(
+                      "{reviewed} of {total} slides reviewed. Changes are saved as you type.",
+                      { reviewed, total: project.shots.length },
+                    )
                   : project.localization
-                    ? "Your original captions. Add a language to create another version of this series."
-                    : "Choose the language your existing captions are written in, then add a translation."}
+                    ? t(
+                        "Your original captions. Add a language to create another version of this series.",
+                      )
+                    : t(
+                        "Choose the language your existing captions are written in, then add a translation.",
+                      )}
               </p>
             </div>
             {selectedLocale && (
@@ -237,19 +254,20 @@ export function LanguagesDialog({
                 onClick={() => setDownloadOpen(true)}
               >
                 <Icon name="download" size={16} />
-                Translate on device
+                {t("Translate on device")}
               </button>
             )}
           </div>
           {notice && (
             <p className="language-notice" role="status">
-              {notice}
+              {t(notice)}
             </p>
           )}
           {selectedLocale && (
             <p className="language-caption-note">
-              These are the words around your screenshot. To show your app in
-              this language, replace its image in the editor.
+              {t(
+                "These are the words around your screenshot. To show your app in this language, replace its image in the editor.",
+              )}
             </p>
           )}
           <div className="language-slides">
@@ -270,12 +288,14 @@ export function LanguagesDialog({
                         onClose();
                       }}
                     >
-                      Slide {String(index + 1).padStart(2, "0")}
+                      {t("Slide {number}", {
+                        number: String(index + 1).padStart(2, "0"),
+                      })}
                       <Icon name="arrow" size={14} />
                     </button>
                     {status && (
                       <span className={`translation-status ${status}`}>
-                        {statusLabels[status]}
+                        {t(statusLabels[status])}
                       </span>
                     )}
                   </header>
@@ -284,15 +304,17 @@ export function LanguagesDialog({
                   >
                     <div className="original-copy">
                       <span className="eyebrow">
-                        {languageName(sourceLanguage)} · ORIGINAL
+                        {t("{language} · ORIGINAL", {
+                          language: languageName(sourceLanguage),
+                        })}
                       </span>
-                      <strong>{shot.title || "No headline"}</strong>
-                      <p>{shot.subtitle || "No supporting text"}</p>
+                      <strong>{shot.title || t("No headline")}</strong>
+                      <p>{shot.subtitle || t("No supporting text")}</p>
                     </div>
                     {selectedLocale && (
                       <div className="translated-copy">
                         <label className="field">
-                          Headline
+                          {t("Headline")}
                           <textarea
                             lang={selectedLocale}
                             rows={3}
@@ -315,7 +337,7 @@ export function LanguagesDialog({
                           />
                         </label>
                         <label className="field">
-                          Supporting text
+                          {t("Supporting text")}
                           <textarea
                             lang={selectedLocale}
                             rows={2}
@@ -353,8 +375,8 @@ export function LanguagesDialog({
                         >
                           <Icon name="check" size={15} />
                           {status === "reviewed"
-                            ? "Reviewed"
-                            : "Mark as reviewed"}
+                            ? t("Reviewed")
+                            : t("Mark as reviewed")}
                         </button>
                       </div>
                     )}
@@ -368,14 +390,16 @@ export function LanguagesDialog({
               {deleting === selectedLocale ? (
                 <div role="alert">
                   <p>
-                    Remove {languageName(selectedLocale)} and its text and image
-                    overrides? Your other languages stay. You can undo this.
+                    {t(
+                      "Remove {language} and its text and image overrides? Your other languages stay. You can undo this.",
+                      { language: languageName(selectedLocale) },
+                    )}
                   </p>
                   <button
                     className="button secondary"
                     onClick={() => setDeleting(null)}
                   >
-                    Keep language
+                    {t("Keep language")}
                   </button>
                   <button
                     className="button primary"
@@ -385,7 +409,7 @@ export function LanguagesDialog({
                       setDeleting(null);
                     }}
                   >
-                    Remove language
+                    {t("Remove language")}
                   </button>
                 </div>
               ) : (
@@ -394,7 +418,7 @@ export function LanguagesDialog({
                   onClick={() => setDeleting(selectedLocale)}
                 >
                   <Icon name="trash" size={15} />
-                  Remove this language
+                  {t("Remove this language")}
                 </button>
               )}
             </div>
@@ -404,10 +428,10 @@ export function LanguagesDialog({
       <footer className="languages-footer">
         <p>
           <Icon name="folder" size={16} />
-          Saved on this device · Included in your project file
+          {t("Saved on this device · Included in your project file")}
         </p>
         <button className="button primary" onClick={onClose}>
-          Done
+          {t("Done")}
         </button>
       </footer>
       {downloadOpen && selectedLocale && (
@@ -441,6 +465,7 @@ function TranslatorDialog({
   onClose: () => void;
   onApply: (entries: import("../core/localization").TranslationDraft[]) => void;
 }) {
+  const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
   useModal(ref);
   const controller = useRef<AbortController | null>(null);
@@ -525,10 +550,10 @@ function TranslatorDialog({
       }}
     >
       <header className="translator-heading">
-        <span className="eyebrow">OPTIONAL · FREE TO USE</span>
+        <span className="eyebrow">{t("OPTIONAL · FREE TO USE")}</span>
         <button
           className="icon-button"
-          aria-label="Close translator"
+          aria-label={t("Close translator")}
           onClick={cancel}
         >
           <Icon name="close" />
@@ -539,10 +564,11 @@ function TranslatorDialog({
         <Icon name="arrow" size={22} />
         <span>{locale.toUpperCase()}</span>
       </div>
-      <h2 id="translator-title">Translate on your device.</h2>
+      <h2 id="translator-title">{t("Translate on your device.")}</h2>
       <p id="translator-copy">
-        Get a first draft, then make it yours. Your captions are translated
-        locally and stay on your device.
+        {t(
+          "Get a first draft, then make it yours. Your captions are translated locally and stay on your device.",
+        )}
       </p>
       {route && available ? (
         <>
@@ -551,31 +577,38 @@ function TranslatorDialog({
             <div>
               <strong>
                 {allCached
-                  ? "Language packs are saved"
-                  : `About ${Math.ceil(totalBytes / 1_000_000)} MB of language packs`}
+                  ? t("Language packs are saved")
+                  : t("About {size} MB of language packs", {
+                      size: Math.ceil(totalBytes / 1_000_000),
+                    })}
               </strong>
               <p>
                 {allCached
-                  ? "Ready to reuse in this browser."
-                  : "Downloaded only when you choose. Additional shared runtime files are needed the first time."}
+                  ? t("Ready to reuse in this browser.")
+                  : t(
+                      "Downloaded only when you choose. Additional shared runtime files are needed the first time.",
+                    )}
               </p>
             </div>
           </div>
           <ul className="translator-facts">
-            <li>No account, API key or payment needed.</li>
+            <li>{t("No account, API key or payment needed.")}</li>
             <li>
-              Packs are cached in this browser when storage allows. Clearing
-              browser data may remove them.
+              {t(
+                "Packs are cached in this browser when storage allows. Clearing browser data may remove them.",
+              )}
             </li>
             <li>
-              Keep this window open while translating. You can cancel at any
-              time.
+              {t(
+                "Keep this window open while translating. You can cancel at any time.",
+              )}
             </li>
           </ul>
           {route.length > 1 && (
             <p className="field-help">
-              This pair translates through English using two language packs.
-              Review the result carefully.
+              {t(
+                "This pair translates through English using two language packs. Review the result carefully.",
+              )}
             </p>
           )}
           {project.shots.some(
@@ -588,7 +621,7 @@ function TranslatorDialog({
                 disabled={!!progress || clearing}
                 onChange={(event) => setReplace(event.target.checked)}
               />
-              Replace existing translations too
+              {t("Replace existing translations too")}
             </label>
           )}
           {project.shots.some(
@@ -596,29 +629,33 @@ function TranslatorDialog({
           ) && (
             <p className="field-help">
               {replace
-                ? "This replaces every translation in this language, including reviewed text. You can undo the whole batch."
-                : "Only untranslated slides will change. Your edited and reviewed translations stay."}
+                ? t(
+                    "This replaces every translation in this language, including reviewed text. You can undo the whole batch.",
+                  )
+                : t(
+                    "Only untranslated slides will change. Your edited and reviewed translations stay.",
+                  )}
             </p>
           )}
           {error && (
             <p className="translator-error" role="alert">
-              {error}
+              {t(error)}
             </p>
           )}
           {progress ? (
             <div className="translator-progress">
-              <p role="status">{progress.message}</p>
+              <p role="status">{t(progress.message)}</p>
               <progress
                 max={100}
                 value={progress.percent}
                 aria-label={
                   progress.phase === "download"
-                    ? "Translator download"
-                    : "Translation progress"
+                    ? t("Translator download")
+                    : t("Translation progress")
                 }
               />
               <button className="button secondary full" onClick={cancel}>
-                Cancel · keep my text
+                {t("Cancel · keep my text")}
               </button>
             </div>
           ) : (
@@ -630,18 +667,28 @@ function TranslatorDialog({
               >
                 <Icon name={allCached ? "languages" : "download"} />
                 {eligible.length
-                  ? `${allCached ? "Translate" : "Download & translate"} ${eligible.length} ${eligible.length === 1 ? "slide" : "slides"}`
-                  : "All slides translated"}
+                  ? t(
+                      allCached
+                        ? eligible.length === 1
+                          ? "Translate {count} slide"
+                          : "Translate {count} slides"
+                        : eligible.length === 1
+                          ? "Download & translate {count} slide"
+                          : "Download & translate {count} slides",
+                      { count: eligible.length },
+                    )
+                  : t("All slides translated")}
               </button>
               <button className="button secondary full" onClick={onClose}>
-                I'll translate manually
+                {t("I'll translate manually")}
               </button>
             </div>
           )}
           {!eligible.length && !progress && (
             <p className="field-help">
-              All slides already have translations. Enable replacement to
-              generate new drafts.
+              {t(
+                "All slides already have translations. Enable replacement to generate new drafts.",
+              )}
             </p>
           )}
         </>
@@ -649,25 +696,29 @@ function TranslatorDialog({
         <div className="translator-unavailable">
           <p>
             {!route
-              ? "Downloadable translation currently supports English, Spanish, French and German. You can write this language’s captions manually."
-              : "The local translator cannot start in this browser. You can still write and export every language manually."}
+              ? t(
+                  "Downloadable translation currently supports English, Spanish, French and German. You can write this language’s captions manually.",
+                )
+              : t(
+                  "The local translator cannot start in this browser. You can still write and export every language manually.",
+                )}
           </p>
           <button className="button primary full" onClick={onClose}>
-            Continue manually
+            {t("Continue manually")}
           </button>
         </div>
       )}
       <details className="translator-details">
-        <summary>About the translator &amp; storage</summary>
+        <summary>{t("About the translator & storage")}</summary>
         <p>
-          Powered by OPUS-MT models from Helsinki-NLP, converted for the browser
-          by Xenova, using Transformers.js. Model files download from Hugging
-          Face and runtime files from jsDelivr. Your captions are not sent to
-          these services.
+          {t(
+            "Powered by OPUS-MT models from Helsinki-NLP, converted for the browser by Xenova, using Transformers.js. Model files download from Hugging Face and runtime files from jsDelivr. Your captions are not sent to these services.",
+          )}
         </p>
         <p>
-          Download and speed depend on your connection and device. Translation
-          is a draft, especially for short marketing headlines.
+          {t(
+            "Download and speed depend on your connection and device. Translation is a draft, especially for short marketing headlines.",
+          )}
         </p>
         {route?.map((pack) => (
           <a
@@ -676,7 +727,9 @@ function TranslatorDialog({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {pack.id.replace("Xenova/opus-mt-", "OPUS-MT ")} · model details ↗
+            {t("{model} · model details ↗", {
+              model: pack.id.replace("Xenova/opus-mt-", "OPUS-MT "),
+            })}
           </a>
         ))}
         <a
@@ -684,7 +737,7 @@ function TranslatorDialog({
           target="_blank"
           rel="noopener noreferrer"
         >
-          OPUS-MT credits &amp; licenses ↗
+          {t("OPUS-MT credits & licenses ↗")}
         </a>
         <button
           className="text-button"
@@ -706,12 +759,15 @@ function TranslatorDialog({
           }}
         >
           <Icon name="trash" size={14} />
-          {clearing ? "Removing downloads…" : "Remove translator downloads"}
+          {clearing
+            ? t("Removing downloads…")
+            : t("Remove translator downloads")}
         </button>
         {cleared && (
           <p role="status">
-            Translator downloads removed. Your projects and translations are
-            safe.
+            {t(
+              "Translator downloads removed. Your projects and translations are safe.",
+            )}
           </p>
         )}
       </details>

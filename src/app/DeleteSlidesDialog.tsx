@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import { useEffect, useRef, type RefObject } from "react";
 import { Icon } from "./Icon";
 
@@ -12,6 +13,7 @@ export function DeleteSlidesDialog({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
   const cancelButton = useRef<HTMLButtonElement>(null);
   const panorama = slides.length === 2;
@@ -46,26 +48,28 @@ export function DeleteSlidesDialog({
         <Icon name="trash" size={24} />
         <button
           className="icon-button"
-          aria-label="Cancel deletion"
+          aria-label={t("Cancel deletion")}
           onClick={onCancel}
         >
           <Icon name="close" />
         </button>
       </header>
       <h2 id="delete-slides-heading">
-        {panorama ? "Delete both slides?" : "Delete this slide?"}
+        {panorama ? t("Delete both slides?") : t("Delete this slide?")}
       </h2>
       <p className="dialog-copy" id="delete-slides-description">
         {panorama
-          ? "These slides are linked in a panorama and will be removed together."
-          : "This slide will be removed from your project."}{" "}
-        You can undo this change.
+          ? t(
+              "These slides are linked in a panorama and will be removed together.",
+            )
+          : t("This slide will be removed from your project.")}{" "}
+        {t("You can undo this change.")}
       </p>
-      <ul className="deletion-slides" aria-label="Slides to delete">
+      <ul className="deletion-slides" aria-label={t("Slides to delete")}>
         {slides.map((slide) => (
           <li key={slide.number}>
             <span>{String(slide.number).padStart(2, "0")}</span>
-            <strong>{slide.title.trim() || "Untitled slide"}</strong>
+            <strong>{slide.title.trim() || t("Untitled slide")}</strong>
           </li>
         ))}
       </ul>
@@ -75,10 +79,10 @@ export function DeleteSlidesDialog({
           className="button secondary"
           onClick={onCancel}
         >
-          Cancel
+          {t("Cancel")}
         </button>
         <button className="button primary" onClick={onConfirm}>
-          {panorama ? "Delete 2 slides" : "Delete slide"}
+          {panorama ? t("Delete 2 slides") : t("Delete slide")}
         </button>
       </div>
     </dialog>

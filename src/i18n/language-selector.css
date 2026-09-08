@@ -1,0 +1,70 @@
+.interface-language {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 0 8px;
+  border: 1px solid var(--brand-border);
+  border-radius: 7px;
+  color: var(--brand-ink);
+  background: var(--brand-paper);
+  font: inherit;
+}
+.interface-language select {
+  width: auto;
+  min-width: 0;
+  max-width: 130px;
+  min-height: 40px;
+  padding: 4px 2px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.interface-language:focus-within {
+  outline: 2px solid #547449;
+  outline-offset: 3px;
+}
+.interface-language select:focus {
+  outline: none;
+}
+.topbar > .interface-language {
+  margin-left: auto;
+}
+.editor-file-actions .interface-language {
+  margin-right: 4px;
+}
+@media (max-width: 1050px) {
+  .editor-file-actions .project-download .download-label {
+    display: none;
+  }
+  .editor-file-actions .project-download .download-label-compact {
+    display: inline;
+  }
+}
+@media (max-width: 600px) {
+  .interface-language {
+    gap: 3px;
+    padding-inline: 5px;
+  }
+  .interface-language select {
+    max-width: 103px;
+  }
+}
+
+@media (max-width: 600px) {
+  .topbar.editor-header .editor-file-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .editor-file-actions .interface-language {
+    justify-content: center;
+    margin-right: 0;
+  }
+  .topbar:not(.editor-header) .header-note {
+    display: none;
+  }
+}

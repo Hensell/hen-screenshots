@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import { useEffect, useRef, useState } from "react";
 import { languageName } from "../core/localization";
 import type { ExportProfile } from "../core/export-profiles";
@@ -28,6 +29,7 @@ export function ExportDialog({
   onCancel: () => void;
 }) {
   const [exportLanguages, setExportLanguages] = useState([currentLanguage]);
+  const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current!;
@@ -50,39 +52,41 @@ export function ExportDialog({
         <Icon name="download" size={26} />
         <button
           className="icon-button"
-          aria-label="Close export"
+          aria-label={t("Close export")}
           disabled={!!busy}
           onClick={onClose}
         >
           <Icon name="close" />
         </button>
       </div>
-      <p className="eyebrow">READY FOR A FIRST IMPRESSION</p>
+      <p className="eyebrow">{t("READY FOR A FIRST IMPRESSION")}</p>
       <h2 id="export-heading">
         {file ? (
-          "Your export is ready."
+          t("Your export is ready.")
         ) : (
           <>
-            Take your work
+            {t("Take your work")}
             <br />
-            out into the world.
+            {t("out into the world.")}
           </>
         )}
       </h2>
       <p className="dialog-copy" id="export-description">
-        {profile.width} × {profile.height} pixels · RGB PNG without
-        transparency.
+        {t("{width} × {height} pixels · RGB PNG without transparency.", {
+          width: profile.width,
+          height: profile.height,
+        })}
         <br />
-        {profile.name}
+        {t(profile.name)}
       </p>
       {busy ? (
         <div className="export-progress">
           <p role="status">
             <span className="spinner" />
-            {busy}
+            {t(busy)}
           </p>
           <button className="button secondary full" onClick={onCancel}>
-            Cancel export
+            {t("Cancel export")}
           </button>
         </div>
       ) : file ? (
@@ -91,7 +95,7 @@ export function ExportDialog({
             <img
               className="export-preview"
               src={file.url}
-              alt="Exported screenshot"
+              alt={t("Exported screenshot")}
               width={profile.width}
               height={profile.height}
             />
@@ -102,17 +106,17 @@ export function ExportDialog({
             download={file.name}
           >
             <Icon name="download" />
-            Save {file.image ? "PNG" : "ZIP"}
+            {t("Save {format}", { format: file.image ? "PNG" : "ZIP" })}
           </a>
           <button className="button secondary full" onClick={onClose}>
-            Back to editing
+            {t("Back to editing")}
           </button>
         </div>
       ) : (
         <div className="export-options">
           {languages.length > 1 && (
             <fieldset className="export-languages">
-              <legend>Languages to export</legend>
+              <legend>{t("Languages to export")}</legend>
               {languages.map((code) => (
                 <label className="check-field" key={code}>
                   <input
@@ -130,8 +134,9 @@ export function ExportDialog({
                 </label>
               ))}
               <p className="field-help">
-                A folder per language inside the ZIP. Review every translation
-                before publishing.
+                {t(
+                  "A folder per language inside the ZIP. Review every translation before publishing.",
+                )}
               </p>
             </fieldset>
           )}
@@ -141,7 +146,7 @@ export function ExportDialog({
             onClick={() => void onExport(false, exportLanguages)}
           >
             <Icon name="image" />
-            {pair ? "Export this panorama" : "Export this screenshot"}
+            {t(pair ? "Export this panorama" : "Export this screenshot")}
             <span>
               {exportLanguages.length > 1
                 ? "ZIP"
@@ -156,18 +161,25 @@ export function ExportDialog({
             onClick={() => void onExport(true, exportLanguages)}
           >
             <Icon name="download" />
-            Export all {count} screenshots<span>ZIP</span>
+            {t(
+              count === 1
+                ? "Export {count} screenshot"
+                : "Export all {count} screenshots",
+              { count },
+            )}
+            <span>ZIP</span>
           </button>
         </div>
       )}
       {!file && (
         <p className="field-help export-guidance">
-          {profile.note}{" "}
+          {t(profile.note)}{" "}
           {count > profile.maxCount && (
             <strong>
-              This series has {count} screenshots; the selected destination
-              allows {profile.maxCount}. Export one at a time or reduce the
-              series.
+              {t(
+                "This series has {count} screenshots; the selected destination allows {max}. Export one at a time or reduce the series.",
+                { count, max: profile.maxCount },
+              )}
             </strong>
           )}
           {profile.source && (
@@ -178,14 +190,14 @@ export function ExportDialog({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                View store requirements ↗
+                {t("View store requirements ↗")}
               </a>
             </>
           )}
         </p>
       )}
       <p className="field-help">
-        Your source images and saved project stay editable.
+        {t("Your source images and saved project stay editable.")}
       </p>
     </dialog>
   );

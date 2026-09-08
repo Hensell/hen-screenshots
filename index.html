@@ -7,14 +7,17 @@
     <meta
       name="description"
       content="Create beautiful screenshots for the App Store, Google Play, and your portfolio. Templates, device frames, and full-resolution exports. Free forever, with no account or watermarks."
+      data-i18n-content="Create beautiful screenshots for the App Store, Google Play, and your portfolio. Templates, device frames, and full-resolution exports. Free forever, with no account or watermarks."
     />
     <meta
       property="og:title"
       content="Hen Screenshots — Your app. Beautifully presented."
+      data-i18n-content="Hen Screenshots — Your app. Beautifully presented."
     />
     <meta
       property="og:description"
       content="A free screenshot studio for your next launch. Make app store screenshots and portfolio mockups right in your browser."
+      data-i18n-content="A free screenshot studio for your next launch. Make app store screenshots and portfolio mockups right in your browser."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://screenshots.hensell.dev/" />
@@ -22,7 +25,11 @@
     <link rel="icon" type="image/svg+xml" href="/brand/icon.svg" />
     <link rel="stylesheet" href="/brand/tokens.css" />
     <link rel="stylesheet" href="/src/landing/landing.css" />
-    <title>Hen Screenshots — Free app screenshot &amp; mockup studio</title>
+    <title
+      data-i18n="Hen Screenshots — Free app screenshot &amp; mockup studio"
+    >
+      Hen Screenshots — Free app screenshot &amp; mockup studio
+    </title>
     <script>
       // Preserve project bookmarks created before the studio moved to its own route.
       const projectUrl = new URL(window.location.href);
@@ -31,50 +38,90 @@
         window.location.replace(projectUrl.href);
       }
     </script>
+    <script type="module" src="/src/landing/landing.ts"></script>
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main"
+      ><span data-i18n="Skip to content">Skip to content</span></a
+    >
     <header class="landing-header wrap">
-      <a class="wordmark" href="/" aria-label="Hen Screenshots home">
+      <a
+        class="wordmark"
+        href="/"
+        aria-label="Hen Screenshots home"
+        data-i18n-aria-label="Hen Screenshots home"
+      >
         <img src="/brand/mark.svg" width="32" height="34" alt="" />
         <span>hen<small>screenshots</small></span>
       </a>
-      <nav aria-label="Main navigation">
-        <a class="nav-section" href="#templates">Templates</a>
-        <a class="nav-section" href="#how-it-works">How it works</a>
-        <a class="nav-section" href="#free-forever">Free forever</a>
-        <a class="action action-small" href="/studio/"
-          >Open studio <span aria-hidden="true">↗</span></a
+      <nav aria-label="Main navigation" data-i18n-aria-label="Main navigation">
+        <a class="nav-section" href="#templates"
+          ><span data-i18n="Templates">Templates</span></a
         >
+        <a class="nav-section" href="#how-it-works"
+          ><span data-i18n="How it works">How it works</span></a
+        >
+        <a class="nav-section" href="#free-forever"
+          ><span data-i18n="Free forever">Free forever</span></a
+        >
+        <a class="action action-small" href="/studio/"
+          ><span data-i18n="Open studio">Open studio</span>
+          <span aria-hidden="true">↗</span></a
+        >
+        <label class="interface-language landing-language" hidden>
+          <span data-i18n="Website language">Website language</span>
+          <select
+            id="landing-language"
+            aria-label="Website language"
+            data-i18n-aria-label="Website language"
+          ></select>
+        </label>
       </nav>
     </header>
     <main id="main">
       <section class="hero wrap" aria-labelledby="hero-title">
         <div class="hero-copy">
           <p class="eyebrow">
-            <span class="short-rule" aria-hidden="true"></span> YOUR NEXT LAUNCH
-            STARTS HERE
+            <span class="short-rule" aria-hidden="true"></span>
+            <span data-i18n="YOUR NEXT LAUNCH STARTS HERE"
+              >YOUR NEXT LAUNCH STARTS HERE</span
+            >
           </p>
           <h1 id="hero-title">
-            Your app.<br /><em>Beautifully</em><br />presented.
+            <span data-i18n="Your app.">Your app.</span><br /><em
+              ><span data-i18n="Beautifully">Beautifully</span></em
+            ><br /><span data-i18n="presented.">presented.</span>
           </h1>
           <p class="lead">
-            Turn your screenshots into something worth showing off. For the app
-            stores, your portfolio, and everywhere your work belongs.
+            <span
+              data-i18n="Turn your screenshots into something worth showing off. For the app stores, your portfolio, and everywhere your work belongs."
+              >Turn your screenshots into something worth showing off. For the
+              app stores, your portfolio, and everywhere your work
+              belongs.</span
+            >
           </p>
           <div class="hero-actions">
             <a class="action" href="/studio/"
-              >Start creating <span aria-hidden="true">↗</span></a
+              ><span data-i18n="Start creating">Start creating</span>
+              <span aria-hidden="true">↗</span></a
             >
             <a class="inline-link" href="#templates"
-              >Find your look <span aria-hidden="true">↓</span></a
+              ><span data-i18n="Find your look">Find your look</span>
+              <span aria-hidden="true">↓</span></a
             >
           </div>
-          <p class="reassurance">Free forever. No account. No watermarks.</p>
+          <p class="reassurance">
+            <span data-i18n="Free forever. No account. No watermarks."
+              >Free forever. No account. No watermarks.</span
+            >
+          </p>
         </div>
         <figure class="hero-art">
           <div class="art-label">
-            <span>FROM CAPTURE TO COMPOSITION</span
+            <span
+              ><span data-i18n="FROM CAPTURE TO COMPOSITION"
+                >FROM CAPTURE TO COMPOSITION</span
+              ></span
             ><span aria-hidden="true">01 / 02</span>
           </div>
           <div class="hero-prints">
@@ -85,6 +132,7 @@
               height="960"
               alt="A FrogHappy screenshot in the Halo template, with a dark background, warm circle, and the headline Small habits. Happier days."
               fetchpriority="high"
+              data-i18n-alt="A FrogHappy screenshot in the Halo template, with a dark background, warm circle, and the headline Small habits. Happier days."
             />
             <img
               class="print print-light"
@@ -92,19 +140,38 @@
               width="540"
               height="960"
               alt="A matching FrogHappy progress screenshot in the minimal Studio template."
+              data-i18n-alt="A matching FrogHappy progress screenshot in the minimal Studio template."
             />
           </div>
           <figcaption>
-            Composed in Hen Screenshots.<span>Made with FrogHappy</span>
+            <span data-i18n="Composed in Hen Screenshots."
+              >Composed in Hen Screenshots.</span
+            ><span
+              ><span data-i18n="Made with FrogHappy"
+                >Made with FrogHappy</span
+              ></span
+            >
           </figcaption>
         </figure>
       </section>
-      <div class="format-strip wrap" aria-label="Supported presentations">
-        <p>A home for your best work.</p>
+      <div
+        class="format-strip wrap"
+        aria-label="Supported presentations"
+        data-i18n-aria-label="Supported presentations"
+      >
+        <p>
+          <span data-i18n="A home for your best work."
+            >A home for your best work.</span
+          >
+        </p>
         <ul>
           <li>App Store</li>
           <li>Google Play</li>
-          <li>Portfolios &amp; websites</li>
+          <li>
+            <span data-i18n="Portfolios &amp; websites"
+              >Portfolios &amp; websites</span
+            >
+          </li>
         </ul>
       </div>
       <section
@@ -114,12 +181,25 @@
       >
         <div class="section-intro">
           <div>
-            <p class="eyebrow">THOUGHTFULLY COMPOSED. UNIQUELY YOURS.</p>
-            <h2 id="templates-title">Find a look.<br />Make it yours.</h2>
+            <p class="eyebrow">
+              <span data-i18n="THOUGHTFULLY COMPOSED. UNIQUELY YOURS."
+                >THOUGHTFULLY COMPOSED. UNIQUELY YOURS.</span
+              >
+            </p>
+            <h2 id="templates-title">
+              <span data-i18n="Find a look.">Find a look.</span><br /><span
+                data-i18n="Make it yours."
+                >Make it yours.</span
+              >
+            </h2>
           </div>
           <p>
-            Start with a thoughtfully composed template. Bring your own colors,
-            words, and screenshots. Keep the whole series feeling like you.
+            <span
+              data-i18n="Start with a thoughtfully composed template. Bring your own colors, words, and screenshots. Keep the whole series feeling like you."
+              >Start with a thoughtfully composed template. Bring your own
+              colors, words, and screenshots. Keep the whole series feeling like
+              you.</span
+            >
           </p>
         </div>
         <div class="template-examples">
@@ -130,9 +210,13 @@
               height="960"
               alt="Halo template with bold type and a circular backdrop."
               loading="lazy"
+              data-i18n-alt="Halo template with bold type and a circular backdrop."
             />
             <figcaption>
-              <strong>Halo</strong><span>A little drama.</span>
+              <strong>Halo</strong
+              ><span
+                ><span data-i18n="A little drama.">A little drama.</span></span
+              >
             </figcaption>
           </figure>
           <figure>
@@ -142,9 +226,15 @@
               height="960"
               alt="Studio template with a fine border and generous space."
               loading="lazy"
+              data-i18n-alt="Studio template with a fine border and generous space."
             />
             <figcaption>
-              <strong>Studio</strong><span>Room to breathe.</span>
+              <strong>Studio</strong
+              ><span
+                ><span data-i18n="Room to breathe."
+                  >Room to breathe.</span
+                ></span
+              >
             </figcaption>
           </figure>
           <figure>
@@ -154,9 +244,15 @@
               height="960"
               alt="Split template with a warm yellow and terracotta color block."
               loading="lazy"
+              data-i18n-alt="Split template with a warm yellow and terracotta color block."
             />
             <figcaption>
-              <strong>Split</strong><span>Color with confidence.</span>
+              <strong>Split</strong
+              ><span
+                ><span data-i18n="Color with confidence."
+                  >Color with confidence.</span
+                ></span
+              >
             </figcaption>
           </figure>
           <figure>
@@ -166,16 +262,27 @@
               height="960"
               alt="Gallery template with an oversized screenshot and editorial caption."
               loading="lazy"
+              data-i18n-alt="Gallery template with an oversized screenshot and editorial caption."
             />
             <figcaption>
-              <strong>Gallery</strong><span>Let the details speak.</span>
+              <strong>Gallery</strong
+              ><span
+                ><span data-i18n="Let the details speak."
+                  >Let the details speak.</span
+                ></span
+              >
             </figcaption>
           </figure>
         </div>
         <div class="section-footnote">
-          <p>A few of the 29 templates waiting in your studio.</p>
+          <p>
+            <span data-i18n="A few of the 29 templates waiting in your studio."
+              >A few of the 29 templates waiting in your studio.</span
+            >
+          </p>
           <a class="inline-link" href="/studio/"
-            >Make these your own <span aria-hidden="true">↗</span></a
+            ><span data-i18n="Make these your own">Make these your own</span>
+            <span aria-hidden="true">↗</span></a
           >
         </div>
       </section>
@@ -192,30 +299,48 @@
                 height="1200"
                 alt="Left slide: Small habits. A bigger story. A tilted phone crosses into the next slide."
                 loading="lazy"
+                data-i18n-alt="Left slide: Small habits. A bigger story. A tilted phone crosses into the next slide."
               /><img
                 src="/examples/panorama-right.webp"
                 width="675"
                 height="1200"
                 alt="Right slide: the same phone and ribbon continue, with the words Every day, a little brighter."
                 loading="lazy"
+                data-i18n-alt="Right slide: the same phone and ribbon continue, with the words Every day, a little brighter."
               />
             </div>
             <figcaption><span>01</span><span>02</span></figcaption>
           </figure>
           <div class="feature-copy">
-            <p class="eyebrow">MEET PANORAMA</p>
-            <h2 id="panorama-title">Two slides.<br />One bigger story.</h2>
+            <p class="eyebrow">
+              <span data-i18n="MEET PANORAMA">MEET PANORAMA</span>
+            </p>
+            <h2 id="panorama-title">
+              <span data-i18n="Two slides.">Two slides.</span><br /><span
+                data-i18n="One bigger story."
+                >One bigger story.</span
+              >
+            </h2>
             <p>
-              Let your design flow from one screenshot into the next. A shared
-              background and device connect the scene, with room for a different
-              message on each slide.
+              <span
+                data-i18n="Let your design flow from one screenshot into the next. A shared background and device connect the scene, with room for a different message on each slide."
+                >Let your design flow from one screenshot into the next. A
+                shared background and device connect the scene, with room for a
+                different message on each slide.</span
+              >
             </p>
             <p class="feature-note">
-              Design them together. Export them as two separate images, ready
-              for your store listing.
+              <span
+                data-i18n="Design them together. Export them as two separate images, ready for your store listing."
+                >Design them together. Export them as two separate images, ready
+                for your store listing.</span
+              >
             </p>
             <a class="inline-link" href="/studio/"
-              >Create your first series <span aria-hidden="true">↗</span></a
+              ><span data-i18n="Create your first series"
+                >Create your first series</span
+              >
+              <span aria-hidden="true">↗</span></a
             >
           </div>
         </div>
@@ -225,21 +350,46 @@
         aria-labelledby="portfolio-title"
       >
         <div class="feature-copy">
-          <p class="eyebrow">THINK OUTSIDE THE APP STORE</p>
-          <h2 id="portfolio-title">Your work.<br />In its best frame.</h2>
+          <p class="eyebrow">
+            <span data-i18n="THINK OUTSIDE THE APP STORE"
+              >THINK OUTSIDE THE APP STORE</span
+            >
+          </p>
+          <h2 id="portfolio-title">
+            <span data-i18n="Your work.">Your work.</span><br /><span
+              data-i18n="In its best frame."
+              >In its best frame.</span
+            >
+          </h2>
           <p>
-            A project card for your portfolio. A laptop mockup for a website. A
-            tablet view that gives the details room to shine.
+            <span
+              data-i18n="A project card for your portfolio. A laptop mockup for a website. A tablet view that gives the details room to shine."
+              >A project card for your portfolio. A laptop mockup for a website.
+              A tablet view that gives the details room to shine.</span
+            >
           </p>
           <p>
-            Choose the App stores workspace for store presets, or Portfolio for
-            cards and custom sizes. Each has the formats you need.
+            <span
+              data-i18n="Choose the App stores workspace for store presets, or Portfolio for cards and custom sizes. Each has the formats you need."
+              >Choose the App stores workspace for store presets, or Portfolio
+              for cards and custom sizes. Each has the formats you need.</span
+            >
           </p>
-          <ul class="frame-list" aria-label="Available frame types">
-            <li>iPhone &amp; Android</li>
-            <li>Tablets</li>
-            <li>Monitors &amp; laptops</li>
-            <li>Simple cards</li>
+          <ul
+            class="frame-list"
+            aria-label="Available frame types"
+            data-i18n-aria-label="Available frame types"
+          >
+            <li>
+              <span data-i18n="iPhone &amp; Android">iPhone &amp; Android</span>
+            </li>
+            <li><span data-i18n="Tablets">Tablets</span></li>
+            <li>
+              <span data-i18n="Monitors &amp; laptops"
+                >Monitors &amp; laptops</span
+              >
+            </li>
+            <li><span data-i18n="Simple cards">Simple cards</span></li>
           </ul>
         </div>
         <figure class="portfolio-example">
@@ -249,8 +399,13 @@
             height="718"
             alt="A landscape portfolio card showing the Hen Screenshots brand design, with the caption Ideas, made real."
             loading="lazy"
+            data-i18n-alt="A landscape portfolio card showing the Hen Screenshots brand design, with the caption Ideas, made real."
           />
-          <figcaption>A portfolio card, made in Hen Screenshots.</figcaption>
+          <figcaption>
+            <span data-i18n="A portfolio card, made in Hen Screenshots."
+              >A portfolio card, made in Hen Screenshots.</span
+            >
+          </figcaption>
         </figure>
       </section>
       <section
@@ -260,42 +415,76 @@
       >
         <div class="section-intro">
           <div>
-            <p class="eyebrow">FROM FIRST CAPTURE TO FINAL EXPORT</p>
-            <h2 id="how-title">A small process.<br />A polished result.</h2>
+            <p class="eyebrow">
+              <span data-i18n="FROM FIRST CAPTURE TO FINAL EXPORT"
+                >FROM FIRST CAPTURE TO FINAL EXPORT</span
+              >
+            </p>
+            <h2 id="how-title">
+              <span data-i18n="A small process.">A small process.</span
+              ><br /><span data-i18n="A polished result."
+                >A polished result.</span
+              >
+            </h2>
           </div>
           <p>
-            You already did the hard part: building your app. Give it a
-            presentation that feels just as considered.
+            <span
+              data-i18n="You already did the hard part: building your app. Give it a presentation that feels just as considered."
+              >You already did the hard part: building your app. Give it a
+              presentation that feels just as considered.</span
+            >
           </p>
         </div>
         <ol class="steps">
           <li>
             <span class="step-number" aria-hidden="true">01</span>
             <div>
-              <h3>Bring your screenshots.</h3>
+              <h3>
+                <span data-i18n="Bring your screenshots."
+                  >Bring your screenshots.</span
+                >
+              </h3>
               <p>
-                Create an App stores or Portfolio project. Add your PNG, JPEG,
-                or WebP captures.
+                <span
+                  data-i18n="Create an App stores or Portfolio project. Add your PNG, JPEG, or WebP captures."
+                  >Create an App stores or Portfolio project. Add your PNG,
+                  JPEG, or WebP captures.</span
+                >
               </p>
             </div>
           </li>
           <li>
             <span class="step-number" aria-hidden="true">02</span>
             <div>
-              <h3>Give them your look.</h3>
+              <h3>
+                <span data-i18n="Give them your look."
+                  >Give them your look.</span
+                >
+              </h3>
               <p>
-                Pick a template, choose a frame, and make the colors and
-                captions your own. Apply the style across your series.
+                <span
+                  data-i18n="Pick a template, choose a frame, and make the colors and captions your own. Apply the style across your series."
+                  >Pick a template, choose a frame, and make the colors and
+                  captions your own. Apply the style across your series.</span
+                >
               </p>
             </div>
           </li>
           <li>
             <span class="step-number" aria-hidden="true">03</span>
             <div>
-              <h3>Export. Show it off.</h3>
+              <h3>
+                <span data-i18n="Export. Show it off."
+                  >Export. Show it off.</span
+                >
+              </h3>
               <p>
-                Download a PNG or your whole set as a ZIP. Use App Store and
-                Google Play size presets, or set your own portfolio dimensions.
+                <span
+                  data-i18n="Download a PNG or your whole set as a ZIP. Use App Store and Google Play size presets, or set your own portfolio dimensions."
+                  >Download a PNG or your whole set as a ZIP. Use App Store and
+                  Google Play size presets, or set your own portfolio
+                  dimensions.</span
+                >
               </p>
             </div>
           </li>
@@ -308,29 +497,51 @@
       >
         <div class="free-layout wrap section-space">
           <div>
-            <p class="eyebrow">A TOOL FOR PEOPLE WHO MAKE THINGS</p>
-            <h2 id="free-title">Free.<br /><em>Forever.</em></h2>
+            <p class="eyebrow">
+              <span data-i18n="A TOOL FOR PEOPLE WHO MAKE THINGS"
+                >A TOOL FOR PEOPLE WHO MAKE THINGS</span
+              >
+            </p>
+            <h2 id="free-title">
+              <span data-i18n="Free.">Free.</span><br /><em
+                ><span data-i18n="Forever.">Forever.</span></em
+              >
+            </h2>
           </div>
           <div class="free-copy">
             <p class="free-lead">
-              Your next great screenshot shouldn’t come with a subscription.
+              <span
+                data-i18n="Your next great screenshot shouldn’t come with a subscription."
+                >Your next great screenshot shouldn’t come with a
+                subscription.</span
+              >
             </p>
             <p>
-              Every template, every frame, and full-resolution exports are free.
-              No account to create. No watermark to remove.
+              <span
+                data-i18n="Every template, every frame, and full-resolution exports are free. No account to create. No watermark to remove."
+                >Every template, every frame, and full-resolution exports are
+                free. No account to create. No watermark to remove.</span
+              >
             </p>
             <p>
-              Built by
+              <span data-i18n="Built by">Built by</span>
               <a
                 href="https://hensell.dev"
                 target="_blank"
                 rel="noopener noreferrer"
                 >Hensell</a
               >
-              for his own apps, and for the things you’re building, too.
+              <span
+                data-i18n="for his own apps, and for the things you’re building, too."
+                >for his own apps, and for the things you’re building,
+                too.</span
+              >
             </p>
             <a class="action action-paper" href="/studio/"
-              >Make something worth showing <span aria-hidden="true">↗</span></a
+              ><span data-i18n="Make something worth showing"
+                >Make something worth showing</span
+              >
+              <span aria-hidden="true">↗</span></a
             >
           </div>
         </div>
@@ -340,53 +551,95 @@
         aria-labelledby="faq-title"
       >
         <div>
-          <p class="eyebrow">A FEW GOOD QUESTIONS</p>
-          <h2 id="faq-title">Before you<br />start creating.</h2>
+          <p class="eyebrow">
+            <span data-i18n="A FEW GOOD QUESTIONS">A FEW GOOD QUESTIONS</span>
+          </p>
+          <h2 id="faq-title">
+            <span data-i18n="Before you">Before you</span><br /><span
+              data-i18n="start creating."
+              >start creating.</span
+            >
+          </h2>
         </div>
         <div class="faq-list">
           <details>
-            <summary>Is it really free forever?</summary>
+            <summary>
+              <span data-i18n="Is it really free forever?"
+                >Is it really free forever?</span
+              >
+            </summary>
             <p>
-              Yes. Hen Screenshots is free to use, including every template,
-              device frame, and full-resolution export. There’s no subscription
-              or paid tier.
+              <span
+                data-i18n="Yes. Hen Screenshots is free to use, including every template, device frame, and full-resolution export. There’s no subscription or paid tier."
+                >Yes. Hen Screenshots is free to use, including every template,
+                device frame, and full-resolution export. There’s no
+                subscription or paid tier.</span
+              >
             </p>
           </details>
           <details>
-            <summary>Where do my screenshots and projects go?</summary>
+            <summary>
+              <span data-i18n="Where do my screenshots and projects go?"
+                >Where do my screenshots and projects go?</span
+              >
+            </summary>
             <p>
-              Your captures are processed in your browser and your projects are
-              saved on this device. They aren’t uploaded to a server. Download a
-              project file to keep a backup or move your work to another browser
-              or computer. Clearing this site’s browser data also deletes its
-              saved projects.
+              <span
+                data-i18n="Your captures are processed in your browser and your projects are saved on this device. They aren’t uploaded to a server. Download a project file to keep a backup or move your work to another browser or computer. Clearing this site’s browser data also deletes its saved projects."
+                >Your captures are processed in your browser and your projects
+                are saved on this device. They aren’t uploaded to a server.
+                Download a project file to keep a backup or move your work to
+                another browser or computer. Clearing this site’s browser data
+                also deletes its saved projects.</span
+              >
             </p>
           </details>
           <details>
-            <summary>Can I use this for my app store listing?</summary>
+            <summary>
+              <span data-i18n="Can I use this for my app store listing?"
+                >Can I use this for my app store listing?</span
+              >
+            </summary>
             <p>
-              Yes. The App stores workspace includes size presets for the App
-              Store and Google Play. Exports are checked for the selected
-              dimensions and opaque RGB PNG format. Choose the preset for your
-              device and listing; the editor links to each store’s current
-              requirements.
+              <span
+                data-i18n="Yes. The App stores workspace includes size presets for the App Store and Google Play. Exports are checked for the selected dimensions and opaque RGB PNG format. Choose the preset for your device and listing; the editor links to each store’s current requirements."
+                >Yes. The App stores workspace includes size presets for the App
+                Store and Google Play. Exports are checked for the selected
+                dimensions and opaque RGB PNG format. Choose the preset for your
+                device and listing; the editor links to each store’s current
+                requirements.</span
+              >
             </p>
           </details>
           <details>
-            <summary>Can I make mockups for my portfolio?</summary>
+            <summary>
+              <span data-i18n="Can I make mockups for my portfolio?"
+                >Can I make mockups for my portfolio?</span
+              >
+            </summary>
             <p>
-              Yes. The Portfolio workspace includes rectangular cards, square
-              and portrait layouts, wide canvases, and custom dimensions. Pair
-              them with a phone, tablet, monitor, laptop, or simple screenshot
-              frame.
+              <span
+                data-i18n="Yes. The Portfolio workspace includes rectangular cards, square and portrait layouts, wide canvases, and custom dimensions. Pair them with a phone, tablet, monitor, laptop, or simple screenshot frame."
+                >Yes. The Portfolio workspace includes rectangular cards, square
+                and portrait layouts, wide canvases, and custom dimensions. Pair
+                them with a phone, tablet, monitor, laptop, or simple screenshot
+                frame.</span
+              >
             </p>
           </details>
           <details>
-            <summary>Do I need to install anything?</summary>
+            <summary>
+              <span data-i18n="Do I need to install anything?"
+                >Do I need to install anything?</span
+              >
+            </summary>
             <p>
-              No. Open the studio in your browser and start a project. A larger
-              screen gives you more room to compose, and your project files let
-              you take your work with you.
+              <span
+                data-i18n="No. Open the studio in your browser and start a project. A larger screen gives you more room to compose, and your project files let you take your work with you."
+                >No. Open the studio in your browser and start a project. A
+                larger screen gives you more room to compose, and your project
+                files let you take your work with you.</span
+              >
             </p>
           </details>
         </div>
@@ -397,13 +650,23 @@
         aria-labelledby="feedback-title"
       >
         <div>
-          <p class="eyebrow">A NOTE TO THE MAKER</p>
-          <h2 id="feedback-title">Have an idea?<br />I’m listening.</h2>
+          <p class="eyebrow">
+            <span data-i18n="A NOTE TO THE MAKER">A NOTE TO THE MAKER</span>
+          </p>
+          <h2 id="feedback-title">
+            <span data-i18n="Have an idea?">Have an idea?</span><br /><span
+              data-i18n="I’m listening."
+              >I’m listening.</span
+            >
+          </h2>
         </div>
         <div class="feedback-copy">
           <p>
-            Enjoying Hen Screenshots? Tell me what you like, suggest an
-            improvement, or share a template you’d love to see.
+            <span
+              data-i18n="Enjoying Hen Screenshots? Tell me what you like, suggest an improvement, or share a template you’d love to see."
+              >Enjoying Hen Screenshots? Tell me what you like, suggest an
+              improvement, or share a template you’d love to see.</span
+            >
           </p>
           <a
             class="inline-link"
@@ -414,18 +677,27 @@
       </section>
     </main>
     <footer class="landing-footer wrap">
-      <a class="wordmark" href="/" aria-label="Hen Screenshots home"
+      <a
+        class="wordmark"
+        href="/"
+        aria-label="Hen Screenshots home"
+        data-i18n-aria-label="Hen Screenshots home"
         ><img src="/brand/mark.svg" width="28" height="30" alt="" /><span
           >hen<small>screenshots</small></span
         ></a
       >
-      <p>Made for the apps you care about.</p>
+      <p>
+        <span data-i18n="Made for the apps you care about."
+          >Made for the apps you care about.</span
+        >
+      </p>
       <a
         class="inline-link"
         href="https://hensell.dev"
         target="_blank"
         rel="noopener noreferrer"
-        >By Hensell <span aria-hidden="true">↗</span></a
+        ><span data-i18n="By Hensell">By Hensell</span>
+        <span aria-hidden="true">↗</span></a
       >
     </footer>
   </body>

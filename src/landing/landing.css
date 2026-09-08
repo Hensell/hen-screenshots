@@ -143,8 +143,8 @@ nav {
   padding: 10px 16px;
   gap: 24px;
 }
-.action span,
-.inline-link span {
+.action [aria-hidden="true"],
+.inline-link [aria-hidden="true"] {
   font-size: 1.1rem;
   line-height: 1;
 }
@@ -685,12 +685,60 @@ details > p {
   .hero-art {
     padding: 16px;
   }
-  .hero-art figcaption span {
+  .hero-art figcaption > span:last-child {
     display: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .action {
     transition: none;
+  }
+}
+
+.landing-language {
+  flex-shrink: 0;
+}
+.landing-language > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.landing-language[hidden] {
+  display: none;
+}
+@media (max-width: 1120px) and (min-width: 761px) {
+  .landing-header {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-block: 20px;
+    gap: 16px 24px;
+  }
+  .landing-header nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+@media (max-width: 480px) {
+  .landing-header {
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-block: 16px;
+  }
+  .landing-header nav {
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    flex: 1;
+  }
+  .landing-language {
+    max-width: 145px;
+  }
+  .landing-language select {
+    max-width: 100%;
   }
 }

@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import {
   localContent,
   writeText,
@@ -57,20 +58,22 @@ function FrameOrientation({
   linked: boolean;
   onChange: (orientation: Style["deviceOrientation"]) => void;
 }) {
+  const t = useT();
   const helpId = useId();
   const fixed = style.device === "monitor" || style.device === "laptop";
   return (
     <fieldset className="frame-orientation" aria-describedby={helpId}>
-      <legend>Frame orientation</legend>
+      <legend>{t("Frame orientation")}</legend>
       <p id={helpId} className="orientation-scope">
-        {deviceNames[style.device]} ·{" "}
-        {linked ? "Both linked slides" : "This slide"}
+        {t(deviceNames[style.device])} ·{" "}
+        {linked ? t("Both linked slides") : t("This slide")}
       </p>
       {fixed ? (
         <div className="frame-fixed-orientation">
           <span className="canvas-shape landscape" aria-hidden="true" />
           <span>
-            Landscape <small>Fixed for this frame</small>
+            {t("Landscape")}
+            <small>{t("Fixed for this frame")}</small>
           </span>
         </div>
       ) : (
@@ -79,11 +82,15 @@ function FrameOrientation({
             <button
               type="button"
               key={orientation}
-              aria-label={`${orientation === "portrait" ? "Portrait" : "Landscape"} frame`}
+              aria-label={t(
+                orientation === "portrait"
+                  ? "Portrait frame"
+                  : "Landscape frame",
+              )}
               aria-pressed={style.deviceOrientation === orientation}
               onClick={() => onChange(orientation)}
             >
-              {orientation === "portrait" ? "Portrait" : "Landscape"}
+              {orientation === "portrait" ? t("Portrait") : t("Landscape")}
             </button>
           ))}
         </div>
@@ -119,6 +126,7 @@ export function Inspector({
   onLanguages: () => void;
   locale: string | null;
 }) {
+  const t = useT();
   const panelId = useId();
   const inspectorRef = useRef<HTMLElement>(null);
   const tabRefs = useRef<Partial<Record<InspectorTab, HTMLButtonElement>>>({});
@@ -172,7 +180,7 @@ export function Inspector({
     return (
       <label className="range-field">
         <span>
-          {label}
+          {t(label)}
           <output>
             {key === "width"
               ? Math.round((shot.phone.width / defaultDeviceWidth) * 100)
@@ -184,10 +192,14 @@ export function Inspector({
         </span>
         <input
           type="range"
-          aria-label={label}
+          aria-label={t(label)}
           aria-valuetext={
             key === "width"
-              ? `${Math.round((shot.phone.width / defaultDeviceWidth) * 100)}% of template size`
+              ? t("{percent}% of template size", {
+                  percent: Math.round(
+                    (shot.phone.width / defaultDeviceWidth) * 100,
+                  ),
+                })
               : undefined
           }
           min={min}
@@ -216,7 +228,7 @@ export function Inspector({
       ref={inspectorRef}
       id="slide-inspector"
       className="inspector inspector-tabbed"
-      aria-label="Screenshot properties"
+      aria-label={t("Screenshot properties")}
       tabIndex={0}
     >
       <div className="inspector-header">
@@ -224,31 +236,41 @@ export function Inspector({
           <div>
             <h2>
               {tab === "canvas"
-                ? "Project canvas"
-                : `Slide ${String(project.shots.indexOf(shot) + 1).padStart(2, "0")}`}
+                ? t("Project canvas")
+                : t("Slide {number}", {
+                    number: String(project.shots.indexOf(shot) + 1).padStart(
+                      2,
+                      "0",
+                    ),
+                  })}
             </h2>
             <p>
               {tab === "canvas"
-                ? "Size and orientation for your series"
+                ? t("Size and orientation for your series")
                 : getTemplate(style.template).name}
             </p>
           </div>
           <button
             type="button"
             className="icon-button mobile-preview-link"
-            aria-label="Back to preview"
+            aria-label={t("Back to preview")}
             onClick={onPreview}
           >
-            <Icon name="canvas" size={16} /> Preview
+            <Icon name="canvas" size={16} />
+            {t("Preview")}
           </button>
           <span className="scope-label desktop-scope">
-            {tab === "canvas" ? "All slides" : pair ? "Linked pair" : "Editing"}
+            {tab === "canvas"
+              ? t("All slides")
+              : pair
+                ? t("Linked pair")
+                : t("Editing")}
           </span>
         </div>
         <div
           className="inspector-tabs"
           role="tablist"
-          aria-label="Editing tools"
+          aria-label={t("Editing tools")}
         >
           {inspectorTabs.map((item, index) => (
             <button
@@ -279,7 +301,7 @@ export function Inspector({
               }}
             >
               <Icon name={item.icon} size={17} />
-              {item.label}
+              {t(item.label)}
             </button>
           ))}
         </div>
@@ -295,7 +317,7 @@ export function Inspector({
         >
           <section className="property-section template-property">
             <div>
-              <span className="eyebrow">TEMPLATE</span>
+              <span className="eyebrow">{t("TEMPLATE")}</span>
               <h3>{getTemplate(style.template).name}</h3>
             </div>
             <button
@@ -303,13 +325,13 @@ export function Inspector({
               className="button secondary"
               onClick={onTemplates}
             >
-              Change
+              {t("Change")}
               <Icon name="layout" size={15} />
             </button>
           </section>
           <section className="property-section">
             <div className="brand-property-heading">
-              <h3>Brand kit</h3>
+              <h3>{t("Brand kit")}</h3>
               <Icon name="brand" size={17} />
             </div>
             <button
@@ -323,45 +345,49 @@ export function Inspector({
                 <Icon name="brand" size={28} />
               )}
               <span>
-                <strong>{brand?.name ?? "Choose your app’s brand"}</strong>
+                <strong>{brand?.name ?? t("Choose your app’s brand")}</strong>
                 <small>
                   {brand
-                    ? "Applied copy · Manage & reapply"
-                    : "Colors and fonts, ready to reuse"}
+                    ? t("Applied copy · Manage & reapply")
+                    : t("Colors and fonts, ready to reuse")}
                 </small>
               </span>
               <Icon name="right" size={15} />
             </button>
           </section>
           <section className="property-section">
-            <h3>Color story</h3>
+            <h3>{t("Color story")}</h3>
             <div
               className="segmented"
               role="group"
-              aria-label="Background finish"
+              aria-label={t("Background finish")}
             >
               <button
                 type="button"
                 aria-pressed={style.backgroundMode === "solid"}
                 onClick={() => setStyle({ backgroundMode: "solid" })}
               >
-                Solid
+                {t("Solid")}
               </button>
               <button
                 type="button"
                 aria-pressed={style.backgroundMode === "gradient"}
                 onClick={() => setStyle({ backgroundMode: "gradient" })}
               >
-                Gradient
+                {t("Gradient")}
               </button>
             </div>
-            <div className="swatches" role="group" aria-label="Color palettes">
+            <div
+              className="swatches"
+              role="group"
+              aria-label={t("Color palettes")}
+            >
               {palettes.map((palette) => (
                 <button
                   type="button"
                   key={palette.name}
-                  title={palette.name}
-                  aria-label={`${palette.name} palette`}
+                  title={t(palette.name)}
+                  aria-label={t("{name} palette", { name: t(palette.name) })}
                   aria-pressed={
                     style.background === palette.background &&
                     style.textColor === palette.textColor
@@ -391,10 +417,10 @@ export function Inspector({
             </div>
             <div className="color-fields">
               <label>
-                Background
+                {t("Background")}
                 <input
                   type="color"
-                  aria-label="Background color"
+                  aria-label={t("Background color")}
                   value={style.background}
                   onChange={(event) =>
                     updateShot((shot) => {
@@ -405,10 +431,10 @@ export function Inspector({
                 />
               </label>
               <label>
-                Text
+                {t("Text")}
                 <input
                   type="color"
-                  aria-label="Text color"
+                  aria-label={t("Text color")}
                   value={style.textColor}
                   onChange={(event) =>
                     updateShot((shot) => {
@@ -421,10 +447,10 @@ export function Inspector({
             </div>
             <div className="color-fields">
               <label>
-                {secondaryLabel}
+                {t(secondaryLabel)}
                 <input
                   type="color"
-                  aria-label={`${secondaryLabel} color`}
+                  aria-label={t("{name} color", { name: t(secondaryLabel) })}
                   value={style.backgroundEnd}
                   disabled={
                     disabled ||
@@ -439,10 +465,10 @@ export function Inspector({
                 />
               </label>
               <label>
-                Accent
+                {t("Accent")}
                 <input
                   type="color"
-                  aria-label="Accent color"
+                  aria-label={t("Accent color")}
                   value={style.accentColor}
                   onChange={(event) =>
                     updateShot((shot) => {
@@ -461,15 +487,16 @@ export function Inspector({
                   setStyle({ texture: event.target.checked ? "dots" : "none" })
                 }
               />
-              Subtle dot texture
+              {t("Subtle dot texture")}
             </label>
           </section>
           {pair && (
             <section className="property-section panorama-info">
-              <h3>Linked panorama</h3>
+              <h3>{t("Linked panorama")}</h3>
               <p className="field-help">
-                Image, frame, colors and position are shared. Words belong to
-                the selected slide.
+                {t(
+                  "Image, frame, colors and position are shared. Words belong to the selected slide.",
+                )}
               </p>
               <button
                 type="button"
@@ -480,18 +507,19 @@ export function Inspector({
                   )
                 }
               >
-                Separate slides
+                {t("Separate slides")}
               </button>
               <p className="field-help">
-                Returns both slides to Studio. Undo anytime.
+                {t("Returns both slides to Studio. Undo anytime.")}
               </p>
             </section>
           )}
           <section className="property-section series-style">
-            <h3>Keep the series together</h3>
+            <h3>{t("Keep the series together")}</h3>
             <p className="field-help">
-              Use these colors, typography and frame across every screenshot.
-              Templates and words stay. Devices that change shape are refitted.
+              {t(
+                "Use these colors, typography and frame across every screenshot. Templates and words stay. Devices that change shape are refitted.",
+              )}
             </p>
             <button
               type="button"
@@ -521,7 +549,7 @@ export function Inspector({
                 })
               }
             >
-              Apply style to all {project.shots.length}
+              {t("Apply style to all {count}", { count: project.shots.length })}
             </button>
             {Object.keys(shot.style).some((key) => key !== "template") && (
               <button
@@ -536,7 +564,7 @@ export function Inspector({
                   })
                 }
               >
-                Reset to project style
+                {t("Reset to project style")}
               </button>
             )}
           </section>
@@ -551,15 +579,23 @@ export function Inspector({
         >
           <section className="property-section">
             <div className="section-heading">
-              <h3>Words</h3>
+              <h3>{t("Words")}</h3>
               <span className="scope-label">
-                Slide {String(project.shots.indexOf(shot) + 1).padStart(2, "0")}
+                {t("Slide {number}", {
+                  number: String(project.shots.indexOf(shot) + 1).padStart(
+                    2,
+                    "0",
+                  ),
+                })}
               </span>
             </div>
             <p className="section-intro">
               {locale
-                ? `Editing ${languageName(locale)}. Design changes apply to every language.`
-                : "Write your story. Drag the text to place it."}
+                ? t(
+                    "Editing {language}. Design changes apply to every language.",
+                    { language: languageName(locale) },
+                  )
+                : t("Write your story. Drag the text to place it.")}
             </p>
             <button
               type="button"
@@ -568,13 +604,15 @@ export function Inspector({
             >
               <Icon name="languages" size={16} />
               {locale
-                ? `Review translation · ${localeStatus(sourceShot, locale)}`
-                : "Add a language version"}
+                ? t("Review translation · {status}", {
+                    status: t(localeStatus(sourceShot, locale)),
+                  })
+                : t("Add a language version")}
             </button>
             <label
               className={`field text-editor ${selectedElement === "title" ? "is-selected" : ""}`}
             >
-              Headline
+              {t("Headline")}
               <textarea
                 maxLength={locale ? 300 : 100}
                 rows={3}
@@ -603,7 +641,7 @@ export function Inspector({
                     ? !sourceShot.translations?.[locale]?.textOffsets?.title
                     : !shot.textOffsets?.title
                 }
-                aria-label="Reset headline position"
+                aria-label={t("Reset headline position")}
                 onClick={() =>
                   updateShot(
                     (target) => {
@@ -616,13 +654,14 @@ export function Inspector({
                   )
                 }
               >
-                <Icon name="reset" size={13} /> Reset position
+                <Icon name="reset" size={13} />
+                {t("Reset position")}
               </button>
             </div>
             <label
               className={`field text-editor ${selectedElement === "subtitle" ? "is-selected" : ""}`}
             >
-              Supporting text
+              {t("Supporting text")}
               <textarea
                 maxLength={locale ? 450 : 150}
                 rows={2}
@@ -651,7 +690,7 @@ export function Inspector({
                     ? !sourceShot.translations?.[locale]?.textOffsets?.subtitle
                     : !shot.textOffsets?.subtitle
                 }
-                aria-label="Reset supporting text position"
+                aria-label={t("Reset supporting text position")}
                 onClick={() =>
                   updateShot(
                     (target) => {
@@ -665,28 +704,33 @@ export function Inspector({
                   )
                 }
               >
-                <Icon name="reset" size={13} /> Reset position
+                <Icon name="reset" size={13} />
+                {t("Reset position")}
               </button>
             </div>
-            <div className="segmented" role="group" aria-label="Text alignment">
+            <div
+              className="segmented"
+              role="group"
+              aria-label={t("Text alignment")}
+            >
               <button
                 type="button"
                 aria-pressed={style.align === "left"}
                 onClick={() => setStyle({ align: "left" })}
               >
-                Left aligned
+                {t("Left aligned")}
               </button>
               <button
                 type="button"
                 aria-pressed={style.align === "center"}
                 onClick={() => setStyle({ align: "center" })}
               >
-                Centered
+                {t("Centered")}
               </button>
             </div>
             <label className="range-field">
               <span>
-                Headline size
+                {t("Headline size")}
                 <output>
                   {style.titleSize}
                   <span className="unit"> px</span>
@@ -694,7 +738,7 @@ export function Inspector({
               </span>
               <input
                 type="range"
-                aria-label="Headline size"
+                aria-label={t("Headline size")}
                 min={48}
                 max={132}
                 step={1}
@@ -722,7 +766,7 @@ export function Inspector({
                   })
                 }
               >
-                Reset to shared headline size
+                {t("Reset to shared headline size")}
               </button>
             )}
             <label className="check-field">
@@ -733,11 +777,12 @@ export function Inspector({
                   setStyle({ accentTitle: event.target.checked })
                 }
               />
-              Accent the last headline line
+              {t("Accent the last headline line")}
             </label>
             <p className="field-help">
-              Add a line break to choose where the accent begins. Long headlines
-              fit down automatically.
+              {t(
+                "Add a line break to choose where the accent begins. Long headlines fit down automatically.",
+              )}
             </p>
           </section>
         </div>
@@ -751,11 +796,11 @@ export function Inspector({
         >
           <section className="property-section device-size-section">
             <div className="section-heading">
-              <h3>Device size</h3>
+              <h3>{t("Device size")}</h3>
               <button
                 type="button"
                 className="text-button"
-                aria-label="Reset device size"
+                aria-label={t("Reset device size")}
                 onClick={() =>
                   updateShot((target) =>
                     resizeDevice(
@@ -766,7 +811,8 @@ export function Inspector({
                   )
                 }
               >
-                <Icon name="reset" size={14} /> Reset size
+                <Icon name="reset" size={14} />
+                {t("Reset size")}
               </button>
             </div>
             {range(
@@ -776,22 +822,23 @@ export function Inspector({
               PLACEMENT_LIMITS.width.max,
             )}
             <p className="field-help">
-              Drag a corner on the canvas, or adjust here. 100% is the
-              template’s original size.
-              {pair ? " Both slides resize together." : ""}
+              {t(
+                "Drag a corner on the canvas, or adjust here. 100% is the template’s original size.",
+              )}
+              {pair ? <> {t("Both slides resize together.")}</> : null}
             </p>
           </section>
           <section className="property-section">
-            <h3>Device frame</h3>
+            <h3>{t("Device frame")}</h3>
             <p className="section-intro">
               {pair
-                ? "Frame and placement are shared by both slides."
-                : "Choose a frame for this slide."}
+                ? t("Frame and placement are shared by both slides.")
+                : t("Choose a frame for this slide.")}
             </p>
             <div
               className="device-options"
               role="group"
-              aria-label="Device family"
+              aria-label={t("Device family")}
             >
               {Object.entries(deviceNames).map(([device, name]) => (
                 <button
@@ -808,7 +855,7 @@ export function Inspector({
                   }
                 >
                   <span className={`device-glyph ${device}`} />
-                  {name}
+                  {t(name)}
                 </button>
               ))}
             </div>
@@ -820,8 +867,8 @@ export function Inspector({
                 tabRefs.current.canvas?.focus({ preventScroll: true });
               }}
             >
-              <Icon name="canvas" size={16} /> Canvas &amp; frame orientation{" "}
-              <Icon name="right" size={14} />
+              <Icon name="canvas" size={16} />
+              {t("Canvas & frame orientation")} <Icon name="right" size={14} />
             </button>
             <label className="check-field">
               <input
@@ -830,8 +877,8 @@ export function Inspector({
                 onChange={(event) => setStyle({ frame: event.target.checked })}
               />{" "}
               {style.device === "card"
-                ? "Rounded corners"
-                : "Show device frame"}
+                ? t("Rounded corners")
+                : t("Show device frame")}
             </label>
             {style.device !== "card" && (
               <label className="check-field">
@@ -843,37 +890,43 @@ export function Inspector({
                   }
                 />{" "}
                 {style.device === "ios"
-                  ? "Add Dynamic Island"
-                  : "Add front camera"}
+                  ? t("Add Dynamic Island")
+                  : t("Add front camera")}
               </label>
             )}
             <p className="field-help">
               {style.device === "card"
-                ? "A simple 4:3 card with a soft shadow. Switch orientation for a vertical card."
-                : "Original status and navigation bars stay in your screenshot. Keep the cutout off if one is already visible."}
+                ? t(
+                    "A simple 4:3 card with a soft shadow. Switch orientation for a vertical card.",
+                  )
+                : t(
+                    "Original status and navigation bars stay in your screenshot. Keep the cutout off if one is already visible.",
+                  )}
             </p>
             <label className="field">
-              Screenshot fit
+              {t("Screenshot fit")}
               <select
                 value={style.fit}
                 onChange={(event) =>
                   setStyle({ fit: event.target.value as Style["fit"] })
                 }
               >
-                <option value="contain">Fit entire screenshot</option>
-                <option value="cover">Fill screen · crop edges</option>
+                <option value="contain">{t("Fit entire screenshot")}</option>
+                <option value="cover">{t("Fill screen · crop edges")}</option>
               </select>
             </label>
             <button type="button" className="text-button" onClick={onReplace}>
               <Icon name="image" />
-              {pair ? "Replace panorama image" : "Replace image"}
+              {pair ? t("Replace panorama image") : t("Replace image")}
             </button>
           </section>
           {locale && (
             <section className="property-section">
               <p className="field-help">
-                Replacing the screenshot changes only {languageName(locale)}.
-                Its frame and position stay shared.
+                {t(
+                  "Replacing the screenshot changes only {language}. Its frame and position stay shared.",
+                  { language: languageName(locale) },
+                )}
               </p>
               {sourceShot.translations?.[locale]?.assetId && (
                 <button
@@ -885,25 +938,25 @@ export function Inspector({
                   }
                 >
                   <Icon name="reset" size={14} />
-                  Use original image
+                  {t("Use original image")}
                 </button>
               )}
             </section>
           )}
           <section className="property-section">
             <div className="section-heading">
-              <h3>Position &amp; rotation</h3>
+              <h3>{t("Position & rotation")}</h3>
               <button
                 type="button"
                 className="text-button"
-                aria-label="Reset device placement"
+                aria-label={t("Reset device placement")}
                 onClick={() =>
                   updateShot((shot) => {
                     resetComposition(project, shot);
                   })
                 }
               >
-                Reset
+                {t("Reset")}
               </button>
             </div>
             {range(
@@ -920,8 +973,9 @@ export function Inspector({
             )}
             {range("Device rotation", "rotation", -20, 20)}
             <p className="field-help">
-              Drag the device to move it. Reset restores the template’s size,
-              position and rotation.
+              {t(
+                "Drag the device to move it. Reset restores the template’s size, position and rotation.",
+              )}
             </p>
           </section>
         </div>

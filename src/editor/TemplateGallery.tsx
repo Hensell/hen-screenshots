@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import { panoramaStart } from "../core/panorama-families";
 import {
   memo,
@@ -31,6 +32,7 @@ import {
   paginateCatalog,
   queryCatalog,
   templateCatalogIndex,
+  normalizeSearch,
   type CatalogFilters,
   type CatalogPageSize,
 } from "../core/template-catalog";
@@ -59,6 +61,7 @@ const TemplateCard = memo(function TemplateCard({
   onSelect: (id: TemplateId) => void;
   series: boolean;
 }) {
+  const t = useT();
   const ref = useRef<HTMLButtonElement>(null);
   const [visible, setVisible] = useState(false);
   useEffect(() => {
@@ -90,14 +93,14 @@ const TemplateCard = memo(function TemplateCard({
       className="template-card"
       aria-pressed={selected}
       onClick={() => onSelect(template.id)}
-      aria-label={`${template.name} template`}
+      aria-label={t("{name} template", { name: template.name })}
     >
       <span className="template-card-label">
         <strong>{template.name}</strong>
         <span className="template-category">
           {isPanoramaTemplate(template.id)
-            ? "2-slide panorama"
-            : template.category}
+            ? t("2-slide panorama")
+            : t(template.category)}
         </span>
         <span className="template-check">
           {selected && <Icon name="check" size={14} />}
@@ -128,7 +131,7 @@ const TemplateCard = memo(function TemplateCard({
           </div>
         ))}
       </div>
-      <span className="template-description">{template.description}</span>
+      <span className="template-description">{t(template.description)}</span>
     </button>
   );
 });
@@ -146,6 +149,7 @@ export function TemplateGallery({
   onClose: () => void;
   onApply: (id: TemplateId, all: boolean, keepColors: boolean) => void;
 }) {
+  const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
   const [selected, setSelected] = useState<TemplateId>(
     getTemplate(resolveStyle(project, shot).template).id,
@@ -168,9 +172,38 @@ export function TemplateGallery({
   const galleryRef = useRef<HTMLDivElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const revealSelected = useRef(false);
+  const localizedIndex = useMemo(
+    () =>
+      templateCatalogIndex.map((entry) => ({
+        ...entry,
+        text: `${entry.text} ${normalizeSearch(
+          [
+            t(entry.item.category),
+            t(entry.item.description),
+            t(entry.item.note),
+            entry.item.surfaceLabel ? t(entry.item.surfaceLabel) : "",
+            t(entry.item.background === "solid" ? "Solid" : "Gradient"),
+            t(
+              entry.item.appearance === "dark"
+                ? "Dark"
+                : entry.item.appearance === "colorful"
+                  ? "Colorful"
+                  : "Light",
+            ),
+            t(
+              entry.item.layout === "panorama"
+                ? "2-slide panorama"
+                : "Single slide",
+            ),
+            ...(entry.item.keywords ?? []).map((keyword) => t(keyword)),
+          ].join(" "),
+        )}`,
+      })),
+    [t],
+  );
   const results = useMemo(
-    () => queryCatalog(templateCatalogIndex, filters),
-    [filters],
+    () => queryCatalog(localizedIndex, filters),
+    [localizedIndex, filters],
   );
   const pagination = useMemo(
     () => paginateCatalog(results.items, catalogPage, pageSize),
@@ -264,16 +297,17 @@ export function TemplateGallery({
     >
       <header className="template-header">
         <div>
-          <h2 id="template-heading">Template library</h2>
+          <h2 id="template-heading">{t("Template library")}</h2>
           <p>
-            {templates.length} designs. Previewed with your screenshots and
-            canvas.
+            {t("{count} designs. Previewed with your screenshots and canvas.", {
+              count: templates.length,
+            })}
           </p>
         </div>
         <button
           type="button"
           className="icon-button"
-          aria-label="Close templates"
+          aria-label={t("Close templates")}
           onClick={onClose}
         >
           <Icon name="close" />
@@ -282,12 +316,12 @@ export function TemplateGallery({
       <div className="catalog-searchbar">
         <div className="catalog-search-control">
           <label className="catalog-search">
-            <span className="visually-hidden">Search templates</span>
+            <span className="visually-hidden">{t("Search templates")}</span>
             <Icon name="search" size={19} />
             <input
               ref={searchRef}
               type="search"
-              placeholder="Search names, colors, or ideas…"
+              placeholder={t("Search names, colors, or ideas…")}
               value={filters.query}
               onChange={(event) => updateFilters({ query: event.target.value })}
             />
@@ -296,7 +330,7 @@ export function TemplateGallery({
             <button
               type="button"
               className="icon-button"
-              aria-label="Clear search"
+              aria-label={t("Clear search")}
               onClick={() => {
                 updateFilters({ query: "" });
                 searchRef.current?.focus();
@@ -307,9 +341,9 @@ export function TemplateGallery({
           )}
         </div>
         <label className="catalog-sort">
-          <span>Sort by</span>
+          <span>{t("Sort by")}</span>
           <select
-            aria-label="Sort by"
+            aria-label={t("Sort by")}
             value={filters.sort}
             onChange={(event) =>
               updateFilters({
@@ -318,10 +352,10 @@ export function TemplateGallery({
             }
           >
             <option value="recommended">
-              {filters.query.trim() ? "Best match" : "Curated order"}
+              {t(filters.query.trim() ? "Best match" : "Curated order")}
             </option>
-            <option value="name-asc">Name A–Z</option>
-            <option value="name-desc">Name Z–A</option>
+            <option value="name-asc">{t("Name A–Z")}</option>
+            <option value="name-desc">{t("Name Z–A")}</option>
           </select>
         </label>
         <button
@@ -331,7 +365,8 @@ export function TemplateGallery({
           aria-controls="catalog-filters"
           onClick={() => setFiltersOpen(!filtersOpen)}
         >
-          <Icon name="filter" size={17} /> Filters
+          <Icon name="filter" size={17} />
+          {t("Filters")}
           {activeFilters > 0 && <span>{activeFilters}</span>}
         </button>
       </div>
@@ -339,10 +374,10 @@ export function TemplateGallery({
         <aside
           id="catalog-filters"
           className={`catalog-filters ${filtersOpen ? "is-open" : ""}`}
-          aria-label="Template filters"
+          aria-label={t("Template filters")}
         >
           <label className="catalog-filter-field">
-            Appearance
+            {t("Appearance")}
             <select
               value={filters.appearance}
               onChange={(event) =>
@@ -352,14 +387,14 @@ export function TemplateGallery({
                 })
               }
             >
-              <option value="all">Any appearance</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-              <option value="colorful">Colorful</option>
+              <option value="all">{t("Any appearance")}</option>
+              <option value="light">{t("Light")}</option>
+              <option value="dark">{t("Dark")}</option>
+              <option value="colorful">{t("Colorful")}</option>
             </select>
           </label>
           <fieldset className="catalog-categories">
-            <legend>Style</legend>
+            <legend>{t("Style")}</legend>
             {Object.entries(results.counts).map(([category, count]) => (
               <button
                 type="button"
@@ -367,13 +402,13 @@ export function TemplateGallery({
                 aria-pressed={filters.category === category}
                 onClick={() => updateFilters({ category })}
               >
-                <span>{category === "All" ? "All styles" : category}</span>
+                <span>{t(category === "All" ? "All styles" : category)}</span>
                 <span>{count}</span>
               </button>
             ))}
           </fieldset>
           <label className="catalog-filter-field">
-            Composition
+            {t("Composition")}
             <select
               value={filters.layout}
               onChange={(event) =>
@@ -382,13 +417,13 @@ export function TemplateGallery({
                 })
               }
             >
-              <option value="all">Any composition</option>
-              <option value="single">Single slide</option>
-              <option value="panorama">2-slide panorama</option>
+              <option value="all">{t("Any composition")}</option>
+              <option value="single">{t("Single slide")}</option>
+              <option value="panorama">{t("2-slide panorama")}</option>
             </select>
           </label>
           <label className="catalog-filter-field">
-            Background
+            {t("Background")}
             <select
               value={filters.background}
               onChange={(event) =>
@@ -398,9 +433,9 @@ export function TemplateGallery({
                 })
               }
             >
-              <option value="all">Any background</option>
-              <option value="solid">Solid</option>
-              <option value="gradient">Gradient</option>
+              <option value="all">{t("Any background")}</option>
+              <option value="solid">{t("Solid")}</option>
+              <option value="gradient">{t("Gradient")}</option>
             </select>
           </label>
           {hasFilters && (
@@ -409,33 +444,36 @@ export function TemplateGallery({
               className="catalog-reset"
               onClick={clearFilters}
             >
-              <Icon name="reset" size={15} /> Clear filters
+              <Icon name="reset" size={15} />
+              {t("Clear filters")}
             </button>
           )}
           <p className="catalog-filter-note">
-            Every template adapts to your project’s device and format.
+            {t("Every template adapts to your project’s device and format.")}
           </p>
         </aside>
-        <section className="catalog-results" aria-label="Template results">
+        <section className="catalog-results" aria-label={t("Template results")}>
           <div className="catalog-results-bar" ref={resultsRef} tabIndex={-1}>
             <p role="status" aria-live="polite" aria-atomic="true">
-              {pagination.total > 0 ? (
-                <>
-                  <strong>
-                    {pagination.from}
-                    {pagination.from !== pagination.to && `–${pagination.to}`}
-                  </strong>{" "}
-                  of {pagination.total}{" "}
-                  {pagination.total === 1 ? "template" : "templates"}
-                </>
-              ) : (
-                "No matching templates"
-              )}
+              {pagination.total > 0
+                ? t(
+                    pagination.total === 1
+                      ? "{range} of {count} template"
+                      : "{range} of {count} templates",
+                    {
+                      range:
+                        pagination.from === pagination.to
+                          ? pagination.from
+                          : `${pagination.from}–${pagination.to}`,
+                      count: pagination.total,
+                    },
+                  )
+                : t("No matching templates")}
             </p>
             <label>
-              Per page
+              {t("Per page")}
               <select
-                aria-label="Templates per page"
+                aria-label={t("Templates per page")}
                 value={pageSize}
                 onChange={(event) => {
                   setPageSize(Number(event.target.value) as CatalogPageSize);
@@ -454,17 +492,19 @@ export function TemplateGallery({
             <div
               className="template-series-navigation"
               role="group"
-              aria-label="Series preview pages"
+              aria-label={t("Series preview pages")}
             >
               <span>
-                Previewing slides {start + 1}–
-                {Math.min(start + 3, project.shots.length)} of{" "}
-                {project.shots.length}
+                {t("Previewing slides {from}–{to} of {count}", {
+                  from: start + 1,
+                  to: Math.min(start + 3, project.shots.length),
+                  count: project.shots.length,
+                })}
               </span>
               <button
                 type="button"
                 className="icon-button"
-                aria-label="Previous preview screenshots"
+                aria-label={t("Previous preview screenshots")}
                 disabled={previewPage === 0}
                 onClick={() => setPreviewPage(previewPage - 1)}
               >
@@ -473,7 +513,7 @@ export function TemplateGallery({
               <button
                 type="button"
                 className="icon-button"
-                aria-label="Next preview screenshots"
+                aria-label={t("Next preview screenshots")}
                 disabled={start + 3 >= project.shots.length}
                 onClick={() => setPreviewPage(previewPage + 1)}
               >
@@ -485,7 +525,7 @@ export function TemplateGallery({
             className="template-gallery"
             ref={galleryRef}
             role="group"
-            aria-label="Screenshot templates"
+            aria-label={t("Screenshot templates")}
           >
             {pagination.items.map((template) => (
               <TemplateCard
@@ -504,34 +544,41 @@ export function TemplateGallery({
             {pagination.total === 0 && (
               <div className="template-empty">
                 <Icon name="search" size={28} />
-                <h3>A different search might do it.</h3>
+                <h3>{t("A different search might do it.")}</h3>
                 <p>
-                  Try a name, a color like “blue”, or an idea like “waves”. You
-                  can also broaden your filters.
+                  {t(
+                    "Try a name, a color like “blue”, or an idea like “waves”. You can also broaden your filters.",
+                  )}
                 </p>
                 <button
                   type="button"
                   className="button secondary"
                   onClick={clearFilters}
                 >
-                  Clear search & filters
+                  {t("Clear search & filters")}
                 </button>
               </div>
             )}
           </div>
           {pagination.pages > 1 && (
-            <nav className="catalog-pagination" aria-label="Template pages">
+            <nav
+              className="catalog-pagination"
+              aria-label={t("Template pages")}
+            >
               <button
                 type="button"
                 className="icon-button"
-                aria-label="Previous template page"
+                aria-label={t("Previous template page")}
                 disabled={pagination.page === 1}
                 onClick={() => changePage(pagination.page - 1)}
               >
                 <Icon name="left" size={16} />
               </button>
               <span className="catalog-page-summary">
-                Page {pagination.page} of {pagination.pages}
+                {t("Page {page} of {count}", {
+                  page: pagination.page,
+                  count: pagination.pages,
+                })}
               </span>
               <div className="catalog-page-numbers">
                 {catalogPageNumbers(pagination.page, pagination.pages).map(
@@ -544,7 +591,7 @@ export function TemplateGallery({
                       <button
                         key={number}
                         type="button"
-                        aria-label={`Template page ${number}`}
+                        aria-label={t("Template page {number}", { number })}
                         aria-current={
                           number === pagination.page ? "page" : undefined
                         }
@@ -558,7 +605,7 @@ export function TemplateGallery({
               <button
                 type="button"
                 className="icon-button"
-                aria-label="Next template page"
+                aria-label={t("Next template page")}
                 disabled={pagination.page === pagination.pages}
                 onClick={() => changePage(pagination.page + 1)}
               >
@@ -571,7 +618,7 @@ export function TemplateGallery({
       <footer className="template-footer">
         <div className="template-selection">
           <div>
-            <span>Selected</span>
+            <span>{t("Selected")}</span>
             <strong>{selectedTemplate.name}</strong>
             {!selectedOnPage && (
               <button
@@ -579,40 +626,42 @@ export function TemplateGallery({
                 className="catalog-show-selected"
                 onClick={showSelected}
               >
-                Show selected
+                {t("Show selected")}
               </button>
             )}
           </div>
           <p className="template-target">
             {full
-              ? `Needs one free slide · ${shotCapacity(project)} allowed for this format`
+              ? t("Needs one free slide · {count} allowed for this format", {
+                  count: shotCapacity(project),
+                })
               : panoramic
                 ? pair
-                  ? "Updates this panorama"
-                  : "Adds one slide to create a linked pair"
+                  ? t("Updates this panorama")
+                  : t("Adds one slide to create a linked pair")
                 : pair && !all
-                  ? "Both slides become independent. Undo anytime."
-                  : "Layout resets. Words, images and frames stay."}
+                  ? t("Both slides become independent. Undo anytime.")
+                  : t("Layout resets. Words, images and frames stay.")}
           </p>
           {!selectedInResults && (
             <p className="catalog-selection-note">
-              Your selection is outside these results.
+              {t("Your selection is outside these results.")}
             </p>
           )}
         </div>
         <div className="template-settings">
           <label className="catalog-scope">
-            Apply to
+            {t("Apply to")}
             <select
-              aria-label="Apply template to"
+              aria-label={t("Apply template to")}
               value={all ? "all" : "selected"}
               onChange={(event) => setAll(event.target.value === "all")}
             >
               <option value="selected">
-                {pair ? "This pair (2 slides)" : "This screenshot"}
+                {pair ? t("This pair (2 slides)") : t("This screenshot")}
               </option>
               <option value="all" disabled={panoramic}>
-                Whole series ({project.shots.length})
+                {t("Whole series ({count})", { count: project.shots.length })}
               </option>
             </select>
           </label>
@@ -622,13 +671,13 @@ export function TemplateGallery({
               checked={keepColors}
               onChange={(event) => setKeepColors(event.target.checked)}
             />{" "}
-            Keep my colors
+            {t("Keep my colors")}
           </label>
         </div>
         <div className="template-apply">
           {!ready && (
             <p className="template-target" role="status">
-              Loading your screenshots…
+              {t("Loading your screenshots…")}
             </p>
           )}
           <button
@@ -638,8 +687,8 @@ export function TemplateGallery({
             onClick={() => onApply(selected, all, keepColors)}
           >
             {panoramic && !pair
-              ? "Create 2-slide panorama"
-              : `Apply ${selectedTemplate.name}`}
+              ? t("Create 2-slide panorama")
+              : t("Apply {name}", { name: selectedTemplate.name })}
             <Icon name="arrow" size={16} />
           </button>
         </div>

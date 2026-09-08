@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import { BrandBadge } from "./BrandBadge";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -43,6 +44,7 @@ function ConfirmBrandAction({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
+  const t = useT();
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null;
@@ -67,20 +69,23 @@ function ConfirmBrandAction({
     >
       <h2 id="brand-confirm-title">
         {kind === "delete"
-          ? "Delete this brand kit?"
-          : "Discard unsaved changes?"}
+          ? t("Delete this brand kit?")
+          : t("Discard unsaved changes?")}
       </h2>
       <p id="brand-confirm-copy">
         {kind === "delete"
-          ? `“${name}” will be removed from your library. Projects keep their applied copies.`
-          : "Your changes to this kit have not been saved."}
+          ? t(
+              "“{name}” will be removed from your library. Projects keep their applied copies.",
+              { name },
+            )
+          : t("Your changes to this kit have not been saved.")}
       </p>
       <div>
         <button className="button secondary" onClick={onCancel}>
-          Cancel
+          {t("Cancel")}
         </button>
         <button className="button primary" onClick={onConfirm}>
-          {kind === "delete" ? "Delete kit" : "Discard changes"}
+          {kind === "delete" ? t("Delete kit") : t("Discard changes")}
         </button>
       </div>
     </dialog>
@@ -100,6 +105,7 @@ export function BrandKitDialog({
   onApply: (kit: BrandKit, all: boolean) => void;
   onClose: () => void;
 }) {
+  const t = useT();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const importRef = useRef<HTMLInputElement>(null);
   const logoRef = useRef<HTMLInputElement>(null);
@@ -276,15 +282,15 @@ export function BrandKitDialog({
       >
         <header className="brand-kits-heading">
           <div>
-            <p className="eyebrow">ONE APP. A RECOGNIZABLE LOOK.</p>
-            <h2 id="brand-kits-title">Brand kits</h2>
+            <p className="eyebrow">{t("ONE APP. A RECOGNIZABLE LOOK.")}</p>
+            <h2 id="brand-kits-title">{t("Brand kits")}</h2>
             <p id="brand-kits-description">
-              Your apps’ colors and typography, ready for every project.
+              {t("Your apps’ colors and typography, ready for every project.")}
             </p>
           </div>
           <button
             className="icon-button"
-            aria-label="Close brand kits"
+            aria-label={t("Close brand kits")}
             disabled={working}
             onClick={() => request(onClose)}
           >
@@ -298,7 +304,7 @@ export function BrandKitDialog({
             onClick={() => request(() => create())}
           >
             <Icon name="plus" size={16} />
-            New kit
+            {t("New kit")}
           </button>
           {project && (
             <button
@@ -306,7 +312,7 @@ export function BrandKitDialog({
               disabled={working || loading}
               onClick={() => request(() => create(true))}
             >
-              From {shot ? "slide" : "design"}
+              {t(shot ? "From slide" : "From design")}
             </button>
           )}
           <button
@@ -315,9 +321,9 @@ export function BrandKitDialog({
             onClick={() => request(() => importRef.current?.click())}
           >
             <Icon name="upload" size={16} />
-            Import kit
+            {t("Import kit")}
           </button>
-          <span>Saved on this device</span>
+          <span>{t("Saved on this device")}</span>
         </div>
         <input
           ref={importRef}
@@ -350,13 +356,16 @@ export function BrandKitDialog({
           }}
         />
         <div className="brand-kits-body">
-          <aside className="brand-kits-library" aria-label="Saved brand kits">
+          <aside
+            className="brand-kits-library"
+            aria-label={t("Saved brand kits")}
+          >
             <div className="brand-kits-library-title">
-              <h3>Your brands</h3>
+              <h3>{t("Your brands")}</h3>
               <span>{kits.length}</span>
             </div>
             <label className="brand-kits-mobile-select">
-              Choose a brand
+              {t("Choose a brand")}
               <select
                 disabled={working || loading}
                 value={revision ? (draft?.id ?? "") : ""}
@@ -368,7 +377,7 @@ export function BrandKitDialog({
                 }}
               >
                 <option value="" disabled>
-                  {draft ? "New kit" : "Select a kit"}
+                  {draft ? t("New kit") : t("Select a kit")}
                 </option>
                 {kits.map((kit) => (
                   <option key={kit.id} value={kit.id}>
@@ -400,7 +409,9 @@ export function BrandKitDialog({
             </div>
             {!loading && !kits.length && (
               <p className="brand-library-note">
-                Save a kit once. Reuse it across store listings and portfolios.
+                {t(
+                  "Save a kit once. Reuse it across store listings and portfolios.",
+                )}
               </p>
             )}
             {canRecover && (
@@ -410,38 +421,39 @@ export function BrandKitDialog({
                 onClick={() => request(recover)}
               >
                 <Icon name="copy" size={15} />
-                Recover project’s brand
+                {t("Recover project’s brand")}
               </button>
             )}
           </aside>
           <div className="brand-kits-content">
             {error && (
               <p className="brand-kit-notice error" role="alert">
-                {error}
+                {t(error)}
               </p>
             )}
             {message && (
               <p className="brand-kit-notice" role="status">
-                {message}
+                {t(message)}
               </p>
             )}
             {loading ? (
-              <p role="status">Opening your brands…</p>
+              <p role="status">{t("Opening your brands…")}</p>
             ) : !draft ? (
               <div className="brand-kits-empty">
                 <Icon name="brand" size={38} />
-                <h3>A familiar look, every time.</h3>
+                <h3>{t("A familiar look, every time.")}</h3>
                 <p>
-                  Keep your app’s colors, logo and fonts together. Start fresh
-                  or save a design you already love.
+                  {t(
+                    "Keep your app’s colors, logo and fonts together. Start fresh or save a design you already love.",
+                  )}
                 </p>
                 <button
                   className="button primary"
                   onClick={() => create(!!project)}
                 >
                   {project
-                    ? "Create from this design"
-                    : "Create your first kit"}
+                    ? t("Create from this design")
+                    : t("Create your first kit")}
                 </button>
               </div>
             ) : (
@@ -457,14 +469,14 @@ export function BrandKitDialog({
                   <fieldset disabled={working}>
                     <div className="brand-kit-form-heading">
                       <span className="eyebrow">
-                        {revision ? "EDIT BRAND" : "NEW BRAND"}
+                        {revision ? t("EDIT BRAND") : t("NEW BRAND")}
                       </span>
                       {revision > 0 && (
                         <div>
                           <button
                             type="button"
                             className="icon-button"
-                            aria-label="Export brand kit"
+                            aria-label={t("Export brand kit")}
                             disabled={dirty}
                             onClick={() => {
                               download(
@@ -481,7 +493,7 @@ export function BrandKitDialog({
                           <button
                             type="button"
                             className="icon-button"
-                            aria-label="Delete brand kit"
+                            aria-label={t("Delete brand kit")}
                             onClick={() =>
                               setPending({
                                 kind: "delete",
@@ -507,7 +519,7 @@ export function BrandKitDialog({
                       )}
                     </div>
                     <label className="brand-kit-field">
-                      App / brand name
+                      {t("App / brand name")}
                       <input
                         ref={nameRef}
                         required
@@ -521,14 +533,14 @@ export function BrandKitDialog({
                     <div className="brand-logo-field">
                       <BrandBadge kit={draft} />
                       <div>
-                        <span>App icon / logo</span>
+                        <span>{t("App icon / logo")}</span>
                         <div>
                           <button
                             type="button"
                             className="text-button"
                             onClick={() => logoRef.current?.click()}
                           >
-                            {draft.logo ? "Replace logo" : "Add logo"}
+                            {draft.logo ? t("Replace logo") : t("Add logo")}
                           </button>
                           {draft.logo && (
                             <button
@@ -539,16 +551,16 @@ export function BrandKitDialog({
                                 setDraft(next);
                               }}
                             >
-                              Remove
+                              {t("Remove")}
                             </button>
                           )}
                         </div>
                       </div>
                     </div>
                     <p className="brand-field-hint">
-                      Identifies your kit. PNG, JPG or WebP, up to 5 MB.
+                      {t("Identifies your kit. PNG, JPG or WebP, up to 5 MB.")}
                     </p>
-                    <h3>Color palette</h3>
+                    <h3>{t("Color palette")}</h3>
                     <div className="brand-color-grid">
                       {(
                         [
@@ -559,11 +571,13 @@ export function BrandKitDialog({
                         ] as const
                       ).map(([key, label]) => (
                         <label key={key}>
-                          {label}
+                          {t(label)}
                           <span>
                             <input
                               type="color"
-                              aria-label={`Brand ${label.toLowerCase()} color`}
+                              aria-label={t(
+                                `Brand ${label.toLowerCase()} color`,
+                              )}
                               value={
                                 /^#[\da-f]{6}$/i.test(draft.colors[key])
                                   ? draft.colors[key]
@@ -580,7 +594,7 @@ export function BrandKitDialog({
                               }
                             />
                             <input
-                              aria-label={`Brand ${label.toLowerCase()} hex`}
+                              aria-label={t(`Brand ${label.toLowerCase()} hex`)}
                               required
                               pattern="#[a-fA-F0-9]{6}"
                               maxLength={7}
@@ -599,7 +613,7 @@ export function BrandKitDialog({
                         </label>
                       ))}
                     </div>
-                    <h3>Typography</h3>
+                    <h3>{t("Typography")}</h3>
                     <div className="brand-font-fields">
                       {(
                         [
@@ -608,7 +622,7 @@ export function BrandKitDialog({
                         ] as const
                       ).map(([key, label]) => (
                         <label className="brand-kit-field" key={key}>
-                          {label}
+                          {t(label)}
                           <select
                             value={draft.fonts[key]}
                             onChange={(event) =>
@@ -624,10 +638,12 @@ export function BrandKitDialog({
                           >
                             {brandFonts.map((font) => (
                               <option key={font} value={font}>
-                                {font}
-                                {font === "Manrope"
-                                  ? " · Sans serif"
-                                  : " · Serif"}
+                                {t(
+                                  font === "Manrope"
+                                    ? "{font} · Sans serif"
+                                    : "{font} · Serif",
+                                  { font },
+                                )}
                               </option>
                             ))}
                           </select>
@@ -638,15 +654,15 @@ export function BrandKitDialog({
                 </form>
                 <section
                   className="brand-kit-preview"
-                  aria-label="Brand preview"
+                  aria-label={t("Brand preview")}
                 >
                   <div className="brand-kit-preview-heading">
                     <span className="eyebrow">
                       {project && shot
-                        ? "ON YOUR SCREENSHOT"
-                        : "YOUR BRAND AT A GLANCE"}
+                        ? t("ON YOUR SCREENSHOT")
+                        : t("YOUR BRAND AT A GLANCE")}
                     </span>
-                    <span>Preview</span>
+                    <span>{t("Preview")}</span>
                   </div>
                   {preview && shot && images.get(shot.assetId) ? (
                     <div
@@ -671,12 +687,12 @@ export function BrandKitDialog({
                     >
                       <BrandBadge kit={draft} />
                       <strong style={{ fontFamily: draft.fonts.title }}>
-                        {draft.name.trim() || "Your app"}
+                        {draft.name.trim() || t("Your app")}
                         <br />
-                        Feels like you.
+                        {t("Feels like you.")}
                       </strong>
                       <p style={{ fontFamily: draft.fonts.body }}>
-                        A little personality. A consistent story.
+                        {t("A little personality. A consistent story.")}
                       </p>
                       <span
                         style={{
@@ -684,27 +700,30 @@ export function BrandKitDialog({
                           color: draft.colors.background,
                         }}
                       >
-                        Made with care
+                        {t("Made with care")}
                       </span>
                       <div style={{ background: draft.colors.secondary }} />
                     </div>
                   )}
                   <p>
-                    Colors and fonts adapt to your design. The logo identifies
-                    the kit; it is not added to slides.
+                    {t(
+                      "Colors and fonts adapt to your design. The logo identifies the kit; it is not added to slides.",
+                    )}
                   </p>
                   {project && (
                     <p>
-                      Applying keeps your words, images, layout and export size.
-                      Undo anytime.
+                      {t(
+                        "Applying keeps your words, images, layout and export size. Undo anytime.",
+                      )}
                     </p>
                   )}
                   {currentBrand?.id === draft.id &&
                     currentBrand.revision !== revision &&
                     revision > 0 && (
                       <p className="brand-version-note">
-                        This project uses an earlier copy. Apply this kit to
-                        update it.
+                        {t(
+                          "This project uses an earlier copy. Apply this kit to update it.",
+                        )}
                       </p>
                     )}
                 </section>
@@ -720,41 +739,51 @@ export function BrandKitDialog({
               className={`button ${project ? "secondary" : "primary"}`}
               disabled={!draft || !dirty || working}
               aria-label={
-                working ? "Working…" : revision ? "Save changes" : "Save kit"
+                working
+                  ? t("Working…")
+                  : revision
+                    ? t("Save changes")
+                    : t("Save kit")
               }
             >
               <span className="brand-save-full">
-                {working ? "Working…" : revision ? "Save changes" : "Save kit"}
+                {working
+                  ? t("Working…")
+                  : revision
+                    ? t("Save changes")
+                    : t("Save kit")}
               </span>
               <span className="brand-save-short" aria-hidden="true">
-                {working ? "Saving…" : "Save"}
+                {working ? t("Saving…") : t("Save")}
               </span>
             </button>
             <small>
               {dirty
-                ? "Save before applying or exporting."
-                : "Saved kits never update projects automatically."}
+                ? t("Save before applying or exporting.")
+                : t("Saved kits never update projects automatically.")}
             </small>
           </div>
           {project && (
             <div className="brand-apply-controls">
               <label>
-                Apply to
+                {t("Apply to")}
                 <select
-                  aria-label="Apply brand to"
+                  aria-label={t("Apply brand to")}
                   disabled={working}
                   value={scope}
                   onChange={(event) => setScope(event.target.value)}
                 >
                   {shot && (
                     <option value="slide">
-                      {pair ? "Linked pair" : "This slide"}
+                      {pair ? t("Linked pair") : t("This slide")}
                     </option>
                   )}
                   <option value="series">
                     {project.shots.length
-                      ? `Entire series · ${project.shots.length}`
-                      : "Project style"}
+                      ? t("Entire series · {count}", {
+                          count: project.shots.length,
+                        })
+                      : t("Project style")}
                   </option>
                 </select>
               </label>
@@ -765,7 +794,7 @@ export function BrandKitDialog({
                   if (draft) onApply(draft, scope === "series");
                 }}
               >
-                Apply brand
+                {t("Apply brand")}
                 <Icon name="arrow" size={16} />
               </button>
             </div>

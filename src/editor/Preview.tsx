@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import {
   lazy,
   Suspense,
@@ -47,6 +48,7 @@ export function Preview({
   onContextMenu?: MouseEventHandler<HTMLDivElement>;
   onKeyDown?: KeyboardEventHandler<HTMLDivElement>;
 }) {
+  const t = useT();
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   useEffect(() => {
@@ -72,14 +74,16 @@ export function Preview({
         <RenderBoundary
           fallback={
             <p role="alert" className="preview-loading">
-              Preview unavailable. Save your project and reload to try again.
+              {t(
+                "Preview unavailable. Save your project and reload to try again.",
+              )}
             </p>
           }
         >
           <Suspense
             fallback={
               <div className="preview-loading" role="status">
-                Preparing preview…
+                {t("Preparing preview…")}
               </div>
             }
           >
@@ -98,7 +102,7 @@ export function Preview({
         </RenderBoundary>
       ) : (
         <div className="preview-loading">
-          {small ? "" : "Loading screenshot…"}
+          {small ? "" : t("Loading screenshot…")}
         </div>
       )}
     </div>

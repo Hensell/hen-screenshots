@@ -1,3 +1,4 @@
+import { useT } from "../i18n/react";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "./Icon";
@@ -33,6 +34,7 @@ export function SlideActionsMenu({
   onDuplicate: () => void;
   onDelete: () => void;
 }) {
+  const t = useT();
   const ref = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -110,7 +112,8 @@ export function SlideActionsMenu({
           onEdit();
         }}
       >
-        <Icon name="edit" /> Edit slide
+        <Icon name="edit" />
+        {t("Edit slide")}
       </button>
       <button
         role="menuitem"
@@ -121,7 +124,7 @@ export function SlideActionsMenu({
         }}
       >
         <Icon name="image" />
-        {panorama ? "Replace panorama image…" : "Replace image…"}
+        {panorama ? t("Replace panorama image…") : t("Replace image…")}
       </button>
       <button
         role="menuitem"
@@ -135,12 +138,12 @@ export function SlideActionsMenu({
         }}
       >
         <Icon name="copy" />
-        {panorama ? "Duplicate panorama" : "Duplicate slide"}
+        {panorama ? t("Duplicate panorama") : t("Duplicate slide")}
       </button>
       {!canDuplicate && (
         <p id="slide-menu-limit" className="slide-menu-hint">
-          This format allows {capacity} slides.
-          {panorama ? " A panorama needs two free slots." : ""}
+          {t("This format allows {count} slides.", { count: capacity })}
+          {panorama ? ` ${t("A panorama needs two free slots.")}` : ""}
         </p>
       )}
       <button
@@ -153,7 +156,7 @@ export function SlideActionsMenu({
         }}
       >
         <Icon name="trash" />
-        {panorama ? "Delete panorama…" : "Delete slide…"}
+        {panorama ? t("Delete panorama…") : t("Delete slide…")}
       </button>
     </div>,
     document.body,
