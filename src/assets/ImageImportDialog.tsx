@@ -10,6 +10,7 @@ import {
   type ReviewedImage,
 } from "./image-review";
 import { compressImage } from "./compress";
+import { convertHeif } from "./heif";
 import "./image-import.css";
 
 const formatBytes = (bytes: number) =>
@@ -38,6 +39,10 @@ export function ImageImportDialog({
   const [working, setWorking] = useState<string | null>(null);
   const budget = selectionBudget(rows, selected, options.availableBytes);
   const maxFile = options.maxFileBytes ?? LIMITS.assetBytes;
+  const needsConversion = rows.flatMap((row, index) =>
+    selected[index] && row.canConvert ? [index] : [],
+  );
+  const hasHeif = rows.some((row) => row.canConvert || row.converted);
   const needsCompression = rows.flatMap((row, index) =>
     selected[index] &&
     row.canOptimize &&
@@ -59,6 +64,30 @@ export function ImageImportDialog({
       if (opener?.isConnected) opener.focus({ preventScroll: true });
     };
   }, []);
+  async function convert(indices: number[]) {
+    if (working) return;
+    const next = [...rows];
+    try {
+      for (const index of indices) {
+        controller.signal.throwIfAborted();
+        setWorking(next[index].file.name);
+        try {
+          next[index] = await convertHeif(
+            next[index],
+            maxFile,
+            controller.signal,
+          );
+        } catch (error) {
+          if (controller.signal.aborted) return;
+          next[index] = { ...next[index], error: errorMessage(error) };
+        }
+        if (controller.signal.aborted) return;
+        setRows([...next]);
+      }
+    } finally {
+      if (!controller.signal.aborted) setWorking(null);
+    }
+  }
   async function compress(indices: number[]) {
     if (working) return;
     const next = [...rows];
@@ -139,6 +168,21 @@ export function ImageImportDialog({
           })}
         </span>
       </div>
+      {hasHeif && (
+        <section className="image-import-heif">
+          <h3>{t("iPhone HEIC screenshots")}</h3>
+          <p>
+            {t(
+              "Convert the main image to a PNG on your device. The converter downloads only when you choose Convert; your images are never uploaded.",
+            )}
+          </p>
+          <p>
+            {t(
+              "HDR screenshots use their standard-brightness (SDR) image. The extra HDR brightness is not included. Review the preview before importing; the original stays unchanged.",
+            )}
+          </p>
+        </section>
+      )}
       <ul className="image-import-files" aria-label={t("Selected image files")}>
         {rows.map((row, index) => (
           <li
@@ -169,6 +213,7 @@ export function ImageImportDialog({
                 </small>
               </span>
             </label>
+            {row.converted && <ImagePreview file={row.file} />}
             {row.optimized && row.before && (
               <p className="image-import-success">
                 <Icon name="check" size={14} />
@@ -180,8 +225,20 @@ export function ImageImportDialog({
             )}
             {row.error ? (
               <p className="image-import-error">{t(row.error)}</p>
+            ) : row.canConvert ? (
+              <p>{t("HEIC detected · Convert a copy before importing.")}</p>
             ) : (
               <p className="image-import-success">{t("Ready to import")}</p>
+            )}
+            {row.canConvert && selected[index] && (
+              <button
+                type="button"
+                className="text-button image-import-compress"
+                disabled={!!working}
+                onClick={() => void convert([index])}
+              >
+                {t("Convert to PNG")}
+              </button>
             )}
             {row.canOptimize && selected[index] && (
               <button
@@ -198,7 +255,7 @@ export function ImageImportDialog({
       </ul>
       <div className="image-import-summary" aria-live="polite">
         {working ? (
-          <p role="status">{t("Optimizing {name}…", { name: working })}</p>
+          <p role="status">{t("Preparing {name}…", { name: working })}</p>
         ) : (
           <p>
             {t("Selected: {count} · {size}", {
@@ -233,10 +290,20 @@ export function ImageImportDialog({
         <button
           type="button"
           className="button secondary"
-          disabled={!!working || !needsCompression.length}
-          onClick={() => void compress(needsCompression)}
+          disabled={
+            !!working || (!needsCompression.length && !needsConversion.length)
+          }
+          onClick={() =>
+            void (needsConversion.length
+              ? convert(needsConversion)
+              : compress(needsCompression))
+          }
         >
-          {t("Compress to fit")}
+          {t(
+            needsConversion.length
+              ? "Convert selected HEICs"
+              : "Compress to fit",
+          )}
         </button>
         <button
           type="button"
@@ -253,5 +320,23 @@ export function ImageImportDialog({
         </button>
       </footer>
     </dialog>
+  );
+}
+
+function ImagePreview({ file }: { file: File }) {
+  const t = useT();
+  const [url, setUrl] = useState<string>();
+  useEffect(() => {
+    const next = URL.createObjectURL(file);
+    setUrl(next);
+    return () => URL.revokeObjectURL(next);
+  }, [file]);
+  return (
+    <figure className="image-import-preview">
+      {url && <img src={url} alt={t("Converted image preview")} />}
+      <figcaption>
+        {t("PNG copy · Review the colors before importing.")}
+      </figcaption>
+    </figure>
   );
 }

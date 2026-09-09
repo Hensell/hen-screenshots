@@ -1,6 +1,7 @@
 import { LIMITS, errorMessage, type Asset } from "../core/model";
 import { readImageHeader } from "./image-header";
 import { importImages } from "./import";
+import { isHeif } from "./heif-format";
 
 export const OPTIMIZE_LIMITS = {
   bytes: 80 * 1024 * 1024,
@@ -15,6 +16,8 @@ export interface ReviewedImage {
   error?: string;
   canOptimize: boolean;
   optimized?: boolean;
+  canConvert?: boolean;
+  converted?: boolean;
   before?: { size: number; width: number; height: number };
 }
 export const megabytes = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
@@ -33,6 +36,11 @@ export async function reviewImage(
       throw new Error(
         "This file exceeds the 80 MB limit for local compression. Resize or compress it outside the editor first.",
       );
+    if (isHeif(new Uint8Array(await file.slice(0, 256).arrayBuffer()))) {
+      // Like compression, conversion may prepare an oversized source, never an
+      // importable asset. convertHeif rechecks maxBytes (including 5 MB logos).
+      return { ...result, canConvert: true };
+    }
     result.info = await readImageHeader(file);
     const { width, height } = result.info;
     if (!width || !height)

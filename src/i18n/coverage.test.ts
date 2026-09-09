@@ -36,7 +36,13 @@ function literalBranches(node: Ast | undefined): string[] {
 describe("translation coverage", () => {
   it("covers literal UI translation keys, including conditional button labels", () => {
     const missing: string[] = [];
-    for (const dir of ["src/app", "src/editor", "src/rendering", "src/i18n"]) {
+    for (const dir of [
+      "src/app",
+      "src/editor",
+      "src/rendering",
+      "src/i18n",
+      "src/assets",
+    ]) {
       for (const file of readdirSync(dir).filter((file) =>
         file.endsWith(".tsx"),
       )) {

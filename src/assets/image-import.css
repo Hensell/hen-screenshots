@@ -134,3 +134,36 @@
     margin: 8px 0;
   }
 }
+.image-import-heif {
+  margin: 16px 0 0;
+  padding: 16px;
+  background: var(--brand-mist, #e8ecdf);
+  border-radius: 8px;
+}
+.image-import-heif h3 {
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+.image-import-heif p {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 8px 0 0;
+}
+.image-import-preview {
+  margin: 12px 0 12px 30px;
+}
+.image-import-preview img {
+  display: block;
+  max-width: 100%;
+  width: auto;
+  max-height: 220px;
+  object-fit: contain;
+  border: 1px solid var(--brand-border);
+  border-radius: 6px;
+}
+.image-import-preview figcaption {
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 8px;
+  color: var(--brand-muted);
+}

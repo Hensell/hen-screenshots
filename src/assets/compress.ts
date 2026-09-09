@@ -132,6 +132,7 @@ export async function compressImage(
           return row;
         return {
           ...reviewed,
+          converted: row.converted,
           optimized: true,
           before: { size: row.file.size, width, height },
         };

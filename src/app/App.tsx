@@ -1,3 +1,4 @@
+import { IMAGE_ACCEPT } from "../assets/heif-format";
 import {
   addOverlay,
   isOverlayElement,
@@ -690,7 +691,7 @@ export function App() {
         aria-hidden="true"
         type="file"
         multiple
-        accept="image/png,image/jpeg,image/webp"
+        accept={IMAGE_ACCEPT}
         onChange={(event) => {
           const files = Array.from(event.target.files ?? []);
           event.target.value = "";
@@ -703,7 +704,7 @@ export function App() {
         tabIndex={-1}
         aria-hidden="true"
         type="file"
-        accept="image/png,image/jpeg,image/webp"
+        accept={IMAGE_ACCEPT}
         multiple
         onChange={(event) => {
           const files = Array.from(event.target.files ?? []);
@@ -1418,7 +1419,9 @@ export function App() {
                     <Icon name="plus" />
                     {t(banners ? "Upload image or icon" : "Choose screenshots")}
                   </button>
-                  <small>{t("PNG, JPEG, or WebP · Up to 20 MB each")}</small>
+                  <small>
+                    {t("PNG, JPEG, WebP, or HEIC · Up to 50 MB each")}
+                  </small>
                 </div>
               )}
             </div>

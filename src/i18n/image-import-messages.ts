@@ -123,10 +123,10 @@ export const imageImportMessages: Record<string, readonly [string, string]> = {
       "«{name}» está vacío (0 bytes). Elige la imagen original o vuelve a descargarla.",
       "“{name}” está vazio (0 bytes). Escolha a imagem original ou baixe-a novamente.",
     ],
-  "“{name}” is {size} MB. The limit is 20 MB per image. Compress a copy or choose a smaller image.":
+  "“{name}” is {size} MB. The limit is 50 MB per image. Compress a copy or choose a smaller image.":
     [
-      "«{name}» pesa {size} MB. El límite es de 20 MB por imagen. Comprime una copia o elige una imagen más pequeña.",
-      "“{name}” tem {size} MB. O limite é de 20 MB por imagem. Comprima uma cópia ou escolha uma imagem menor.",
+      "«{name}» pesa {size} MB. El límite es de 50 MB por imagen. Comprime una copia o elige una imagen más pequeña.",
+      "“{name}” tem {size} MB. O limite é de 50 MB por imagem. Comprima uma cópia ou escolha uma imagem menor.",
     ],
   "Animated PNG is not supported. Export a still PNG, JPEG, or WebP.": [
     "No se admiten PNG animados. Exporta una imagen estática en PNG, JPEG o WebP.",
@@ -149,5 +149,67 @@ export const imageImportMessages: Record<string, readonly [string, string]> = {
     [
       "Elige una imagen válida en PNG, JPEG o WebP estático. El archivo no contiene una firma o metadatos de imagen válidos.",
       "Escolha uma imagem válida em PNG, JPEG ou WebP estático. O arquivo não contém uma assinatura ou metadados de imagem válidos.",
+    ],
+  "iPhone HEIC screenshots": [
+    "Capturas HEIC de iPhone",
+    "Capturas HEIC do iPhone",
+  ],
+  "Convert the main image to a PNG on your device. The converter downloads only when you choose Convert; your images are never uploaded.":
+    [
+      "Convierte la imagen principal a PNG en tu dispositivo. El conversor se descarga solo cuando eliges Convertir; tus imágenes nunca se envían a un servidor.",
+      "Converta a imagem principal em PNG no seu dispositivo. O conversor só é baixado quando você escolhe Converter; suas imagens nunca são enviadas a um servidor.",
+    ],
+  "HDR screenshots use their standard-brightness (SDR) image. The extra HDR brightness is not included. Review the preview before importing; the original stays unchanged.":
+    [
+      "Las capturas HDR usan su imagen de brillo estándar (SDR), sin el brillo adicional de HDR. Revisa la vista previa antes de importar; el original no cambia.",
+      "As capturas HDR usam sua imagem de brilho padrão (SDR), sem o brilho adicional de HDR. Confira a prévia antes de importar; o original não muda.",
+    ],
+  "HEIC detected · Convert a copy before importing.": [
+    "HEIC detectado · Convierte una copia antes de importar.",
+    "HEIC detectado · Converta uma cópia antes de importar.",
+  ],
+  "Convert to PNG": ["Convertir a PNG", "Converter em PNG"],
+  "Convert selected HEICs": [
+    "Convertir HEIC seleccionados",
+    "Converter HEIC selecionados",
+  ],
+  "Preparing {name}…": ["Preparando {name}…", "Preparando {name}…"],
+  "Converted image preview": [
+    "Vista previa de la imagen convertida",
+    "Prévia da imagem convertida",
+  ],
+  "PNG copy · Review the colors before importing.": [
+    "Copia PNG · Revisa los colores antes de importar.",
+    "Cópia PNG · Confira as cores antes de importar.",
+  ],
+  "This HEIC uses an HDR or wide-color profile that cannot be converted here. On your iPhone, choose Settings → General → Screen Capture → SDR, then take a new screenshot. You can also export an SDR PNG or JPEG from Photos.":
+    [
+      "Este HEIC usa un perfil HDR o de color amplio que no se puede convertir aquí. En tu iPhone, ve a Ajustes → General → Captura de pantalla → SDR y toma otra captura. También puedes exportar un PNG o JPEG en SDR desde Fotos.",
+      "Este HEIC usa um perfil HDR ou de cores amplas que não pode ser convertido aqui. No iPhone, vá a Ajustes → Geral → Captura de Tela → SDR e faça outra captura. Você também pode exportar um PNG ou JPEG em SDR pelo Fotos.",
+    ],
+  "This HEIC exceeds 24 megapixels or 32,768 pixels per side. Export a smaller SDR PNG or JPEG before importing it.":
+    [
+      "Este HEIC supera los 24 megapíxeles o los 32 768 píxeles por lado. Exporta un PNG o JPEG en SDR más pequeño antes de importarlo.",
+      "Este HEIC excede 24 megapixels ou 32.768 pixels por lado. Exporte um PNG ou JPEG em SDR menor antes de importar.",
+    ],
+  "This HEIC could not be converted. It may be damaged or use an unsupported encoding. Export an SDR PNG or JPEG from Photos and try that copy.":
+    [
+      "No se pudo convertir este HEIC. Puede estar dañado o usar una codificación incompatible. Exporta un PNG o JPEG en SDR desde Fotos e intenta importar esa copia.",
+      "Não foi possível converter este HEIC. Ele pode estar danificado ou usar uma codificação incompatível. Exporte um PNG ou JPEG em SDR pelo Fotos e tente importar essa cópia.",
+    ],
+  "HEIC conversion is unavailable in this browser. Export an SDR PNG or JPEG from Photos and import that copy.":
+    [
+      "La conversión HEIC no está disponible en este navegador. Exporta un PNG o JPEG en SDR desde Fotos e importa esa copia.",
+      "A conversão HEIC não está disponível neste navegador. Exporte um PNG ou JPEG em SDR pelo Fotos e importe essa cópia.",
+    ],
+  "HEIC conversion took too long. Try again with a smaller image, or export an SDR PNG or JPEG from Photos.":
+    [
+      "La conversión HEIC tardó demasiado. Inténtalo con una imagen más pequeña o exporta un PNG o JPEG en SDR desde Fotos.",
+      "A conversão HEIC demorou demais. Tente uma imagem menor ou exporte um PNG ou JPEG em SDR pelo Fotos.",
+    ],
+  "The HEIC converter could not start. Check your connection and try again, or export an SDR PNG or JPEG from Photos.":
+    [
+      "No se pudo iniciar el conversor HEIC. Revisa tu conexión e inténtalo de nuevo, o exporta un PNG o JPEG en SDR desde Fotos.",
+      "Não foi possível iniciar o conversor HEIC. Verifique sua conexão e tente novamente, ou exporte um PNG ou JPEG em SDR pelo Fotos.",
     ],
 };

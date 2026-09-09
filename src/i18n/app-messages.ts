@@ -125,9 +125,9 @@ export const appMessages: Record<string, readonly [string, string]> = {
     "Cada uma terá sua própria tela.",
   ],
   "Choose screenshots": ["Elegir capturas", "Escolher capturas"],
-  "PNG, JPEG, or WebP · Up to 20 MB each": [
-    "PNG, JPEG o WebP · Hasta 20 MB cada una",
-    "PNG, JPEG ou WebP · Até 20 MB cada uma",
+  "PNG, JPEG, WebP, or HEIC · Up to 50 MB each": [
+    "PNG, JPEG, WebP o HEIC · Hasta 50 MB cada una",
+    "PNG, JPEG, WebP ou HEIC · Até 50 MB cada uma",
   ],
   "{device} frame": ["Marco de {device}", "Moldura de {device}"],
   "Panorama · 2 linked slides": [

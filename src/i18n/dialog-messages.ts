@@ -89,9 +89,9 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   "Replace logo": ["Reemplazar logo", "Substituir logo"],
   "Add logo": ["Agregar logo", "Adicionar logo"],
   Remove: ["Quitar", "Remover"],
-  "Identifies your kit. PNG, JPEG, or WebP, up to 5 MB.": [
-    "Identifica tu kit. PNG, JPEG o WebP de hasta 5 MB.",
-    "Identifica seu kit. PNG, JPEG ou WebP de até 5 MB.",
+  "Identifies your kit. PNG, JPEG, WebP, or converted HEIC, up to 5 MB.": [
+    "Identifica tu kit. PNG, JPEG, WebP o HEIC convertido de hasta 5 MB.",
+    "Identifica seu kit. PNG, JPEG, WebP ou HEIC convertido de até 5 MB.",
   ],
   "Color palette": ["Paleta de colores", "Paleta de cores"],
   Background: ["Fondo", "Fundo"],

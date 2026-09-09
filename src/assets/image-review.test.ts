@@ -44,6 +44,20 @@ afterEach(() => {
 });
 
 describe("image upload recovery", () => {
+  it("accepts 50 MB screenshots unchanged and offers compression above the limit", async () => {
+    const file = png();
+    Object.defineProperty(file, "size", { value: 50 * 1024 * 1024 });
+    const accepted = await reviewImage(file);
+    expect(accepted.asset?.blob).toBe(file);
+    expect(accepted.error).toBeUndefined();
+    const larger = png();
+    Object.defineProperty(larger, "size", { value: 50 * 1024 * 1024 + 1 });
+    expect(await reviewImage(larger)).toMatchObject({
+      canOptimize: true,
+      error: expect.stringContaining("50.0 MB"),
+    });
+    expect(LIMITS.totalBytes).toBe(120 * 1024 * 1024);
+  });
   it("distinguishes empty files, disguised HEIC, invalid content, and unreadable valid headers", async () => {
     expect(await reviewImage(new File([], "empty.jpg"))).toMatchObject({
       canOptimize: false,
@@ -55,7 +69,7 @@ describe("image upload recovery", () => {
       await reviewImage(new File([heic], "fake.jpg", { type: "image/jpeg" })),
     ).toMatchObject({
       canOptimize: false,
-      error: expect.stringContaining("HEIC/HEIF"),
+      canConvert: true,
     });
     expect(await reviewImage(new File(["<svg/>"], "fake.png"))).toMatchObject({
       canOptimize: false,
@@ -70,10 +84,10 @@ describe("image upload recovery", () => {
   });
   it("offers bounded compression before decoding oversized files or pixel data", async () => {
     const oversized = png();
-    Object.defineProperty(oversized, "size", { value: 21 * 1024 * 1024 });
+    Object.defineProperty(oversized, "size", { value: 51 * 1024 * 1024 });
     expect(await reviewImage(oversized)).toMatchObject({
       canOptimize: true,
-      error: expect.stringContaining("20.0 MB"),
+      error: expect.stringContaining("50.0 MB"),
     });
     expect(await reviewImage(png(6000, 5000))).toMatchObject({
       canOptimize: true,
@@ -107,10 +121,27 @@ describe("image upload recovery", () => {
       true,
     );
   });
+  it("keeps large HEIC logo sources non-importable until their PNG copy fits the logo limit", async () => {
+    const header = new Uint8Array(24);
+    header.set(new TextEncoder().encode("ftypheic"), 4);
+    const source = new File([header], "large-logo.heic");
+    Object.defineProperty(source, "size", { value: 50 * 1024 * 1024 });
+    const pending = await reviewImage(source, 5 * 1024 * 1024);
+    expect(pending.canConvert).toBe(true);
+    expect(selectionBudget([pending], [true], LIMITS.totalBytes).valid).toBe(
+      false,
+    );
+    const copy = png();
+    Object.defineProperty(copy, "size", { value: 6 * 1024 * 1024 });
+    const oversized = await reviewImage(copy, 5 * 1024 * 1024);
+    expect(oversized.asset).toBeUndefined();
+    expect(oversized.canOptimize).toBe(true);
+    expect(oversized.error).toContain("5.0 MB");
+  });
   it("validates individually even when a selected batch needs total-size compression", async () => {
     const files = Array.from({ length: 7 }, () => {
       const file = png();
-      Object.defineProperty(file, "size", { value: LIMITS.assetBytes });
+      Object.defineProperty(file, "size", { value: 20 * 1024 * 1024 });
       return file;
     });
     const rows = await reviewImages(files);

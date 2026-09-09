@@ -33,7 +33,7 @@ export const PLACEMENT_LIMITS = {
 export const LIMITS = {
   shots: 20,
   overlays: 8,
-  assetBytes: 20 * 1024 * 1024,
+  assetBytes: 50 * 1024 * 1024,
   totalBytes: 120 * 1024 * 1024,
   imagePixels: 24_000_000,
 } as const;

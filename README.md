@@ -79,15 +79,23 @@ Translations support up to **10 languages per project**. The initial language li
 
 ## Image checks and local compression
 
-Uploads are checked by their actual file signature, dimensions, and browser decoding, including files with misleading extensions. Captures and slide artwork accept **PNG, JPEG, and still WebP**, up to **20 MB and 24 megapixels per image** and **120 MB of referenced source images per project**. Brand-kit logo inputs have a **5 MB** limit.
+Uploads are checked by their actual file signature, dimensions, and browser decoding, including files with misleading extensions. Captures and slide artwork accept **PNG, JPEG, still WebP, and HEIC/HEIF through local PNG conversion**, up to **50 MB and 24 megapixels per imported image** and **120 MB of referenced source images per project**. Brand-kit logo inputs have a **5 MB** limit.
 
 When files need attention, the import dialog names each problem and shows file size, resolution, and remaining capacity. Uncheck files to omit them, or choose **Compress to fit** to prepare optimized copies on your device, then explicitly import the result. Compression can reduce quality and resolution; original files remain unchanged, JPEG orientation and PNG/WebP transparency are preserved. Replacements count only assets still referenced elsewhere, including other language versions.
 
-Local compression accepts inputs up to **80 MB, 64 megapixels, and 32,768 pixels per side**. Larger sources must be reduced externally. Damaged files, unsupported encodings, HEIC/HEIF, AVIF, GIF, and animated PNG/WebP receive actionable guidance; changing an extension does not convert the file. A file that the browser cannot decode may still fail optimization and need to be saved again as JPEG or PNG.
+Local compression accepts inputs up to **80 MB, 64 megapixels, and 32,768 pixels per side**. Larger sources must be reduced externally. Damaged files, unsupported encodings, AVIF, GIF, and animated PNG/WebP receive actionable guidance; changing an extension does not convert the file. A file that the browser cannot decode may still fail optimization and need to be saved again as JPEG or PNG.
+
+### iPhone HEIC and HDR screenshots
+
+HEIC/HEIF files open the image review dialog. Choose **Convert to PNG** to download the converter from this site and process the main image locally. No image is uploaded to a server. Review the resulting preview, then import it. The copy keeps its pixel dimensions; if it exceeds the file or project budget, choose compression separately. Cancel stops the worker and leaves the project unchanged.
+
+For HDR captures with an SDR base and a gain map, conversion uses the SDR base and preserves its ICC color profile; the extra HDR brightness is not included. Unsupported standalone HDR/wide-color encodings receive guidance to export an SDR PNG or JPEG. HEIC conversion accepts source files up to **80 MB**, but the decoded main image must fit **24 megapixels and 32,768 pixels per side**; larger HEICs must be resized externally. Normal imports remain limited to **50 MB per image**, **120 MB per project**, and **5 MB per brand-kit logo input**. Your original files stay untouched.
+
+The decoder runs in a disposable worker, is fetched only after conversion is requested, and is subject to browser memory limits and a one-minute timeout. Its LGPL license, exact version, and corresponding source/build links are included in [the decoder notices](public/vendor/heif/README.md).
 
 ## Logos, awards, and extra artwork
 
-Open **Design → Extra images → Add image or icon** to place PNG, JPEG, or still WebP artwork over a slide. Add up to **8 images per slide**, including transparent logos and award badges. Each image has its own position, size, and rotation. Drag it on the canvas, resize from a corner, or use the inspector; **Reset placement** restores its starting size and position. **Bring forward** and **Send backward** control the order of extra images above the screenshot and captions.
+Open **Design → Extra images → Add image or icon** to place PNG, JPEG, still WebP, or locally converted HEIC artwork over a slide. Add up to **8 images per slide**, including transparent logos and award badges. Each image has its own position, size, and rotation. Drag it on the canvas, resize from a corner, or use the inspector; **Reset placement** restores its starting size and position. **Bring forward** and **Send backward** control the order of extra images above the screenshot and captions.
 
 Replacing or removing extra artwork leaves the app screenshot intact. Removal asks for confirmation, and undo/redo covers these edits. Template changes preserve your extra images. They are included in thumbnails, publication previews, PNG exports, and project backups, and shared across language versions. In panoramas, each image belongs to one slide and can cross the seam into the next. This works in App stores, Portfolio, and Banners projects.
 
@@ -119,7 +127,7 @@ Projects belong to the browser and site where you created them. Clearing site da
 | Item                            | Current limit                                                |
 | ------------------------------- | ------------------------------------------------------------ |
 | Slides per project              | 20                                                           |
-| Source image                    | 20 MB and 24 megapixels                                      |
+| Source image                    | 50 MB and 24 megapixels                                      |
 | Source images used by a project | 120 MB combined                                              |
 | Custom portfolio canvas         | 256–4096 px per side, up to a 4:1 aspect ratio               |
 | Store series export             | 8 images for a Google Play device slot; 10 for an Apple slot |

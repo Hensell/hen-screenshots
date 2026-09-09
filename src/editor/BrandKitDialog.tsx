@@ -1,3 +1,4 @@
+import { IMAGE_ACCEPT } from "../assets/heif-format";
 import { useT } from "../i18n/react";
 import { BrandBadge } from "./BrandBadge";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -346,7 +347,7 @@ export function BrandKitDialog({
           type="file"
           tabIndex={-1}
           aria-hidden="true"
-          accept="image/png,image/jpeg,image/webp"
+          accept={IMAGE_ACCEPT}
           onChange={(event) => {
             const file = event.target.files?.[0];
             event.target.value = "";
@@ -566,7 +567,7 @@ export function BrandKitDialog({
                     </div>
                     <p className="brand-field-hint">
                       {t(
-                        "Identifies your kit. PNG, JPEG, or WebP, up to 5 MB.",
+                        "Identifies your kit. PNG, JPEG, WebP, or converted HEIC, up to 5 MB.",
                       )}
                     </p>
                     <h3>{t("Color palette")}</h3>

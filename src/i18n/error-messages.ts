@@ -265,9 +265,9 @@ export const errorMessages: Record<string, readonly [string, string]> = {
     "Elige hasta 20 imágenes a la vez.",
     "Escolha até 20 imagens por vez.",
   ],
-  "Each image must be between 1 byte and 20 MB.": [
-    "Cada imagen debe tener entre 1 byte y 20 MB.",
-    "Cada imagem deve ter entre 1 byte e 20 MB.",
+  "Each image must be between 1 byte and 50 MB.": [
+    "Cada imagen debe tener entre 1 byte y 50 MB.",
+    "Cada imagem deve ter entre 1 byte e 50 MB.",
   ],
   "The selected images exceed 120 MB.": [
     "Las imágenes seleccionadas superan los 120 MB.",

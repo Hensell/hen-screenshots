@@ -69,7 +69,7 @@ export async function importImages(files: File[]): Promise<Asset[]> {
       );
     if (file.size > LIMITS.assetBytes)
       throw new Error(
-        `“${file.name}” is ${(file.size / 1024 / 1024).toFixed(1)} MB. The limit is 20 MB per image. Compress a copy or choose a smaller image.`,
+        `“${file.name}” is ${(file.size / 1024 / 1024).toFixed(1)} MB. The limit is 50 MB per image. Compress a copy or choose a smaller image.`,
       );
   }
   if (files.reduce((total, file) => total + file.size, 0) > LIMITS.totalBytes)

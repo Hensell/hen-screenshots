@@ -67,7 +67,7 @@ describe("image import boundaries", () => {
     ).rejects.toThrow("20 images");
     const large = png();
     Object.defineProperty(large, "size", { value: LIMITS.assetBytes + 1 });
-    await expect(importImages([large])).rejects.toThrow("20 MB");
+    await expect(importImages([large])).rejects.toThrow("50 MB");
     const batch = Array.from({ length: 7 }, () => {
       const file = png();
       Object.defineProperty(file, "size", { value: LIMITS.assetBytes });
