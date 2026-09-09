@@ -203,6 +203,14 @@ nav {
   text-decoration: underline;
   text-underline-offset: 4px;
 }
+.github-mark {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.source-note .github-mark {
+  filter: invert(1);
+}
 .hero-art {
   background: var(--brand-sage);
   padding: 24px;
