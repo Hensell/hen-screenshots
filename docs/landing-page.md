@@ -11,6 +11,10 @@ The page includes actual template exports, a linked Panorama pair, a portfolio c
 
 ## Example assets
 
+The translation section describes the implemented OPUS-MT models by Helsinki-NLP, hosted on Hugging Face. It covers the optional local download, currently supported automatic languages (English, Spanish, French, German), manual editing, linked layouts, and language folders. Gemma is not integrated and is not presented as the translation engine. The section only contains static copy and a link to the studio; visiting the landing does not download models.
+
+The Hugging Face logo in `public/icons/hugging-face.svg` comes from the [official brand assets](https://huggingface.co/brand), [original SVG](https://huggingface.co/datasets/huggingface/brand-assets/resolve/main/hf-logo.svg). It identifies the model hosting platform, not an endorsement or partnership.
+
 `public/examples/` contains resized WebP previews of Hen Screenshots exports. The phone examples use FrogHappy captures made with sample data during the creator's capture session. The portfolio card uses the project's own brand identity showcase. These are promotional examples, not customer content or editable project backups. Full-resolution originals remain in the local, ignored `exports/` directory.
 
 Image dimensions are declared in the HTML; images below the hero load lazily. The page uses the existing local Manrope font and brand tokens. FAQ items use native disclosure controls and work without JavaScript. The landing scripts preserve old project links and apply the selected interface language.

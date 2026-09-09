@@ -1,4 +1,42 @@
 export const landingMessages: Record<string, readonly [string, string]> = {
+  "FREE TRANSLATION, ON YOUR DEVICE": [
+    "TRADUCCIÓN GRATIS, EN TU DISPOSITIVO",
+    "TRADUÇÃO GRÁTIS, NO SEU DISPOSITIVO",
+  ],
+  "One design.": ["Un diseño.", "Um design."],
+  "More languages.": ["Más idiomas.", "Mais idiomas."],
+  "Give every language its own words while keeping your layout linked. Review your captions, then export a folder for each language.":
+    [
+      "Adapta los textos a cada idioma y mantén el diseño vinculado. Revisa los textos y exporta una carpeta por idioma.",
+      "Adapte os textos para cada idioma e mantenha o layout vinculado. Revise as legendas e exporte uma pasta por idioma.",
+    ],
+  "Create a language version": [
+    "Crear una versión por idioma",
+    "Criar uma versão por idioma",
+  ],
+  "By Helsinki-NLP · Models on Hugging Face": [
+    "De Helsinki-NLP · Modelos en Hugging Face",
+    "Por Helsinki-NLP · Modelos no Hugging Face",
+  ],
+  "Translate for free with optional downloadable models. Your captions are processed on your device, without sending them to a translation service.":
+    [
+      "Traduce gratis con modelos descargables opcionales. Tus textos se procesan en tu dispositivo, sin enviarlos a un servicio de traducción.",
+      "Traduza grátis com modelos opcionais para download. Seus textos são processados no seu dispositivo, sem enviá-los a um serviço de tradução.",
+    ],
+  "Automatic translation: English, Spanish, French, and German.": [
+    "Traducción automática: inglés, español, francés y alemán.",
+    "Tradução automática: inglês, espanhol, francês e alemão.",
+  ],
+  "Other project languages support manual editing, with no download needed.": [
+    "Los demás idiomas del proyecto se editan manualmente, sin descargar modelos.",
+    "Os demais idiomas do projeto podem ser editados manualmente, sem baixar modelos.",
+  ],
+  "Before you download": ["Antes de descargar", "Antes de baixar"],
+  "Each directional language pack is about 112–120 MB, plus shared files on first use. Some language pairs need two packs. The studio shows the download details before you start. Always review automatic translations before publishing.":
+    [
+      "Cada paquete para una dirección de traducción ocupa unos 112–120 MB, más archivos compartidos la primera vez. Algunas combinaciones de idiomas necesitan dos paquetes. El estudio muestra los detalles antes de comenzar la descarga. Revisa siempre las traducciones automáticas antes de publicar.",
+      "Cada pacote para uma direção de tradução ocupa cerca de 112–120 MB, mais arquivos compartilhados no primeiro uso. Algumas combinações de idiomas precisam de dois pacotes. O estúdio mostra os detalhes antes de iniciar o download. Sempre revise as traduções automáticas antes de publicar.",
+    ],
   "View source on GitHub": ["Ver código en GitHub", "Ver código no GitHub"],
   "Built in the open.": ["Un proyecto abierto.", "Um projeto aberto."],
   "Explore the code, report a bug, or contribute your next idea. You can help shape Hen Screenshots on GitHub.":

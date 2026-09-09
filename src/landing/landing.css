@@ -438,6 +438,56 @@ nav {
   background: var(--brand-ink);
   color: var(--brand-paper);
 }
+.translation-section {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  align-items: start;
+  gap: 80px;
+  border-top: 1px solid var(--brand-border);
+}
+.translation-section > * {
+  min-width: 0;
+}
+.translation-provider {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 48px;
+}
+.translation-provider > img {
+  flex-shrink: 0;
+}
+.translation-provider > span {
+  display: grid;
+  gap: 3px;
+}
+.translation-provider strong {
+  font-size: 1.05rem;
+}
+.translation-provider > span > span {
+  font-size: 0.73rem;
+  color: var(--brand-muted);
+}
+.translation-provider:hover strong {
+  color: var(--brand-clay);
+}
+.translation-copy > p {
+  margin-top: 24px;
+  color: var(--brand-muted);
+}
+.translation-facts {
+  display: grid;
+  gap: 12px;
+  padding-left: 20px;
+  margin-block: 24px;
+  font-size: 0.85rem;
+}
+.translation-facts li::marker {
+  color: var(--brand-clay);
+}
+.translation-download {
+  border-top: 1px solid var(--brand-border);
+}
 .free-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -604,7 +654,8 @@ details > p {
   }
   .panorama-layout,
   .portfolio-section,
-  .free-layout {
+  .free-layout,
+  .translation-section {
     gap: 40px;
   }
   .steps li {
@@ -685,7 +736,8 @@ details > p {
   .portfolio-section,
   .free-layout,
   .faq-section,
-  .feedback-section {
+  .feedback-section,
+  .translation-section {
     grid-template-columns: 1fr;
     gap: 36px;
   }
