@@ -10,10 +10,16 @@ import {
 } from "../core/export-profiles";
 import { filename } from "../platform/download";
 import { renderShot } from "./images";
+import {
+  reviewExportedImage,
+  type ExportImageFormat,
+  type ExportReview,
+} from "./review";
 
 export interface ScreenshotExport {
   blob: Blob;
   name: string;
+  review: ExportReview;
 }
 
 function packageImages(
@@ -48,6 +54,7 @@ export async function buildScreenshotExport({
   languageCodes,
   signal,
   onProgress,
+  format = "png",
 }: {
   project: Project;
   assets: Asset[];
@@ -58,6 +65,7 @@ export async function buildScreenshotExport({
   languageCodes?: string[];
   signal: AbortSignal;
   onProgress: (message: string) => void;
+  format?: ExportImageFormat;
 }): Promise<ScreenshotExport> {
   signal.throwIfAborted();
   const original = structuredClone(project);
@@ -76,6 +84,8 @@ export async function buildScreenshotExport({
       `This destination accepts at most ${profile.maxCount} screenshots per device slot. Export individual screenshots or reduce the series.`,
     );
   const files: Record<string, Uint8Array> = {};
+  const review: ExportReview = { files: [], format, blocked: false };
+  const extension = format === "jpeg" ? "jpg" : "png";
   let png: Blob | undefined;
   let exportedBytes = 0;
   for (const [languageIndex, code] of locales.entries()) {
@@ -103,6 +113,7 @@ export async function buildScreenshotExport({
         item,
         sceneImages.get(item.assetId)!,
         sceneImages,
+        { format, signal },
       );
       signal.throwIfAborted();
       exportedBytes += png.size;
@@ -110,17 +121,18 @@ export async function buildScreenshotExport({
         throw new Error(
           "This export is too large to package safely. Select fewer languages or screenshots and export again.",
         );
+      const number = String(
+        snapshot.shots.findIndex((s) => s.id === item.id) + 1,
+      ).padStart(2, "0");
+      const name = `${original.localization ? `${code}/` : ""}${number}-${filename(item.title)}.${extension}`;
+      review.files.push(reviewExportedImage(png, name, profile, format));
       if (multiple) {
-        const number = String(
-          snapshot.shots.findIndex((s) => s.id === item.id) + 1,
-        ).padStart(2, "0");
-        files[
-          `${original.localization ? `${code}/` : ""}${number}-${filename(item.title)}.png`
-        ] = new Uint8Array(await png.arrayBuffer());
+        files[name] = new Uint8Array(await png.arrayBuffer());
       }
     }
   }
   signal.throwIfAborted();
+  review.blocked = review.files.some((file) => file.overLimit);
   const prefix = `${filename(snapshot.name)}-${exportProfileSuffix(snapshot)}`;
   if (multiple) {
     onProgress("Packaging screenshots…");
@@ -129,10 +141,12 @@ export async function buildScreenshotExport({
     return {
       blob: new Blob([new Uint8Array(archive)], { type: "application/zip" }),
       name: `${prefix}${!all ? "-selection" : ""}${locales.length > 1 ? "-languages" : original.localization ? `-${locales[0]}` : ""}.zip`,
+      review,
     };
   }
   return {
     blob: png!,
-    name: `${prefix}${original.localization ? `-${locales[0]}` : ""}-${String(snapshot.shots.findIndex((s) => s.id === shotId) + 1).padStart(2, "0")}.png`,
+    name: `${prefix}${original.localization ? `-${locales[0]}` : ""}-${String(snapshot.shots.findIndex((s) => s.id === shotId) + 1).padStart(2, "0")}.${extension}`,
+    review,
   };
 }

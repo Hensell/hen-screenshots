@@ -20,6 +20,7 @@ import { LanguageSelector } from "../i18n/LanguageSelector";
 import { DeferredFeature } from "./DeferredFeature";
 import { useProjectLibrary } from "./useProjectLibrary";
 import { ProjectLibrary } from "./ProjectLibrary";
+import type { ExportImageFormat, ExportReview } from "../export/review";
 import type { Notice, ReadyFile } from "./types";
 import {
   localizedProject,
@@ -263,6 +264,7 @@ export function App() {
     projectId: string;
     shotId: string;
   } | null>(null);
+  const [exportError, setExportError] = useState<string | null>(null);
   const [readyFile, setReadyFile] = useState<ReadyFile | null>(null);
   const [dragging, setDragging] = useState(false);
   const imageInput = useRef<HTMLInputElement>(null);
@@ -303,13 +305,14 @@ export function App() {
     },
     [readyFile],
   );
-  function offerFile(blob: Blob, name: string) {
+  function offerFile(blob: Blob, name: string, review?: ExportReview) {
     setReadyFile({
       url: URL.createObjectURL(blob),
       name,
-      image: blob.type === "image/png",
+      image: blob.type === "image/png" || blob.type === "image/jpeg",
+      review,
     });
-    download(blob, name);
+    if (!review) download(blob, name);
   }
 
   const open = useCallback((loaded: LoadedProject) => {
@@ -580,10 +583,16 @@ export function App() {
       setBusy(null);
     }
   }
-  async function exportImages(all: boolean, languageCodes?: string[]) {
+  async function exportImages(
+    all: boolean,
+    languageCodes?: string[],
+    format: ExportImageFormat = "png",
+  ) {
     if (!sourceProject || !shot || busy) return;
     const controller = new AbortController();
     cancelExport.current = controller;
+    setExportError(null);
+    setReadyFile(null);
     setBusy("Preparing export…");
     try {
       const { buildScreenshotExport } = await import("../export/screenshots");
@@ -595,12 +604,16 @@ export function App() {
         all,
         locale,
         languageCodes,
+        format,
         signal: controller.signal,
         onProgress: setBusy,
       });
-      offerFile(result.blob, result.name);
+      offerFile(result.blob, result.name, result.review);
       setNotice({
-        message: `${result.blob.type === "image/png" ? "Your PNG is" : "Your screenshots are"} ready. Check your downloads.`,
+        message: result.review.blocked
+          ? "Some images exceed this destination’s 8 MB limit. Prepare smaller JPEGs before saving."
+          : "Review the files, then save your export.",
+        error: result.review.blocked,
       });
     } catch (error) {
       if (!controller.signal.aborted) {
@@ -608,7 +621,7 @@ export function App() {
           message: `Export couldn’t finish. ${errorMessage(error)}`,
           error: true,
         });
-        setExportOpen(false);
+        setExportError(errorMessage(error));
       }
     } finally {
       cancelExport.current = null;
@@ -806,6 +819,7 @@ export function App() {
                 disabled={!shot || !!busy || !!imageError}
                 onClick={() => {
                   setReadyFile(null);
+                  setExportError(null);
                   setExportOpen(true);
                 }}
               >
@@ -830,7 +844,7 @@ export function App() {
           role={notice.error ? "alert" : "status"}
         >
           <span>{t(notice.message)}</span>
-          {readyFile && !notice.error && (
+          {readyFile && !readyFile.review?.blocked && !notice.error && (
             <a
               className="text-button download-again"
               href={readyFile.url}
@@ -1521,6 +1535,7 @@ export function App() {
       {exportOpen && project && (
         <DeferredFeature label="Export" onClose={() => setExportOpen(false)}>
           <ExportDialog
+            error={exportError}
             count={project.shots.length}
             languages={
               sourceProject?.localization

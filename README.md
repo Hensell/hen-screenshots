@@ -69,21 +69,25 @@ Open **Manage** beside the text language selector in the studio toolbar, choose 
 - Colors, templates, frames, device positions, and slide order stay shared.
 - Captions are independent. Each language can override text positions, headline size, and screenshot images; reset controls restore the shared settings.
 - Original text changes flag existing translations for review without overwriting your edits. Newly added slides start as untranslated.
-- **Export** lets you select languages. ZIPs contain folders such as `en/` and `es/`, with numbered PNGs at the project’s export resolution. Project files include all language versions and their images.
+- **Export** lets you select languages. ZIPs contain folders such as `en/` and `es/`, with numbered PNGs or JPEGs at the project’s export resolution. Project files include all language versions and their images.
 
 **Manual editing always works without a model download.** Optional **Translate on device** uses OPUS-MT through Transformers.js in a dedicated WebAssembly worker; it does not use Chrome’s Translator API or a hosted inference service. Downloadable packs currently cover English, Spanish, French, and German. Pairs without English use two packs and translate through English. Other listed languages support manual editing.
 
 The download dialog explains the size before starting: roughly **112–120 MB per directional language pack**, plus shared runtime files on first use. Files download from Hugging Face and jsDelivr; captions stay on the device. Packs are cached when browser storage permits, can be removed from the dialog, and are not included in project backups. Cache eviction or clearing site data can require another download. Performance depends on browser and hardware; downloads, cancellation, and errors preserve your text. Review machine translations before publishing, especially marketing headlines.
 
-Translations support up to **10 languages per project**. The initial language list uses scripts covered by the bundled fonts; RTL and CJK typesetting are not yet offered. PNG ZIP exports are limited to 250 MB before packaging; split larger exports into smaller batches.
+Translations support up to **10 languages per project**. The initial language list uses scripts covered by the bundled fonts; RTL and CJK typesetting are not yet offered. Image ZIP exports are limited to 250 MB before packaging; split larger exports into smaller batches.
 
 ## Image checks and local compression
 
-Uploads are checked by their actual file signature, dimensions, and browser decoding, including files with misleading extensions. Captures and slide artwork accept **PNG, JPEG, still WebP, and HEIC/HEIF through local PNG conversion**, up to **50 MB and 24 megapixels per imported image** and **120 MB of referenced source images per project**. Brand-kit logo inputs have a **5 MB** limit.
+Uploads are checked by their actual file signature, dimensions, and browser decoding, including files with misleading extensions. Captures and slide artwork accept **PNG, JPEG, still WebP, plus HEIC/HEIF, AVIF, and SVG through local PNG conversion**, up to **50 MB and 24 megapixels per imported image** and **120 MB of referenced source images per project**. Brand-kit logo inputs have a **5 MB** limit.
 
 When files need attention, the import dialog names each problem and shows file size, resolution, and remaining capacity. Uncheck files to omit them, or choose **Compress to fit** to prepare optimized copies on your device, then explicitly import the result. Compression can reduce quality and resolution; original files remain unchanged, JPEG orientation and PNG/WebP transparency are preserved. Replacements count only assets still referenced elsewhere, including other language versions.
 
-Local compression accepts inputs up to **80 MB, 64 megapixels, and 32,768 pixels per side**. Larger sources must be reduced externally. Damaged files, unsupported encodings, AVIF, GIF, and animated PNG/WebP receive actionable guidance; changing an extension does not convert the file. A file that the browser cannot decode may still fail optimization and need to be saved again as JPEG or PNG.
+Local compression accepts inputs up to **80 MB, 64 megapixels, and 32,768 pixels per side**. Larger sources must be reduced externally. Damaged files, unsupported encodings, TIFF, BMP, PDF, JPEG XL, Photoshop documents, GIF, and animated PNG/WebP/AVIF receive actionable guidance; changing an extension does not convert the file. A file that the browser cannot decode may still fail optimization and need to be saved again as JPEG or PNG.
+
+### AVIF and SVG artwork
+
+Choose **Convert to PNG** in the review dialog, inspect the copy, and import it explicitly. Conversion preserves transparency and keeps processing on your device. AVIF decoding uses the browser; unsupported variants receive instructions to export a PNG or JPEG elsewhere. Sources are limited to 80 MB and 24 megapixels. SVG conversion accepts self-contained files up to 5 MB with explicit pixel dimensions or a valid viewBox. Scripts, external resources, embedded images, stylesheets, filters, and animations are rejected with guidance to export a flattened PNG. Fonts must be available on the device; convert text to paths in your design tool for exact typography.
 
 ### iPhone HEIC and HDR screenshots
 
@@ -95,7 +99,7 @@ The decoder runs in a disposable worker, is fetched only after conversion is req
 
 ## Logos, awards, and extra artwork
 
-Open **Design → Extra images → Add image or icon** to place PNG, JPEG, still WebP, or locally converted HEIC artwork over a slide. Add up to **8 images per slide**, including transparent logos and award badges. Each image has its own position, size, and rotation. Drag it on the canvas, resize from a corner, or use the inspector; **Reset placement** restores its starting size and position. **Bring forward** and **Send backward** control the order of extra images above the screenshot and captions.
+Open **Design → Extra images → Add image or icon** to place PNG, JPEG, still WebP, or locally converted HEIC, AVIF, or SVG artwork over a slide. Add up to **8 images per slide**, including transparent logos and award badges. Each image has its own position, size, and rotation. Drag it on the canvas, resize from a corner, or use the inspector; **Reset placement** restores its starting size and position. **Bring forward** and **Send backward** control the order of extra images above the screenshot and captions.
 
 Replacing or removing extra artwork leaves the app screenshot intact. Removal asks for confirmation, and undo/redo covers these edits. Template changes preserve your extra images. They are included in thumbnails, publication previews, PNG exports, and project backups, and shared across language versions. In panoramas, each image belongs to one slide and can cross the seam into the next. This works in App stores, Portfolio, and Banners projects.
 
@@ -132,7 +136,11 @@ Projects belong to the browser and site where you created them. Clearing site da
 | Custom portfolio canvas         | 256–4096 px per side, up to a 4:1 aspect ratio               |
 | Store series export             | 8 images for a Google Play device slot; 10 for an Apple slot |
 
-Exports are opaque 24-bit RGB PNGs at the selected dimensions. Store presets include links to the requirements for their device slots; screenshots and content still need to be appropriate for your app and destination. See the [export profiles](src/core/export-profiles.ts).
+Exports are opaque RGB images at the selected dimensions: **24-bit PNG** for crisp UI text, or **JPEG** for smaller files. Open **Export** to review dimensions, format, and store guidance. Generate the files, inspect their individual sizes and preview, then choose **Save**. **Prepare smaller JPEGs** keeps the same resolution while reducing quality; source images remain unchanged. ZIP exports retain separate language folders.
+
+The suggested 8 MB per image is a Hen Screenshots recommendation, not a universal store limit. Android XR has a published 8 MB cap: oversized files cannot be saved from its export dialog until reduced. Count guidance describes the complete listing; individual exports remain available while assembling a set. Content and store approval cannot be certified by pixel checks.
+
+Store presets include iPhone, iPad, Mac, Apple Watch, Apple TV (HD/4K), Apple Vision Pro, Google Play phones/tablets/Chromebooks, Wear OS, Android TV, Automotive, and Android XR. Wear OS displays and exports only the square, opaque source capture, with no added device frame, captions, or overlays. Its saved design is available again when switching destinations. See the [export profiles](src/core/export-profiles.ts) and [verification notes](docs/export-validation-2026-09-09.md).
 
 ## Run locally
 

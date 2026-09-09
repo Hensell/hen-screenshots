@@ -1,3 +1,4 @@
+import { resolveExportProfile } from "./export-profiles";
 import { canonicalCanvas } from "./export-profiles";
 import {
   LIMITS,
@@ -131,6 +132,7 @@ export function reorderOverlay(shot: Shot, id: string, direction: number) {
 }
 /** Both panorama crops render the same extra images across the seam. */
 export function sceneAssetIds(project: Project, shot: Shot) {
+  if (resolveExportProfile(project).sourceOnly) return [shot.assetId];
   return [
     ...new Set([
       shot.assetId,

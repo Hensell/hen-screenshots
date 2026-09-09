@@ -21,6 +21,7 @@ export function panoramaPair(
   project: Project,
   shotId: string,
 ): [Shot, Shot] | null {
+  if (resolveExportProfile(project).sourceOnly) return null;
   let index = project.shots.findIndex((shot) => shot.id === shotId);
   if (index < 0) return null;
   if (isPanoramaEnd(resolveStyle(project, project.shots[index]).template))

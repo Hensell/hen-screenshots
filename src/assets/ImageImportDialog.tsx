@@ -10,7 +10,7 @@ import {
   type ReviewedImage,
 } from "./image-review";
 import { compressImage } from "./compress";
-import { convertHeif } from "./heif";
+import { convertImage } from "./convert-image";
 import "./image-import.css";
 
 const formatBytes = (bytes: number) =>
@@ -42,7 +42,10 @@ export function ImageImportDialog({
   const needsConversion = rows.flatMap((row, index) =>
     selected[index] && row.canConvert ? [index] : [],
   );
-  const hasHeif = rows.some((row) => row.canConvert || row.converted);
+  const hasHeif = rows.some((row) => row.conversion === "heif");
+  const hasOtherConversion = rows.some(
+    (row) => row.conversion === "avif" || row.conversion === "svg",
+  );
   const needsCompression = rows.flatMap((row, index) =>
     selected[index] &&
     row.canOptimize &&
@@ -72,7 +75,7 @@ export function ImageImportDialog({
         controller.signal.throwIfAborted();
         setWorking(next[index].file.name);
         try {
-          next[index] = await convertHeif(
+          next[index] = await convertImage(
             next[index],
             maxFile,
             controller.signal,
@@ -183,6 +186,16 @@ export function ImageImportDialog({
           </p>
         </section>
       )}
+      {hasOtherConversion && (
+        <section className="image-import-heif">
+          <h3>{t("AVIF images and SVG artwork")}</h3>
+          <p>
+            {t(
+              "Create a PNG copy on your device, with transparency preserved. Nothing is uploaded. SVG artwork must be self-contained; review the colors and text before importing.",
+            )}
+          </p>
+        </section>
+      )}
       <ul className="image-import-files" aria-label={t("Selected image files")}>
         {rows.map((row, index) => (
           <li
@@ -226,7 +239,14 @@ export function ImageImportDialog({
             {row.error ? (
               <p className="image-import-error">{t(row.error)}</p>
             ) : row.canConvert ? (
-              <p>{t("HEIC detected · Convert a copy before importing.")}</p>
+              <p>
+                {t("{format} detected · Convert a copy before importing.", {
+                  format:
+                    row.conversion === "heif"
+                      ? "HEIC/HEIF"
+                      : (row.conversion?.toUpperCase() ?? "HEIC"),
+                })}
+              </p>
             ) : (
               <p className="image-import-success">{t("Ready to import")}</p>
             )}
@@ -301,7 +321,7 @@ export function ImageImportDialog({
         >
           {t(
             needsConversion.length
-              ? "Convert selected HEICs"
+              ? "Convert selected images"
               : "Compress to fit",
           )}
         </button>

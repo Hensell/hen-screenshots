@@ -85,5 +85,5 @@ export async function convertHeif(
   );
   const reviewed = await reviewImage(file, maxBytes);
   signal.throwIfAborted();
-  return { ...reviewed, converted: true };
+  return { ...reviewed, converted: true, conversion: "heif" };
 }

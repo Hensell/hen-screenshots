@@ -277,8 +277,8 @@ describe("metadata and mixed-selection regressions", () => {
     bytes.set(new TextEncoder().encode("ftypavif"), 4);
     bytes.set(new TextEncoder().encode("mif1"), 16);
     expect(
-      (await reviewImage(new File([bytes], "photo.avif"))).error,
-    ).toContain("AVIF is not supported");
+      (await reviewImage(new File([bytes], "photo.avif"))).conversion,
+    ).toBe("avif");
   });
   it("reserves valid selections without unnecessarily shrinking the one oversized file", async () => {
     const mb = 1024 * 1024;

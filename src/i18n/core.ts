@@ -1,3 +1,4 @@
+import { exportReviewMessages } from "./export-review-messages";
 import { imageImportMessages } from "./image-import-messages";
 import { overlayMessages } from "./overlay-messages";
 import { bannerMessages } from "./banner-messages";
@@ -33,6 +34,7 @@ export const messageCatalog: Record<string, readonly [string, string]> = {
   ...bannerMessages,
   ...overlayMessages,
   ...imageImportMessages,
+  ...exportReviewMessages,
 };
 
 export function detectInterfaceLocale(

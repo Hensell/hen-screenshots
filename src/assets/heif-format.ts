@@ -1,5 +1,5 @@
 export const IMAGE_ACCEPT =
-  "image/png,image/jpeg,image/webp,image/heic,image/heif,.heic,.heif";
+  "image/png,image/jpeg,image/webp,image/heic,image/heif,image/avif,image/svg+xml,.heic,.heif,.avif,.svg";
 
 const text = (bytes: Uint8Array, start: number, end: number) =>
   String.fromCharCode(...bytes.subarray(start, end));

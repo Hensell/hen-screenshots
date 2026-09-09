@@ -67,7 +67,11 @@ describe("separate canvas workflows", () => {
         expect(profileForOrientation(id, orientation)).toBe(
           slot.profiles[orientation],
         );
-        if (slot.profiles.portrait && slot.profiles.landscape) {
+        if (
+          slot.profiles.portrait &&
+          slot.profiles.landscape &&
+          slot.id !== "play-auto"
+        ) {
           const opposite = getExportProfile(
             profileForSlot(
               slot.id,
@@ -244,5 +248,21 @@ describe("separate canvas workflows", () => {
       ...useEditor.getState().project,
       updatedAt: changed.updatedAt,
     }).toEqual(changed);
+  });
+});
+
+describe("additional store slots", () => {
+  it("uses Automotive's distinct portrait and landscape sizes and Wear's square slot", () => {
+    expect(
+      getExportProfile(profileForSlot("play-auto", "portrait")),
+    ).toMatchObject({ width: 800, height: 1280 });
+    expect(
+      getExportProfile(profileForSlot("play-auto", "landscape")),
+    ).toMatchObject({ width: 1024, height: 768 });
+    expect(profileForSlot("play-wear", "landscape")).toBe("play-wear");
+    expect(profileForStore("play-wear", "apple")).toBe("apple-watch-422");
+    expect(profileForStore("play-auto-portrait", "apple")).toBe(
+      "apple-iphone69-portrait",
+    );
   });
 });

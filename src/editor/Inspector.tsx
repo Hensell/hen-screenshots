@@ -1,3 +1,4 @@
+import { resolveExportProfile } from "../core/export-profiles";
 import { OverlayInspector } from "./OverlayInspector";
 import type { OverlayElement } from "../core/model";
 import { isBannerProfile } from "../core/export-profiles";
@@ -237,6 +238,33 @@ export function Inspector({
       </label>
     );
   }
+  if (resolveExportProfile(project).sourceOnly)
+    return (
+      <aside
+        ref={inspectorRef}
+        id="slide-inspector"
+        className="inspector inspector-tabbed"
+        aria-label={t("Screenshot properties")}
+        tabIndex={0}
+      >
+        <section className="property-section">
+          <h3>{t("Original app capture")}</h3>
+          <p className="field-help">
+            {t(
+              "Wear OS shows your square app capture without added text, frames, or graphics. Your design stays saved for other destinations.",
+            )}
+          </p>
+          <button
+            className="button secondary full"
+            disabled={disabled}
+            onClick={() => onReplace("device")}
+          >
+            {t("Replace image")}
+          </button>
+        </section>
+        <CanvasSettings project={project} />
+      </aside>
+    );
   return (
     <aside
       ref={inspectorRef}

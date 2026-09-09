@@ -164,7 +164,7 @@ describe("panorama creation and editing", () => {
 
   it.each(
     exportProfiles
-      .filter((item) => item.category !== "banner")
+      .filter((item) => item.category !== "banner" && item.id !== "play-wear")
       .map((profile) => profile.id),
   )("keeps one shared scene when reflowing to %s", (profile) => {
     const project = projectWithShots(1);
@@ -254,7 +254,9 @@ describe("panorama spread geometry", () => {
         custom?: { width: number; height: number };
       }[] = [
         ...exportProfiles
-          .filter((item) => item.category !== "banner")
+          .filter(
+            (item) => item.category !== "banner" && item.id !== "play-wear",
+          )
           .map((profile) => ({ profile: profile.id })),
         ...[
           { width: 4096, height: 1024 },
@@ -652,3 +654,16 @@ describe.each(["daybreak", "tidal"] as const)(
     });
   },
 );
+
+describe("source-only destination", () => {
+  it("temporarily renders panorama captures individually and restores their link when changing destination", () => {
+    const project = projectWithShots(1);
+    applyPanorama(project, project.shots[0].id);
+    changeExportProfile(project, "play-wear");
+    expect(panoramaPair(project, project.shots[0].id)).toBeNull();
+    expect(linkedShots(project, project.shots[0].id)).toHaveLength(1);
+    expect(project.shots).toHaveLength(2);
+    changeExportProfile(project, "play-phone-portrait");
+    expect(panoramaPair(project, project.shots[0].id)).not.toBeNull();
+  });
+});

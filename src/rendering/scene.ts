@@ -1,5 +1,5 @@
 import type { OverlayChange } from "../core/overlays";
-import { isBannerProfile } from "../core/export-profiles";
+import { isBannerProfile, resolveExportProfile } from "../core/export-profiles";
 import { deviceShot } from "../core/device-composition";
 import type { DeviceElement } from "../core/model";
 import { isPanoramaEnd, panoramaStart } from "../core/panorama-families";
@@ -239,6 +239,26 @@ export function createScene(
     ),
   });
   try {
+    if (resolveExportProfile(project).sourceOnly) {
+      layer.add(
+        new Konva.Rect({ ...canvas, fill: "#000000", listening: false }),
+      );
+      const scale = Math.min(
+        canvas.width / imageWidth,
+        canvas.height / imageHeight,
+      );
+      layer.add(
+        new Konva.Image({
+          image,
+          width: imageWidth * scale,
+          height: imageHeight * scale,
+          x: (canvas.width - imageWidth * scale) / 2,
+          y: (canvas.height - imageHeight * scale) / 2,
+          listening: false,
+        }),
+      );
+      return layer;
+    }
     // The base remains opaque even if a restored project contains a translucent color.
     layer.add(new Konva.Rect({ ...canvas, fill: "#F4F1E9", listening: false }));
     layer.add(

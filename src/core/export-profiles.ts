@@ -1,14 +1,15 @@
+import { specialProfiles } from "./special-profiles";
 import type { Project } from "./model";
 
 export const APPLE_SCREENSHOTS =
   "https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/";
 export const PLAY_SCREENSHOTS =
   "https://support.google.com/googleplay/android-developer/answer/9866151?hl=en";
-export const BANNER_REVIEW_DATE = "2026-09-08";
+export const BANNER_REVIEW_DATE = "2026-09-09";
 export function isBannerProfile(id: string): boolean {
   return id === "play-feature-graphic" || id === "play-tv-banner";
 }
-export const PROFILE_REVIEW_DATE = "2026-09-06";
+export const PROFILE_REVIEW_DATE = "2026-09-09";
 interface ProfileDefinition {
   id: string;
   name: string;
@@ -19,6 +20,8 @@ interface ProfileDefinition {
   maxCount: number;
   note: string;
   source?: string;
+  sourceOnly?: boolean;
+  maxBytes?: number;
 }
 
 export const DEFAULT_CUSTOM_SIZE = { width: 1600, height: 1200 } as const;
@@ -46,6 +49,7 @@ export function validateCustomSize(size: {
 
 // Fixed, dated store presets. IDs include their device slot, not just an aspect ratio.
 export const exportProfiles = [
+  ...specialProfiles,
   {
     id: "play-feature-graphic",
     name: "Google Play · Feature graphic",
@@ -347,6 +351,19 @@ export function validateDimensions(
     throw new Error(
       "The exported image does not match the selected preset dimensions.",
     );
+  const special = specialProfiles.find((item) => item.id === profile.id);
+  if (special) {
+    if (
+      profile.store !== special.store ||
+      profile.category !== special.category ||
+      width !== special.width ||
+      height !== special.height
+    )
+      throw new Error(
+        "These dimensions do not match the selected store device slot.",
+      );
+    return;
+  }
   if (isBannerProfile(profile.id)) {
     const expected =
       profile.id === "play-feature-graphic" ? [1024, 500] : [1280, 720];

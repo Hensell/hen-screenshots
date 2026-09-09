@@ -15,7 +15,8 @@ interface StoreSlot {
   id: string;
   name: string;
   store: Store;
-  category: "phone" | "tablet" | "desktop";
+  category:
+    "phone" | "tablet" | "desktop" | "watch" | "tv" | "xr" | "automotive";
   profiles: OrientationProfiles;
 }
 
@@ -93,6 +94,100 @@ export const storeSlots: readonly StoreSlot[] = [
     store: "google",
     category: "desktop",
     profiles: { landscape: "play-chromebook" },
+  },
+  {
+    id: "apple-tv-hd",
+    name: "Apple TV · HD",
+    store: "apple",
+    category: "tv",
+    profiles: { landscape: "apple-tv-hd" },
+  },
+  {
+    id: "apple-vision",
+    name: "Apple Vision Pro",
+    store: "apple",
+    category: "xr",
+    profiles: { landscape: "apple-vision" },
+  },
+  {
+    id: "apple-watch-422",
+    name: "Apple Watch · 422 × 514",
+    store: "apple",
+    category: "watch",
+    profiles: { portrait: "apple-watch-422" },
+  },
+  {
+    id: "apple-watch-410",
+    name: "Apple Watch · 410 × 502",
+    store: "apple",
+    category: "watch",
+    profiles: { portrait: "apple-watch-410" },
+  },
+  {
+    id: "apple-watch-416",
+    name: "Apple Watch · 416 × 496",
+    store: "apple",
+    category: "watch",
+    profiles: { portrait: "apple-watch-416" },
+  },
+  {
+    id: "apple-watch-396",
+    name: "Apple Watch · 396 × 484",
+    store: "apple",
+    category: "watch",
+    profiles: { portrait: "apple-watch-396" },
+  },
+  {
+    id: "apple-watch-368",
+    name: "Apple Watch · 368 × 448",
+    store: "apple",
+    category: "watch",
+    profiles: { portrait: "apple-watch-368" },
+  },
+  {
+    id: "apple-watch-312",
+    name: "Apple Watch · 312 × 390",
+    store: "apple",
+    category: "watch",
+    profiles: { portrait: "apple-watch-312" },
+  },
+  {
+    id: "play-wear",
+    name: "Wear OS",
+    store: "google",
+    category: "watch",
+    profiles: { square: "play-wear" },
+  },
+  {
+    id: "play-tv",
+    name: "Android TV screenshots",
+    store: "google",
+    category: "tv",
+    profiles: { landscape: "play-tv" },
+  },
+  {
+    id: "play-xr",
+    name: "Android XR",
+    store: "google",
+    category: "xr",
+    profiles: { landscape: "play-xr" },
+  },
+  {
+    id: "play-auto",
+    name: "Android Automotive",
+    store: "google",
+    category: "automotive",
+    profiles: {
+      portrait: "play-auto-portrait",
+      landscape: "play-auto-landscape",
+    },
+  },
+  {
+    id: "apple-tv-4k",
+    name: "Apple TV · 4K",
+    store: "apple",
+    category: "tv",
+    profiles: { landscape: "apple-tv-4k" },
   },
 ];
 
@@ -192,7 +287,8 @@ export function profileForSlot(
   return (
     slot.profiles[orientation] ??
     slot.profiles.portrait ??
-    slot.profiles.landscape!
+    slot.profiles.landscape ??
+    slot.profiles.square!
   );
 }
 
@@ -205,9 +301,13 @@ export function profileForStore(
   if (!currentSlot)
     throw new Error("Choose an App stores project before changing the store.");
   if (currentSlot.store === store) return current;
-  const target = storeSlots.find(
-    (slot) => slot.store === store && slot.category === currentSlot.category,
-  )!;
+  const target =
+    storeSlots.find(
+      (slot) => slot.store === store && slot.category === currentSlot.category,
+    ) ??
+    storeSlots.find(
+      (slot) => slot.store === store && slot.category === "phone",
+    )!;
   return profileForSlot(
     target.id,
     dimensionsOrientation(getExportProfile(current)),

@@ -4,6 +4,8 @@ import { languageName } from "../core/localization";
 import type { ExportProfile } from "../core/export-profiles";
 import type { ReadyFile } from "./types";
 import { Icon } from "./Icon";
+import { ExportChecks } from "./ExportChecks";
+import type { ExportImageFormat } from "../export/review";
 
 export function ExportDialog({
   languages,
@@ -16,6 +18,7 @@ export function ExportDialog({
   onClose,
   onExport,
   onCancel,
+  error,
 }: {
   languages: string[];
   currentLanguage: string;
@@ -25,10 +28,25 @@ export function ExportDialog({
   busy: string | null;
   file: ReadyFile | null;
   onClose: () => void;
-  onExport: (all: boolean, locales?: string[]) => Promise<void>;
+  onExport: (
+    all: boolean,
+    locales?: string[],
+    format?: ExportImageFormat,
+  ) => Promise<void>;
   onCancel: () => void;
+  error?: string | null;
 }) {
   const [exportLanguages, setExportLanguages] = useState([currentLanguage]);
+  const [format, setFormat] = useState<ExportImageFormat>("png");
+  const lastRequest = useRef({ all: false, locales: [currentLanguage] });
+  const prepare = (
+    all: boolean,
+    locales = exportLanguages,
+    encoding = format,
+  ) => {
+    lastRequest.current = { all, locales: [...locales] };
+    return onExport(all, locales, encoding);
+  };
   const t = useT();
   const banners = profile.category === "banner";
   const ref = useRef<HTMLDialogElement>(null);
@@ -60,26 +78,21 @@ export function ExportDialog({
           <Icon name="close" />
         </button>
       </div>
-      <p className="eyebrow">{t("READY FOR A FIRST IMPRESSION")}</p>
       <h2 id="export-heading">
-        {file ? (
-          t("Your export is ready.")
-        ) : (
-          <>
-            {t("Take your work")}
-            <br />
-            {t("out into the world.")}
-          </>
+        {t(
+          file && !file.review?.blocked
+            ? "Your export is ready."
+            : "Review and export",
         )}
       </h2>
       <p className="dialog-copy" id="export-description">
-        {t("{width} × {height} pixels · RGB PNG without transparency.", {
-          width: profile.width,
-          height: profile.height,
-        })}
-        <br />
         {t(profile.name)}
       </p>
+      {error && (
+        <p className="export-file-warning" role="alert">
+          {t(error)}
+        </p>
+      )}
       {busy ? (
         <div className="export-progress">
           <p role="status">
@@ -92,6 +105,7 @@ export function ExportDialog({
         </div>
       ) : file ? (
         <div className="export-result">
+          <ExportChecks profile={profile} count={count} review={file.review} />
           {file.image && (
             <img
               className="export-preview"
@@ -101,20 +115,63 @@ export function ExportDialog({
               height={profile.height}
             />
           )}
-          <a
-            className="button primary full"
-            href={file.url}
-            download={file.name}
-          >
-            <Icon name="download" />
-            {t("Save {format}", { format: file.image ? "PNG" : "ZIP" })}
-          </a>
+          {!file.review?.blocked && (
+            <a
+              className="button primary full"
+              href={file.url}
+              download={file.name}
+            >
+              <Icon name="download" />
+              {t("Save {format}", {
+                format: file.image
+                  ? (file.review?.format ?? "png").toUpperCase()
+                  : "ZIP",
+              })}
+            </a>
+          )}
+          {file.review?.format === "png" && (
+            <>
+              <button
+                className="button secondary full"
+                onClick={() => {
+                  setFormat("jpeg");
+                  void prepare(
+                    lastRequest.current.all,
+                    lastRequest.current.locales,
+                    "jpeg",
+                  );
+                }}
+              >
+                {t("Prepare smaller JPEGs")}
+              </button>
+              <p className="field-help">
+                {t(
+                  "JPEG keeps the same pixel dimensions with some quality loss. Original images and designs stay unchanged.",
+                )}
+              </p>
+            </>
+          )}
           <button className="button secondary full" onClick={onClose}>
             {t("Back to editing")}
           </button>
         </div>
       ) : (
         <div className="export-options">
+          <label className="export-encoding">
+            {t("Image format")}
+            <select
+              value={format}
+              onChange={(event) =>
+                setFormat(event.target.value as ExportImageFormat)
+              }
+            >
+              <option value="png">{t("PNG · Best for sharp text")}</option>
+              <option value="jpeg">
+                {t("JPEG · Smaller files, same resolution")}
+              </option>
+            </select>
+          </label>
+          <ExportChecks profile={profile} count={count} format={format} />
           {languages.length > 1 && (
             <fieldset className="export-languages">
               <legend>{t("Languages to export")}</legend>
@@ -144,7 +201,7 @@ export function ExportDialog({
           <button
             className="button primary full"
             disabled={!exportLanguages.length}
-            onClick={() => void onExport(false, exportLanguages)}
+            onClick={() => void prepare(false)}
           >
             <Icon name="image" />
             {t(
@@ -158,14 +215,14 @@ export function ExportDialog({
               {exportLanguages.length > 1
                 ? "ZIP"
                 : pair
-                  ? "ZIP · 2 PNGs"
-                  : "PNG"}
+                  ? "ZIP"
+                  : format.toUpperCase()}
             </span>
           </button>
           <button
             className="button secondary full"
             disabled={count > profile.maxCount || !exportLanguages.length}
-            onClick={() => void onExport(true, exportLanguages)}
+            onClick={() => void prepare(true)}
           >
             <Icon name="download" />
             {t(
@@ -182,9 +239,8 @@ export function ExportDialog({
           </button>
         </div>
       )}
-      {!file && (
+      {!file && count > profile.maxCount && (
         <p className="field-help export-guidance">
-          {t(profile.note)}{" "}
           {count > profile.maxCount && (
             <strong>
               {t(

@@ -1,0 +1,114 @@
+.export-checks {
+  border-block: 1px solid var(--line, #d3d8cd);
+  padding-block: 18px;
+  margin: 20px 0;
+  font-size: 13px;
+}
+.export-checks h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  margin: 0 0 14px;
+}
+.export-checks dl {
+  margin: 0;
+  display: grid;
+  gap: 9px;
+}
+.export-checks dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.export-checks dt {
+  color: #596259;
+}
+.export-checks dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+.export-checks .field-help {
+  line-height: 1.5;
+  margin: 12px 0 0;
+}
+.export-file-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  max-height: 180px;
+  overflow: auto;
+  border-top: 1px solid #d3d8cd;
+}
+.export-file-list li {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid #d3d8cd;
+}
+.export-file-list span {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.export-file-list strong {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.export-file-large {
+  color: #924324;
+}
+.export-file-warning {
+  background: #f6e6d7;
+  color: #773820;
+  padding: 12px;
+  border-radius: 8px;
+  line-height: 1.5;
+}
+.export-store-advice {
+  margin-top: 16px;
+  line-height: 1.5;
+}
+.export-store-advice summary {
+  cursor: pointer;
+  min-height: 32px;
+}
+.export-store-advice summary span {
+  display: block;
+  color: #596259;
+  font-size: 11px;
+  margin-top: 2px;
+}
+.export-store-advice li {
+  margin-bottom: 9px;
+}
+.export-store-advice ul {
+  padding-left: 18px;
+}
+.export-store-advice a {
+  color: #924324;
+}
+.export-encoding {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 18px;
+  font-size: 13px;
+}
+.export-encoding select {
+  width: 100%;
+  min-height: 44px;
+}
+.export-result .export-checks {
+  margin-top: 0;
+}
+@media (max-width: 420px) {
+  .export-checks dl > div {
+    display: grid;
+    gap: 2px;
+  }
+  .export-checks dd {
+    text-align: left;
+  }
+}
