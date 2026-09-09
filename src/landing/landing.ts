@@ -8,6 +8,7 @@ import {
   type InterfaceLocale,
 } from "../i18n/core";
 import "../i18n/language-selector.css";
+import { initializeScrollReveals } from "./reveal";
 
 initializeInterfaceLocale();
 
@@ -43,3 +44,6 @@ function renderLanguage() {
 
 renderLanguage();
 subscribeInterfaceLocale(renderLanguage);
+
+const stopScrollReveals = initializeScrollReveals();
+if (import.meta.hot) import.meta.hot.dispose(stopScrollReveals);
