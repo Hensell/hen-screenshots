@@ -7,10 +7,10 @@ Old `/?project=…` links redirect in the browser to `/studio/?project=…`, pre
 
 The public message is **Free forever. No account. No watermarks.** This applies to every existing template, device frame, and full-resolution export. The landing does not claim an open-source license, unlimited project sizes, or guaranteed store approval.
 
-The page includes actual template exports, a linked Panorama pair, a portfolio card, the create/style/export workflow, local storage and backup details, and links to the studio and [Hensell's portfolio](https://hensell.dev).
+The page includes actual template exports, a linked Panorama pair, a portfolio card, the create/style/export workflow, local storage and backup details, and links to the studio and [Hensell's portfolio](https://hensell.dev). The public [GitHub repository](https://github.com/Hensell/hen-screenshots) is linked beneath the hero, in the free section's contribution invitation, and in the footer. The copy is available in English, Spanish, and Portuguese; repository links stay available on mobile.
 
 ## Example assets
 
 `public/examples/` contains resized WebP previews of Hen Screenshots exports. The phone examples use FrogHappy captures made with sample data during the creator's capture session. The portfolio card uses the project's own brand identity showcase. These are promotional examples, not customer content or editable project backups. Full-resolution originals remain in the local, ignored `exports/` directory.
 
-Image dimensions are declared in the HTML; images below the hero load lazily. The page uses the existing local Manrope font and brand tokens. FAQ items use native disclosure controls and work without JavaScript. The only production script on the landing preserves old project links.
+Image dimensions are declared in the HTML; images below the hero load lazily. The page uses the existing local Manrope font and brand tokens. FAQ items use native disclosure controls and work without JavaScript. The landing scripts preserve old project links and apply the selected interface language.

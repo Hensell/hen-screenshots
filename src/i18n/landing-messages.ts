@@ -1,4 +1,15 @@
 export const landingMessages: Record<string, readonly [string, string]> = {
+  "View source on GitHub": ["Ver código en GitHub", "Ver código no GitHub"],
+  "Built in the open.": ["Un proyecto abierto.", "Um projeto aberto."],
+  "Explore the code, report a bug, or contribute your next idea. You can help shape Hen Screenshots on GitHub.":
+    [
+      "Explora el código, reporta un error o aporta tu próxima idea. Puedes ayudar a mejorar Hen Screenshots en GitHub.",
+      "Explore o código, relate um erro ou contribua com sua próxima ideia. Você pode ajudar a melhorar o Hen Screenshots no GitHub.",
+    ],
+  "Explore the repository": [
+    "Explorar el repositorio",
+    "Explorar o repositório",
+  ],
   "A FEW GOOD QUESTIONS": ["PREGUNTAS FRECUENTES", "PERGUNTAS FREQUENTES"],
   "A FrogHappy screenshot in the Halo template, with a dark background, warm circle, and the headline Small habits. Happier days.":
     [

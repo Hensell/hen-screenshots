@@ -197,6 +197,12 @@ nav {
   margin-top: 16px;
   color: var(--brand-muted);
 }
+.source-link {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 .hero-art {
   background: var(--brand-sage);
   padding: 24px;
@@ -432,6 +438,27 @@ nav {
   text-decoration: underline;
   text-underline-offset: 4px;
 }
+.source-note {
+  border-top: 1px solid #ccd1c740;
+  padding-top: 24px;
+  margin-block: 28px 24px;
+}
+.source-note h3 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+.source-note p {
+  color: #ccd1c7;
+}
+.source-note .inline-link {
+  margin-top: 12px;
+  color: #eeb796;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.source-note .inline-link:hover {
+  color: var(--brand-paper);
+}
 .action-paper {
   background: var(--brand-paper);
   color: var(--brand-ink);
@@ -513,6 +540,12 @@ details > p {
 .landing-footer p {
   font-size: 0.73rem;
   color: var(--brand-muted);
+}
+.footer-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 24px;
 }
 @media (max-width: 1000px) {
   .wrap {
