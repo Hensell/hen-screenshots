@@ -106,6 +106,7 @@ describe("native image and project boundary", () => {
       /local/,
     );
   });
+  // Several native renders plus archive I/O can exceed 5s on shared CI workers.
   it("preserves native export pixels across a portable project round trip", async () => {
     const assets = await decodeNativeImages([await png()]);
     const project = buildDesign(
@@ -168,5 +169,5 @@ describe("native image and project boundary", () => {
     expect(await sharp(rerendered).raw().toBuffer()).toEqual(
       await sharp(original).raw().toBuffer(),
     );
-  });
+  }, 15_000);
 });
