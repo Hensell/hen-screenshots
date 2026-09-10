@@ -135,13 +135,25 @@
   white-space: nowrap;
 }
 .templates-trigger {
-  background: #e9ede2;
-  border: 1px solid #d9dfd0;
+  background: var(--brand-paper);
+  border: 1px solid #c9cec5;
+  box-shadow: 0 1px 2px #2027250d;
+}
+.templates-trigger > svg {
+  color: var(--brand-clay);
 }
 .toolbar-button:hover:not(:disabled),
 .language-manage:hover:not(:disabled),
 .canvas-format-button:hover:not(:disabled) {
   background: #dfe5d7;
+}
+.templates-trigger:hover:not(:disabled) {
+  background: #fffdf7;
+  border-color: var(--brand-clay);
+}
+.templates-trigger:active:not(:disabled) {
+  background: #f1ece3;
+  box-shadow: none;
 }
 .project-context-tools {
   gap: 12px;
@@ -378,6 +390,12 @@
   }
 }
 @media (max-width: 400px) {
+  .compact-slide-actions {
+    min-width: 44px;
+  }
+  .compact-slide-actions > span {
+    display: none;
+  }
   .canvas-format-button > svg:first-child {
     display: none;
   }

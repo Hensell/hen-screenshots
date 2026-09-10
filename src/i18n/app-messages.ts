@@ -74,6 +74,7 @@ export const appMessages: Record<string, readonly [string, string]> = {
   ],
   "Edit history": ["Historial de edición", "Histórico de edição"],
   Templates: ["Plantillas", "Modelos"],
+  "Open templates": ["Abrir plantillas", "Abrir modelos"],
   "Replace image": ["Reemplazar imagen", "Substituir imagem"],
   "Replace the image and keep your design": [
     "Reemplazar la imagen y conservar el diseño",

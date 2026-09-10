@@ -1010,6 +1010,7 @@ export function App() {
                 <button
                   type="button"
                   className="toolbar-button templates-trigger"
+                  aria-haspopup="dialog"
                   disabled={
                     !shot ||
                     !!busy ||
@@ -1018,7 +1019,7 @@ export function App() {
                   onClick={() => setTemplatesOpen(true)}
                 >
                   <Icon name="layout" size={18} />
-                  {t("Templates")}
+                  {t("Open templates")}
                 </button>
                 <button
                   type="button"
@@ -1084,7 +1085,7 @@ export function App() {
                   }}
                 >
                   <Icon name="more" size={18} />
-                  {t("Slide")}
+                  <span>{t("Slide")}</span>
                 </button>
               </div>
             </div>
