@@ -92,6 +92,7 @@ function manifest(value: unknown): Manifest {
       raw.schemaVersion !== 6 &&
       raw.schemaVersion !== 7 &&
       raw.schemaVersion !== 8 &&
+      raw.schemaVersion !== 9 &&
       raw.schemaVersion !== SCHEMA_VERSION)
   )
     fail("This backup uses an unsupported project version.");
@@ -302,7 +303,7 @@ export async function importProject(
       shots: metadata.project.shots.map((shot) => ({
         ...shot,
         id: crypto.randomUUID(),
-        assetId: ids.get(shot.assetId)!,
+        assetId: shot.assetId === null ? null : ids.get(shot.assetId)!,
         ...(shot.overlays
           ? {
               overlays: shot.overlays.map((item) => ({
@@ -316,7 +317,8 @@ export async function importProject(
           ? {
               companions: shot.companions.map((device) => ({
                 ...device,
-                assetId: ids.get(device.assetId)!,
+                assetId:
+                  device.assetId === null ? null : ids.get(device.assetId)!,
               })),
             }
           : {}),

@@ -15,6 +15,7 @@ export function SlideActionsMenu({
   target,
   label,
   panorama,
+  emptyImage,
   canDuplicate,
   capacity,
   onClose,
@@ -26,6 +27,7 @@ export function SlideActionsMenu({
   target: SlideMenuTarget;
   label: string;
   panorama: boolean;
+  emptyImage: boolean;
   canDuplicate: boolean;
   capacity: number;
   onClose: (restoreFocus?: boolean) => void;
@@ -124,7 +126,11 @@ export function SlideActionsMenu({
         }}
       >
         <Icon name="image" />
-        {panorama ? t("Replace panorama image…") : t("Replace image…")}
+        {emptyImage
+          ? t("Add image…")
+          : panorama
+            ? t("Replace panorama image…")
+            : t("Replace image…")}
       </button>
       <button
         role="menuitem"

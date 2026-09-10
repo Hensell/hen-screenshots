@@ -111,7 +111,7 @@ export async function renderNativeShot(
   });
   try {
     stage.add(
-      createScene(project, shot, images.get(shot.assetId)!, { images }),
+      createScene(project, shot, images.get(shot.assetId ?? ""), { images }),
     );
     stage.draw();
     const canvas = stage.toCanvas({

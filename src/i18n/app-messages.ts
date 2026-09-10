@@ -1,5 +1,22 @@
 // Application chrome, notices and export format descriptions.
 export const appMessages: Record<string, readonly [string, string]> = {
+  "Add slide": ["Agregar diapositiva", "Adicionar slide"],
+  "Add image": ["Agregar imagen", "Adicionar imagem"],
+  "Add image…": ["Agregar imagen…", "Adicionar imagem…"],
+  "Add an image": ["Agrega una imagen", "Adicione uma imagem"],
+  "Empty slide": ["Diapositiva vacía", "Slide vazio"],
+  "Add your screenshot whenever you’re ready. Your design stays in place.": [
+    "Agrega tu captura cuando quieras. Se conservará tu diseño.",
+    "Adicione sua captura quando quiser. Seu design será mantido.",
+  ],
+  "Image added. Your design is preserved. Undo anytime.": [
+    "Imagen agregada. Se conservó tu diseño. Puedes deshacer el cambio.",
+    "Imagem adicionada. Seu design foi mantido. Você pode desfazer a alteração.",
+  ],
+  "Add a screenshot before exporting this Wear OS slide.": [
+    "Agrega una captura antes de exportar esta diapositiva de Wear OS.",
+    "Adicione uma captura antes de exportar este slide do Wear OS.",
+  ],
   "Your studio — Hen Screenshots": [
     "Tu estudio — Hen Screenshots",
     "Seu estúdio — Hen Screenshots",

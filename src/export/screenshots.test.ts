@@ -88,7 +88,7 @@ describe("screenshot export workflow", () => {
     ]);
     for (const call of calls)
       for (const device of call[1].companions!)
-        expect(call[3]?.get(device.assetId)).toBe(image);
+        expect(call[3]?.get(device.assetId!)).toBe(image);
     expect(loadImage).toHaveBeenCalledTimes(4);
     expect(calls[0][3]).not.toBe(calls[1][3]);
     expect(calls[0][3]?.size).toBe(3);

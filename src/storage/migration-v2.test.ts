@@ -31,7 +31,7 @@ describe("version 2 project migration", () => {
     expect(source).toEqual(existing);
     expect(migrated).toEqual({
       ...existing,
-      schemaVersion: 9,
+      schemaVersion: 10,
       customSize: { width: 1600, height: 1200 },
       exportProfile: "play-phone-portrait",
       style: { ...existing.style, deviceOrientation: "portrait" },
@@ -88,7 +88,7 @@ describe("version 2 project migration", () => {
     );
     expect(await loadProject(blankName.id)).toMatchObject({
       revision: 3,
-      project: { id: blankName.id, name: "Untitled app", schemaVersion: 9 },
+      project: { id: blankName.id, name: "Untitled app", schemaVersion: 10 },
     });
     expect(
       (await listProjects()).find(({ project }) => project.id === blankName.id)

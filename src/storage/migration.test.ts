@@ -38,7 +38,7 @@ describe("version 1 project migration", () => {
     expect(original).toEqual(legacyProject);
     expect(migrated).toEqual({
       ...legacyProject,
-      schemaVersion: 9,
+      schemaVersion: 10,
       customSize: { width: 1600, height: 1200 },
       exportProfile: "play-phone-portrait",
       style: { ...defaultStyle, ...legacyProject.style },
@@ -51,7 +51,7 @@ describe("version 1 project migration", () => {
     });
     expect(migrateProject(migrated)).toBe(migrated);
     expect(() =>
-      migrateProject({ ...migrated, schemaVersion: 10 } as unknown as Project),
+      migrateProject({ ...migrated, schemaVersion: 11 } as unknown as Project),
     ).toThrow("unsupported project version");
   });
 
@@ -124,7 +124,7 @@ describe("version 1 project migration", () => {
       expect(await inspector.table("assets").count()).toBe(1);
 
       await inspector.table("projects").update(legacyProject.id, {
-        project: { ...expected, schemaVersion: 10 },
+        project: { ...expected, schemaVersion: 11 },
       });
       await expect(loadProject(legacyProject.id)).rejects.toThrow(
         "unsupported project version",
@@ -138,7 +138,7 @@ describe("version 1 project migration", () => {
       expect(
         (await inspector.table("projects").get(legacyProject.id)).project
           .schemaVersion,
-      ).toBe(10);
+      ).toBe(11);
     } finally {
       inspector.close();
       await deleteProject(legacyProject.id);

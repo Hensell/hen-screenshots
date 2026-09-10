@@ -674,7 +674,7 @@ export function BrandKitDialog({
                     </span>
                     <span>{t("Preview")}</span>
                   </div>
-                  {preview && shot && images.get(shot.assetId) ? (
+                  {preview && shot && images.get(shot.assetId ?? "") ? (
                     <div
                       className={`brand-scene-preview ${preview.pair ? "is-pair" : ""}`}
                     >
@@ -684,7 +684,7 @@ export function BrandKitDialog({
                           project={preview.project}
                           shot={item}
                           images={images}
-                          image={images.get(item.assetId)}
+                          image={images.get(item.assetId ?? "")}
                         />
                       ))}
                     </div>

@@ -259,7 +259,7 @@ export function Inspector({
             disabled={disabled}
             onClick={() => onReplace("device")}
           >
-            {t("Replace image")}
+            {t(shot.assetId === null ? "Add image" : "Replace image")}
           </button>
         </section>
         <CanvasSettings project={project} />
@@ -1012,7 +1012,11 @@ export function Inspector({
                   onClick={() => onReplace("device")}
                 >
                   <Icon name="image" />
-                  {pair ? t("Replace panorama image") : t("Replace image")}
+                  {shot.assetId === null
+                    ? t("Add image")
+                    : pair
+                      ? t("Replace panorama image")
+                      : t("Replace image")}
                 </button>
               </section>
               {locale && (

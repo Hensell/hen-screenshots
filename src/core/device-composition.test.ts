@@ -182,7 +182,7 @@ describe("multi-device compositions", () => {
     const old: V7Project = { ...fixture(), schemaVersion: 7 };
     const before = structuredClone(old);
     const upgraded = migrateProject(old);
-    expect(upgraded).toEqual({ ...before, schemaVersion: 9 });
+    expect(upgraded).toEqual({ ...before, schemaVersion: 10 });
     expect(old).toEqual(before);
     validateProject(upgraded);
   });

@@ -60,7 +60,7 @@ The [AI agents guide](https://screenshots.hensell.dev/agents/) includes a built 
 
 ## From capture to export
 
-1. [Open the studio](https://screenshots.hensell.dev/studio/), create an **App stores** or **Portfolio** project, and add PNG, JPEG, or still WebP screenshots.
+1. [Open the studio](https://screenshots.hensell.dev/studio/), create an **App stores** or **Portfolio** project, then choose **Add slide** to start with a blank canvas. Use **Add image** when your screenshot is ready; adding it preserves your text and layout. You can also import multiple screenshots at once from the empty project.
 2. Choose a template and frame. Use **Design**, **Text**, **Device**, and **Canvas** to adjust the result. Drag text or devices on the canvas; their reset controls return them to the template position.
 3. Click **Export** to download a PNG, a panorama pair, or the whole series as a ZIP. Use **Download project** (**Project file** on small screens) to keep an editable backup too.
 

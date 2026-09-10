@@ -33,7 +33,8 @@ import { createScene, selectSceneElement } from "./scene";
 export interface ArtboardProps {
   project: Project;
   shot: Shot;
-  image: HTMLImageElement;
+  image?: HTMLImageElement;
+  showEmptyDevices?: boolean;
   images?: ReadonlyMap<string, HTMLImageElement>;
   activeDevice?: DeviceElement | OverlayElement | null;
   activeOwnerId?: string;
@@ -59,6 +60,7 @@ export function Artboard({
   project,
   shot,
   image,
+  showEmptyDevices = true,
   images,
   activeDevice,
   activeOwnerId,
@@ -145,6 +147,7 @@ export function Artboard({
           scaleY: size.scale,
         });
         const layer = createScene(project, shot, image, {
+          emptyDeviceLabel: showEmptyDevices ? t("Add an image") : undefined,
           images,
           guides,
           onMove,
@@ -194,6 +197,8 @@ export function Artboard({
     project,
     shot,
     image,
+    showEmptyDevices,
+    t,
     images,
     width,
     onMove,

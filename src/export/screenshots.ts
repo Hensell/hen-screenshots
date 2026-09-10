@@ -111,7 +111,7 @@ export async function buildScreenshotExport({
       png = await renderShot(
         version,
         item,
-        sceneImages.get(item.assetId)!,
+        sceneImages.get(item.assetId ?? ""),
         sceneImages,
         { format, signal },
       );

@@ -18,6 +18,8 @@ import { attachDeviceResize } from "./device-resize";
 import type { DevicePlacement } from "../core/device-placement";
 
 interface SceneOptions {
+  /** Editor placeholder only; never included in exported artwork. */
+  emptyDeviceLabel?: string;
   onOverlayChange?: OverlayChange;
   images?: ReadonlyMap<string, HTMLImageElement>;
   guides?: boolean;
@@ -217,7 +219,7 @@ function addText(
 export function createScene(
   project: Project,
   shot: Shot,
-  image: HTMLImageElement,
+  image: HTMLImageElement | undefined,
   options: SceneOptions = {},
 ): Konva.Layer {
   const style = resolveStyle(project, shot);
@@ -227,9 +229,12 @@ export function createScene(
   const panoramic = isPanoramaTemplate(style.template);
   const cropOffset = isPanoramaEnd(style.template) ? canvas.width : 0;
   const spreadWidth = panoramic ? canvas.width * 2 : canvas.width;
-  const imageWidth = image.naturalWidth;
-  const imageHeight = image.naturalHeight;
-  if (!image.complete || imageWidth <= 0 || imageHeight <= 0)
+  const imageWidth = image?.naturalWidth ?? 0;
+  const imageHeight = image?.naturalHeight ?? 0;
+  if (
+    shot.assetId !== null &&
+    (!image?.complete || imageWidth <= 0 || imageHeight <= 0)
+  )
     throw new Error("The screenshot has not finished loading.");
   if (!Number.isFinite(shot.phone.x) || !Number.isFinite(shot.phone.y))
     throw new Error("The device position is invalid.");
@@ -243,6 +248,7 @@ export function createScene(
       layer.add(
         new Konva.Rect({ ...canvas, fill: "#000000", listening: false }),
       );
+      if (shot.assetId === null) return layer;
       const scale = Math.min(
         canvas.width / imageWidth,
         canvas.height / imageHeight,
@@ -391,15 +397,18 @@ export function createScene(
       const source =
         slot.assetId === shot.assetId
           ? image
-          : options.images?.get(slot.assetId);
+          : options.images?.get(slot.assetId ?? "");
+      const empty = slot.assetId === null;
+      if (empty && !options.emptyDeviceLabel) continue;
       if (
-        !source?.complete ||
-        source.naturalWidth <= 0 ||
-        source.naturalHeight <= 0
+        !empty &&
+        (!source?.complete ||
+          source.naturalWidth <= 0 ||
+          source.naturalHeight <= 0)
       )
         throw new Error("The screenshot has not finished loading.");
-      const imageWidth = source.naturalWidth,
-        imageHeight = source.naturalHeight;
+      const imageWidth = source?.naturalWidth ?? 0,
+        imageHeight = source?.naturalHeight ?? 0;
       const device = deviceGeometry(
         style.device,
         slot.phone.width,
@@ -442,12 +451,33 @@ export function createScene(
           fill: banner ? "rgba(0,0,0,0)" : "#FFFFFF",
         }),
       );
-      screen.add(
-        new Konva.Image({
-          image: source,
-          ...fitImage(imageWidth, imageHeight, device.screen, style.fit),
-        }),
-      );
+      if (empty) {
+        screen.add(
+          new Konva.Rect({
+            ...device.screen,
+            fill: "#F3F4EF",
+          }),
+        );
+        screen.add(
+          new Konva.Text({
+            x: device.screen.x + 12,
+            y: device.screen.y + device.screen.height / 2 - 16,
+            width: device.screen.width - 24,
+            text: options.emptyDeviceLabel,
+            fontFamily: "sans-serif",
+            fontSize: Math.min(32, device.screen.width * 0.08),
+            align: "center",
+            fill: "#65745E",
+            listening: false,
+          }),
+        );
+      } else
+        screen.add(
+          new Konva.Image({
+            image: source,
+            ...fitImage(imageWidth, imageHeight, device.screen, style.fit),
+          }),
+        );
       phone.add(screen);
 
       // Imported status/navigation bars stay in their original pixels. No synthetic bars.
@@ -511,7 +541,7 @@ export function createScene(
       });
     }
     if (style.template === "classic") {
-      deviceNodes[0].phone.moveToTop();
+      deviceNodes[0]?.phone.moveToTop();
       // Keep historical layering until the author explicitly repositions text.
       for (const element of ["title", "subtitle"] as const)
         if (shot.textOffsets?.[element])

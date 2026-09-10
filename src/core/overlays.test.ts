@@ -154,7 +154,7 @@ describe("extra image layers", () => {
     const old: V8Project = { ...fixture(), schemaVersion: 8 },
       before = structuredClone(old);
     const migrated = migrateProject(old);
-    expect(migrated).toEqual({ ...before, schemaVersion: 9 });
+    expect(migrated).toEqual({ ...before, schemaVersion: 10 });
     expect(old).toEqual(before);
     validateProject(migrated);
   });

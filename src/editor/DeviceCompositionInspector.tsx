@@ -165,7 +165,9 @@ export function DeviceCompositionInspector({
           onClick={() => onReplace(active)}
         >
           <Icon name="image" />
-          {t("Replace selected image")}
+          {t(
+            selected.assetId === null ? "Add image" : "Replace selected image",
+          )}
         </button>
         <p className="field-help">
           {t(

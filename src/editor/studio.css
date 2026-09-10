@@ -459,3 +459,18 @@
 .brand-property-selector:hover {
   border-color: var(--brand-clay);
 }
+
+.empty-slide-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 18px auto 0;
+  max-width: 420px;
+  text-align: center;
+}
+.empty-slide-prompt span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}

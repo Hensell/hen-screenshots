@@ -110,7 +110,7 @@ describe("version 5 text placement documents", () => {
     const old: V4Project = { ...project, schemaVersion: 4 };
     const before = structuredClone(old);
     const current = migrateProject(old);
-    expect(current).toEqual({ ...old, schemaVersion: 9 });
+    expect(current).toEqual({ ...old, schemaVersion: 10 });
     expect(old).toEqual(before);
     moveText(current.shots[0], "title", -800, 1000);
     expect(old).toEqual(before);

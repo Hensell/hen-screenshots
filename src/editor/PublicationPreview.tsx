@@ -47,14 +47,20 @@ function PublicationImage({
       className="publication-image"
       style={{ aspectRatio: `${profile.width} / ${profile.height}` }}
     >
-      {!image ? (
+      {shot.assetId !== null && !image ? (
         <p className="publication-missing">
           {t(
             "Image unavailable. Replace this slide’s screenshot in the editor.",
           )}
         </p>
       ) : visible ? (
-        <Preview project={project} shot={shot} image={image} images={images} />
+        <Preview
+          project={project}
+          shot={shot}
+          image={image}
+          images={images}
+          showEmptyDevices={false}
+        />
       ) : (
         <span
           className="publication-placeholder"
@@ -262,7 +268,7 @@ export function PublicationPreview({
                     project={project}
                     shot={shot}
                     images={images}
-                    image={images.get(shot.assetId)}
+                    image={images.get(shot.assetId ?? "")}
                   />
                   <span>
                     {t("Slide {number}", {
@@ -316,7 +322,7 @@ export function PublicationPreview({
                       project={project}
                       shot={shot}
                       images={images}
-                      image={images.get(shot.assetId)}
+                      image={images.get(shot.assetId ?? "")}
                     />
                   </div>
                 ))}

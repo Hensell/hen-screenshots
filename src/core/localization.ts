@@ -148,15 +148,17 @@ export function localizedProject(
 export function referencedAssetIds(project: Project) {
   return [
     ...new Set(
-      project.shots.flatMap((shot) => [
-        shot.assetId,
-        ...(shot.overlays ?? []).map((item) => item.assetId),
-        ...(shot.companions ?? []).map((device) => device.assetId),
-        ...Object.values(shot.translations ?? {}).flatMap((content) => [
-          ...(content.assetId ? [content.assetId] : []),
-          ...Object.values(content.deviceAssets ?? {}),
-        ]),
-      ]),
+      project.shots
+        .flatMap((shot) => [
+          shot.assetId,
+          ...(shot.overlays ?? []).map((item) => item.assetId),
+          ...(shot.companions ?? []).map((device) => device.assetId),
+          ...Object.values(shot.translations ?? {}).flatMap((content) => [
+            ...(content.assetId ? [content.assetId] : []),
+            ...Object.values(content.deviceAssets ?? {}),
+          ]),
+        ])
+        .filter((id): id is string => id !== null),
     ),
   ];
 }

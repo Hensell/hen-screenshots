@@ -34,6 +34,7 @@ export function Preview({
   onTextMove,
   onSelectElement,
   small = false,
+  showEmptyDevices = true,
   onContextMenu,
   onKeyDown,
   guides = false,
@@ -59,6 +60,7 @@ export function Preview({
     shotId: string,
   ) => void;
   small?: boolean;
+  showEmptyDevices?: boolean;
   guides?: boolean;
   onContextMenu?: MouseEventHandler<HTMLDivElement>;
   onKeyDown?: KeyboardEventHandler<HTMLDivElement>;
@@ -83,10 +85,14 @@ export function Preview({
       role={onMove || onTextMove || onResize ? "group" : "img"}
       onContextMenu={onContextMenu}
       onKeyDown={onKeyDown}
-      aria-label={`${shot.title.replace(/\n/g, " ")} — ${shot.subtitle}`}
+      aria-label={
+        shot.title || shot.subtitle
+          ? `${shot.title.replace(/\n/g, " ")} — ${shot.subtitle}`
+          : t("Empty slide")
+      }
     >
       {width > 0 &&
-      image &&
+      (shot.assetId === null || image) &&
       sceneAssetIds(project, shot).every(
         (id) => id === shot.assetId || images?.has(id),
       ) ? (
@@ -110,6 +116,7 @@ export function Preview({
               project={project}
               shot={shot}
               image={image}
+              showEmptyDevices={showEmptyDevices}
               images={images}
               activeDevice={activeDevice}
               activeOwnerId={activeOwnerId}

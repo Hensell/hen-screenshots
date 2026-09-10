@@ -27,6 +27,18 @@ export const isDeviceElement = (
 export function companionFor(shot: Shot, element: CanvasElement) {
   return shot.companions?.find((device) => `device:${device.id}` === element);
 }
+/** Canvas selection can outlive its companion when changing slides or templates. */
+export function resolveDeviceElement(
+  shot: Shot | undefined,
+  element: CanvasElement | null,
+): DeviceElement {
+  return shot &&
+    element &&
+    isDeviceElement(element) &&
+    companionFor(shot, element)
+    ? element
+    : "device";
+}
 export function deviceShot(shot: Shot, element: CanvasElement): Shot {
   const device = companionFor(shot, element);
   return device

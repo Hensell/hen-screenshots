@@ -134,7 +134,7 @@ const TemplateCard = memo(function TemplateCard({
                   project={previewProject}
                   shot={preview}
                   images={images}
-                  image={images.get(preview.assetId)}
+                  image={images.get(preview.assetId ?? "")}
                   small
                 />
               ) : (
@@ -322,8 +322,8 @@ export function TemplateGallery({
         : linkedShots(project, shot.id),
     [all, project, shot, start],
   );
-  const ready = (all ? project.shots : [shot]).every((item) =>
-    images.has(item.assetId),
+  const ready = (all ? project.shots : [shot]).every(
+    (item) => item.assetId === null || images.has(item.assetId),
   );
   useEffect(() => {
     const dialog = ref.current!;

@@ -132,15 +132,18 @@ export function reorderOverlay(shot: Shot, id: string, direction: number) {
 }
 /** Both panorama crops render the same extra images across the seam. */
 export function sceneAssetIds(project: Project, shot: Shot) {
-  if (resolveExportProfile(project).sourceOnly) return [shot.assetId];
+  if (resolveExportProfile(project).sourceOnly)
+    return shot.assetId === null ? [] : [shot.assetId];
   return [
-    ...new Set([
-      shot.assetId,
-      ...(shot.companions ?? []).map((item) => item.assetId),
-      ...linkedShots(project, shot.id).flatMap((owner) =>
-        (owner.overlays ?? []).map((item) => item.assetId),
-      ),
-      ...(shot.overlays ?? []).map((item) => item.assetId),
-    ]),
+    ...new Set(
+      [
+        shot.assetId,
+        ...(shot.companions ?? []).map((item) => item.assetId),
+        ...linkedShots(project, shot.id).flatMap((owner) =>
+          (owner.overlays ?? []).map((item) => item.assetId),
+        ),
+        ...(shot.overlays ?? []).map((item) => item.assetId),
+      ].filter((id): id is string => id !== null),
+    ),
   ];
 }

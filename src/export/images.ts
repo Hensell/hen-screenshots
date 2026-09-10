@@ -47,7 +47,7 @@ export async function encodeExportCanvas(
 export async function renderShot(
   project: Project,
   shot: Shot,
-  image: HTMLImageElement,
+  image: HTMLImageElement | undefined,
   images?: ReadonlyMap<string, HTMLImageElement>,
   encoding: { format?: ExportImageFormat; signal?: AbortSignal } = {},
 ): Promise<Blob> {
@@ -57,14 +57,17 @@ export async function renderShot(
   const profile = resolveExportProfile(snapshot.project);
   const dimensions = { width: profile.width, height: profile.height };
   validateDimensions(profile, dimensions.width, dimensions.height);
+  if (profile.sourceOnly && !image)
+    throw new Error("Add a screenshot before exporting this Wear OS slide.");
   if (
     profile.sourceOnly &&
+    image &&
     image.naturalWidth * profile.height !== image.naturalHeight * profile.width
   )
     throw new Error(
       "Wear OS needs a square app capture. Replace this image with a square screenshot; it will not be cropped or stretched.",
     );
-  if (profile.sourceOnly) {
+  if (profile.sourceOnly && image) {
     const check = document.createElement("canvas");
     check.width = dimensions.width;
     check.height = dimensions.height;

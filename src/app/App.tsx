@@ -1,3 +1,5 @@
+import { addEmptySlide } from "../core/slides";
+import { deviceShot, resolveDeviceElement } from "../core/device-composition";
 import { IMAGE_ACCEPT } from "../assets/heif-format";
 import {
   addOverlay,
@@ -8,7 +10,6 @@ import {
   type OverlayChange,
 } from "../core/overlays";
 import { isBannerProfile } from "../core/export-profiles";
-import { companionFor } from "../core/device-composition";
 import {
   editDevice,
   isDeviceElement,
@@ -280,6 +281,8 @@ export function App() {
   const dragCount = useRef(0);
   const { images, error: imageError } = useImages(assets, project?.shots);
   const shot = project?.shots.find((shot) => shot.id === selectedId);
+  const imageElement = resolveDeviceElement(shot, selectedCanvasElement);
+  const emptyImage = shot && deviceShot(shot, imageElement).assetId === null;
 
   const pair = project && shot ? panoramaPair(project, shot.id) : null;
   const deletingShots =
@@ -398,14 +401,25 @@ export function App() {
     slideMenu,
   ]);
 
+  function addSlide() {
+    if (!project || busy || project.shots.length >= LIMITS.shots) return;
+    let id: string | null = null;
+    state.edit((draft) => {
+      id = addEmptySlide(draft);
+    });
+    if (id) state.select(id);
+    setSelectedCanvasElement(null);
+    setNotice(null);
+    setReadyFile(null);
+  }
+
   function chooseImages(
     replacementId?: string,
     element: DeviceElement = "device",
   ) {
     if (busy) return;
     const replacing = project?.shots.find((item) => item.id === replacementId);
-    replaceElement.current =
-      replacing && companionFor(replacing, element) ? element : "device";
+    replaceElement.current = resolveDeviceElement(replacing, element);
     replaceId.current = replacementId ?? null;
     imageInput.current!.multiple = !replacementId;
     imageInput.current!.click();
@@ -479,8 +493,14 @@ export function App() {
     if (!project || busy || !files.length) return;
     const replacement = replaceId.current;
     const element = replaceElement.current;
+    const owner = project.shots.find((item) => item.id === replacement);
+    const filling = owner && deviceShot(owner, element).assetId === null;
     replaceId.current = null;
-    setBusy(replacement ? "Replacing screenshot…" : "Importing screenshots…");
+    setBusy(
+      replacement && !filling
+        ? "Replacing screenshot…"
+        : "Importing screenshots…",
+    );
     setNotice(null);
     setReadyFile(null);
     try {
@@ -532,7 +552,9 @@ export function App() {
       if (firstId) state.select(firstId);
       setNotice({
         message: replacement
-          ? `${replacedIds.size === 2 ? "Panorama image" : "Image"} replaced. Your layout is preserved. Undo anytime.`
+          ? filling
+            ? t("Image added. Your design is preserved. Undo anytime.")
+            : `${replacedIds.size === 2 ? "Panorama image" : "Image"} replaced. Your layout is preserved. Undo anytime.`
           : banners
             ? t(
                 incoming.length === 1
@@ -946,8 +968,11 @@ export function App() {
             event.preventDefault();
             dragCount.current = 0;
             setDragging(false);
-            replaceId.current = null;
-            void addImages(Array.from(event.dataTransfer.files));
+            const files = Array.from(event.dataTransfer.files);
+            replaceId.current =
+              files.length === 1 && emptyImage ? shot!.id : null;
+            replaceElement.current = imageElement;
+            void addImages(files);
           }}
         >
           <div className="editor-toolbar" aria-label={t("Project tools")}>
@@ -985,7 +1010,11 @@ export function App() {
                 <button
                   type="button"
                   className="toolbar-button templates-trigger"
-                  disabled={!shot || !!busy || !images.get(shot.assetId)}
+                  disabled={
+                    !shot ||
+                    !!busy ||
+                    (shot.assetId !== null && !images.get(shot.assetId))
+                  }
                   onClick={() => setTemplatesOpen(true)}
                 >
                   <Icon name="layout" size={18} />
@@ -1006,15 +1035,20 @@ export function App() {
                     )
                   }
                   title={
-                    locale
-                      ? t("Replace the {language} image and keep your design", {
-                          language: languageName(locale),
-                        })
-                      : t("Replace the image and keep your design")
+                    emptyImage
+                      ? t("Add an image")
+                      : locale
+                        ? t(
+                            "Replace the {language} image and keep your design",
+                            {
+                              language: languageName(locale),
+                            },
+                          )
+                        : t("Replace the image and keep your design")
                   }
                 >
                   <Icon name="image" size={18} />
-                  {t("Replace image")}
+                  {t(emptyImage ? "Add image" : "Replace image")}
                 </button>
                 <button
                   type="button"
@@ -1173,7 +1207,7 @@ export function App() {
                       project={project}
                       shot={item}
                       images={images}
-                      image={images.get(item.assetId)}
+                      image={images.get(item.assetId ?? "")}
                       small
                     />
                   </button>
@@ -1206,10 +1240,10 @@ export function App() {
               <button
                 className="add-shot"
                 disabled={!!busy || project.shots.length >= LIMITS.shots}
-                onClick={() => chooseImages()}
+                onClick={addSlide}
               >
                 <Icon name="plus" size={22} />
-                <span>{t(banners ? "Add banner" : "Add captures")}</span>
+                <span>{t(banners ? "Add banner" : "Add slide")}</span>
               </button>
             </div>
           </aside>
@@ -1272,7 +1306,7 @@ export function App() {
                         project={project}
                         shot={item}
                         images={images}
-                        image={images.get(item.assetId)}
+                        image={images.get(item.assetId ?? "")}
                         onContextMenu={(event) => contextMenu(event, item.id)}
                         guides={smartGuides}
                         onKeyDown={(event) => menuKeyboard(event, item.id)}
@@ -1292,6 +1326,23 @@ export function App() {
                       />
                     ))}
                   </div>
+                  {emptyImage && (
+                    <div className="empty-slide-prompt">
+                      <button
+                        className="button primary"
+                        disabled={!!busy}
+                        onClick={() => chooseImages(shot.id, imageElement)}
+                      >
+                        <Icon name="image" />
+                        {t("Add image")}
+                      </button>
+                      <span>
+                        {t(
+                          "Add your screenshot whenever you’re ready. Your design stays in place.",
+                        )}
+                      </span>
+                    </div>
+                  )}
                   <p className="canvas-edit-help">
                     {t(
                       "Drag to move · Corners resize · Enter selects · Arrows move · + / − resize",
@@ -1649,6 +1700,7 @@ export function App() {
                   .join("–"),
               },
             )}
+            emptyImage={menuShots[0]?.assetId === null}
             panorama={menuShots.length === 2}
             canDuplicate={
               project.shots.length + menuShots.length <= shotCapacity(project)
