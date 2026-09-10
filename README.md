@@ -50,6 +50,12 @@ The patterns collection adds **Zest, Cabana, Contour, Cherry, Terracotta, Bluepr
 
 Design the pair together, keep a different caption on each slide, and export two separate PNGs in a ZIP. **Panorama**, **Daybreak**, **Tidal**, **Orbit**, and **Moonlight** each offer a different take on the continuous scene.
 
+## Local agent plugin (development preview)
+
+A local plugin for Codex and Claude Code can turn a folder of captures into a styled series, render a preview, and export PNGs by language plus an editable Hen project. It reuses the web editor’s templates and scene engine, with native rendering through Konva and Skia. Requires Node.js 22.12+ and a one-time dependency installation.
+
+See [plugin setup and commands](plugins/hen-screenshots/README.md) and the [design spec](plugins/hen-screenshots/skills/create-screenshots/references/design-spec.md). Build it with `npm run plugin:build`; create a local ZIP with `npm run plugin:pack`. This is a development preview, not a public plugin-directory release.
+
 ## From capture to export
 
 1. [Open the studio](https://screenshots.hensell.dev/studio/), create an **App stores** or **Portfolio** project, and add PNG, JPEG, or still WebP screenshots.

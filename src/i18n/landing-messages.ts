@@ -230,6 +230,11 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     ],
   "View source on GitHub": ["Ver código en GitHub", "Ver código no GitHub"],
   "Built in the open.": ["Un proyecto abierto.", "Um projeto aberto."],
+  "Enjoying Hen? Give it a star on GitHub to help more people discover it.": [
+    "¿Te gusta Hen? Dale una estrella en GitHub para que más personas lo descubran.",
+    "Gostou do Hen? Dê uma estrela no GitHub para ajudar mais pessoas a descobri-lo.",
+  ],
+  "Star on GitHub": ["Dale una estrella en GitHub", "Dê uma estrela no GitHub"],
   "Explore the code, report a bug, or contribute your next idea. You can help shape Hen Screenshots on GitHub.":
     [
       "Explora el código, reporta un error o aporta tu próxima idea. Puedes ayudar a mejorar Hen Screenshots en GitHub.",

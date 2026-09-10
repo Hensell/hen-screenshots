@@ -540,6 +540,37 @@ nav {
 .source-note .inline-link:hover {
   color: var(--brand-paper);
 }
+.github-star-note {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+}
+.github-star-note p {
+  font-size: 0.85rem;
+  max-width: 38ch;
+}
+.github-star-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  justify-self: start;
+  min-height: 48px;
+  padding: 10px 16px;
+  border: 1px solid #eeb79670;
+  border-radius: 6px;
+  color: #f7d6b7;
+  font-size: 0.85rem;
+  font-weight: 650;
+  background: #eeb79610;
+}
+.github-star-action svg {
+  flex-shrink: 0;
+}
+.github-star-action:hover {
+  background: #eeb79620;
+  border-color: #eeb796;
+}
 .action-paper {
   background: var(--brand-paper);
   color: var(--brand-ink);

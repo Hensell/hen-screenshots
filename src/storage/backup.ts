@@ -198,7 +198,10 @@ export async function exportProject(
 }
 
 /** Read a bounded app backup, validate its real images, and return a new unsaved project. */
-export async function importProject(file: File): Promise<LoadedProject> {
+export async function importProject(
+  file: File,
+  decodeImages: typeof importImages = importImages,
+): Promise<LoadedProject> {
   if (file.size < 22 || file.size > ARCHIVE_LIMIT)
     fail("Choose a valid project backup no larger than 124 MB.");
   const bytes = new Uint8Array(await file.arrayBuffer());
@@ -274,7 +277,7 @@ export async function importProject(file: File): Promise<LoadedProject> {
           type: asset.mime,
         });
       });
-    imported.push(...(await importImages(files)));
+    imported.push(...(await decodeImages(files)));
   }
   const ids = new Map<string, string>();
   imported.forEach((asset, index) => {

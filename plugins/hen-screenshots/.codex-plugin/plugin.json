@@ -1,0 +1,31 @@
+{
+  "name": "hen-screenshots",
+  "version": "0.1.0",
+  "description": "Create app-store screenshots, portfolio mockups and Play banners from local images. Export PNGs and editable Hen projects.",
+  "author": {
+    "name": "Hensell",
+    "email": "hensell@hensell.dev",
+    "url": "https://hensell.dev"
+  },
+  "homepage": "https://screenshots.hensell.dev/",
+  "repository": "https://github.com/Hensell/hen-screenshots",
+  "keywords": ["screenshots", "mockups", "app-store", "google-play", "local"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Hen Screenshots",
+    "shortDescription": "Turn local captures into polished screenshots.",
+    "longDescription": "Use Hen templates to compose local screenshots, preview a series, and export PNGs by language plus an editable project. Requires Node.js and a one-time runtime setup.",
+    "developerName": "Hensell",
+    "category": "Design",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://screenshots.hensell.dev/",
+    "defaultPrompt": [
+      "Create store screenshots from my captures.",
+      "Make a portfolio mockup with my app screenshots.",
+      "Export my Hen project in English and Spanish."
+    ],
+    "brandColor": "#B64C35",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png"
+  }
+}

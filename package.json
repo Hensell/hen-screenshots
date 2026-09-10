@@ -18,7 +18,9 @@
     "format:check": "prettier --check src vite.config.ts vitest.config.ts package.json tsconfig.json .oxlintrc.json",
     "format": "prettier --write src vite.config.ts vitest.config.ts package.json tsconfig.json .oxlintrc.json",
     "social:images": "node scripts/generate-social-images.mjs",
-    "seo:check": "node scripts/check-seo.mjs"
+    "seo:check": "node scripts/check-seo.mjs",
+    "plugin:build": "node scripts/build-plugin.mjs",
+    "plugin:pack": "node scripts/build-plugin.mjs --zip"
   },
   "dependencies": {
     "@huggingface/transformers": "4.2.0",
@@ -39,6 +41,7 @@
     "oxlint": "1.82.0",
     "prettier": "3.9.6",
     "sharp": "0.35.4",
+    "skia-canvas": "3.0.8",
     "typescript": "7.0.2",
     "vite": "8.2.2",
     "vitest": "5.0.0",

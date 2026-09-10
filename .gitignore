@@ -27,3 +27,7 @@ references/screenshots/*
 # Personal project backups and exported compositions
 *.henscreenshots
 exports/
+
+# Built local plugin packages
+artifacts/
+plugins/hen-screenshots/assets/
