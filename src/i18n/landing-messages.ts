@@ -1,4 +1,14 @@
 export const landingMessages: Record<string, readonly [string, string]> = {
+  "Hen for Codex": ["Hen para Codex", "Hen para Codex"],
+  "Now available in the OpenAI Plugins Directory.": [
+    "Ya disponible en el directorio de plugins de OpenAI.",
+    "Já disponível no diretório de plugins da OpenAI.",
+  ],
+  "Get plugin from OpenAI": [
+    "Obtener plugin en OpenAI",
+    "Obter plugin na OpenAI",
+  ],
+  "Setup guide": ["Guía de instalación", "Guia de instalação"],
   "FREE SCREENSHOT STUDIO": [
     "ESTUDIO DE CAPTURAS GRATIS",
     "ESTÚDIO DE CAPTURAS GRÁTIS",

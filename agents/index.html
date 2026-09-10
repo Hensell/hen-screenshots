@@ -118,34 +118,35 @@
           >
             A small plugin. Your whole studio.
           </h2>
-          <div class="guide-file-tree" aria-hidden="true">
-            <span>hen-screenshots/</span><span>├─ skills/</span
-            ><span>├─ scripts/hen.mjs</span><span>└─ dist/cli.mjs</span>
-          </div>
+          <p
+            class="guide-directory-status"
+            data-i18n="Reviewed and published in the OpenAI Plugins Directory."
+          >
+            Reviewed and published in the OpenAI Plugins Directory.
+          </p>
           <a
             class="action guide-download-link"
-            download
-            href="/downloads/hen-screenshots-plugin-__PLUGIN_VERSION__.zip"
-            ><span data-i18n="Download plugin">Download plugin</span
-            ><svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" /></svg
-          ></a>
+            href="https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><span data-i18n="Get plugin from OpenAI"
+              >Get plugin from OpenAI</span
+            ><span aria-hidden="true">↗</span></a
+          >
           <p
             class="guide-download-meta"
-            data-i18n="ZIP · Node.js 22.12+ · One-time setup"
+            data-i18n="Local rendering · Node.js 22.12+ · One-time setup"
           >
-            ZIP · Node.js 22.12+ · One-time setup
+            Local rendering · Node.js 22.12+ · One-time setup
           </p>
+          <a
+            class="guide-source"
+            download
+            href="/downloads/hen-screenshots-plugin-__PLUGIN_VERSION__.zip"
+            ><span data-i18n="Download ZIP instead">Download ZIP instead</span>
+            <span aria-hidden="true">↓</span></a
+          >
+          <br />
           <a
             class="guide-source"
             href="https://github.com/Hensell/hen-screenshots/tree/main/plugins/hen-screenshots"
@@ -206,6 +207,19 @@
               newer, npm, and Codex or Claude Code with access to your local
               files and terminal.
             </p>
+            <p
+              data-i18n="Choose Codex or Claude Code below for installation. If you prefer a manual ZIP setup, follow these steps."
+            >
+              Choose Codex or Claude Code below for installation. If you prefer
+              a manual ZIP setup, follow these steps.
+            </p>
+            <div class="guide-agent-links">
+              <a href="#codex">Codex <span aria-hidden="true">↓</span></a>
+              <a href="#claude"
+                >Claude Code <span aria-hidden="true">↓</span></a
+              >
+            </div>
+            <h3 data-i18n="Manual ZIP setup">Manual ZIP setup</h3>
             <ol class="guide-steps">
               <li>
                 <h3 data-i18n="Download and extract the ZIP.">
@@ -292,6 +306,25 @@
             <h2 id="codex-title" data-i18n="Start with a local task.">
               Start with a local task.
             </h2>
+            <h3 data-i18n="Install from OpenAI">Install from OpenAI</h3>
+            <p
+              data-i18n="Open the listing and choose Install plugin. For local rendering, start a new Codex task in your app project and ask Hen Screenshots to run doctor and complete setup. Then give it your screenshot folder and a brief from the examples below."
+            >
+              Open the listing and choose Install plugin. For local rendering,
+              start a new Codex task in your app project and ask Hen Screenshots
+              to run doctor and complete setup. Then give it your screenshot
+              folder and a brief from the examples below.
+            </p>
+            <a
+              class="inline-link"
+              href="https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><span data-i18n="Get plugin from OpenAI"
+                >Get plugin from OpenAI</span
+              >
+              <span aria-hidden="true">↗</span></a
+            >
             <h3 data-i18n="Install from GitHub">Install from GitHub</h3>
             <p
               data-i18n="Run these commands in your terminal to install from the Hen marketplace. Start a new Codex task, then ask Hen to run doctor and complete setup if needed."
@@ -630,11 +663,13 @@
               </summary>
               <div class="faq-answer">
                 <p
-                  data-i18n="Not in the official directories yet. Install from our GitHub marketplace or download the ZIP. Both include the renderer and require one-time dependency setup."
+                  data-i18n="Hen Screenshots is published in the OpenAI Plugins Directory. Our Anthropic directory submission is still under review; you can already use it in Claude Code through our GitHub marketplace or the ZIP. All installation methods require one-time local dependency setup."
                 >
-                  Not in the official directories yet. Install from our GitHub
-                  marketplace or download the ZIP. Both include the renderer and
-                  require one-time dependency setup.
+                  Hen Screenshots is published in the OpenAI Plugins Directory.
+                  Our Anthropic directory submission is still under review; you
+                  can already use it in Claude Code through our GitHub
+                  marketplace or the ZIP. All installation methods require
+                  one-time local dependency setup.
                 </p>
               </div>
             </details>

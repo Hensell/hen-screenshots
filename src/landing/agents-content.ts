@@ -2,6 +2,33 @@ import type { InterfaceLocale } from "../i18n/core.ts";
 
 // Build-time copy: the guide is readable and translated without JavaScript.
 export const agentMessages: Record<string, readonly [string, string]> = {
+  "Reviewed and published in the OpenAI Plugins Directory.": [
+    "Revisado y publicado en el directorio de plugins de OpenAI.",
+    "Revisado e publicado no diretório de plugins da OpenAI.",
+  ],
+  "Local rendering · Node.js 22.12+ · One-time setup": [
+    "Renderizado local · Node.js 22.12+ · Configuración inicial",
+    "Renderização local · Node.js 22.12+ · Configuração inicial",
+  ],
+  "Download ZIP instead": [
+    "También puedes descargar el ZIP",
+    "Você também pode baixar o ZIP",
+  ],
+  "Choose Codex or Claude Code below for installation. If you prefer a manual ZIP setup, follow these steps.":
+    [
+      "Elige Codex o Claude Code más abajo para ver cómo instalarlo. Si prefieres instalarlo manualmente con el ZIP, sigue estos pasos.",
+      "Escolha Codex ou Claude Code abaixo para ver como instalar. Se preferir a instalação manual pelo ZIP, siga estes passos.",
+    ],
+  "Manual ZIP setup": [
+    "Instalación manual con el ZIP",
+    "Instalação manual pelo ZIP",
+  ],
+  "Install from OpenAI": ["Instalar desde OpenAI", "Instalar pela OpenAI"],
+  "Open the listing and choose Install plugin. For local rendering, start a new Codex task in your app project and ask Hen Screenshots to run doctor and complete setup. Then give it your screenshot folder and a brief from the examples below.":
+    [
+      "Abre la ficha y selecciona Install plugin. Para renderizar localmente, inicia una tarea nueva en Codex dentro del proyecto de tu app y pídele a Hen Screenshots que ejecute doctor y complete la instalación. Después, indícale la carpeta de tus capturas y usa una de las solicitudes de ejemplo más abajo.",
+      "Abra a página do plugin e selecione Install plugin. Para renderizar localmente, inicie uma nova tarefa no Codex dentro do projeto do seu app e peça ao Hen Screenshots que execute doctor e conclua a configuração. Depois, indique a pasta das suas capturas e use uma das solicitações de exemplo abaixo.",
+    ],
   "Use with AI agents — Hen Screenshots": [
     "Usar con agentes AI — Hen Screenshots",
     "Usar com agentes de IA — Hen Screenshots",
@@ -194,10 +221,10 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "¿Está en la tienda de plugins de Codex o Claude?",
     "Está na loja de plugins do Codex ou Claude?",
   ],
-  "Not in the official directories yet. Install from our GitHub marketplace or download the ZIP. Both include the renderer and require one-time dependency setup.":
+  "Hen Screenshots is published in the OpenAI Plugins Directory. Our Anthropic directory submission is still under review; you can already use it in Claude Code through our GitHub marketplace or the ZIP. All installation methods require one-time local dependency setup.":
     [
-      "Todavía no está en los directorios oficiales. Instala desde nuestro catálogo en GitHub o descarga el ZIP. Ambos incluyen el renderizador y requieren instalar las dependencias una vez.",
-      "Ainda não está nos diretórios oficiais. Instale pelo nosso catálogo no GitHub ou baixe o ZIP. Ambos incluem o renderizador e exigem instalar as dependências uma vez.",
+      "Hen Screenshots está publicado en el directorio de plugins de OpenAI. La solicitud para el directorio de Anthropic sigue en revisión; ya puedes usarlo en Claude Code desde nuestro catálogo de GitHub o con el ZIP. Todos los métodos requieren instalar las dependencias locales una vez.",
+      "O Hen Screenshots está publicado no diretório de plugins da OpenAI. A solicitação para o diretório da Anthropic segue em análise; você já pode usá-lo no Claude Code pelo nosso catálogo no GitHub ou pelo ZIP. Todos os métodos exigem instalar as dependências locais uma vez.",
     ],
   "Which images can I use?": [
     "¿Qué imágenes puedo usar?",

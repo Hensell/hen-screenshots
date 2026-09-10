@@ -1131,6 +1131,38 @@ details > p {
   margin-top: 18px;
   flex-wrap: wrap;
 }
+.plugin-announcement {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  padding-block: 24px;
+  border-top: 1px solid var(--brand-border);
+}
+.plugin-announcement h2 {
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+.plugin-announcement p {
+  margin-top: 4px;
+  color: var(--brand-muted);
+  font-size: 0.85rem;
+}
+.plugin-announcement-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+}
+.plugin-announcement-links a:first-child {
+  color: var(--brand-clay);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.plugin-announcement-links a:first-child:hover {
+  color: var(--brand-clay-hover);
+}
 .output-grid {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
