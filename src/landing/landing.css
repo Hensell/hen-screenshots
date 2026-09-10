@@ -31,6 +31,7 @@ a {
   text-decoration: none;
 }
 a,
+button,
 summary {
   -webkit-tap-highlight-color: transparent;
 }
@@ -709,9 +710,6 @@ details > p {
   .landing-header {
     min-height: 80px;
   }
-  .nav-section {
-    display: none;
-  }
   .hero {
     grid-template-columns: 1fr;
     gap: 36px;
@@ -919,35 +917,137 @@ details > p {
 .landing-language[hidden] {
   display: none;
 }
-@media (max-width: 1120px) and (min-width: 761px) {
+/* The same links expand below the wordmark on compact screens. */
+.menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1px solid var(--brand-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--brand-ink);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.menu-toggle:hover,
+.menu-toggle[aria-expanded="true"] {
+  background: var(--brand-sage);
+}
+.menu-toggle[hidden],
+.landing-header nav[hidden] {
+  display: none;
+}
+.menu-label-close,
+.menu-toggle[aria-expanded="true"] .menu-label-open {
+  display: none;
+}
+.menu-toggle[aria-expanded="true"] .menu-label-close {
+  display: inline;
+}
+.menu-toggle-icon {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.menu-toggle-icon span {
+  position: absolute;
+  inset-inline: 0;
+  top: 9px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: translateY(-4px);
+}
+.menu-toggle-icon span:last-child {
+  transform: translateY(4px);
+}
+.menu-toggle[aria-expanded="true"] .menu-toggle-icon span {
+  transform: rotate(45deg);
+}
+.menu-toggle[aria-expanded="true"] .menu-toggle-icon span:last-child {
+  transform: rotate(-45deg);
+}
+@media (max-width: 1120px) {
   .landing-header {
     flex-wrap: wrap;
-    justify-content: center;
-    padding-block: 20px;
-    gap: 16px 24px;
+    justify-content: space-between;
+    min-height: 80px;
+    padding-block: 16px;
+    gap: 0 16px;
   }
   .landing-header nav {
-    flex-wrap: wrap;
-    justify-content: center;
+    flex: 0 0 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    min-width: 0;
+    margin-top: 16px;
+    padding-bottom: 4px;
+    border-top: 1px solid var(--brand-border);
+  }
+  .landing-header .nav-section {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--brand-border);
+    font-size: 0.95rem;
+  }
+  .landing-header .action {
+    margin-top: 20px;
+    justify-content: space-between;
+  }
+  .landing-header .landing-language {
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 48px;
+    margin-top: 12px;
+    padding-inline: 4px;
+    border: 0;
+  }
+  .landing-header .landing-language > span {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+    font-weight: 500;
+    color: var(--brand-muted);
+  }
+  .landing-header .landing-language select {
+    min-height: 44px;
+    max-width: 150px;
+    padding-inline: 8px;
+    border: 1px solid var(--brand-border);
+    background: var(--brand-paper);
   }
 }
-@media (max-width: 480px) {
-  .landing-header {
-    gap: 10px;
-    flex-wrap: wrap;
-    padding-block: 16px;
+@media (prefers-reduced-motion: no-preference) {
+  .menu-toggle-icon span {
+    transition: transform 160ms ease;
   }
-  .landing-header nav {
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    flex: 1;
+  @media (max-width: 1120px) {
+    .menu-toggle[aria-expanded="true"] + nav {
+      animation: landing-menu-enter 180ms ease-out;
+    }
   }
-  .landing-language {
-    max-width: 145px;
-  }
-  .landing-language select {
-    max-width: 100%;
+  @keyframes landing-menu-enter {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 

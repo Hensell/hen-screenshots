@@ -429,6 +429,8 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   ],
   "Made with FrogHappy": ["Hecho con FrogHappy", "Feito com FrogHappy"],
   "Main navigation": ["Navegación principal", "Navegação principal"],
+  Menu: ["Menú", "Menu"],
+  "Close menu": ["Cerrar menú", "Fechar menu"],
   "Make it yours.": ["Hazlo tuyo.", "Deixe com a sua cara."],
   "Make something worth showing": [
     "Crea algo que quieras mostrar",

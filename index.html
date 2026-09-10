@@ -35,7 +35,24 @@
         <img src="/brand/mark.svg" width="32" height="34" alt="" />
         <span>hen<small>screenshots</small></span>
       </a>
-      <nav aria-label="Main navigation" data-i18n-aria-label="Main navigation">
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="landing-navigation"
+        hidden
+      >
+        <span class="menu-label-open" data-i18n="Menu">Menu</span>
+        <span class="menu-label-close" data-i18n="Close menu">Close menu</span>
+        <span class="menu-toggle-icon" aria-hidden="true"
+          ><span></span><span></span
+        ></span>
+      </button>
+      <nav
+        id="landing-navigation"
+        aria-label="Main navigation"
+        data-i18n-aria-label="Main navigation"
+      >
         <a class="nav-section" href="#possibilities"
           ><span data-i18n="What you can make">What you can make</span></a
         >

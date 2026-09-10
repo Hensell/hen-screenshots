@@ -5,6 +5,7 @@ import {
 } from "../i18n/core";
 import "../i18n/language-selector.css";
 import { initializeScrollReveals } from "./reveal";
+import { initializeNavigation } from "./navigation";
 import { landingLocale, landingPaths } from "./locales";
 
 // A public page has one stable language for visitors and crawlers alike.
@@ -28,4 +29,9 @@ if (selector) {
 }
 
 const stopScrollReveals = initializeScrollReveals();
-if (import.meta.hot) import.meta.hot.dispose(stopScrollReveals);
+const stopNavigation = initializeNavigation();
+if (import.meta.hot)
+  import.meta.hot.dispose(() => {
+    stopScrollReveals();
+    stopNavigation();
+  });
