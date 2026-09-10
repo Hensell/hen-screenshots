@@ -6,7 +6,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 
 **Free forever. No account. No watermarks.** Every template, device frame, and full-resolution export is included.
 
-[**Open the studio →**](https://screenshots.hensell.dev/studio/) · [Explore the website](https://screenshots.hensell.dev/) · [Share feedback](mailto:hensell@hensell.dev?subject=Hen%20Screenshots%20feedback) · [Support on Ko-fi](https://ko-fi.com/hensell)
+[**Open the studio →**](https://screenshots.hensell.dev/studio/) · [Explore the website](https://screenshots.hensell.dev/) · [Roadmap](ROADMAP.md) · [Share feedback](mailto:hensell@hensell.dev?subject=Hen%20Screenshots%20feedback) · [Support on Ko-fi](https://ko-fi.com/hensell)
 
 <p align="center">
   <img src="public/examples/halo.webp" width="24%" alt="Halo: a bold headline and phone against a dark background with a warm circular accent." />
@@ -216,6 +216,8 @@ See [deployment instructions](docs/deployment.md) for build settings, custom dom
 ## Feedback and contributing
 
 Built by [Hensell](https://hensell.dev) for his own apps, and for the things you are building too.
+
+See the [public roadmap](ROADMAP.md) for the next priorities: first-use improvements, collections shaped by real apps, and agent plugin distribution. It records direction and readiness without promising release dates. The [plugin distribution notes](docs/plugin-distribution.md) describe what is still needed for a public release.
 
 If Hen Screenshots helps you showcase your apps, you can [support its development on Ko-fi](https://ko-fi.com/hensell). Donations are optional; the editor remains free forever.
 
