@@ -1,4 +1,38 @@
 export const landingMessages: Record<string, readonly [string, string]> = {
+  "FREE SCREENSHOT STUDIO": [
+    "ESTUDIO DE CAPTURAS GRATIS",
+    "ESTÚDIO DE CAPTURAS GRÁTIS",
+  ],
+  "Store screenshots, banners, and portfolio mockups. Made in your browser.": [
+    "Capturas para tiendas, banners y mockups para tu portafolio. Desde tu navegador.",
+    "Capturas para lojas, banners e mockups para seu portfólio. No seu navegador.",
+  ],
+  "Choose your canvas.": ["Elige tu lienzo.", "Escolha sua tela."],
+  "57 TEMPLATES": ["57 PLANTILLAS", "57 MODELOS"],
+  "Start with a template.": [
+    "Empieza con una plantilla.",
+    "Comece com um modelo.",
+  ],
+  "Phone, tablet, and desktop. Together.": [
+    "Móvil, tablet y desktop. Juntos.",
+    "Celular, tablet e desktop. Juntos.",
+  ],
+  "Your brand, on every slide.": [
+    "Tu marca, en cada slide.",
+    "Sua marca, em cada slide.",
+  ],
+  "Brand kits": ["Kits de marca", "Kits de marca"],
+  "Logos and artwork": ["Logotipos e imágenes", "Logotipos e imagens"],
+  "A flexible canvas": ["Un lienzo flexible", "Uma tela flexível"],
+  "From capture to export.": [
+    "De la captura a la exportación.",
+    "Da captura à exportação.",
+  ],
+  "A few questions, answered.": [
+    "Resolvemos tus dudas.",
+    "Suas dúvidas, respondidas.",
+  ],
+
   "Support on Ko-fi": ["Apoyar en Ko-fi", "Apoiar no Ko-fi"],
   "Want to support the next update?": [
     "¿Quieres apoyar la próxima actualización?",
@@ -270,9 +304,9 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     "UNA HERRAMIENTA PARA QUIENES CREAN",
     "UMA FERRAMENTA PARA QUEM CRIA",
   ],
-  "A few of the 51 templates waiting in your studio.": [
-    "Algunas de las 51 plantillas que te esperan en el estudio.",
-    "Alguns dos 51 modelos que esperam por você no estúdio.",
+  "A few of the 57 templates waiting in your studio.": [
+    "Algunas de las 57 plantillas que te esperan en el estudio.",
+    "Alguns dos 57 modelos que esperam por você no estúdio.",
   ],
   "A free screenshot studio for your next launch. Make app store screenshots and portfolio mockups right in your browser.":
     [

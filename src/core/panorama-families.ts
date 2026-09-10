@@ -7,6 +7,12 @@ export const panoramaFamilies = {
   tidal: "tidal-end",
   orbit: "orbit-end",
   moonlight: "moonlight-end",
+  atrium: "atrium-end",
+  obsidian: "obsidian-end",
+  offset: "offset-end",
+  signal: "signal-end",
+  mosaic: "mosaic-end",
+  folio: "folio-end",
 } as const;
 export type PanoramaId = keyof typeof panoramaFamilies;
 

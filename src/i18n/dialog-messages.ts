@@ -196,6 +196,7 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   "Close languages": ["Cerrar idiomas", "Fechar idiomas"],
   "Project languages": ["Idiomas del proyecto", "Idiomas do projeto"],
   "Original language": ["Idioma original", "Idioma original"],
+  "Editing language": ["Idioma en edición", "Idioma em edição"],
   "Original text": ["Texto original", "Texto original"],
   Translations: ["Traducciones", "Traduções"],
   "Language versions": ["Versiones por idioma", "Versões por idioma"],
@@ -247,6 +248,7 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   "{language} · ORIGINAL": ["{language} · ORIGINAL", "{language} · ORIGINAL"],
   "No headline": ["Sin título", "Sem título"],
   "No supporting text": ["Sin texto de apoyo", "Sem texto de apoio"],
+  "View original text": ["Ver texto original", "Ver texto original"],
   Headline: ["Título", "Título"],
   "Mark as reviewed": ["Marcar como revisado", "Marcar como revisado"],
   "Remove {language} and its text and image overrides? Your other languages stay. You can undo this.":
@@ -260,6 +262,10 @@ export const dialogMessages: Record<string, readonly [string, string]> = {
   "Saved on this device · Included in your project file": [
     "Guardado en este dispositivo · Incluido en el archivo del proyecto",
     "Salvo neste dispositivo · Incluído no arquivo do projeto",
+  ],
+  "Translations are included when you download your project file.": [
+    "Las traducciones se incluyen al descargar el archivo del proyecto.",
+    "As traduções são incluídas ao baixar o arquivo do projeto.",
   ],
   Done: ["Listo", "Concluir"],
   "Translation drafts are ready. Review the wording and check each slide in the editor.":

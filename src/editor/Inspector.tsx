@@ -25,6 +25,7 @@ import {
 import { linkedShots, panoramaPair } from "../core/panorama";
 import { CanvasSettings } from "./CanvasSettings";
 import { resizeDevice } from "../core/device-placement";
+import { DeviceRotationControl } from "./DeviceRotationControl";
 import { resetText } from "../core/text-placement";
 import { appliedBrand } from "../core/brand-application";
 import { BrandBadge } from "./BrandBadge";
@@ -152,7 +153,8 @@ export function Inspector({
   const sourceShot =
     originalProject?.shots.find((item) => item.id === shot.id) ?? shot;
   const style = resolveStyle(project, shot);
-  const defaultDeviceWidth = templateLayout(project, style).phone.width;
+  const defaultPlacement = templateLayout(project, style).phone;
+  const defaultDeviceWidth = defaultPlacement.width;
   const brand = appliedBrand(project, shot);
   const pair = panoramaPair(project, shot.id);
   const surfaceLabel = getTemplate(style.template).surfaceLabel;
@@ -605,7 +607,12 @@ export function Inspector({
                 })
               }
             >
-              {t("Apply style to all {count}", { count: project.shots.length })}
+              {t(
+                project.shots.length === 1
+                  ? "Apply style to this slide"
+                  : "Apply style to all {count}",
+                { count: project.shots.length },
+              )}
             </button>
             {Object.keys(shot.style).some((key) => key !== "template") && (
               <button
@@ -899,6 +906,21 @@ export function Inspector({
                   {pair ? <> {t("Both slides resize together.")}</> : null}
                 </p>
               </section>
+              <DeviceRotationControl
+                angle={shot.phone.rotation}
+                label={banners ? "Image rotation" : "Device rotation"}
+                onChange={(angle) =>
+                  updateShot((target) => {
+                    target.phone.rotation = angle;
+                  }, "rotation")
+                }
+                onCommit={endGroup}
+                onReset={() =>
+                  updateShot((target) => {
+                    target.phone.rotation = defaultPlacement.rotation;
+                  })
+                }
+              />
               <section className="property-section">
                 {banners ? (
                   <>
@@ -930,9 +952,6 @@ export function Inspector({
                           onClick={() =>
                             setStyle({
                               device: device as Style["device"],
-                              ...(device === "card" && style.device !== "card"
-                                ? { deviceOrientation: "landscape" as const }
-                                : {}),
                             })
                           }
                         >
@@ -941,18 +960,15 @@ export function Inspector({
                         </button>
                       ))}
                     </div>
-                    <button
-                      type="button"
-                      className="orientation-link"
-                      onClick={() => {
-                        onTabChange("canvas");
-                        tabRefs.current.canvas?.focus({ preventScroll: true });
-                      }}
-                    >
-                      <Icon name="canvas" size={16} />
-                      {t("Canvas & frame orientation")}{" "}
-                      <Icon name="right" size={14} />
-                    </button>
+                    <div className="orientation-settings">
+                      <FrameOrientation
+                        style={style}
+                        linked={!!pair}
+                        onChange={(deviceOrientation) =>
+                          setStyle({ deviceOrientation })
+                        }
+                      />
+                    </div>
                     <label className="check-field">
                       <input
                         type="checkbox"
@@ -1073,12 +1089,6 @@ export function Inspector({
                   "y",
                   PLACEMENT_LIMITS.y.min,
                   PLACEMENT_LIMITS.y.max,
-                )}
-                {range(
-                  banners ? "Image rotation" : "Device rotation",
-                  "rotation",
-                  -20,
-                  20,
                 )}
                 <p className="field-help">
                   {t(

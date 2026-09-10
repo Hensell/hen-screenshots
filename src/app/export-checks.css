@@ -112,3 +112,96 @@
     text-align: left;
   }
 }
+
+.export-dialog {
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  padding-top: 0;
+}
+.export-dialog > .dialog-heading {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 14px 0;
+  margin: 0;
+  background: var(--brand-paper);
+  border-bottom: 1px solid var(--brand-border);
+}
+.export-dialog .dialog-heading .icon-button {
+  margin: 0 -8px 0 0;
+}
+.export-header-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 650;
+}
+.export-dialog h2 {
+  margin-top: 20px;
+}
+.export-dialog .dialog-copy {
+  margin-top: 6px;
+}
+.export-output-summary {
+  margin-top: 8px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.export-output-summary span {
+  color: var(--brand-muted);
+  font-weight: 500;
+}
+.export-validation {
+  width: 100%;
+  order: 2;
+  font-size: 12px;
+}
+.export-validation > summary {
+  cursor: pointer;
+  min-height: 44px;
+  align-content: center;
+  color: var(--brand-muted);
+}
+.export-validation .export-checks {
+  margin: 0 0 12px;
+}
+.export-options {
+  margin-top: 18px;
+  gap: 10px;
+}
+.export-options .export-encoding {
+  margin-bottom: 0;
+}
+.export-languages {
+  margin: 0;
+}
+.export-result .export-preview {
+  max-height: 220px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+.export-result {
+  margin-top: 18px;
+}
+.export-result .export-validation {
+  order: 0;
+}
+@media (max-width: 590px) {
+  .export-dialog {
+    padding: 0 18px 20px;
+  }
+  .export-dialog h2 {
+    font-size: 25px;
+  }
+  .export-dialog .field-help {
+    font-size: 12px;
+  }
+}
+
+.export-size-summary {
+  margin-top: 6px;
+  color: var(--brand-muted);
+  font-size: 12px;
+}

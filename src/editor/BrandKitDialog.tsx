@@ -66,6 +66,7 @@ function ConfirmBrandAction({
       aria-describedby="brand-confirm-copy"
       onCancel={(event) => {
         event.preventDefault();
+        event.stopPropagation();
         onCancel();
       }}
     >
@@ -280,6 +281,7 @@ export function BrandKitDialog({
         aria-describedby="brand-kits-description"
         onCancel={(event) => {
           event.preventDefault();
+          if (event.target !== event.currentTarget) return;
           request(onClose);
         }}
       >
@@ -747,8 +749,9 @@ export function BrandKitDialog({
             <button
               type="submit"
               form="brand-kit-form"
-              className={`button ${project ? "secondary" : "primary"}`}
+              className={`button ${dirty || !project ? "primary" : "secondary"}`}
               disabled={!draft || !dirty || working}
+              aria-describedby="brand-save-help"
               aria-label={
                 working
                   ? t("Working…")
@@ -768,7 +771,7 @@ export function BrandKitDialog({
                 {working ? t("Saving…") : t("Save")}
               </span>
             </button>
-            <small>
+            <small id="brand-save-help">
               {dirty
                 ? t("Save before applying or exporting.")
                 : t("Saved kits never update projects automatically.")}
@@ -777,7 +780,7 @@ export function BrandKitDialog({
           {project && (
             <div className="brand-apply-controls">
               <label>
-                {t("Apply to")}
+                <span>{t("Apply to")}</span>
                 <select
                   aria-label={t("Apply brand to")}
                   disabled={working}
@@ -799,8 +802,9 @@ export function BrandKitDialog({
                 </select>
               </label>
               <button
-                className="button primary"
+                className={`button ${dirty ? "secondary" : "primary"}`}
                 disabled={!draft || dirty || working || loading}
+                aria-describedby={dirty ? "brand-save-help" : undefined}
                 onClick={() => {
                   if (draft) onApply(draft, scope === "series");
                 }}

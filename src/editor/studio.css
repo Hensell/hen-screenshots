@@ -240,20 +240,8 @@
   border-radius: 6px;
   min-height: 66px;
 }
-.orientation-link {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  width: 100%;
+.inspector-tabbed .frame-orientation .segmented button {
   min-height: 44px;
-  text-align: left;
-  font-size: 11px;
-  font-weight: 650;
-  color: var(--brand-clay);
-  margin: -1px 0 7px;
-}
-.orientation-link > svg:last-child {
-  margin-left: auto;
 }
 .inspector-tabbed .orientation-settings legend {
   font-size: 12px;
@@ -473,4 +461,124 @@
   color: var(--muted);
   font-size: 12px;
   line-height: 1.5;
+}
+
+/* Small screens have two deliberate editing views, without changing desktop panels. */
+.mobile-editor-views {
+  display: none;
+}
+@media (max-width: 800px) {
+  .mobile-editor-views {
+    display: flex;
+    padding: 6px 12px;
+    gap: 6px;
+    background: #f9f8f3;
+    border-bottom: 1px solid var(--brand-border);
+    width: 100%;
+  }
+  .mobile-editor-views button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 44px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 650;
+  }
+  .mobile-editor-views button[aria-pressed="true"] {
+    background: #e3e8da;
+    color: #29382a;
+  }
+  .studio.mobile-view-canvas:has(.mobile-editor-views) > .inspector,
+  .studio.mobile-view-tools:has(.mobile-editor-views) > .workspace,
+  .studio.mobile-view-tools:has(.mobile-editor-views) > .filmstrip {
+    display: none;
+  }
+  .studio .filmstrip {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+  .filmstrip-heading {
+    margin: 0;
+    min-width: 36px;
+  }
+  .filmstrip .shot-item {
+    width: 56px;
+  }
+  .filmstrip .shot-thumbnail {
+    width: 40px;
+    margin-inline: auto;
+    height: 70px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+  .filmstrip .shot-thumbnail .artboard-small {
+    max-height: 70px;
+  }
+  .filmstrip .shot-item-meta {
+    justify-content: center;
+    min-height: 18px;
+  }
+  .filmstrip .shot-options {
+    display: none;
+  }
+  .filmstrip .add-shot {
+    width: 74px;
+    min-height: 94px;
+    padding: 6px;
+    font-size: 10px;
+  }
+  .canvas-surround {
+    padding: 16px 20px 12px;
+  }
+  .studio .workspace-footer {
+    display: none;
+  }
+  .inspector-header .panel-heading {
+    min-height: 60px;
+    padding-block: 10px;
+  }
+  .canvas-guide-tools > span {
+    display: none;
+  }
+}
+@media (max-width: 590px) {
+  .library.library-populated {
+    padding-top: 24px;
+  }
+  .library-populated .library-actions .button {
+    padding-inline: 12px;
+    font-size: 12px;
+  }
+  .library-populated .library-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+  .library-populated .library-actions .button:first-child {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+  .library-populated .library-actions .button {
+    padding-inline: 8px;
+    gap: 6px;
+    font-size: 11px;
+  }
+  .library-populated .library-purpose {
+    gap: 10px;
+    flex-wrap: nowrap;
+  }
+  .library-populated .library-purpose button {
+    padding-inline: 2px;
+    gap: 5px;
+    font-size: 12px;
+  }
+  .library-populated .section-heading {
+    align-items: baseline;
+  }
+  .library-populated .section-heading .muted {
+    font-size: 11px;
+  }
 }

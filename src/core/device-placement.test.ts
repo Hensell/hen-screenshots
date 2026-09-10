@@ -11,6 +11,7 @@ import { applyTemplate } from "./templates";
 import { editLinkedShots } from "./panorama";
 import { useEditor } from "../editor/store";
 import { addLanguage, writeText } from "./localization";
+import { editDevice } from "./device-composition";
 
 afterEach(() => useEditor.getState().close());
 
@@ -71,6 +72,8 @@ describe("device resizing", () => {
     const before = structuredClone(shot.phone);
     setDevicePlacement(shot, { x: NaN, y: 0, width: 500 });
     expect(shot.phone).toEqual(before);
+    setDevicePlacement(shot, { ...before, rotation: Infinity });
+    expect(shot.phone).toEqual(before);
     resizeDevice(shot, createProject().style, Infinity);
     expect(shot.phone).toEqual(before);
     setDevicePlacement(shot, { x: -3000, y: 6000, width: 4000 });
@@ -78,7 +81,7 @@ describe("device resizing", () => {
     setDevicePlacement(shot, { x: 0, y: 0, width: -10 });
     expect(shot.phone.width).toBe(32);
   });
-  it("commits a panorama resize once, preserves localized text, and undoes both halves together", () => {
+  it("commits a panorama transform once, preserves localized text, and undoes both halves together", () => {
     const project = createProject();
     project.shots = [createShot("image", 0)];
     applyTemplate(project, project.shots[0].id, "orbit");
@@ -88,15 +91,19 @@ describe("device resizing", () => {
     const original = structuredClone(project);
     const rightId = project.shots[1].id;
     useEditor.getState().open({ project, assets: [], revision: 1 });
-    useEditor
-      .getState()
-      .edit((draft) =>
-        editLinkedShots(draft, rightId, (shot) =>
-          setDevicePlacement(shot, { x: 700, y: 350, width: 850 }),
-        ),
-      );
+    useEditor.getState().edit((draft) =>
+      editLinkedShots(draft, rightId, (shot) =>
+        setDevicePlacement(shot, {
+          x: 700,
+          y: 350,
+          width: 850,
+          rotation: 135,
+        }),
+      ),
+    );
     const resized = useEditor.getState().project!;
     expect(resized.shots[0].phone).toEqual(resized.shots[1].phone);
+    expect(resized.shots[0].phone.rotation).toBe(135);
     expect(resized.shots[1].translations).toEqual(
       original.shots[1].translations,
     );
@@ -108,5 +115,44 @@ describe("device resizing", () => {
     expect(useEditor.getState().project!.shots).toEqual(original.shots);
     useEditor.getState().redo();
     expect(useEditor.getState().project!.shots).toEqual(resized.shots);
+  });
+  it.each([
+    [270, -90],
+    [-270, 90],
+    [720, 0],
+    [180, -180],
+    [-135, -135],
+  ])(
+    "normalizes %s degrees to %s without changing placement or content",
+    (rotation, expected) => {
+      const shot = createShot("source", 0);
+      const before = structuredClone(shot);
+      setDevicePlacement(shot, { ...shot.phone, rotation });
+      expect(shot).toEqual({
+        ...before,
+        phone: { ...before.phone, rotation: expected },
+      });
+    },
+  );
+  it("persists a companion's full rotation independently and rejects angles outside the editor range", () => {
+    const project = createProject();
+    project.shots = [createShot("image", 0)];
+    applyTemplate(project, project.shots[0].id, "sidekick");
+    const shot = project.shots[0];
+    const original = structuredClone(shot);
+    const companion = shot.companions![0];
+    editDevice(shot, `device:${companion.id}`, (device) =>
+      setDevicePlacement(device, { ...device.phone, rotation: 225 }),
+    );
+    expect(shot.phone).toEqual(original.phone);
+    expect(companion.phone).toEqual({
+      ...original.companions![0].phone,
+      rotation: -135,
+    });
+    expect(() =>
+      validateProject(JSON.parse(JSON.stringify(project))),
+    ).not.toThrow();
+    companion.phone.rotation = 181;
+    expect(() => validateProject(project)).toThrow();
   });
 });

@@ -8,6 +8,7 @@ import type { Rect } from "./geometry";
 import { isPanoramaEnd, panoramaStart } from "../core/panorama-families";
 import { drawShowcaseDecoration } from "./showcase-decoration";
 import { drawPatternDecoration } from "./pattern-decoration";
+import { drawPanoramaDecoration } from "./panorama-decoration";
 
 /** All paths use spread coordinates, including the off-canvas half of a panorama. */
 function drawExpressiveDecoration(
@@ -220,6 +221,7 @@ export function drawTemplateDecoration(
   drawShowcaseDecoration(layer, style, h, panel);
   drawPatternDecoration(layer, style, h, panel);
   drawExpressiveDecoration(layer, style, h, panel);
+  drawPanoramaDecoration(layer, style, h);
   if (style.template === "studio") {
     const inset = Math.min(32, h * 0.04);
     layer.add(

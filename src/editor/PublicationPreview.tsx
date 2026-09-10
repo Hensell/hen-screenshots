@@ -212,7 +212,11 @@ export function PublicationPreview({
         <p id="publication-description">
           {portfolio
             ? t("Check your project cards at website reading size.")
-            : t("Check the headlines, pacing, and joins as you swipe.")}
+            : t(
+                project.shots.length === 1
+                  ? "Check your headline and composition at publishing size."
+                  : "Check the headlines, pacing, and joins as you swipe.",
+              )}
         </p>
         <label>
           {t("Preview width")}
@@ -285,11 +289,15 @@ export function PublicationPreview({
                 className="publication-carousel"
                 ref={carouselRef}
                 role="region"
-                aria-roledescription={t("carousel")}
+                aria-roledescription={
+                  project.shots.length > 1 ? t("carousel") : undefined
+                }
                 aria-label={t(
-                  banners
-                    ? "Banner designs. Use arrow keys or swipe to browse."
-                    : "{destination} screenshots. Use arrow keys or swipe to browse.",
+                  project.shots.length === 1
+                    ? "Publication preview"
+                    : banners
+                      ? "Banner designs. Use arrow keys or swipe to browse."
+                      : "{destination} screenshots. Use arrow keys or swipe to browse.",
                   { destination },
                 )}
                 tabIndex={0}
@@ -333,10 +341,12 @@ export function PublicationPreview({
                   }}
                 />
               </div>
-              <p className="publication-swipe">
-                {t("Swipe to see the story unfold")}
-                <Icon name="right" size={13} />
-              </p>
+              {project.shots.length > 1 && (
+                <p className="publication-swipe">
+                  {t("Swipe to see the story unfold")}
+                  <Icon name="right" size={13} />
+                </p>
+              )}
             </>
           )}
         </div>

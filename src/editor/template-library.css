@@ -83,7 +83,6 @@
 .catalog-search input::-webkit-search-cancel-button {
   appearance: none;
 }
-.catalog-sort,
 .catalog-scope {
   display: flex;
   align-items: center;
@@ -99,11 +98,32 @@
   background: #fffdf7;
   font-size: 12px;
 }
-.catalog-sort select {
-  width: 145px;
-}
-.catalog-filter-toggle {
+.catalog-filter-toggle,
+.catalog-filter-done {
   display: none;
+}
+.catalog-display-options {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid var(--brand-border);
+}
+.catalog-display-options legend {
+  padding-right: 8px;
+  color: var(--brand-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+.catalog-display-options label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  font-size: 11px;
+}
+.catalog-display-options select {
+  width: 100%;
 }
 .catalog-body {
   flex: 1;
@@ -234,12 +254,7 @@
   text-align: center;
 }
 .catalog-results-bar > p {
-  grid-column: 1 / -1;
-  grid-row: 2;
-}
-.catalog-results-bar > label {
-  grid-column: 2;
-  grid-row: 1;
+  text-align: right;
 }
 .catalog-favorites-note {
   flex-shrink: 0;
@@ -256,14 +271,6 @@
 }
 .catalog-results-bar strong {
   color: var(--brand-ink);
-}
-.catalog-results-bar label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.catalog-results-bar select {
-  width: 80px;
 }
 .template-gallery {
   flex: 1;
@@ -541,12 +548,6 @@
     padding: 0 18px 12px;
     gap: 8px;
   }
-  .catalog-sort > span {
-    display: none;
-  }
-  .catalog-sort select {
-    width: 130px;
-  }
   .catalog-filter-toggle {
     display: flex;
     align-items: center;
@@ -560,6 +561,14 @@
   }
   .catalog-filter-toggle[aria-expanded="true"] {
     background: #dfe6d6;
+    border-color: #a7b39b;
+  }
+  .catalog-filter-toggle > span {
+    min-width: 18px;
+    border-radius: 4px;
+    background: var(--brand-ink);
+    color: var(--brand-paper);
+    font-size: 10px;
   }
   .catalog-body {
     display: block;
@@ -587,15 +596,25 @@
     margin-right: 4px;
   }
   .catalog-filter-field,
-  .catalog-reset {
+  .catalog-reset,
+  .catalog-filters > .catalog-filter-field:first-child {
     margin: 0;
+  }
+  .catalog-display-options {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    margin-top: 4px;
+  }
+  .catalog-filter-done {
+    display: flex;
+    grid-column: 1 / -1;
+    justify-content: center;
   }
   .catalog-filter-note {
     display: none;
   }
   .catalog-results-bar {
     padding-inline: 18px;
-    order: -2;
   }
   .catalog-favorites-note {
     padding-inline: 18px;
@@ -606,11 +625,7 @@
     flex: none;
   }
   .catalog-pagination {
-    order: -1;
-    border-top: 0;
-    border-bottom: 1px solid var(--brand-border);
-    padding: 4px 18px 10px;
-    margin-bottom: 12px;
+    padding: 8px 18px 12px;
   }
   .template-footer {
     padding: 10px 18px;
@@ -642,25 +657,27 @@
     display: none;
   }
   .template-header p:last-child {
-    font-size: 10px;
-    max-width: 220px;
+    display: none;
+  }
+  .template-header h2 {
+    margin-block: 8px;
+    font-size: 22px;
+    letter-spacing: -0.7px;
   }
   .catalog-searchbar {
     padding-inline: 14px;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr) auto;
   }
-  .catalog-search-control {
-    grid-column: 1 / -1;
+  .catalog-search {
+    gap: 7px;
+    padding-inline: 10px;
   }
-  .catalog-sort {
-    flex: 1;
-  }
-  .catalog-sort select {
-    width: 100%;
+  .catalog-search input {
+    font-size: 12px;
   }
   .catalog-filter-toggle {
-    flex: 1;
+    padding-inline: 10px;
   }
   .catalog-filters.is-open {
     grid-template-columns: 1fr;
@@ -673,8 +690,11 @@
     font-size: 11px;
   }
   .catalog-results-bar {
-    padding-inline: 14px;
-    font-size: 10px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    min-height: 0;
+    padding: 8px 14px 4px;
+    font-size: 11px;
   }
   .catalog-collections {
     grid-column: 1 / -1;
@@ -684,10 +704,8 @@
     padding-inline: 8px;
   }
   .catalog-results-bar > p {
-    grid-column: 1;
-  }
-  .catalog-results-bar > label {
-    grid-row: 2;
+    text-align: left;
+    padding: 2px 2px 0;
   }
   .catalog-favorites-note {
     padding-inline: 14px;

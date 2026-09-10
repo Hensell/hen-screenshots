@@ -310,6 +310,8 @@ svg {
   margin-top: 25px;
 }
 .project-card {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--brand-border);
   border-radius: 9px;
   overflow: hidden;
@@ -322,37 +324,54 @@ svg {
   border-color: #8b9982;
 }
 .project-cover {
-  height: 180px;
-  padding: 32px;
+  width: 100%;
+  height: 220px;
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
-  gap: 20px;
   overflow: hidden;
+  padding: 14px;
 }
-.project-cover > span:first-child {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.6px;
-  line-height: 1.2;
-  flex: 1;
-  overflow-wrap: anywhere;
-  max-height: 108px;
-  overflow: hidden;
+.project-cover img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 7px #20272520);
 }
 .project-cover > svg {
-  transform: rotate(10deg);
-  opacity: 0.65;
+  opacity: 0.35;
 }
-.cover-rule {
-  position: absolute;
-  width: 40px;
-  height: 3px;
-  background: currentColor;
-  bottom: 20px;
-  opacity: 0.3;
+.library.library-populated {
+  padding-top: 38px;
+}
+.library-populated .library-intro {
+  padding-bottom: 28px;
+}
+.library-populated h1 {
+  font-size: clamp(28px, 3vw, 38px);
+}
+.library-resume {
+  color: var(--brand-muted);
+  margin-top: 8px;
+  font-size: 14px;
+}
+.library-populated .library-actions {
+  margin-top: 22px;
+  gap: 8px;
+}
+.library-populated .projects-section {
+  padding-top: 20px;
+}
+.library-populated .section-heading h2 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-muted);
+  letter-spacing: 0;
 }
 .project-card-details {
+  width: 100%;
+  flex: 1;
   padding: 18px 20px;
   display: flex;
   align-items: center;

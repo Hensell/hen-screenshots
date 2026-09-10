@@ -2,6 +2,7 @@ import { useInterfaceLocale, useT } from "../i18n/react";
 import type { Project } from "../core/model";
 import { projectPurpose, type ProjectPurpose } from "../core/canvas-formats";
 import { Icon } from "./Icon";
+import { ProjectCover } from "./ProjectCover";
 
 function Footer() {
   const t = useT();
@@ -41,21 +42,32 @@ export function ProjectLibrary({
     (item) => projectPurpose(item) === libraryPurpose,
   );
   return (
-    <main className="library">
+    <main className={`library ${projects.length ? "library-populated" : ""}`}>
       <div className="library-intro">
-        <p className="eyebrow">{t("YOUR APPS, IN THEIR BEST LIGHT")}</p>
-        <h1>
-          {t("A good app deserves")}
-          <br />
-          <span>{t("a great first impression.")}</span>
-        </h1>
-        <p className="intro-copy">
-          {t(
-            "Turn your screenshots into a story that makes people want to try your app.",
-          )}
-          <br className="desktop-break" />
-          {t("A little framing. The right words. All yours.")}
-        </p>
+        {projects.length ? (
+          <>
+            <h1>{t("Your projects")}</h1>
+            <p className="library-resume">
+              {t("Pick up where you left off, or start something new.")}
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="eyebrow">{t("YOUR APPS, IN THEIR BEST LIGHT")}</p>
+            <h1>
+              {t("A good app deserves")}
+              <br />
+              <span>{t("a great first impression.")}</span>
+            </h1>
+            <p className="intro-copy">
+              {t(
+                "Turn your screenshots into a story that makes people want to try your app.",
+              )}
+              <br className="desktop-break" />
+              {t("A little framing. The right words. All yours.")}
+            </p>
+          </>
+        )}
         <div className="library-actions">
           <button
             className="button primary"
@@ -82,13 +94,17 @@ export function ProjectLibrary({
             {t("Brand kits")}
           </button>
         </div>
-        <p className="local-note">
-          {t("Your screenshots stay in your browser. No account needed.")}
-        </p>
+        {!projects.length && (
+          <p className="local-note">
+            {t("Your screenshots stay in your browser. No account needed.")}
+          </p>
+        )}
       </div>
       <section className="projects-section" aria-label={t("Saved projects")}>
         <div className="section-heading">
-          <h2>{t("Your projects")}</h2>
+          <h2>
+            {t(projects.length ? "Saved on this device" : "Your projects")}
+          </h2>
           <span className="muted">
             {t("{count} in this workspace", { count: visibleProjects.length })}
           </span>
@@ -129,22 +145,7 @@ export function ProjectLibrary({
                 disabled={!!busy}
                 onClick={() => void onOpen(item.id)}
               >
-                <div
-                  className="project-cover"
-                  style={{
-                    background: item.style.background,
-                    color: item.style.textColor,
-                  }}
-                >
-                  <span>{item.name || t("Untitled app")}</span>
-                  <Icon
-                    name={
-                      projectPurpose(item) === "banners" ? "canvas" : "phone"
-                    }
-                    size={70}
-                  />
-                  <span className="cover-rule" />
-                </div>
+                <ProjectCover project={item} />
                 <div className="project-card-details">
                   <span>
                     <strong>{item.name || t("Untitled app")}</strong>

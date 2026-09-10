@@ -211,6 +211,7 @@ export function TemplateGallery({
   );
   const searchRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const revealSelected = useRef(false);
   const localizedIndex = useMemo(
@@ -301,6 +302,7 @@ export function TemplateGallery({
   };
   useEffect(() => {
     galleryRef.current?.scrollTo({ top: 0 });
+    if (!filtersOpen) bodyRef.current?.scrollTo({ top: 0 });
     if (revealSelected.current) {
       galleryRef.current
         ?.querySelector<HTMLButtonElement>(
@@ -309,7 +311,7 @@ export function TemplateGallery({
         ?.focus();
       revealSelected.current = false;
     }
-  }, [filters, pagination.page, pageSize]);
+  }, [filters, filtersOpen, pagination.page, pageSize]);
   const pair = panoramaPair(project, shot.id);
   const panoramic = isPanoramaTemplate(selected);
   const full =
@@ -402,24 +404,6 @@ export function TemplateGallery({
             </button>
           )}
         </div>
-        <label className="catalog-sort">
-          <span>{t("Sort by")}</span>
-          <select
-            aria-label={t("Sort by")}
-            value={filters.sort}
-            onChange={(event) =>
-              updateFilters({
-                sort: event.target.value as CatalogFilters["sort"],
-              })
-            }
-          >
-            <option value="recommended">
-              {t(filters.query.trim() ? "Best match" : "Curated order")}
-            </option>
-            <option value="name-asc">{t("Name A–Z")}</option>
-            <option value="name-desc">{t("Name Z–A")}</option>
-          </select>
-        </label>
         <button
           type="button"
           className="catalog-filter-toggle"
@@ -432,7 +416,7 @@ export function TemplateGallery({
           {activeFilters > 0 && <span>{activeFilters}</span>}
         </button>
       </div>
-      <div className="catalog-body">
+      <div className="catalog-body" ref={bodyRef}>
         <aside
           id="catalog-filters"
           className={`catalog-filters ${filtersOpen ? "is-open" : ""}`}
@@ -513,6 +497,55 @@ export function TemplateGallery({
               {t("Clear filters")}
             </button>
           )}
+          <fieldset className="catalog-display-options">
+            <legend>{t("Browse options")}</legend>
+            <label className="catalog-sort">
+              <span>{t("Sort by")}</span>
+              <select
+                aria-label={t("Sort by")}
+                value={filters.sort}
+                onChange={(event) =>
+                  updateFilters({
+                    sort: event.target.value as CatalogFilters["sort"],
+                  })
+                }
+              >
+                <option value="recommended">
+                  {t(filters.query.trim() ? "Best match" : "Curated order")}
+                </option>
+                <option value="name-asc">{t("Name A–Z")}</option>
+                <option value="name-desc">{t("Name Z–A")}</option>
+              </select>
+            </label>
+            <label>
+              {t("Per page")}
+              <select
+                aria-label={t("Templates per page")}
+                value={pageSize}
+                onChange={(event) => {
+                  setPageSize(Number(event.target.value) as CatalogPageSize);
+                  setCatalogPage(1);
+                }}
+              >
+                {catalogPageSizes.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </fieldset>
+          <button
+            type="button"
+            className="button secondary catalog-filter-done"
+            onClick={() => {
+              setFiltersOpen(false);
+              resultsRef.current?.focus();
+            }}
+          >
+            {t("Show results")}
+            <Icon name="right" size={16} />
+          </button>
           <p className="catalog-filter-note">
             {t(
               banners
@@ -561,34 +594,19 @@ export function TemplateGallery({
                   )
                 : t("No matching templates")}
             </p>
-            <label>
-              {t("Per page")}
-              <select
-                aria-label={t("Templates per page")}
-                value={pageSize}
-                onChange={(event) => {
-                  setPageSize(Number(event.target.value) as CatalogPageSize);
-                  setCatalogPage(1);
-                }}
-              >
-                {catalogPageSizes.map((size) => (
-                  <option key={size} value={size}>
-                    {size}
-                  </option>
-                ))}
-              </select>
-            </label>
           </div>
-          <p
-            className="catalog-favorites-note"
-            role={favorites.sessionOnly ? "status" : undefined}
-          >
-            {t(
-              favorites.sessionOnly
-                ? "Browser storage is unavailable. Favorites will last for this session."
-                : "Favorites stay in this browser, across all your projects.",
-            )}
-          </p>
+          {(filters.favoritesOnly || favorites.sessionOnly) && (
+            <p
+              className="catalog-favorites-note"
+              role={favorites.sessionOnly ? "status" : undefined}
+            >
+              {t(
+                favorites.sessionOnly
+                  ? "Browser storage is unavailable. Favorites will last for this session."
+                  : "Favorites stay in this browser, across all your projects.",
+              )}
+            </p>
+          )}
           {all && (
             <div
               className="template-series-navigation"

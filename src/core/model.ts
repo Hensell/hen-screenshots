@@ -25,6 +25,7 @@ import { isLanguage, MAX_LANGUAGES, type LocalizedShot } from "./localization";
 
 export const SCHEMA_VERSION = 10 as const;
 export const CANVAS = { width: 1080, height: 1920 } as const;
+export const DEVICE_ROTATION_LIMITS = { min: -180, max: 180 } as const;
 export const PLACEMENT_LIMITS = {
   x: { min: -1080, max: 2160 },
   y: { min: -2160, max: 4096 },
@@ -59,6 +60,18 @@ export const templateIds = [
   "daybreak-end",
   "tidal",
   "tidal-end",
+  "atrium",
+  "atrium-end",
+  "obsidian",
+  "obsidian-end",
+  "offset",
+  "offset-end",
+  "signal",
+  "signal-end",
+  "mosaic",
+  "mosaic-end",
+  "folio",
+  "folio-end",
   "bloom",
   "punch",
   "prism",
@@ -746,7 +759,11 @@ export function validateProject(
             PLACEMENT_LIMITS[key].min,
             PLACEMENT_LIMITS[key].max,
           );
-        numeric(placement.rotation, -20, 20);
+        numeric(
+          placement.rotation,
+          DEVICE_ROTATION_LIMITS.min,
+          DEVICE_ROTATION_LIMITS.max,
+        );
       }
     }
     if (Object.hasOwn(shot, "translations")) {
@@ -842,7 +859,12 @@ export function validateProject(
             };
     for (const key of ["x", "y", "width"] as const)
       numeric(phone[key], bounds[key].min, bounds[key].max);
-    if (version !== 1) numeric(phone.rotation, -20, 20);
+    if (version !== 1)
+      numeric(
+        phone.rotation,
+        DEVICE_ROTATION_LIMITS.min,
+        DEVICE_ROTATION_LIMITS.max,
+      );
   }
   if (version >= 4) {
     const project = value as Project;

@@ -174,6 +174,17 @@ export async function loadProject(id: string): Promise<LoadedProject> {
   });
 }
 
+/** Covers read only their scene's assets, without loading the whole project. */
+export async function loadSceneAssets(
+  projectId: string,
+  ids: string[],
+): Promise<Asset[]> {
+  const rows = await db.assets.bulkGet(
+    [...new Set(ids)].map((id) => [projectId, id]),
+  );
+  return rows.flatMap((row) => (row ? [row] : []));
+}
+
 /** Atomic and optimistic: all referenced images must exist before the document commits. */
 export async function saveProject(
   project: Project,

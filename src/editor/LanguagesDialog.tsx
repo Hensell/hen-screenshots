@@ -31,7 +31,7 @@ function useModal(ref: React.RefObject<HTMLDialogElement | null>) {
     dialog.showModal();
     return () => {
       dialog.close();
-      if (opener?.isConnected) opener.focus();
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
     };
   }, [ref]);
 }
@@ -45,6 +45,7 @@ const statusLabels = {
 export function LanguagesDialog({
   project,
   locale,
+  saveStatus,
   onClose,
   onLocale,
   onEdit,
@@ -52,6 +53,7 @@ export function LanguagesDialog({
 }: {
   project: Project;
   locale: string | null;
+  saveStatus: "saved" | "pending" | "saving" | "error";
   onClose: () => void;
   onLocale: (locale: string | null) => void;
   onEdit: Edit;
@@ -63,6 +65,8 @@ export function LanguagesDialog({
   const [source, setSource] = useState(project.localization?.source ?? "en");
   const [target, setTarget] = useState(source === "es" ? "en" : "es");
   const [downloadOpen, setDownloadOpen] = useState(false);
+  const [addingLanguage, setAddingLanguage] = useState(false);
+  const mobileLanguageRef = useRef<HTMLSelectElement>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const sourceLanguage = project.localization?.source ?? source;
@@ -87,6 +91,7 @@ export function LanguagesDialog({
       aria-labelledby="languages-title"
       onCancel={(event) => {
         event.preventDefault();
+        if (event.target !== event.currentTarget) return;
         onClose();
       }}
     >
@@ -109,10 +114,49 @@ export function LanguagesDialog({
           className="languages-sidebar"
           aria-label={t("Project languages")}
         >
-          <h3>{t("Original language")}</h3>
+          {project.localization && (
+            <div className="mobile-language-picker">
+              <label className="field">
+                {t("Editing language")}
+                <select
+                  ref={mobileLanguageRef}
+                  value={selectedLocale ?? "original"}
+                  onChange={(event) => {
+                    onLocale(
+                      event.target.value === "original"
+                        ? null
+                        : event.target.value,
+                    );
+                    setNotice(null);
+                  }}
+                >
+                  <option value="original">
+                    {languageName(sourceLanguage)} · {t("Original text")}
+                  </option>
+                  {project.localization.targets.map((code) => (
+                    <option value={code} key={code}>
+                      {languageName(code)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button
+                className="button secondary language-add-toggle"
+                aria-expanded={addingLanguage}
+                aria-controls="add-language-form"
+                onClick={() => setAddingLanguage(!addingLanguage)}
+              >
+                <Icon name={addingLanguage ? "close" : "plus"} size={16} />
+                {t(addingLanguage ? "Cancel" : "Add language")}
+              </button>
+            </div>
+          )}
+          <h3 className={project.localization ? "desktop-language-label" : ""}>
+            {t("Original language")}
+          </h3>
           {project.localization ? (
             <button
-              className={`language-choice ${!selectedLocale ? "active" : ""}`}
+              className={`language-choice original-language-choice ${!selectedLocale ? "active" : ""}`}
               onClick={() => onLocale(null)}
               aria-pressed={!selectedLocale}
             >
@@ -174,7 +218,8 @@ export function LanguagesDialog({
             </p>
           )}
           <form
-            className="add-language"
+            id="add-language-form"
+            className={`add-language ${addingLanguage || !project.localization ? "is-expanded" : ""}`}
             onSubmit={(event) => {
               event.preventDefault();
               if (!selectedTarget) return;
@@ -182,6 +227,12 @@ export function LanguagesDialog({
                 addLanguage(draft, sourceLanguage, selectedTarget),
               );
               onLocale(selectedTarget);
+              setAddingLanguage(false);
+              requestAnimationFrame(() => {
+                const picker = mobileLanguageRef.current;
+                if (picker?.getClientRects().length)
+                  picker.focus({ preventScroll: true });
+              });
               setNotice(
                 "Language added. Edit the copied text or use the optional translator.",
               );
@@ -216,7 +267,7 @@ export function LanguagesDialog({
               {t("Add language")}
             </button>
           </form>
-          <p className="field-help">
+          <p className="field-help language-design-note">
             {t(
               "Colors, frames, and device positions stay linked across languages.",
             )}
@@ -235,10 +286,10 @@ export function LanguagesDialog({
               </h3>
               <p>
                 {selectedLocale
-                  ? t(
-                      "{reviewed} of {total} slides reviewed. Changes are saved as you type.",
-                      { reviewed, total: project.shots.length },
-                    )
+                  ? t("{reviewed} / {total} reviewed", {
+                      reviewed,
+                      total: project.shots.length,
+                    })
                   : project.localization
                     ? t(
                         "Your original captions. Add a language to create another version of this series.",
@@ -261,13 +312,6 @@ export function LanguagesDialog({
           {notice && (
             <p className="language-notice" role="status">
               {t(notice)}
-            </p>
-          )}
-          {selectedLocale && (
-            <p className="language-caption-note">
-              {t(
-                "These are the words around your screenshot. To show your app in this language, replace its image in the editor.",
-              )}
             </p>
           )}
           <div className="language-slides">
@@ -302,7 +346,9 @@ export function LanguagesDialog({
                   <div
                     className={`translation-columns ${selectedLocale ? "" : "original-only"}`}
                   >
-                    <div className="original-copy">
+                    <div
+                      className={`original-copy ${selectedLocale ? "desktop-original-copy" : ""}`}
+                    >
                       <span className="eyebrow">
                         {t("{language} · ORIGINAL", {
                           language: languageName(sourceLanguage),
@@ -313,6 +359,18 @@ export function LanguagesDialog({
                     </div>
                     {selectedLocale && (
                       <div className="translated-copy">
+                        <details className="mobile-original-copy">
+                          <summary>{t("View original text")}</summary>
+                          <div className="original-copy">
+                            <span className="eyebrow">
+                              {t("{language} · ORIGINAL", {
+                                language: languageName(sourceLanguage),
+                              })}
+                            </span>
+                            <strong>{shot.title || t("No headline")}</strong>
+                            <p>{shot.subtitle || t("No supporting text")}</p>
+                          </div>
+                        </details>
                         <label className="field">
                           {t("Headline")}
                           <textarea
@@ -386,6 +444,13 @@ export function LanguagesDialog({
             })}
           </div>
           {selectedLocale && (
+            <p className="language-caption-note">
+              {t(
+                "These are the words around your screenshot. To show your app in this language, replace its image in the editor.",
+              )}
+            </p>
+          )}
+          {selectedLocale && (
             <div className="language-remove">
               {deleting === selectedLocale ? (
                 <div role="alert">
@@ -426,10 +491,26 @@ export function LanguagesDialog({
         </section>
       </div>
       <footer className="languages-footer">
-        <p>
-          <Icon name="folder" size={16} />
-          {t("Saved on this device · Included in your project file")}
-        </p>
+        <div className="language-save-info">
+          <p className={`language-save-status ${saveStatus}`} role="status">
+            <Icon
+              name={saveStatus === "saved" ? "check" : "folder"}
+              size={16}
+            />
+            {t(
+              saveStatus === "saved"
+                ? "Saved on this device"
+                : saveStatus === "error"
+                  ? "Not saved"
+                  : "Saving…",
+            )}
+          </p>
+          <small>
+            {t(
+              "Translations are included when you download your project file.",
+            )}
+          </small>
+        </div>
         <button className="button primary" onClick={onClose}>
           {t("Done")}
         </button>
@@ -546,6 +627,7 @@ function TranslatorDialog({
       aria-describedby="translator-copy"
       onCancel={(event) => {
         event.preventDefault();
+        event.stopPropagation();
         cancel();
       }}
     >

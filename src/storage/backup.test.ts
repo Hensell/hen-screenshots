@@ -104,6 +104,9 @@ describe("portable project backups", () => {
     const project = document();
     const shot = project.shots[0];
     applyTemplate(project, shot.id, "ecosystem");
+    shot.phone.rotation = 90;
+    shot.companions![0].phone.rotation = -135;
+    shot.companions![1].phone.rotation = 180;
     addLanguage(project, "en", "es");
     setDeviceImage(shot, "device:secondary", "tablet", null);
     setDeviceImage(shot, "device:tertiary", "phone", null);
@@ -124,6 +127,7 @@ describe("portable project backups", () => {
       restored.assets.map((asset) => [asset.id, asset.name]),
     );
     const devices = restored.project.shots[0].companions!;
+    expect(restored.project.shots[0].phone).toEqual(shot.phone);
     expect(devices.map((device) => names.get(device.assetId!))).toEqual([
       "tablet.png",
       "phone.png",
@@ -919,7 +923,7 @@ describe("portable project backups", () => {
     await expect(importProject(file)).rejects.toThrow();
     expect(URL.createObjectURL).not.toHaveBeenCalled();
   });
-  it.each([-20.1, 20.1, "0", null, undefined])(
+  it.each([-180.1, 180.1, "0", null, undefined])(
     "rejects invalid or missing rotation %j",
     async (rotation) => {
       const file = await changedBackup((value) => {
@@ -934,8 +938,8 @@ describe("portable project backups", () => {
     original.name = "N".repeat(80);
     original.shots[0].title = "T".repeat(100);
     original.shots[0].subtitle = "S".repeat(150);
-    original.shots[0].phone = { width: 32, x: -1080, y: -2160, rotation: -20 };
-    original.shots[1].phone = { width: 2160, x: 2160, y: 4096, rotation: 20 };
+    original.shots[0].phone = { width: 32, x: -1080, y: -2160, rotation: -180 };
+    original.shots[1].phone = { width: 2160, x: 2160, y: 4096, rotation: 180 };
     original.style.titleSize = 48;
     original.shots[1].style.titleSize = 132;
     const restored = await importProject(

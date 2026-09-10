@@ -131,6 +131,10 @@
   padding: 0 6px;
   font-size: 11px;
 }
+.mobile-language-picker,
+.mobile-original-copy {
+  display: none;
+}
 .language-content {
   min-width: 0;
   padding: 24px 28px;
@@ -274,8 +278,21 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--brand-muted);
+}
+.language-save-info {
+  min-width: 0;
+}
+.language-save-info small {
+  display: block;
+  margin-top: 4px;
+  color: var(--brand-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.language-save-status.error {
+  color: #963e2c;
 }
 .languages-footer .button {
   min-width: 110px;
@@ -455,10 +472,20 @@
     border-radius: 10px;
   }
   .languages-heading {
-    padding: 18px 18px 14px;
+    padding: 12px 16px;
+    align-items: center;
+  }
+  .languages-heading .eyebrow {
+    display: none;
   }
   .languages-heading h2 {
-    font-size: 25px;
+    margin: 0 0 3px;
+    font-size: 23px;
+  }
+  .languages-heading p {
+    font-size: 11px;
+    margin: 0;
+    line-height: 1.45;
   }
   .languages-body {
     display: block;
@@ -468,21 +495,44 @@
     overflow: visible;
     border-right: 0;
     border-bottom: 1px solid var(--brand-border);
-    padding: 16px;
+    padding: 10px 16px;
   }
-  .languages-sidebar nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+  .languages-sidebar nav,
+  .languages-sidebar .translations-heading,
+  .languages-sidebar .desktop-language-label,
+  .original-language-choice,
+  .language-design-note {
+    display: none;
   }
-  .languages-sidebar nav .language-choice {
-    width: auto;
-    flex: 1 1 130px;
+  .mobile-language-picker {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 10px;
   }
-  .languages-sidebar .translations-heading {
-    margin-top: 14px;
+  .mobile-language-picker .field {
+    margin: 0;
+    font-size: 11px;
+  }
+  .mobile-language-picker select,
+  .add-language select {
+    min-width: 0;
+    width: 100%;
+    font-size: 16px;
+    min-height: 44px;
+  }
+  .language-add-toggle {
+    min-height: 44px;
+    padding: 10px;
+    font-size: 11px;
+  }
+  .language-add-toggle svg {
+    flex-shrink: 0;
   }
   .add-language {
+    display: none;
+  }
+  .add-language.is-expanded {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
@@ -498,22 +548,45 @@
   }
   .language-content {
     overflow: visible;
-    padding: 20px 16px;
+    padding: 16px;
   }
   .language-content-heading {
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .language-content-heading h3 {
+    font-size: 18px;
+    margin-bottom: 2px;
+  }
+  .language-content-heading .button {
+    min-height: 44px;
+    font-size: 11px;
+  }
+  .language-slide > header {
+    margin-bottom: 8px;
+  }
+  .language-slide > header .text-button,
+  .review-translation {
+    min-height: 44px;
+  }
+  .translated-copy textarea {
+    font-size: 16px;
+    min-height: 72px;
   }
   .translation-columns {
     gap: 18px;
   }
   .languages-footer {
-    padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+    padding: 10px 16px max(10px, env(safe-area-inset-bottom));
+    gap: 10px;
   }
   .languages-footer p {
-    font-size: 9px;
-    max-width: 210px;
+    font-size: 11px;
     line-height: 1.6;
+  }
+  .language-save-info small {
+    font-size: 11px;
   }
   .languages-footer .button {
     min-width: 75px;
@@ -522,6 +595,36 @@
 @media (max-width: 460px) {
   .translation-columns {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .desktop-original-copy {
+    display: none;
+  }
+  .mobile-original-copy {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+  .mobile-original-copy summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--brand-muted);
+    list-style: none;
+  }
+  .mobile-original-copy summary::-webkit-details-marker {
+    display: none;
+  }
+  .mobile-original-copy summary::before {
+    content: "+";
+    font-size: 18px;
+  }
+  .mobile-original-copy[open] summary::before {
+    content: "−";
+  }
+  .mobile-original-copy .original-copy {
+    margin-bottom: 16px;
   }
   .original-copy {
     border-left: 2px solid #ccd3c1;

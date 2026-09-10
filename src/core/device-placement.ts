@@ -1,9 +1,15 @@
 import { PLACEMENT_LIMITS, type Shot, type Style } from "./model";
 import { deviceGeometry } from "../rendering/geometry";
 
-export type DevicePlacement = Pick<Shot["phone"], "x" | "y" | "width">;
+export type DevicePlacement = Pick<Shot["phone"], "x" | "y" | "width"> &
+  Partial<Pick<Shot["phone"], "rotation">>;
 
-/** Canvas gestures commit one bounded placement; rotation and content stay unchanged. */
+/** A complete turn has the same persisted angle, regardless of drag direction. */
+export function normalizeDeviceRotation(degrees: number): number {
+  return ((((degrees + 180) % 360) + 360) % 360) - 180;
+}
+
+/** Canvas gestures commit one bounded placement without changing image or text. */
 export function setDevicePlacement(
   shot: Shot,
   placement: DevicePlacement,
@@ -16,6 +22,8 @@ export function setDevicePlacement(
       Math.min(limits.max, placement[key]),
     );
   }
+  if (placement.rotation !== undefined)
+    shot.phone.rotation = normalizeDeviceRotation(placement.rotation);
 }
 
 /** Inspector/keyboard resizing keeps the visual center, including rotated devices. */

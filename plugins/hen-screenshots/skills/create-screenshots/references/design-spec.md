@@ -46,7 +46,7 @@ Input images: PNG, JPEG and still WebP, at most 50 MB per file, 24 megapixels pe
 
 ### Layout adjustments
 
-`placement` replaces all four device coordinates: `{ "x": 240, "y": 640, "width": 600, "rotation": -8 }`. Values use Hen's 1080-unit canvas width, independent of export resolution. Device x is -1080–2160, y is -2160–4096, width is 32–2160; the shared project validator enforces frame-specific bounds and rotation limits.
+`placement` replaces all four device coordinates: `{ "x": 240, "y": 640, "width": 600, "rotation": -8 }`. Values use Hen's 1080-unit canvas width, independent of export resolution. Device x is -1080–2160, y is -2160–4096, width is 32–2160, and rotation is -180–180 degrees around the device's center; the shared project validator enforces these bounds.
 
 `textOffsets` moves captions relative to their template positions: `{ "title": { "x": 0, "y": 20 }, "subtitle": { "x": 0, "y": 20 } }`. Omit it to use the template defaults.
 

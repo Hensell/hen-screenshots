@@ -92,7 +92,7 @@ describe("template discovery", () => {
     ]);
   });
   it("finds patterns, colors and device positions in the new collection", () => {
-    expect(ids({ query: "checker pink" })).toEqual(["cherry"]);
+    expect(ids({ query: "checker pink" })).toEqual(["mosaic", "cherry"]);
     expect(ids({ query: "stripes" })).toEqual(["zest", "cabana"]);
     expect(ids({ query: "left", appearance: "dark" })).toEqual([
       "contour",
@@ -102,6 +102,7 @@ describe("template discovery", () => {
       "terracotta",
     ]);
     expect(ids({ query: "pattern" })).toEqual([
+      "mosaic",
       "zest",
       "cabana",
       "contour",
@@ -114,6 +115,7 @@ describe("template discovery", () => {
   });
   it("combines dark appearance with composition, category, query and pagination", () => {
     expect(ids({ appearance: "dark" })).toEqual([
+      "obsidian",
       "evergreen",
       "midnight",
       "firework",
@@ -135,6 +137,7 @@ describe("template discovery", () => {
       "halo",
     ]);
     expect(ids({ appearance: "dark", layout: "panorama" })).toEqual([
+      "obsidian",
       "moonlight",
       "orbit",
       "tidal",
@@ -145,7 +148,7 @@ describe("template discovery", () => {
     expect(ids({ appearance: "light", query: "orbit" })).toEqual([]);
     expect(
       paginateCatalog(browse({ appearance: "dark" }).items, 2, 12),
-    ).toMatchObject({ page: 2, total: 19 });
+    ).toMatchObject({ page: 2, total: 20 });
     expect(ids({ appearance: "colorful", query: "peach" })).toEqual([
       "confetti",
     ]);
@@ -154,10 +157,10 @@ describe("template discovery", () => {
     expect(ids({})).toEqual(templates.map((item) => item.id));
     expect(new Set(ids({})).size).toBe(templates.length);
     expect(browse().counts).toEqual({
-      All: 51,
-      Minimal: 11,
-      Bold: 23,
-      Editorial: 17,
+      All: 57,
+      Minimal: 12,
+      Bold: 26,
+      Editorial: 19,
     });
   });
   it("combines case, accents, whitespace, punctuation, style and descriptive keywords", () => {
@@ -169,6 +172,12 @@ describe("template discovery", () => {
     expect(ids({ query: "  BLUE  waves " })).toEqual(["tidal"]);
     expect(ids({ query: "botanical green" })).toEqual(["bloom"]);
     expect(ids({ query: "2-slide" })).toEqual([
+      "atrium",
+      "obsidian",
+      "offset",
+      "signal",
+      "mosaic",
+      "folio",
       "moonlight",
       "orbit",
       "daybreak",
@@ -180,6 +189,12 @@ describe("template discovery", () => {
   });
   it("combines composition, background, category and query without filtering by the user's frame", () => {
     expect(ids({ layout: "panorama" })).toEqual([
+      "atrium",
+      "obsidian",
+      "offset",
+      "signal",
+      "mosaic",
+      "folio",
       "moonlight",
       "orbit",
       "daybreak",
@@ -187,6 +202,9 @@ describe("template discovery", () => {
       "panorama",
     ]);
     expect(ids({ layout: "panorama", category: "Bold" })).toEqual([
+      "offset",
+      "signal",
+      "mosaic",
       "orbit",
       "daybreak",
     ]);
@@ -213,8 +231,8 @@ describe("template discovery", () => {
   });
   it("shows category counts for the current query and other filters, independent of the selected category", () => {
     const { counts, items } = browse({ layout: "panorama", category: "Bold" });
-    expect(counts).toEqual({ All: 5, Minimal: 0, Bold: 2, Editorial: 3 });
-    expect(items).toHaveLength(2);
+    expect(counts).toEqual({ All: 11, Minimal: 1, Bold: 5, Editorial: 5 });
+    expect(items).toHaveLength(5);
     expect(browse({ query: "missing" }).counts).toEqual({
       All: 0,
       Minimal: 0,
@@ -225,9 +243,9 @@ describe("template discovery", () => {
   it("ranks exact name matches first and sorts without changing the underlying catalog", () => {
     expect(ids({ query: "editorial" })[0]).toBe("editorial");
     expect(ids({ sort: "name-asc" }).slice(0, 3)).toEqual([
+      "atrium",
       "bloom",
       "blueprint",
-      "boo",
     ]);
     expect(ids({ sort: "name-desc" })[0]).toBe("zest");
     expect(ids({})).toEqual(templates.map((item) => item.id));
@@ -267,10 +285,10 @@ describe("catalog pagination", () => {
       pages: 5,
       from: 1,
       to: 12,
-      total: 51,
+      total: 57,
     });
     expect(middle).toMatchObject({ page: 2, from: 13, to: 24 });
-    expect(last).toMatchObject({ page: 5, from: 49, to: 51 });
+    expect(last).toMatchObject({ page: 5, from: 49, to: 57 });
     expect([
       ...first.items,
       ...middle.items,
@@ -280,7 +298,7 @@ describe("catalog pagination", () => {
     ]).toEqual(items);
     expect(
       paginateCatalog(browse({ layout: "panorama" }).items, 2, 12),
-    ).toMatchObject({ page: 1, pages: 1, total: 5 });
+    ).toMatchObject({ page: 1, pages: 1, total: 11 });
   });
   it("handles empty results and prevents unbounded page sizes", () => {
     expect(paginateCatalog([], 20, 12)).toMatchObject({
@@ -297,7 +315,7 @@ describe("catalog pagination", () => {
     expect(paginateCatalog(browse().items, NaN, 24)).toMatchObject({
       page: 1,
       size: 24,
-      total: 51,
+      total: 57,
     });
   });
   it("keeps navigation bounded and exposes both ends of a large catalog", () => {

@@ -226,6 +226,13 @@ export const editorMessages: Record<string, readonly [string, string]> = {
   "Horizontal position": ["Posición horizontal", "Posição horizontal"],
   "Vertical position": ["Posición vertical", "Posição vertical"],
   "Device rotation": ["Rotación del dispositivo", "Rotação do dispositivo"],
+  Angle: ["Ángulo", "Ângulo"],
+  "Reset rotation": ["Restablecer giro", "Redefinir rotação"],
+  "Drag the round handle on the canvas to rotate a full 360°. Reset restores only the template’s angle.":
+    [
+      "Arrastra el control circular del lienzo para girar 360°. Restablecer giro recupera solo el ángulo de la plantilla.",
+      "Arraste a alça circular na tela para girar 360°. Redefinir rotação restaura apenas o ângulo do modelo.",
+    ],
   "Drag the device to move it. Reset restores the template’s size, position, and rotation.":
     [
       "Arrastra el dispositivo para moverlo. «Restablecer» recupera el tamaño, la posición y la rotación de la plantilla.",

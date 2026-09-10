@@ -1,8 +1,8 @@
 export const overlayMessages: Record<string, readonly [string, string]> = {
-  "{element} selected. Drag to move. Drag a device or image corner to resize. Enter switches objects. Arrow keys move the selected object. Plus and minus resize devices and images. Hold Shift for larger steps.":
+  "{element} selected. Drag to move. Drag a device or image corner to resize. Drag the round handle to rotate the device. Enter switches objects. Arrow keys move the selected object. Plus and minus resize devices and images. Hold Shift for larger steps.":
     [
-      "{element} seleccionado. Arrastra para mover. Arrastra una esquina del dispositivo o la imagen para cambiar su tamaño. Enter cambia de objeto. Las flechas mueven el objeto seleccionado. Más y menos ajustan el tamaño de dispositivos e imágenes. Mantén Mayús para pasos más grandes.",
-      "{element} selecionado. Arraste para mover. Arraste um canto do dispositivo ou da imagem para redimensionar. Enter alterna os objetos. As setas movem o objeto selecionado. Mais e menos redimensionam dispositivos e imagens. Segure Shift para passos maiores.",
+      "{element} seleccionado. Arrastra para mover. Arrastra una esquina del dispositivo o la imagen para cambiar su tamaño. Arrastra el control circular para girar el dispositivo. Enter cambia de objeto. Las flechas mueven el objeto seleccionado. Más y menos ajustan el tamaño de dispositivos e imágenes. Mantén Mayús para pasos más grandes.",
+      "{element} selecionado. Arraste para mover. Arraste um canto do dispositivo ou da imagem para redimensionar. Arraste a alça circular para girar o dispositivo. Enter alterna os objetos. As setas movem o objeto selecionado. Mais e menos redimensionam dispositivos e imagens. Segure Shift para passos maiores.",
     ],
   "Extra images": ["Imágenes extra", "Imagens extras"],
   "Extra image": ["Imagen extra", "Imagem extra"],

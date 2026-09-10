@@ -52,8 +52,12 @@ export function ExportDialog({
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current!;
+    const opener = document.activeElement as HTMLElement | null;
     dialog.showModal();
-    return () => dialog.close();
+    return () => {
+      dialog.close();
+      opener?.focus();
+    };
   }, []);
   return (
     <dialog
@@ -68,7 +72,10 @@ export function ExportDialog({
       }}
     >
       <div className="dialog-heading">
-        <Icon name="download" size={26} />
+        <span className="export-header-label">
+          <Icon name="download" size={20} />
+          {t("Export")}
+        </span>
         <button
           className="icon-button"
           aria-label={t("Close export")}
@@ -88,6 +95,39 @@ export function ExportDialog({
       <p className="dialog-copy" id="export-description">
         {t(profile.name)}
       </p>
+      <p className="export-output-summary">
+        {profile.width} × {profile.height} px{" "}
+        <span>
+          ·{" "}
+          {file
+            ? file.image
+              ? (file.review?.format ?? "png").toUpperCase()
+              : "ZIP"
+            : exportLanguages.length > 1 || pair
+              ? "ZIP"
+              : format.toUpperCase()}
+        </span>
+      </p>
+      {file?.review && (
+        <p className="export-size-summary">
+          {file.review.files.length}{" "}
+          {t(file.review.files.length === 1 ? "file" : "files")} ·{" "}
+          {(
+            file.review.files.reduce((sum, item) => sum + item.bytes, 0) /
+            1_000_000
+          ).toFixed(2)}{" "}
+          MB
+        </p>
+      )}
+      {file?.review &&
+        !file.review.blocked &&
+        file.review.files.some((item) => item.large) && (
+          <p className="export-file-warning">
+            {t(
+              "Some files are larger than the suggested size. Check the file details before publishing.",
+            )}
+          </p>
+        )}
       {error && (
         <p className="export-file-warning" role="alert">
           {t(error)}
@@ -105,7 +145,24 @@ export function ExportDialog({
         </div>
       ) : file ? (
         <div className="export-result">
-          <ExportChecks profile={profile} count={count} review={file.review} />
+          {file.review?.blocked && (
+            <p className="export-file-warning" role="alert">
+              {t(
+                "Some images exceed this destination’s 8 MB limit. Prepare smaller JPEGs before saving.",
+              )}
+            </p>
+          )}
+          <details
+            className="export-validation"
+            open={file.review?.blocked || undefined}
+          >
+            <summary>{t("File checks and store requirements")}</summary>
+            <ExportChecks
+              profile={profile}
+              count={count}
+              review={file.review}
+            />
+          </details>
           {file.image && (
             <img
               className="export-preview"
@@ -122,7 +179,7 @@ export function ExportDialog({
               download={file.name}
             >
               <Icon name="download" />
-              {t("Save {format}", {
+              {t("Download {format}", {
                 format: file.image
                   ? (file.review?.format ?? "png").toUpperCase()
                   : "ZIP",
@@ -171,7 +228,10 @@ export function ExportDialog({
               </option>
             </select>
           </label>
-          <ExportChecks profile={profile} count={count} format={format} />
+          <details className="export-validation">
+            <summary>{t("File checks and store requirements")}</summary>
+            <ExportChecks profile={profile} count={count} format={format} />
+          </details>
           {languages.length > 1 && (
             <fieldset className="export-languages">
               <legend>{t("Languages to export")}</legend>
@@ -193,7 +253,7 @@ export function ExportDialog({
               ))}
               <p className="field-help">
                 {t(
-                  "A folder per language inside the ZIP. Review every translation before publishing.",
+                  "ZIP exports include a folder per language. Review translations before publishing.",
                 )}
               </p>
             </fieldset>
@@ -204,20 +264,13 @@ export function ExportDialog({
             onClick={() => void prepare(false)}
           >
             <Icon name="image" />
-            {t(
-              banners
-                ? "Export this banner"
-                : pair
-                  ? "Export this panorama"
-                  : "Export this screenshot",
-            )}
-            <span>
-              {exportLanguages.length > 1
-                ? "ZIP"
-                : pair
+            {t("Prepare {format}", {
+              format:
+                exportLanguages.length > 1 || pair
                   ? "ZIP"
-                  : format.toUpperCase()}
-            </span>
+                  : format.toUpperCase(),
+            })}
+            <span>{t(pair ? "Selected panorama" : "Selected slide")}</span>
           </button>
           <button
             className="button secondary full"
@@ -225,17 +278,10 @@ export function ExportDialog({
             onClick={() => void prepare(true)}
           >
             <Icon name="download" />
-            {t(
-              banners
-                ? count === 1
-                  ? "Export {count} banner"
-                  : "Export all {count} banners"
-                : count === 1
-                  ? "Export {count} screenshot"
-                  : "Export all {count} screenshots",
-              { count },
-            )}
-            <span>ZIP</span>
+            {t("Prepare series ZIP")}
+            <span>
+              {t(count === 1 ? "{count} slide" : "{count} slides", { count })}
+            </span>
           </button>
         </div>
       )}

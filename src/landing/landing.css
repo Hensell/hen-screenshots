@@ -55,6 +55,9 @@ em {
 .section-space {
   padding-block: 100px;
 }
+.landing-page .section-space {
+  padding-block: 72px;
+}
 .eyebrow {
   font-size: 0.65rem;
   font-weight: 800;
@@ -183,9 +186,33 @@ nav {
 .hero {
   display: grid;
   grid-template-columns: 1fr 1.05fr;
+  grid-template-areas: "copy art" "details art";
   align-items: center;
-  gap: 32px;
-  padding-block: 72px 64px;
+  gap: 20px 40px;
+  padding-block: 56px;
+}
+.hero-copy {
+  grid-area: copy;
+  align-self: end;
+}
+.hero-details {
+  grid-area: details;
+  align-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 20px;
+}
+.hero-details .reassurance {
+  flex-basis: 100%;
+  margin-top: 0;
+}
+.hero-details .source-link,
+.hero-details .hero-shortcuts {
+  margin-top: 0;
+}
+.hero-details .hero-shortcuts {
+  flex-basis: 100%;
 }
 .hero h1 {
   font-size: clamp(3.2rem, 6vw, 5.25rem);
@@ -236,6 +263,7 @@ nav {
   filter: invert(1);
 }
 .hero-art {
+  grid-area: art;
   background: var(--brand-sage);
   padding: 24px;
   min-width: 0;
@@ -492,8 +520,15 @@ nav {
 .free-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: 40px 80px;
   align-items: center;
+}
+.free-layout > .source-note {
+  align-self: stretch;
+  margin: 0;
+}
+.free-layout > * {
+  min-width: 0;
 }
 .free-layout h2 {
   font-size: clamp(4rem, 8vw, 7rem);
@@ -713,13 +748,27 @@ details > p {
   .section-space {
     padding-block: 64px;
   }
+  .landing-page .section-space {
+    padding-block: 52px;
+  }
   .landing-header {
     min-height: 80px;
   }
   .hero {
     grid-template-columns: 1fr;
-    gap: 36px;
-    padding-block: 48px 40px;
+    grid-template-areas: "copy" "art" "details";
+    gap: 24px;
+    padding-block: 32px;
+  }
+  .hero .lead {
+    margin-top: 20px;
+  }
+  .hero .eyebrow {
+    margin-bottom: 18px;
+  }
+  .hero-details {
+    width: min(100%, 520px);
+    justify-self: center;
   }
   .hero h1 {
     font-size: clamp(3rem, 11vw, 4.8rem);
@@ -1250,19 +1299,47 @@ details > p {
 .brand-section {
   border-bottom: 1px solid var(--brand-border);
 }
+.brand-section,
+.how-section {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 64px;
+  align-items: start;
+}
+.brand-section .section-intro,
+.how-section .section-intro {
+  display: block;
+  margin: 0;
+}
+.brand-section .section-intro > p {
+  margin-top: 20px;
+}
+.brand-section h2,
+.how-section h2,
+.faq-section h2,
+.feedback-section h2 {
+  font-size: clamp(1.9rem, 3vw, 2.65rem);
+}
 .brand-benefits {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 40px;
+  gap: 24px;
 }
 .brand-benefits article {
   border-top: 1px solid var(--brand-border);
-  padding-top: 24px;
+  padding-top: 20px;
 }
 .brand-benefits h3 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   letter-spacing: -0.03em;
-  margin-block: 16px;
+  margin-bottom: 10px;
+}
+.how-section .steps li {
+  grid-template-columns: 44px 1fr;
+  padding-block: 24px;
+}
+.how-section .steps li > div {
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 .brand-benefits p {
   color: var(--brand-muted);
@@ -1299,6 +1376,8 @@ details > p {
   }
   .output-grid,
   .output-banner,
+  .brand-section,
+  .how-section,
   .brand-benefits,
   .translation-copy {
     grid-template-columns: 1fr;
@@ -1331,8 +1410,12 @@ details > p {
   .translation-facts {
     margin-block: 8px;
   }
-  .brand-benefits {
+  .brand-section,
+  .how-section {
     gap: 28px;
+  }
+  .brand-benefits {
+    gap: 24px;
   }
 }
 

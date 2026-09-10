@@ -41,9 +41,9 @@ export function NewProjectDialog({
           <Icon name="close" />
         </button>
       </header>
-      <h2 id="new-project-heading">{t("Where will your work live?")}</h2>
+      <h2 id="new-project-heading">{t("What would you like to create?")}</h2>
       <p className="dialog-copy">
-        {t("Choose a workspace. Each one has its own canvas formats.")}
+        {t("Choose a project type to open the editor.")}
       </p>
       <div className="purpose-options">
         <button onClick={() => onCreate("stores")}>
@@ -53,7 +53,7 @@ export function NewProjectDialog({
             <span />
           </div>
           <strong>
-            {t("App stores")}
+            {t("App store screenshots")}
             <Icon name="arrow" />
           </strong>
           <p>{t("Tell your app’s story on the App Store and Google Play.")}</p>

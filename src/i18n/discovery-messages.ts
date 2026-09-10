@@ -1,4 +1,6 @@
 export const discoveryMessages: Record<string, readonly [string, string]> = {
+  "Browse options": ["Opciones de vista", "Opções de visualização"],
+  "Show results": ["Ver resultados", "Ver resultados"],
   "All templates": ["Todas las plantillas", "Todos os modelos"],
   Favorites: ["Favoritos", "Favoritos"],
   "Template collection": ["Colección de plantillas", "Coleção de modelos"],

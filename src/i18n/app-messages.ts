@@ -1,5 +1,55 @@
 // Application chrome, notices and export format descriptions.
 export const appMessages: Record<string, readonly [string, string]> = {
+  "Check your headline and composition at publishing size.": [
+    "Revisa el título y la composición al tamaño de publicación.",
+    "Confira o título e a composição no tamanho de publicação.",
+  ],
+  file: ["archivo", "arquivo"],
+  files: ["archivos", "arquivos"],
+  "Some files are larger than the suggested size. Check the file details before publishing.":
+    [
+      "Algunos archivos superan el tamaño sugerido. Revisa sus detalles antes de publicar.",
+      "Alguns arquivos excedem o tamanho sugerido. Confira os detalhes antes de publicar.",
+    ],
+  "File checks and store requirements": [
+    "Revisión de archivos y requisitos de las tiendas",
+    "Verificação dos arquivos e requisitos das lojas",
+  ],
+  "ZIP exports include a folder per language. Review translations before publishing.":
+    [
+      "Los archivos ZIP incluyen una carpeta por idioma. Revisa las traducciones antes de publicar.",
+      "Os arquivos ZIP incluem uma pasta por idioma. Revise as traduções antes de publicar.",
+    ],
+  "Download {format}": ["Descargar {format}", "Baixar {format}"],
+  "Prepare {format}": ["Preparar {format}", "Preparar {format}"],
+  "Prepare series ZIP": ["Preparar ZIP de la serie", "Preparar ZIP da série"],
+  "Selected panorama": ["Panorama seleccionado", "Panorama selecionado"],
+  "Selected slide": ["Diapositiva seleccionada", "Slide selecionado"],
+  "{count} slide": ["{count} diapositiva", "{count} slide"],
+  "{count} slides": ["{count} diapositivas", "{count} slides"],
+  "Pick up where you left off, or start something new.": [
+    "Retoma tu trabajo o empieza un nuevo proyecto.",
+    "Continue de onde parou ou comece um novo projeto.",
+  ],
+  "What would you like to create?": [
+    "¿Qué quieres crear?",
+    "O que você quer criar?",
+  ],
+  "Choose a project type to open the editor.": [
+    "Elige un tipo de proyecto para abrir el editor.",
+    "Escolha um tipo de projeto para abrir o editor.",
+  ],
+  "App store screenshots": [
+    "Capturas para tiendas",
+    "Capturas para lojas de apps",
+  ],
+  "Interface language": ["Idioma de la interfaz", "Idioma da interface"],
+  "Screenshot language": ["Idioma de las capturas", "Idioma das capturas"],
+  "Editor view": ["Vista del editor", "Visualização do editor"],
+  "Apply style to this slide": [
+    "Aplicar estilo a esta diapositiva",
+    "Aplicar estilo a este slide",
+  ],
   "Add slide": ["Agregar diapositiva", "Adicionar slide"],
   "Add image": ["Agregar imagen", "Adicionar imagem"],
   "Add image…": ["Agregar imagen…", "Adicionar imagem…"],
@@ -152,11 +202,10 @@ export const appMessages: Record<string, readonly [string, string]> = {
     "Panorama · 2 diapositivas vinculadas",
     "Panorama · 2 slides vinculados",
   ],
-  "Drag to move · Corners resize · Enter selects · Arrows move · + / − resize":
-    [
-      "Arrastra para mover · Esquinas: tamaño · Enter: seleccionar · Flechas: mover · + / −: tamaño",
-      "Arraste para mover · Cantos: tamanho · Enter: selecionar · Setas: mover · + / −: tamanho",
-    ],
+  "Drag to move · Corners resize · Round handle rotates": [
+    "Arrastra para mover · Esquinas: tamaño · Control circular: girar",
+    "Arraste para mover · Cantos: tamanho · Alça circular: girar",
+  ],
   "Smart guides": ["Guías inteligentes", "Guias inteligentes"],
   "Move freely. Turn on guides for alignment.": [
     "Mueve los objetos libremente. Activa las guías para alinearlos.",

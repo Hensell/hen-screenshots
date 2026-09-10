@@ -218,7 +218,7 @@ export function Artboard({
       aria-description={
         editable
           ? t(
-              "{element} selected. Drag to move. Drag a device or image corner to resize. Enter switches objects. Arrow keys move the selected object. Plus and minus resize devices and images. Hold Shift for larger steps.",
+              "{element} selected. Drag to move. Drag a device or image corner to resize. Drag the round handle to rotate the device. Enter switches objects. Arrow keys move the selected object. Plus and minus resize devices and images. Hold Shift for larger steps.",
               { element: t(selectedLabel) },
             )
           : undefined

@@ -276,6 +276,7 @@
     display: none;
   }
   .editor-toolbar {
+    width: 100%;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 8px;
@@ -333,6 +334,15 @@
     padding: 8px 6px;
     gap: 6px;
     font-size: 11px;
+  }
+  .editor-file-actions .button.project-download,
+  .editor-file-actions .button.publication-button {
+    font-size: 0;
+    padding: 8px;
+    gap: 0;
+  }
+  .editor-file-actions .project-download .download-label-compact {
+    display: none;
   }
   .editor-file-actions .project-download {
     border-color: var(--brand-border);
@@ -401,5 +411,24 @@
   }
   .project-download > svg {
     display: none;
+  }
+}
+
+@media (min-width: 801px) and (max-width: 950px) {
+  .editor-toolbar {
+    display: flex;
+  }
+  .editor-toolbar .desktop-slide-action {
+    display: none;
+  }
+  .editor-toolbar .compact-slide-actions {
+    display: inline-flex;
+  }
+  .editor-toolbar .compact-slide-actions > span {
+    display: none;
+  }
+  .editor-toolbar .project-context-tools {
+    border-top: 0;
+    padding-top: 0;
   }
 }

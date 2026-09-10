@@ -7,6 +7,11 @@ import {
 } from "./model";
 import { canonicalCanvas, resolveExportProfile } from "./export-profiles";
 import { deviceGeometry } from "../rendering/geometry";
+import {
+  collectionPanoramaStyles,
+  collectionPanoramaId,
+  collectionPanoramaLayouts,
+} from "./panorama-collection";
 
 import {
   panoramaStart,
@@ -72,6 +77,7 @@ export const panoramaStyle = {
 } satisfies Partial<Style>;
 
 export const panoramaStyles = {
+  ...collectionPanoramaStyles,
   panorama: panoramaStyle,
   daybreak: {
     ...panoramaStyle,
@@ -111,9 +117,111 @@ export const panoramaStyles = {
   },
 } satisfies Record<PanoramaId, Partial<Style>>;
 
+function collectionLayout(
+  h: number,
+  style: Style,
+  id: keyof typeof collectionPanoramaLayouts,
+) {
+  const {
+    composition,
+    rotation,
+    centerX: preferredCenter,
+  } = collectionPanoramaLayouts[id];
+  const right = isPanoramaEnd(style.template);
+  const wide = h <= 1080;
+  const stacked = !wide && (composition === "top" || composition === "bottom");
+  const area = stacked
+    ? {
+        width: 1360,
+        y: h * (composition === "top" ? 0.36 : 0.055),
+        height: h * 0.61,
+      }
+    : { width: id === "folio" ? 900 : 1000, y: h * 0.08, height: h * 0.84 };
+  const unit = deviceGeometry(
+    style.device,
+    1000,
+    style.frame,
+    style.deviceOrientation,
+  );
+  const angle = (Math.abs(rotation) * Math.PI) / 180;
+  const scale = Math.min(
+    area.width / (Math.cos(angle) * unit.width + Math.sin(angle) * unit.height),
+    area.height /
+      (Math.sin(angle) * unit.width + Math.cos(angle) * unit.height),
+  );
+  const width = Math.max(32, Math.min(2160, Math.floor(unit.width * scale)));
+  const height = deviceGeometry(
+    style.device,
+    width,
+    style.frame,
+    style.deviceOrientation,
+  ).height;
+  // Keep asymmetric devices across the join even on very wide custom canvases.
+  const boundWidth = Math.cos(angle) * width + Math.sin(angle) * height;
+  const centerX = 1080 + Math.min(preferredCenter - 1080, boundWidth * 0.2);
+  const low = composition === "reverse" ? !right : right;
+  const titleY = stacked
+    ? composition === "top"
+      ? 0.065
+      : 0.765
+    : wide
+      ? low
+        ? 0.42
+        : 0.09
+      : low
+        ? 0.625
+        : 0.07;
+  const subtitleY = stacked
+    ? composition === "top"
+      ? 0.25
+      : 0.92
+    : wide
+      ? low
+        ? 0.81
+        : 0.48
+      : low
+        ? 0.885
+        : 0.375;
+  const textX = stacked
+    ? right
+      ? 120
+      : 80
+    : right
+      ? id === "folio"
+        ? 590
+        : 570
+      : 80;
+  const textWidth = stacked ? 830 : right ? (id === "folio" ? 410 : 430) : 490;
+  return {
+    phone: {
+      x: Math.round(centerX - width / 2),
+      y: Math.round(area.y + (area.height - height) / 2),
+      width,
+      rotation,
+    },
+    title: {
+      x: textX,
+      y: h * titleY,
+      width: textWidth,
+      height: h * (stacked ? 0.145 : wide ? 0.29 : 0.255),
+    },
+    subtitle: {
+      x: textX + 4,
+      y: h * subtitleY,
+      width: textWidth - 8,
+      height: h * (stacked ? 0.055 : wide ? 0.1 : 0.075),
+    },
+    panel: { x: 0, y: 0, width: 2160, height: h },
+    fontScale: wide ? 0.64 : 1,
+    subtitleSize: wide ? 24 : 32,
+  };
+}
+
 /** Phone placement lives in one 2160-wide scene; each export crops one half. */
 export function panoramaLayout(project: Project, style: Style) {
   const { height: h } = canonicalCanvas(project);
+  const collection = collectionPanoramaId(style.template);
+  if (collection) return collectionLayout(h, style, collection);
   const right = isPanoramaEnd(style.template);
   const family = panoramaStart(style.template);
   const expressive = family !== "panorama";

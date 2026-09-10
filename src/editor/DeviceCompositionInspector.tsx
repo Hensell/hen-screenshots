@@ -19,6 +19,7 @@ import {
   type Style,
 } from "../core/model";
 import { resizeDevice } from "../core/device-placement";
+import { DeviceRotationControl } from "./DeviceRotationControl";
 import { languageName, localContent } from "../core/localization";
 import "./device-composition.css";
 
@@ -58,11 +59,12 @@ export function DeviceCompositionInspector({
   const selected = deviceShot(shot, active);
   const style = resolveStyle(project, selected);
   const index = elements.indexOf(active);
-  const originalWidth = compositionLayout(
+  const originalPlacement = compositionLayout(
     project,
     resolveStyle(project, shot),
     shot.companions,
-  ).devices[index].width;
+  ).devices[index];
+  const originalWidth = originalPlacement.width;
   const override = locale ? sourceShot.translations?.[locale] : undefined;
   const companion = companionFor(shot, active);
   const hasOverride = companion
@@ -245,8 +247,21 @@ export function DeviceCompositionInspector({
           PLACEMENT_LIMITS.y.min,
           PLACEMENT_LIMITS.y.max,
         )}
-        {range("Device rotation", "rotation", -20, 20)}
       </section>
+      <DeviceRotationControl
+        angle={selected.phone.rotation}
+        onChange={(angle) =>
+          update((device) => {
+            device.phone.rotation = angle;
+          }, "rotation")
+        }
+        onCommit={endGroup}
+        onReset={() =>
+          update((device) => {
+            device.phone.rotation = originalPlacement.rotation;
+          })
+        }
+      />
       <section className="property-section">
         <h3>{t("Device frame")}</h3>
         <label className="field">
@@ -257,12 +272,6 @@ export function DeviceCompositionInspector({
               const device = event.target.value as DeviceFamily;
               setStyle({
                 device,
-                deviceOrientation:
-                  device === "monitor" ||
-                  device === "laptop" ||
-                  device === "card"
-                    ? "landscape"
-                    : "portrait",
               });
             }}
           >

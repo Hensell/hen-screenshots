@@ -15,9 +15,11 @@ export function LanguageSelector() {
       title={t("Website language — does not change screenshot text")}
     >
       <Icon name="languages" size={17} />
-      <span className="visually-hidden">{t("Website language")}</span>
+      <span className="interface-language-label">
+        {t("Interface language")}
+      </span>
       <select
-        aria-label={t("Website language")}
+        aria-label={t("Interface language")}
         value={locale}
         onChange={(event) =>
           setInterfaceLocale(event.target.value as InterfaceLocale)

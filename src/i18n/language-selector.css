@@ -68,3 +68,45 @@
     display: none;
   }
 }
+
+.interface-language {
+  position: relative;
+  padding-top: 12px;
+}
+.interface-language-label {
+  position: absolute;
+  top: 3px;
+  left: 8px;
+  font-size: 9px;
+  color: var(--brand-muted);
+  line-height: 1.2;
+  pointer-events: none;
+}
+.interface-language select {
+  min-height: 30px;
+}
+@media (max-width: 600px) {
+  .topbar.editor-header .editor-file-actions {
+    grid-template-columns: minmax(0, 1fr) 44px 44px auto;
+  }
+  .editor-file-actions .project-download,
+  .editor-file-actions .publication-button {
+    font-size: 0;
+    padding: 8px;
+    gap: 0;
+  }
+  .editor-file-actions .project-download .download-label-compact {
+    display: none;
+  }
+  .editor-file-actions .project-download > svg {
+    display: block;
+  }
+  .editor-file-actions .interface-language {
+    justify-content: flex-start;
+  }
+  .editor-file-actions .interface-language select {
+    width: 100%;
+    max-width: none;
+    font-size: 12px;
+  }
+}

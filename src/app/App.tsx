@@ -16,7 +16,7 @@ import {
   setDeviceImage,
 } from "../core/device-composition";
 import type { DeviceElement } from "../core/model";
-import { useT } from "../i18n/react";
+import { useT, useInterfaceLocale } from "../i18n/react";
 import { LanguageSelector } from "../i18n/LanguageSelector";
 import { DeferredFeature } from "./DeferredFeature";
 import { useProjectLibrary } from "./useProjectLibrary";
@@ -120,6 +120,7 @@ function Brand() {
 
 export function App() {
   const t = useT();
+  const interfaceLocale = useInterfaceLocale();
   const imageImport = useImageImport();
   useEffect(() => {
     document.title = t("Your studio — Hen Screenshots");
@@ -154,7 +155,9 @@ export function App() {
   const [inspectorTab, setInspectorTab] = useState<InspectorTab>("design");
   const [selectedCanvasElement, setSelectedCanvasElement] =
     useState<CanvasElement | null>(null);
+  const [mobileView, setMobileView] = useState<"canvas" | "tools">("canvas");
   function openInspector(tab: InspectorTab) {
+    setMobileView("tools");
     setInspectorTab(tab);
     requestAnimationFrame(() => {
       const inspector = document.getElementById("slide-inspector");
@@ -326,6 +329,7 @@ export function App() {
     setNotice(null);
     setReadyFile(null);
     setInspectorTab("design");
+    setMobileView("canvas");
     setSelectedCanvasElement(null);
   }, []);
 
@@ -773,7 +777,16 @@ export function App() {
             <Brand />
           </button>
         ) : (
-          <a href="/" aria-label={t("Hen Screenshots home")}>
+          <a
+            href={
+              interfaceLocale === "en"
+                ? "/"
+                : interfaceLocale === "es"
+                  ? "/es/"
+                  : "/pt-br/"
+            }
+            aria-label={t("Hen Screenshots home")}
+          >
             <Brand />
           </a>
         )}
@@ -945,7 +958,7 @@ export function App() {
         />
       ) : (
         <main
-          className={`studio ${dragging ? "is-dragging" : ""}`}
+          className={`studio mobile-view-${mobileView} ${dragging ? "is-dragging" : ""}`}
           onDragEnter={(event) => {
             if (event.dataTransfer.types.includes("Files")) {
               event.preventDefault();
@@ -1130,7 +1143,7 @@ export function App() {
               >
                 {project.localization && (
                   <label className="language-switch">
-                    <span>{t(locale ? "Text language" : "Original text")}</span>
+                    <span>{t("Screenshot language")}</span>
                     <select
                       aria-label={t("Editing language")}
                       title={`${languageName(locale ?? project.localization.source)}${locale ? "" : ` · ${t("Original")}`}`}
@@ -1175,6 +1188,28 @@ export function App() {
               </div>
             </div>
           </div>
+          {shot && (
+            <div
+              className="mobile-editor-views"
+              role="group"
+              aria-label={t("Editor view")}
+            >
+              <button
+                aria-pressed={mobileView === "canvas"}
+                onClick={() => setMobileView("canvas")}
+              >
+                <Icon name="canvas" size={16} />
+                {t("Canvas")}
+              </button>
+              <button
+                aria-pressed={mobileView === "tools"}
+                onClick={() => openInspector(inspectorTab)}
+              >
+                <Icon name="edit" size={16} />
+                {t("Edit slide")}
+              </button>
+            </div>
+          )}
           <aside
             className="filmstrip"
             aria-label={t(banners ? "Banner designs" : "Screenshot series")}
@@ -1202,7 +1237,10 @@ export function App() {
                     })}
                     aria-current={item.id === selectedId ? "true" : undefined}
                     disabled={!!busy}
-                    onClick={() => state.select(item.id)}
+                    onClick={() => {
+                      state.select(item.id);
+                      setMobileView("canvas");
+                    }}
                   >
                     <Preview
                       project={project}
@@ -1345,9 +1383,7 @@ export function App() {
                     </div>
                   )}
                   <p className="canvas-edit-help">
-                    {t(
-                      "Drag to move · Corners resize · Enter selects · Arrows move · + / − resize",
-                    )}
+                    {t("Drag to move · Corners resize · Round handle rotates")}
                   </p>
                   <div className="canvas-guide-tools">
                     <label>
@@ -1380,7 +1416,10 @@ export function App() {
                           key={item.id}
                           aria-pressed={item.id === shot.id}
                           disabled={!!busy}
-                          onClick={() => state.select(item.id)}
+                          onClick={() => {
+                            state.select(item.id);
+                            setMobileView("canvas");
+                          }}
                         >
                           {t(
                             index === 0
@@ -1540,9 +1579,13 @@ export function App() {
               }}
               selectedElement={selectedCanvasElement}
               onPreview={() => {
-                const workspace = document.getElementById("composition-canvas");
-                workspace?.scrollIntoView({ block: "start" });
-                workspace?.focus({ preventScroll: true });
+                setMobileView("canvas");
+                requestAnimationFrame(() => {
+                  const workspace =
+                    document.getElementById("composition-canvas");
+                  workspace?.scrollIntoView({ block: "start" });
+                  workspace?.focus({ preventScroll: true });
+                });
               }}
             />
           ) : (
@@ -1648,6 +1691,7 @@ export function App() {
           onClose={() => setLanguagesOpen(false)}
         >
           <LanguagesDialog
+            saveStatus={status}
             project={sourceProject}
             locale={locale}
             onClose={() => {

@@ -8,6 +8,7 @@ import {
   deleteProject,
   listProjects,
   loadProject,
+  loadSceneAssets,
   saveProject,
 } from "./repository";
 
@@ -31,6 +32,24 @@ afterEach(async () => {
 });
 
 describe("local project persistence", () => {
+  it("loads only a cover scene's assets and keeps project scopes separate", async () => {
+    const first = project();
+    first.shots.push(createShot("image-b", 1));
+    const second = project();
+    await saveProject(first, [asset(), asset("image-b")], 0);
+    await saveProject(second, [{ ...asset(), blob: new Blob(["second"]) }], 0);
+    const loaded = await loadSceneAssets(first.id, [
+      "image-a",
+      "image-a",
+      "missing",
+    ]);
+    expect(loaded.map((item) => item.id)).toEqual(["image-a"]);
+    expect(await loaded[0].blob.text()).toBe("image");
+    expect(
+      await (await loadSceneAssets(second.id, ["image-a"]))[0].blob.text(),
+    ).toBe("second");
+    expect((await loadProject(first.id)).project.shots).toHaveLength(2);
+  });
   it.each(["", "   "])(
     "normalizes a temporarily blank name %j on save without mutating the input",
     async (name) => {

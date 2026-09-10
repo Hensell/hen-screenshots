@@ -12,6 +12,7 @@ import { templateLayout } from "../core/templates";
 import { canonicalCanvas } from "../core/export-profiles";
 import { isPanoramaTemplate, panoramaPair } from "../core/panorama";
 import { drawDeviceFrame, drawDeviceDetails } from "./device-frame";
+import { deviceFace } from "./device-perspective";
 import { drawTemplateDecoration } from "./template-decoration";
 import { attachSceneGuides } from "./scene-guides";
 import { attachDeviceResize } from "./device-resize";
@@ -430,7 +431,8 @@ export function createScene(
         guideBounds: { x: 0, y: 0, width: device.width, height: device.height },
       });
       const banner = isBannerProfile(project.exportProfile);
-      if (!banner) drawDeviceFrame(phone, device);
+      const face = banner ? phone : deviceFace(phone, device, style.template);
+      if (!banner) drawDeviceFrame(face, device);
 
       const screen = new Konva.Group({
         clipFunc(context) {
@@ -478,10 +480,10 @@ export function createScene(
             ...fitImage(imageWidth, imageHeight, device.screen, style.fit),
           }),
         );
-      phone.add(screen);
+      face.add(screen);
 
       // Imported status/navigation bars stay in their original pixels. No synthetic bars.
-      if (!banner) drawDeviceDetails(phone, device, style.camera);
+      if (!banner) drawDeviceDetails(face, device, style.camera);
       if (options.onMove) {
         makeMovable(phone, element, options, shot.id);
         phone.on("dragend", () =>
@@ -635,6 +637,7 @@ export function createScene(
             selectSceneElement(layer, element, shot.id);
             options.onSelectElement?.(element, shot.id);
           },
+          true,
         ).setAttrs({ element, shotId: shot.id });
       }
     return layer;

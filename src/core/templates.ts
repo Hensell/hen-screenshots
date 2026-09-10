@@ -13,6 +13,7 @@ import { holidayTemplates } from "./holiday-templates";
 import { halloweenTemplates } from "./halloween-templates";
 import { refitText, resetText } from "./text-placement";
 import { panoramaStart } from "./panorama-families";
+import { collectionPanoramaTemplates } from "./panorama-collection";
 import {
   resolveStyle,
   legacyTemplateIds,
@@ -99,6 +100,7 @@ export interface Template {
 
 /** IDs and geometry are part of document v2. Add new IDs for incompatible designs. */
 export const templates: readonly Template[] = [
+  ...collectionPanoramaTemplates,
   ...holidayTemplates,
   ...multiDeviceTemplates,
   ...halloweenTemplates,
