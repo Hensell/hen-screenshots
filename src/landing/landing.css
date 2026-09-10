@@ -1198,3 +1198,26 @@ details > p {
     gap: 28px;
   }
 }
+
+.footer-languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  flex-basis: 100%;
+  order: 4;
+  border-top: 1px solid var(--brand-border);
+  padding-top: 16px;
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+.footer-languages a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.footer-languages a:hover {
+  color: var(--brand-clay);
+}
+.landing-footer {
+  flex-wrap: wrap;
+}

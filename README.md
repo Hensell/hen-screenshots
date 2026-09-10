@@ -107,10 +107,10 @@ Replacing or removing extra artwork leaves the app screenshot intact. Removal as
 
 Choose **New project → Banners** to create store artwork in a separate workspace. Start by uploading an image or app icon (PNG, JPEG, or still WebP), then choose one of six banner templates: **Signal, Brand Orbit, Wordmark, Coral Ribbon, Dusk, and Paper Parade**.
 
-| Format | Export size | Used for |
-| --- | --- | --- |
-| Feature graphic | **1024 × 500 px** | Required for your Google Play listing |
-| Android TV banner | **1280 × 720 px** | Required for Android TV apps |
+| Format            | Export size       | Used for                              |
+| ----------------- | ----------------- | ------------------------------------- |
+| Feature graphic   | **1024 × 500 px** | Required for your Google Play listing |
+| Android TV banner | **1280 × 720 px** | Required for Android TV apps          |
 
 Use **Canvas → Banner format** to switch between these fixed sizes. Drag the image or text, resize the image, and use the reset controls to return to the template's placement. Transparent source images retain their shape against the artwork; every exported banner is an **opaque 24-bit RGB PNG**. Brand kits, language versions, local saving, and project backups work here too.
 
@@ -155,24 +155,28 @@ npm run dev
 
 Open [localhost:5174](http://127.0.0.1:5174/) for the landing page or [localhost:5174/studio/](http://127.0.0.1:5174/studio/) for the editor.
 
-| Command                | What it does                                                      |
-| ---------------------- | ----------------------------------------------------------------- |
-| `npm run dev`          | Start the local Vite server on port 5174                          |
-| `npm test`             | Run the Vitest suite                                              |
-| `npm run lint`         | Check TypeScript/React code with Oxlint                           |
-| `npm run format:check` | Verify source and configuration formatting                        |
-| `npm run format`       | Format source and configuration files                             |
-| `npm run check`        | Run lint, format checks, tests, type checks, and production build |
-| `npm run build`        | Type-check and build production assets                            |
-| `npm run preview`      | Serve the build locally; stop the dev server first                |
-| `npm run deploy:check` | Build and validate a Cloudflare deployment without publishing     |
-| `npm run deploy`       | Build and publish using an authenticated Wrangler session         |
+| Command                 | What it does                                                        |
+| ----------------------- | ------------------------------------------------------------------- |
+| `npm run dev`           | Start the local Vite server on port 5174                            |
+| `npm test`              | Run the Vitest suite                                                |
+| `npm run lint`          | Check TypeScript/React code with Oxlint                             |
+| `npm run format:check`  | Verify source and configuration formatting                          |
+| `npm run format`        | Format source and configuration files                               |
+| `npm run check`         | Run lint, format checks, tests, type checks, and production build   |
+| `npm run build`         | Type-check and build production assets                              |
+| `npm run preview`       | Serve the build locally; stop the dev server first                  |
+| `npm run deploy:check`  | Build and validate a Cloudflare deployment without publishing       |
+| `npm run deploy`        | Build and publish using an authenticated Wrangler session           |
+| `npm run social:images` | Regenerate the three social sharing images and PNG brand icons      |
+| `npm run seo:check`     | Check deployed HTML, social images, indexing directives, and routes |
 
 ## How it is built
 
 **React · TypeScript · Vite · Konva · Zustand · Dexie / IndexedDB · Cloudflare**
 
 The landing page uses static HTML and CSS, with a small script for interface language selection. The React editor loads at `/studio/`. A shared Konva scene renders editor previews, template thumbnails, and full-resolution exports, so they use the same composition rules.
+
+English, Spanish, and Portuguese landing pages have their own static URLs, localized sharing images, canonical and language links, and structured data. See [search and sharing](docs/seo.md) for generation commands, verification, and indexing behavior.
 
 The library loads first. Canvas rendering, templates, brand kits, publication preview, languages, backups, and export tools load when needed. Optional dialogs show loading and recovery states so a failed download does not close the active project.
 

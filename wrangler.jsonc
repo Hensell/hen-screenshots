@@ -4,5 +4,5 @@
   "compatibility_date": "2026-09-06",
   "workers_dev": true,
   "routes": [{ "pattern": "screenshots.hensell.dev", "custom_domain": true }],
-  "assets": { "not_found_handling": "single-page-application" },
+  "assets": { "not_found_handling": "404-page" },
 }

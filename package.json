@@ -16,7 +16,9 @@
     "deploy:check": "npm run build && wrangler deploy --dry-run",
     "lint": "oxlint --deny-warnings src vite.config.ts vitest.config.ts",
     "format:check": "prettier --check src vite.config.ts vitest.config.ts package.json tsconfig.json .oxlintrc.json",
-    "format": "prettier --write src vite.config.ts vitest.config.ts package.json tsconfig.json .oxlintrc.json"
+    "format": "prettier --write src vite.config.ts vitest.config.ts package.json tsconfig.json .oxlintrc.json",
+    "social:images": "node scripts/generate-social-images.mjs",
+    "seo:check": "node scripts/check-seo.mjs"
   },
   "dependencies": {
     "@huggingface/transformers": "4.2.0",
@@ -36,6 +38,7 @@
     "fake-indexeddb": "6.2.5",
     "oxlint": "1.82.0",
     "prettier": "3.9.6",
+    "sharp": "0.35.4",
     "typescript": "7.0.2",
     "vite": "8.2.2",
     "vitest": "5.0.0",
