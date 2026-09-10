@@ -1,6 +1,6 @@
 # Plugin distribution
 
-Hen Screenshots [v0.2.0](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.0) is the first packaged GitHub release of the local plugin. It is distributed under MIT through the repository marketplaces and a downloadable ZIP. Official OpenAI and Anthropic directory submissions remain pending.
+Hen Screenshots [v0.2.0](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.0) is the first packaged GitHub release of the local plugin. It is distributed under MIT through the repository marketplaces, a downloadable ZIP, and the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). The Anthropic submission is pending review.
 
 ## Install
 
@@ -46,11 +46,17 @@ Last documentation check: September 10, 2026. Recheck the official requirements 
 
 ### OpenAI
 
-Hen has no MCP server, so a skills-only submission is the starting point. OpenAI's migration guide asks developers whose core workflow relies on local execution or offline operation to contact their OpenAI partner before submission. Confirm that review path for Hen. [Official guidance](https://developers.openai.com/plugins/guides/submit-claude-plugin).
+Published on September 10, 2026. The verified publisher submitted the skills-only package after its automated skill scan passed. The portal marked v0.2.0 **Approved**; publication was then completed and the portal confirmed **Published** with a [View in Directory link](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6).
+
+The upload passed package validation after changing the Codex manifest's category from `Design` to the supported `Creativity` value in a separate submission ZIP. Its renderer, skill, dependencies, fonts, and other files are identical to v0.2.0; the published GitHub release archive remains unchanged. The OpenAI upload ZIP has SHA-256 `62a9d0176720108db68cf60e31b98cf09b6049aebebb8d957707bbe9f3c7882f`.
+
+Hen has no MCP server and uses the skills-only submission path. OpenAI's migration guide asks developers whose core workflow relies on local execution or offline operation to contact their OpenAI partner before submission. A review-path inquiry describing Hen's local CLI, setup, permissions, and offline rendering was sent to OpenAI support before submission and escalated to a specialist. Any follow-up will be addressed separately; the confirmed publication status comes from the plugin portal. [Official guidance](https://developers.openai.com/plugins/guides/submit-claude-plugin).
 
 The public submission also needs a verified publisher identity, Apps Management write access, required listing and policy URLs, starter prompts, release notes, and five positive plus three negative test cases. Submit through the [plugin portal](https://platform.openai.com/plugins) and complete its review. [Submission requirements](https://developers.openai.com/plugins/deploy/submission).
 
 ### Anthropic
+
+Submitted for Claude Code through the Console on September 10, 2026. The Console confirmed receipt and shows **Submitted and pending review**. Cowork was not selected because it has not been tested. This is a review request, not a public listing or endorsement.
 
 Validate the package with `claude plugin validate`, then submit its public GitHub repository or ZIP through [Claude](https://claude.ai/settings/plugins/submit) or the [Console](https://platform.claude.com/plugins/submit). Inclusion and verified status are subject to Anthropic's review. [Official submission guide](https://claude.com/docs/plugins/submit).
 
@@ -58,8 +64,8 @@ The repository marketplace provides direct distribution while official-directory
 
 ### Still pending for official listings
 
-- Publisher verification and OpenAI's local-execution review path.
-- Final public listing fields and policy/terms URLs required by each portal.
-- Submission of the package and test cases; neither official directory has approved this release.
+- Anthropic's review and any requested follow-up.
+- Any OpenAI support follow-up about the local-execution review path.
+- Keep future directory versions and their metadata aligned with the tested release packages. Publication does not imply endorsement by either platform.
 
 See the [roadmap](../ROADMAP.md) for the wider project priorities.

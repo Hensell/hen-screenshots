@@ -15,7 +15,7 @@ The hosted editor will remain free, with no account or watermarks. The applicati
 - Reusable brand kits, language versions, and optional on-device translation packs.
 - Local project storage, portable backups, publication previews, and exports checked for the selected format and dimensions.
 - English, Spanish, and Brazilian Portuguese interfaces.
-- A downloadable local agent plugin and [setup guide](https://screenshots.hensell.dev/agents/). Public plugin-directory submission is still pending.
+- A downloadable local agent plugin, [setup guide](https://screenshots.hensell.dev/agents/), and [published OpenAI directory listing](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). The Anthropic directory submission is pending review.
 
 ## Next: make the first export easier
 
@@ -41,17 +41,20 @@ A collection is ready when it solves a specific presentation need and works with
 
 ## Agent plugin: GitHub release available
 
-Status: [v0.2.0 published on GitHub](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.0); official directory submissions planned.
+Status: [v0.2.0 published on GitHub](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.0) and in the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). Submitted to Anthropic for review on September 10, 2026.
 
 - [x] Choose and add the code license, and include the required license notices in the release archive.
 - [x] Test the extracted release package outside the source checkout, plus GitHub marketplace installation in Codex and an isolated Claude Code configuration.
 - [x] Verify native rendering on Linux x64, Windows x64, and macOS arm64. Record the exact systems in the [release verification](docs/plugin-distribution.md#verification).
 - [x] Publish a versioned GitHub Release with a built ZIP, checksum, release notes, and a reproducible build process.
 - [x] Add and test repository marketplace catalogs for direct installation in each host. Include the built renderer, fonts, and dependency setup.
-- [ ] Prepare listing assets, public support/privacy/terms links where required, and repeatable success and failure examples.
+- [x] Prepare listing assets, public support/privacy links, and repeatable success and failure examples. Complete each portal's required fields and attestations.
 - [x] Validate the Claude Code package and repository marketplace.
-- [ ] Submit the package to the Anthropic plugin directory.
-- [ ] Confirm OpenAI's review path for the plugin's local execution and offline rendering, then prepare its skills-only submission and publisher verification.
+- [x] Submit the package to the Anthropic plugin directory for Claude Code. Awaiting review; not yet listed or approved.
+- [x] Complete OpenAI publisher verification and create the skills-only draft.
+- [x] Pass OpenAI's package validation and automated skill scan.
+- [x] Submit to OpenAI, receive approval in the portal, and publish the approved version in its directory.
+- [ ] Address any follow-up from Anthropic review or OpenAI support about local execution.
 - [x] Update the website guide with verified GitHub and ZIP installation instructions in English, Spanish, and Brazilian Portuguese.
 
 See [plugin distribution readiness](docs/plugin-distribution.md) for the current gaps and official submission references. Direct distribution and inclusion in an official directory are separate milestones; directory approval is handled by each platform.
