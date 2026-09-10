@@ -1,4 +1,195 @@
 export const landingMessages: Record<string, readonly [string, string]> = {
+  "Free app store screenshots, Google Play banners, portfolio mockups, and caption translations. Create in your browser, with no account or watermarks.":
+    [
+      "Capturas para tiendas de apps, banners de Google Play, mockups para portafolios y traducción de textos, gratis. Crea en tu navegador, sin cuenta ni marcas de agua.",
+      "Capturas para lojas de apps, banners do Google Play, mockups para portfólios e tradução de textos, grátis. Crie no navegador, sem conta nem marcas-d’água.",
+    ],
+
+  "What you can make": ["Qué puedes crear", "O que você pode criar"],
+  Translations: ["Traducciones", "Traduções"],
+  "App store screenshots, Google Play banners, and portfolio mockups. Design a whole series, give it your brand, and create versions in other languages.":
+    [
+      "Capturas para las tiendas de apps, banners de Google Play y mockups para tu portafolio. Diseña una serie completa, dale tu identidad y crea versiones en otros idiomas.",
+      "Capturas para lojas de apps, banners do Google Play e mockups para seu portfólio. Crie uma série completa, dê a ela a sua identidade e prepare versões em outros idiomas.",
+    ],
+  "Phone, tablet & desktop": [
+    "Móvil, tablet y desktop",
+    "Celular, tablet e desktop",
+  ],
+  "Free caption translations": [
+    "Traducción de textos gratis",
+    "Tradução de textos grátis",
+  ],
+  "Create for free": ["Crear gratis", "Criar grátis"],
+  "One studio. Your whole launch.": [
+    "Un estudio. Todo tu lanzamiento.",
+    "Um estúdio. Todo o seu lançamento.",
+  ],
+  "Language versions": ["Versiones por idioma", "Versões por idioma"],
+  "MORE THAN A PHONE MOCKUP": [
+    "MUCHO MÁS QUE UN MOCKUP DE MÓVIL",
+    "MUITO ALÉM DE UM MOCKUP DE CELULAR",
+  ],
+  "Made for everything you’re about to share.": [
+    "Para todo lo que estás por compartir.",
+    "Para tudo o que você vai compartilhar.",
+  ],
+  "Launching an app? Updating your portfolio? Start with the right canvas, then make it yours.":
+    [
+      "¿Vas a lanzar una app o renovar tu portafolio? Empieza con el lienzo adecuado y dale tu estilo.",
+      "Vai lançar um app ou renovar seu portfólio? Comece com a tela no formato certo e deixe com a sua cara.",
+    ],
+  "Screenshots that tell the whole story.": [
+    "Capturas que cuentan toda la historia.",
+    "Capturas que contam a história toda.",
+  ],
+  "Build a matching series for iPhone, Android, iPad, and more. Portrait or landscape, with built-in store size presets.":
+    [
+      "Crea una serie consistente para iPhone, Android, iPad y más. En vertical u horizontal, con tamaños predefinidos para las tiendas.",
+      "Crie uma série consistente para iPhone, Android, iPad e muito mais. Na vertical ou horizontal, com tamanhos predefinidos para as lojas.",
+    ],
+  "Single slides · Matching series · Two-slide panoramas": [
+    "Slides individuales · Series · Panoramas de dos slides",
+    "Slides individuais · Séries · Panoramas de dois slides",
+  ],
+  "PORTFOLIOS & WEBSITES": ["PORTAFOLIOS Y SITIOS WEB", "PORTFÓLIOS E SITES"],
+  "Give your work a place to shine.": [
+    "Haz que tu trabajo se luzca.",
+    "Dê destaque ao seu trabalho.",
+  ],
+  "Project cards, square posts, or wide website visuals. Choose a preset or set your own dimensions.":
+    [
+      "Tarjetas de proyectos, publicaciones cuadradas o imágenes anchas para tu web. Elige un formato o define tus propias dimensiones.",
+      "Cards de projetos, posts quadrados ou imagens largas para seu site. Escolha um formato ou defina suas próprias dimensões.",
+    ],
+  "A banner to complete your listing.": [
+    "Un banner para completar tu página.",
+    "Um banner para completar sua página.",
+  ],
+  "Add your artwork or app icon. Create a 1024 × 500 feature graphic or a 1280 × 720 Android TV banner.":
+    [
+      "Agrega una imagen o el icono de tu app. Crea un gráfico de funciones de 1024 × 500 o un banner de Android TV de 1280 × 720.",
+      "Adicione uma imagem ou o ícone do seu app. Crie um recurso gráfico de 1024 × 500 ou um banner de Android TV de 1280 × 720.",
+    ],
+  "FrogHappy feature graphic made with the Brand Orbit banner template.": [
+    "Gráfico de funciones de FrogHappy creado con la plantilla de banner Brand Orbit.",
+    "Recurso gráfico do FrogHappy criado com o modelo de banner Brand Orbit.",
+  ],
+  "Actual designs exported from Hen Screenshots. Your screenshots go here.": [
+    "Diseños reales exportados desde Hen Screenshots. Aquí van tus capturas.",
+    "Designs reais exportados do Hen Screenshots. Suas capturas entram aqui.",
+  ],
+  "Create your first design": [
+    "Crear tu primer diseño",
+    "Criar seu primeiro design",
+  ],
+  "Halo design with English captions.": [
+    "Diseño Halo con textos en inglés.",
+    "Design Halo com textos em inglês.",
+  ],
+  "The same Halo design with Spanish captions.": [
+    "El mismo diseño Halo con textos en español.",
+    "O mesmo design Halo com textos em espanhol.",
+  ],
+  "The same Halo design with French captions.": [
+    "El mismo diseño Halo con textos en francés.",
+    "O mesmo design Halo com textos em francês.",
+  ],
+  "One ZIP. A folder per language.": [
+    "Un ZIP. Una carpeta por idioma.",
+    "Um ZIP. Uma pasta por idioma.",
+  ],
+  "Translate the captions. Keep the colors, frames, and layout linked.": [
+    "Traduce los textos. Mantén vinculados los colores, marcos y diseño.",
+    "Traduza os textos. Mantenha as cores, molduras e o layout vinculados.",
+  ],
+  "ALL YOUR DEVICES, TOGETHER": [
+    "TODOS TUS DISPOSITIVOS, JUNTOS",
+    "TODOS OS SEUS DISPOSITIVOS, JUNTOS",
+  ],
+  "One app. Every screen.": [
+    "Una app. Todas las pantallas.",
+    "Um app. Todas as telas.",
+  ],
+  "Show mobile, tablet, and desktop side by side. Each device gets its own screenshot, frame, size, and position.":
+    [
+      "Muestra tu app en móvil, tablet y desktop, lado a lado. Cada dispositivo tiene su propia captura, marco, tamaño y posición.",
+      "Mostre seu app no celular, tablet e desktop, lado a lado. Cada dispositivo tem sua própria captura, moldura, tamanho e posição.",
+    ],
+  "Pair any two. Bring all three. Or let a single screen take the spotlight.": [
+    "Combina dos, reúne los tres o deja que una sola pantalla sea la protagonista.",
+    "Combine dois, reúna os três ou deixe uma única tela ser a protagonista.",
+  ],
+  "Build your composition": ["Crear tu composición", "Criar sua composição"],
+  "Ecosystem template combining a laptop, tablet, and phone in one composition.":
+    [
+      "Plantilla Ecosystem con una laptop, una tablet y un móvil en una misma composición.",
+      "Modelo Ecosystem com um notebook, um tablet e um celular em uma única composição.",
+    ],
+  "Ecosystem · One of eight multi-device templates.": [
+    "Ecosystem · Una de las ocho plantillas con varios dispositivos.",
+    "Ecosystem · Um dos oito modelos com vários dispositivos.",
+  ],
+  "YOUR APP HAS A PERSONALITY": [
+    "TU APP TIENE PERSONALIDAD",
+    "SEU APP TEM PERSONALIDADE",
+  ],
+  "Let it show in every slide.": [
+    "Que se note en cada slide.",
+    "Mostre isso em cada slide.",
+  ],
+  "The template is a starting point. Keep the details that make your app yours.":
+    [
+      "La plantilla es el punto de partida. Conserva los detalles que hacen única a tu app.",
+      "O modelo é o ponto de partida. Mantenha os detalhes que fazem seu app ser único.",
+    ],
+  "Your brand, ready to reuse.": [
+    "Tu marca, lista para reutilizar.",
+    "Sua marca, pronta para reutilizar.",
+  ],
+  "Save colors and fonts in a kit for each app. Apply the look to a slide or the whole series.":
+    [
+      "Guarda colores y tipografías en un kit para cada app. Aplica el estilo a un slide o a toda la serie.",
+      "Salve cores e fontes em um kit para cada app. Aplique o estilo a um slide ou à série toda.",
+    ],
+  "Make room for your own details.": [
+    "Dale espacio a tus detalles.",
+    "Dê espaço aos seus detalhes.",
+  ],
+  "Add your logo, an award, or custom artwork. Move, resize, and rotate each image right on the canvas.":
+    [
+      "Agrega tu logo, un premio o una imagen propia. Mueve, redimensiona y gira cada imagen directamente en el lienzo.",
+      "Adicione seu logo, um prêmio ou uma imagem própria. Mova, redimensione e gire cada imagem diretamente na tela.",
+    ],
+  "Try things. Keep what works.": [
+    "Prueba. Quédate con lo que funciona.",
+    "Experimente. Fique com o que funciona.",
+  ],
+  "Drag the text and devices, replace a capture, or duplicate a slide. Undo and reset make it easy to explore.":
+    [
+      "Arrastra los textos y dispositivos, reemplaza una captura o duplica un slide. Explora con la tranquilidad de poder deshacer y restablecer.",
+      "Arraste textos e dispositivos, substitua uma captura ou duplique um slide. Explore com a tranquilidade de poder desfazer e restaurar.",
+    ],
+  "Choose App stores, Portfolio, or Banners. Add your captures or artwork; the studio helps you check and convert supported images.":
+    [
+      "Elige Tiendas de apps, Portafolio o Banners. Agrega tus capturas o imágenes; el estudio te ayuda a validar y convertir los formatos compatibles.",
+      "Escolha Lojas de apps, Portfólio ou Banners. Adicione suas capturas ou imagens; o estúdio ajuda a validar e converter os formatos compatíveis.",
+    ],
+  "Minimal, bold, dark, colorful, or seasonal. Search by style, filter by layout, and save your favorites for the next launch.":
+    [
+      "Minimalistas, llamativas, oscuras, coloridas o de temporada. Busca por estilo, filtra por composición y guarda tus favoritas para tu próximo lanzamiento.",
+      "Minimalistas, marcantes, escuras, coloridas ou sazonais. Busque por estilo, filtre por composição e salve suas favoritas para o próximo lançamento.",
+    ],
+  "Can I translate my screenshots for free?": [
+    "¿Puedo traducir mis capturas gratis?",
+    "Posso traduzir minhas capturas de graça?",
+  ],
+  "Yes. Create language versions and edit captions manually, or download optional OPUS-MT models for automatic translation between English, Spanish, French, and German. Other supported project languages use manual editing. Layouts stay linked, and your ZIP export contains a folder for each language.":
+    [
+      "Sí. Crea versiones por idioma y edita los textos manualmente, o descarga modelos OPUS-MT opcionales para traducir entre inglés, español, francés y alemán. Los demás idiomas disponibles se editan manualmente. Los diseños siguen vinculados y el ZIP incluye una carpeta por idioma.",
+      "Sim. Crie versões por idioma e edite os textos manualmente, ou baixe modelos OPUS-MT opcionais para traduzir entre inglês, espanhol, francês e alemão. Os demais idiomas disponíveis usam edição manual. Os layouts continuam vinculados e o ZIP inclui uma pasta por idioma.",
+    ],
+
   "FREE TRANSLATION, ON YOUR DEVICE": [
     "TRADUCCIÓN GRATIS, EN TU DISPOSITIVO",
     "TRADUÇÃO GRÁTIS, NO SEU DISPOSITIVO",
