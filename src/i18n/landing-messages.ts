@@ -1,4 +1,14 @@
 export const landingMessages: Record<string, readonly [string, string]> = {
+  "Support on Ko-fi": ["Apoyar en Ko-fi", "Apoiar no Ko-fi"],
+  "Want to support the next update?": [
+    "¿Quieres apoyar la próxima actualización?",
+    "Quer apoiar a próxima atualização?",
+  ],
+  "You can support Hen’s development on Ko-fi. Donations are optional; the studio stays free forever.":
+    [
+      "Puedes apoyar el desarrollo de Hen en Ko-fi. Las donaciones son opcionales; el estudio seguirá siendo gratis para siempre.",
+      "Você pode apoiar o desenvolvimento do Hen no Ko-fi. As doações são opcionais; o estúdio continuará grátis para sempre.",
+    ],
   "AI agents": ["Agentes AI", "Agentes de IA"],
   "Use with AI agents": ["Usar con agentes AI", "Usar com agentes de IA"],
   "Free app store screenshots, Google Play banners, portfolio mockups, and caption translations. Create in your browser, with no account or watermarks.":

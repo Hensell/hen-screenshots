@@ -6,7 +6,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 
 **Free forever. No account. No watermarks.** Every template, device frame, and full-resolution export is included.
 
-[**Open the studio →**](https://screenshots.hensell.dev/studio/) · [Explore the website](https://screenshots.hensell.dev/) · [Share feedback](mailto:hensell@hensell.dev?subject=Hen%20Screenshots%20feedback)
+[**Open the studio →**](https://screenshots.hensell.dev/studio/) · [Explore the website](https://screenshots.hensell.dev/) · [Share feedback](mailto:hensell@hensell.dev?subject=Hen%20Screenshots%20feedback) · [Support on Ko-fi](https://ko-fi.com/hensell)
 
 <p align="center">
   <img src="public/examples/halo.webp" width="24%" alt="Halo: a bold headline and phone against a dark background with a warm circular accent." />

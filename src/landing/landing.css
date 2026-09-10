@@ -666,6 +666,12 @@ details > p {
   flex-wrap: wrap;
   gap: 8px 24px;
 }
+.support-link {
+  min-height: 44px;
+}
+.support-link svg {
+  flex-shrink: 0;
+}
 @media (max-width: 1000px) {
   .wrap {
     width: calc(100% - 64px);
