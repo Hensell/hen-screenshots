@@ -15,6 +15,7 @@ export function useImages(assets: Asset[], shots: Shot[] = []) {
         shots
           .flatMap((shot) => [
             shot.assetId,
+            ...(shot.backgroundImage ? [shot.backgroundImage.assetId] : []),
             ...(shot.overlays ?? []).map((item) => item.assetId),
             ...(shot.companions ?? []).map((device) => device.assetId),
           ])

@@ -25,6 +25,7 @@ export function ProjectLibrary({
   onNew,
   onImport,
   onBrandKits,
+  onMyTemplates,
   onOpen,
 }: {
   projects: Project[];
@@ -34,6 +35,7 @@ export function ProjectLibrary({
   onNew: () => void;
   onImport: () => void;
   onBrandKits: () => void;
+  onMyTemplates: () => void;
   onOpen: (id: string) => Promise<void>;
 }) {
   const t = useT();
@@ -92,6 +94,15 @@ export function ProjectLibrary({
           >
             <Icon name="brand" />
             {t("Brand kits")}
+          </button>
+          <button
+            type="button"
+            className="button secondary"
+            disabled={!!busy}
+            onClick={onMyTemplates}
+          >
+            <Icon name="layout" />
+            {t("My templates")}
           </button>
         </div>
         {!projects.length && (

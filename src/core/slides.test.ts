@@ -1,3 +1,4 @@
+import { SCHEMA_VERSION } from "./model";
 import "fake-indexeddb/auto";
 import { afterEach, describe, expect, it } from "vitest";
 import {
@@ -175,7 +176,7 @@ describe("slides without a screenshot", () => {
       shots: [createShot("real-image", 0)],
     };
     const migrated = migrateProject(old);
-    expect(migrated).toEqual({ ...old, schemaVersion: 10 });
+    expect(migrated).toEqual({ ...old, schemaVersion: SCHEMA_VERSION });
     expect(old.schemaVersion).toBe(9);
     await expect(saveProject(migrated, [], 0)).rejects.toThrow("missing");
     for (const bad of [null, undefined, ""]) {

@@ -381,6 +381,31 @@ export function createScene(
     }
     drawTemplateDecoration(layer, style, canvas, template.panel);
 
+    if (shot.backgroundImage) {
+      const background = options.images?.get(shot.backgroundImage.assetId);
+      if (
+        !background?.complete ||
+        background.naturalWidth <= 0 ||
+        background.naturalHeight <= 0
+      )
+        throw new Error("The background image has not finished loading.");
+      const box = fitImage(
+        background.naturalWidth,
+        background.naturalHeight,
+        { x: -cropOffset, y: 0, width: spreadWidth, height: canvas.height },
+        shot.backgroundImage.fit,
+      );
+      layer.add(
+        new Konva.Image({
+          ...box,
+          image: background,
+          opacity: shot.backgroundImage.opacity,
+          listening: false,
+          name: "background-image",
+        }),
+      );
+    }
+
     const deviceNodes: {
       phone: Konva.Group;
       device: ReturnType<typeof deviceGeometry>;

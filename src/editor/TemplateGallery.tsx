@@ -174,11 +174,13 @@ export function TemplateGallery({
   images,
   onClose,
   onApply,
+  onMyTemplates,
 }: {
   project: Project;
   shot: Shot;
   images: Map<string, HTMLImageElement>;
   onClose: () => void;
+  onMyTemplates: () => void;
   onApply: (id: TemplateId, all: boolean, keepColors: boolean) => void;
 }) {
   const t = useT();
@@ -368,6 +370,13 @@ export function TemplateGallery({
             )}
           </p>
         </div>
+        <button
+          type="button"
+          className="button secondary"
+          onClick={onMyTemplates}
+        >
+          {t("My templates")}
+        </button>
         <button
           type="button"
           className="icon-button"

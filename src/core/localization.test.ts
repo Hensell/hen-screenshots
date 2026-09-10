@@ -1,3 +1,4 @@
+import { SCHEMA_VERSION } from "./model";
 import { describe, expect, it } from "vitest";
 import {
   createProject,
@@ -38,7 +39,10 @@ describe("linked language versions", () => {
       shots: [createShot("image", 0)],
     };
     const before = structuredClone(original);
-    expect(migrateProject(original)).toEqual({ ...before, schemaVersion: 10 });
+    expect(migrateProject(original)).toEqual({
+      ...before,
+      schemaVersion: SCHEMA_VERSION,
+    });
     expect(original).toEqual(before);
     expect(migrateProject(original).localization).toBeUndefined();
   });

@@ -2,7 +2,7 @@
 
 Create screenshot series from local captures with the same templates and scene engine as [Hen Screenshots](https://screenshots.hensell.dev/). Export PNGs, a contact-sheet preview, a ZIP organized by language, and an editable `.henscreenshots` project.
 
-**Version 0.2.0 · MIT · Local rendering.** Available from GitHub and the website. It is not listed in the official OpenAI or Anthropic directories. No Hen account, API key, MCP server, background service, or `.exe` is required. Your agent provider's plan and data policies still apply.
+**Version 0.2.1 · MIT · Local rendering.** Available from GitHub and the website. The OpenAI directory currently lists v0.2.0; v0.2.1 is available from this repository and the website, with support for project background images (schema 11). The Anthropic submission is pending review. No Hen account, API key, MCP server, background service, or `.exe` is required. Your agent provider's plan and data policies still apply.
 
 ## Requirements
 
@@ -50,18 +50,18 @@ From the extracted directory:
 node scripts/setup.mjs
 ```
 
-Setup installs the locked dependencies in that directory and runs `doctor`. It does not install Node globally or alter your source images. A successful check reports `"ok": true` and version `0.2.0`.
+Setup installs the locked dependencies in that directory and runs `doctor`. It does not install Node globally or alter your source images. A successful check reports `"ok": true` and version `0.2.1`.
 
 To verify the archive before extracting it:
 
 ```sh
 # macOS
-shasum -a 256 -c hen-screenshots-plugin-0.2.0.zip.sha256
+shasum -a 256 -c hen-screenshots-plugin-0.2.1.zip.sha256
 # Linux
-sha256sum -c hen-screenshots-plugin-0.2.0.zip.sha256
+sha256sum -c hen-screenshots-plugin-0.2.1.zip.sha256
 ```
 
-On Windows, use `Get-FileHash .\hen-screenshots-plugin-0.2.0.zip -Algorithm SHA256` in PowerShell and compare the hash with the `.sha256` file.
+On Windows, use `Get-FileHash .\hen-screenshots-plugin-0.2.1.zip -Algorithm SHA256` in PowerShell and compare the hash with the `.sha256` file.
 
 For a Claude Code session using the extracted ZIP:
 

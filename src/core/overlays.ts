@@ -138,6 +138,7 @@ export function sceneAssetIds(project: Project, shot: Shot) {
     ...new Set(
       [
         shot.assetId,
+        ...(shot.backgroundImage ? [shot.backgroundImage.assetId] : []),
         ...(shot.companions ?? []).map((item) => item.assetId),
         ...linkedShots(project, shot.id).flatMap((owner) =>
           (owner.overlays ?? []).map((item) => item.assetId),

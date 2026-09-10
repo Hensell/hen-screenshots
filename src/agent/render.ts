@@ -9,6 +9,7 @@ import type { Asset, Project, Shot } from "../core/model";
 import { LIMITS, validateProject, resolveStyle } from "../core/model";
 import {
   resolveExportProfile,
+  canonicalCanvas,
   validateExportPng,
 } from "../core/export-profiles";
 import {
@@ -59,6 +60,15 @@ async function imageFor(asset: Asset, project: Project, shot: Shot) {
           Math.max(overlay.width / asset.width, overlay.height / asset.height),
         );
     }
+  }
+  if (shot.backgroundImage?.assetId === asset.id) {
+    const canvas = canonicalCanvas(project);
+    scales.push(
+      Math.max(
+        (canvas.width * linkedShots(project, shot.id).length) / asset.width,
+        canvas.height / asset.height,
+      ),
+    );
   }
   const scale = Math.min(
     1,

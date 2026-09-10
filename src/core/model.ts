@@ -23,7 +23,7 @@ import {
 
 import { isLanguage, MAX_LANGUAGES, type LocalizedShot } from "./localization";
 
-export const SCHEMA_VERSION = 10 as const;
+export const SCHEMA_VERSION = 11 as const;
 export const CANVAS = { width: 1080, height: 1920 } as const;
 export const DEVICE_ROTATION_LIMITS = { min: -180, max: 180 } as const;
 export const PLACEMENT_LIMITS = {
@@ -167,7 +167,14 @@ export interface Style {
   accentTitle: boolean;
   titleSize: number;
 }
+export interface BackgroundImage {
+  assetId: string;
+  fit: "cover" | "contain";
+  opacity: number;
+}
+
 export interface Shot {
+  backgroundImage?: BackgroundImage;
   overlays?: ImageOverlay[];
   companions?: CompanionDevice[];
   translations?: Record<string, LocalizedShot>;
@@ -182,7 +189,7 @@ export interface Shot {
   textOffsets?: Partial<Record<TextElement, { x: number; y: number }>>;
 }
 export interface Project {
-  schemaVersion: 10;
+  schemaVersion: 11;
   localization?: { source: string; targets: string[] };
   brands?: Record<string, BrandKit>;
   brand?: string;
@@ -246,6 +253,10 @@ export type V3Style = Omit<Style, "device" | "template"> & {
   template: (typeof legacyTemplateIds)[number];
   device: "android" | "ios" | "ipad" | "android-tablet" | "monitor" | "laptop";
 };
+export interface V10Project extends Omit<Project, "schemaVersion" | "shots"> {
+  schemaVersion: 10;
+  shots: Omit<Shot, "backgroundImage">[];
+}
 export interface V9Project extends Omit<Project, "schemaVersion"> {
   schemaVersion: 9;
 }
@@ -319,6 +330,7 @@ export interface LegacyProject extends Omit<
 export function migrateProject(
   project:
     | Project
+    | V10Project
     | V9Project
     | V8Project
     | V7Project
@@ -337,7 +349,8 @@ export function migrateProject(
     project.schemaVersion === 6 ||
     project.schemaVersion === 7 ||
     project.schemaVersion === 8 ||
-    project.schemaVersion === 9
+    project.schemaVersion === 9 ||
+    project.schemaVersion === 10
   )
     return { ...structuredClone(project), schemaVersion: SCHEMA_VERSION };
   return {
@@ -429,6 +442,7 @@ const v2StyleKeys = [
 const styleKeys = [...v2StyleKeys, "deviceOrientation"];
 type StoredProject =
   | Project
+  | V10Project
   | V9Project
   | V8Project
   | V7Project
@@ -485,7 +499,7 @@ function numeric(
 }
 function validateStyle(
   value: unknown,
-  version: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10,
+  version: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11,
   partial = false,
 ): void {
   const entries = object(
@@ -569,6 +583,7 @@ export function validateProject(
     version !== 7 &&
     version !== 8 &&
     version !== 9 &&
+    version !== 10 &&
     version !== SCHEMA_VERSION
   )
     throw new Error("This project uses an unsupported project version.");
@@ -654,6 +669,12 @@ export function validateProject(
       "subtitle",
       "style",
       "phone",
+      ...(version >= 11 &&
+      value &&
+      typeof value === "object" &&
+      Object.hasOwn(value, "backgroundImage")
+        ? ["backgroundImage"]
+        : []),
       ...(version >= 9 &&
       value &&
       typeof value === "object" &&
@@ -685,6 +706,16 @@ export function validateProject(
         ? ["brand"]
         : []),
     ]);
+    if (Object.hasOwn(shot, "backgroundImage")) {
+      const background = object(shot.backgroundImage, [
+        "assetId",
+        "fit",
+        "opacity",
+      ]);
+      identifier(background.assetId);
+      if (background.fit !== "cover" && background.fit !== "contain") invalid();
+      numeric(background.opacity, 0, 1);
+    }
     if (Object.hasOwn(shot, "overlays")) {
       if (
         !Array.isArray(shot.overlays) ||
@@ -891,6 +922,9 @@ export function validateProject(
       if (
         other.template !== panoramaFamilies[start] ||
         left.assetId !== right.assetId ||
+        (["assetId", "fit", "opacity"] as const).some(
+          (key) => left.backgroundImage?.[key] !== right.backgroundImage?.[key],
+        ) ||
         ([...styleKeys, "titleFont", "bodyFont"] as (keyof Style)[]).some(
           (key) => key !== "template" && style[key] !== other[key],
         ) ||

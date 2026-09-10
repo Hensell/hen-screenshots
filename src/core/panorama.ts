@@ -339,6 +339,7 @@ export function panoramaPreview(
       textOffsets: _offsets,
       companions: _companions,
       overlays: _overlays,
+      backgroundImage: _backgroundImage,
       ...content
     } = source;
     return {
@@ -376,6 +377,9 @@ export function panoramaPreview(
               }),
             ),
           }
+        : {}),
+      ...(left.backgroundImage
+        ? { backgroundImage: { ...left.backgroundImage } }
         : {}),
       assetId: left.assetId,
       style: {

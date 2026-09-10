@@ -1,3 +1,4 @@
+import { SCHEMA_VERSION } from "../core/model";
 import "fake-indexeddb/auto";
 import Dexie from "dexie";
 import { describe, expect, it } from "vitest";
@@ -29,7 +30,7 @@ describe("version 3 project migration", () => {
     const source = structuredClone(existing);
     expect(migrateProject(source)).toEqual({
       ...existing,
-      schemaVersion: 10,
+      schemaVersion: SCHEMA_VERSION,
       customSize: { width: 1600, height: 1200 },
     });
     expect(source).toEqual(existing);

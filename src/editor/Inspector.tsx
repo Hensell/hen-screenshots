@@ -1,3 +1,5 @@
+import "./my-templates.css";
+import { BackgroundImageInspector } from "./BackgroundImageInspector";
 import { resolveExportProfile } from "../core/export-profiles";
 import { OverlayInspector } from "./OverlayInspector";
 import type { OverlayElement } from "../core/model";
@@ -113,6 +115,8 @@ export function Inspector({
   onReplace,
   onSelectDevice,
   onTemplates,
+  onMyTemplates,
+  onBackgroundUpload,
   tab,
   onTabChange,
   selectedElement,
@@ -130,6 +134,8 @@ export function Inspector({
   onReplace: (element?: DeviceElement) => void;
   onSelectDevice: (element: DeviceElement) => void;
   onTemplates: () => void;
+  onMyTemplates: (saving: boolean) => void;
+  onBackgroundUpload: () => void;
   tab: InspectorTab;
   onTabChange: (tab: InspectorTab) => void;
   selectedElement: CanvasElement | null;
@@ -376,6 +382,27 @@ export function Inspector({
               <Icon name="layout" size={15} />
             </button>
           </section>
+          <section className="property-section">
+            <h3>{t("Make it reusable")}</h3>
+            <div className="saved-template-actions">
+              <button
+                type="button"
+                className="text-button"
+                onClick={() => onMyTemplates(true)}
+              >
+                <Icon name="plus" size={14} />
+                {t("Save as template")}
+              </button>
+              <button
+                type="button"
+                className="text-button"
+                onClick={() => onMyTemplates(false)}
+              >
+                {t("My templates")}
+              </button>
+            </div>
+          </section>
+          <BackgroundImageInspector shot={shot} onUpload={onBackgroundUpload} />
           <OverlayInspector
             key={shot.id}
             project={project}

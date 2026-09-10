@@ -1,3 +1,4 @@
+import { SCHEMA_VERSION } from "../core/model";
 import "fake-indexeddb/auto";
 import Dexie from "dexie";
 import { describe, expect, it } from "vitest";
@@ -37,7 +38,10 @@ describe("brand kit database upgrade", () => {
     const repository = await import("./repository");
     try {
       const loaded = await repository.loadProject(project.id);
-      expect(loaded.project).toEqual({ ...project, schemaVersion: 10 });
+      expect(loaded.project).toEqual({
+        ...project,
+        schemaVersion: SCHEMA_VERSION,
+      });
       expect(loaded.revision).toBe(8);
       expect(await loaded.assets[0].blob.text()).toBe("original image bytes");
       expect(await repository.listBrandKits()).toEqual([]);

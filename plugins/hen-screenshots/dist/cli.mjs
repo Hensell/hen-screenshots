@@ -8,7 +8,7 @@ import Konva from "konva";
 import "konva/skia-backend";
 import { FontLibrary, Image as Image$1 } from "skia-canvas";
 //#region plugins/hen-screenshots/package.json
-var version = "0.2.0";
+var version = "0.2.1";
 //#endregion
 //#region src/core/device-composition-spec.ts
 var deviceCompositions = {
@@ -737,6 +737,7 @@ function localizedProject(project, locale) {
 function referencedAssetIds(project) {
 	return [...new Set(project.shots.flatMap((shot) => [
 		shot.assetId,
+		...shot.backgroundImage ? [shot.backgroundImage.assetId] : [],
 		...(shot.overlays ?? []).map((item) => item.assetId),
 		...(shot.companions ?? []).map((device) => device.assetId),
 		...Object.values(shot.translations ?? {}).flatMap((content) => [...content.assetId ? [content.assetId] : [], ...Object.values(content.deviceAssets ?? {})])
@@ -887,14 +888,14 @@ var v3ExportProfiles = [
 /** Add presentation defaults without changing an existing project's content or identity. */
 function migrateProject(project) {
 	validateProject(project);
-	if (project.schemaVersion === 10) return project;
-	if (project.schemaVersion === 4 || project.schemaVersion === 5 || project.schemaVersion === 6 || project.schemaVersion === 7 || project.schemaVersion === 8 || project.schemaVersion === 9) return {
+	if (project.schemaVersion === 11) return project;
+	if (project.schemaVersion === 4 || project.schemaVersion === 5 || project.schemaVersion === 6 || project.schemaVersion === 7 || project.schemaVersion === 8 || project.schemaVersion === 9 || project.schemaVersion === 10) return {
 		...structuredClone(project),
-		schemaVersion: 10
+		schemaVersion: 11
 	};
 	return {
 		...project,
-		schemaVersion: 10,
+		schemaVersion: 11,
 		exportProfile: project.schemaVersion === 3 ? project.exportProfile : DEFAULT_EXPORT_PROFILE,
 		customSize: { ...DEFAULT_CUSTOM_SIZE },
 		style: {
@@ -914,7 +915,7 @@ function migrateProject(project) {
 function createProject(name = "Untitled app") {
 	const now = Date.now();
 	return {
-		schemaVersion: 10,
+		schemaVersion: 11,
 		exportProfile: DEFAULT_EXPORT_PROFILE,
 		customSize: { ...DEFAULT_CUSTOM_SIZE },
 		id: crypto.randomUUID(),
@@ -1045,7 +1046,7 @@ function validateStyle(value, version, partial = false) {
 function validateProject(value) {
 	if (!value || typeof value !== "object" || Array.isArray(value)) invalid();
 	const version = value.schemaVersion;
-	if (version !== 1 && version !== 2 && version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8 && version !== 9 && version !== 10) throw new Error("This project uses an unsupported project version.");
+	if (version !== 1 && version !== 2 && version !== 3 && version !== 4 && version !== 5 && version !== 6 && version !== 7 && version !== 8 && version !== 9 && version !== 10 && version !== 11) throw new Error("This project uses an unsupported project version.");
 	const raw = object$1(value, [
 		"schemaVersion",
 		"id",
@@ -1099,12 +1100,23 @@ function validateProject(value) {
 			"subtitle",
 			"style",
 			"phone",
+			...version >= 11 && value && typeof value === "object" && Object.hasOwn(value, "backgroundImage") ? ["backgroundImage"] : [],
 			...version >= 9 && value && typeof value === "object" && Object.hasOwn(value, "overlays") ? ["overlays"] : [],
 			...version >= 8 && value && typeof value === "object" && Object.hasOwn(value, "companions") ? ["companions"] : [],
 			...version >= 7 && value && typeof value === "object" && Object.hasOwn(value, "translations") ? ["translations"] : [],
 			...version >= 5 && value && typeof value === "object" && Object.hasOwn(value, "textOffsets") ? ["textOffsets"] : [],
 			...version >= 6 && value && typeof value === "object" && Object.hasOwn(value, "brand") ? ["brand"] : []
 		]);
+		if (Object.hasOwn(shot, "backgroundImage")) {
+			const background = object$1(shot.backgroundImage, [
+				"assetId",
+				"fit",
+				"opacity"
+			]);
+			identifier(background.assetId);
+			if (background.fit !== "cover" && background.fit !== "contain") invalid();
+			numeric(background.opacity, 0, 1);
+		}
 		if (Object.hasOwn(shot, "overlays")) {
 			if (!Array.isArray(shot.overlays) || !shot.overlays.length || shot.overlays.length > LIMITS.overlays) invalid();
 			const overlayIds = /* @__PURE__ */ new Set();
@@ -1276,6 +1288,10 @@ function validateProject(value) {
 			const other = resolveStyle(project, right);
 			if (version >= 7 && project.localization?.targets.some((locale) => (left.translations?.[locale]?.assetId ?? left.assetId) !== (right.translations?.[locale]?.assetId ?? right.assetId))) invalid();
 			if (other.template !== panoramaFamilies[start] || left.assetId !== right.assetId || [
+				"assetId",
+				"fit",
+				"opacity"
+			].some((key) => left.backgroundImage?.[key] !== right.backgroundImage?.[key]) || [
 				...styleKeys,
 				"titleFont",
 				"bodyFont"
@@ -2058,7 +2074,7 @@ function panoramaPreview(project, shot, keepColors = false, family = "panorama")
 	};
 	const phone = panoramaLayout(project, shared).phone;
 	return [left, right].map((source, index) => {
-		const { textOffsets: _offsets, companions: _companions, overlays: _overlays, ...content } = source;
+		const { textOffsets: _offsets, companions: _companions, overlays: _overlays, backgroundImage: _backgroundImage, ...content } = source;
 		return {
 			...content,
 			...source.overlays ? { overlays: structuredClone(source.overlays) } : {},
@@ -2075,6 +2091,7 @@ function panoramaPreview(project, shot, keepColors = false, family = "panorama")
 					...left.translations?.[locale]?.assetId ? { assetId: left.translations[locale].assetId } : {}
 				}];
 			})) } : {},
+			...left.backgroundImage ? { backgroundImage: { ...left.backgroundImage } } : {},
 			assetId: left.assetId,
 			style: {
 				...shared,
@@ -4672,18 +4689,19 @@ function number(value, minimum, maximum, integer = false) {
 	if (typeof value !== "number" || !Number.isFinite(value) || value < minimum || value > maximum || integer && !Number.isSafeInteger(value)) fail();
 	return value;
 }
-function manifest(value) {
+function manifest(value, format) {
 	const raw = record(value, [
 		"format",
 		"schemaVersion",
 		"project",
 		"assets"
 	]);
-	if (raw.format !== "hen-screenshots" || raw.schemaVersion !== 1 && raw.schemaVersion !== 2 && raw.schemaVersion !== 3 && raw.schemaVersion !== 4 && raw.schemaVersion !== 5 && raw.schemaVersion !== 6 && raw.schemaVersion !== 7 && raw.schemaVersion !== 8 && raw.schemaVersion !== 9 && raw.schemaVersion !== 10) fail("This backup uses an unsupported project version.");
+	if (raw.format !== format) fail(format === "hen-screenshots-template" ? "This file is not a reusable template. Export it from My templates." : "This is not a project backup. Open template files from My templates.");
+	if (raw.schemaVersion !== 1 && raw.schemaVersion !== 2 && raw.schemaVersion !== 3 && raw.schemaVersion !== 4 && raw.schemaVersion !== 5 && raw.schemaVersion !== 6 && raw.schemaVersion !== 7 && raw.schemaVersion !== 8 && raw.schemaVersion !== 9 && raw.schemaVersion !== 10 && raw.schemaVersion !== 11) fail("This backup uses an unsupported project version.");
 	validateProject(raw.project);
 	if (raw.project.schemaVersion !== raw.schemaVersion) fail("The backup and project versions do not match.");
 	const document = migrateProject(raw.project);
-	if (!Array.isArray(raw.assets) || raw.assets.length > LIMITS.shots * (30 + LIMITS.overlays)) fail();
+	if (!Array.isArray(raw.assets) || raw.assets.length > LIMITS.shots * (30 + LIMITS.overlays + 1)) fail();
 	const assets = raw.assets.map((value) => {
 		const entry = record(value, [
 			"id",
@@ -4716,14 +4734,14 @@ function manifest(value) {
 	const references = new Set(referencedAssetIds(document));
 	if (assets.length !== references.size || assets.some((asset) => !references.has(asset.id))) fail("The backup is missing screenshot images or contains unused images.");
 	return {
-		format: "hen-screenshots",
-		schemaVersion: 10,
+		format,
+		schemaVersion: 11,
 		project: document,
 		assets
 	};
 }
 /** Original image bytes are stored without additional ZIP compression. */
-async function exportProject(document, sourceAssets) {
+async function exportProject(document, sourceAssets, format = "hen-screenshots") {
 	const assetsById = new Map(sourceAssets.map((asset) => [asset.id, asset]));
 	const referenced = [...new Set(referencedAssetIds(document))].map((assetId) => {
 		const asset = assetsById.get(assetId);
@@ -4731,8 +4749,8 @@ async function exportProject(document, sourceAssets) {
 		return asset;
 	});
 	const metadata = manifest({
-		format: "hen-screenshots",
-		schemaVersion: 10,
+		format,
+		schemaVersion: 11,
 		project: document,
 		assets: referenced.map((asset) => ({
 			id: asset.id,
@@ -4743,7 +4761,7 @@ async function exportProject(document, sourceAssets) {
 			size: asset.blob.size,
 			path: `assets/${asset.id}.${extensions[asset.mime]}`
 		}))
-	});
+	}, format);
 	const encoded = strToU8(JSON.stringify(metadata));
 	if (encoded.byteLength > MANIFEST_LIMIT) fail("The project document is too large to export.");
 	const files = { "project.json": encoded };
@@ -4751,14 +4769,14 @@ async function exportProject(document, sourceAssets) {
 	return new Blob([new Uint8Array(zipSync(files, { level: 0 }))], { type: "application/zip" });
 }
 /** Read a bounded app backup, validate its real images, and return a new unsaved project. */
-async function importProject(file, decodeImages = importImages) {
+async function importProject(file, decodeImages = importImages, format = "hen-screenshots") {
 	if (file.size < 22 || file.size > ARCHIVE_LIMIT) fail("Choose a valid project backup no larger than 124 MB.");
 	const bytes = new Uint8Array(await file.arrayBuffer());
 	const entries = /* @__PURE__ */ new Map();
 	let total = 0;
 	try {
 		unzipSync(bytes, { filter: (entry) => {
-			if (entries.size >= LIMITS.shots * (30 + LIMITS.overlays) + 1 || entries.has(entry.name)) fail("The backup contains too many files or duplicate filenames.");
+			if (entries.size >= LIMITS.shots * (30 + LIMITS.overlays + 1) + 1 || entries.has(entry.name)) fail("The backup contains too many files or duplicate filenames.");
 			if (entry.name !== "project.json" && !/^assets\/[a-zA-Z0-9_-]+\.(png|jpg|webp)$/.test(entry.name)) fail("The backup contains an unsupported file path.");
 			if (entry.compression !== 0 || entry.size !== entry.originalSize) fail("This backup uses unsupported compression. Use an original Hen Screenshots backup.");
 			const maximum = entry.name === "project.json" ? MANIFEST_LIMIT : LIMITS.assetBytes;
@@ -4777,7 +4795,7 @@ async function importProject(file, decodeImages = importImages) {
 	for (const [name, entry] of entries) if (extracted[name]?.byteLength !== entry.originalSize) fail("The backup is truncated.");
 	let metadata;
 	try {
-		metadata = manifest(JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(extracted["project.json"])));
+		metadata = manifest(JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(extracted["project.json"])), format);
 	} catch (error) {
 		if (error instanceof SyntaxError || error instanceof TypeError) fail("The backup document is invalid.");
 		throw error;
@@ -4811,6 +4829,10 @@ async function importProject(file, decodeImages = importImages) {
 				...shot,
 				id: crypto.randomUUID(),
 				assetId: shot.assetId === null ? null : ids.get(shot.assetId),
+				...shot.backgroundImage ? { backgroundImage: {
+					...shot.backgroundImage,
+					assetId: ids.get(shot.backgroundImage.assetId)
+				} } : {},
 				...shot.overlays ? { overlays: shot.overlays.map((item) => ({
 					...item,
 					id: crypto.randomUUID(),
@@ -5137,6 +5159,7 @@ function sceneAssetIds(project, shot) {
 	if (resolveExportProfile(project).sourceOnly) return shot.assetId === null ? [] : [shot.assetId];
 	return [...new Set([
 		shot.assetId,
+		...shot.backgroundImage ? [shot.backgroundImage.assetId] : [],
 		...(shot.companions ?? []).map((item) => item.assetId),
 		...linkedShots(project, shot.id).flatMap((owner) => (owner.overlays ?? []).map((item) => item.assetId)),
 		...(shot.overlays ?? []).map((item) => item.assetId)
@@ -8686,6 +8709,23 @@ function createScene(project, shot, image, options = {}) {
 			}));
 		}
 		drawTemplateDecoration(layer, style, canvas, template.panel);
+		if (shot.backgroundImage) {
+			const background = options.images?.get(shot.backgroundImage.assetId);
+			if (!background?.complete || background.naturalWidth <= 0 || background.naturalHeight <= 0) throw new Error("The background image has not finished loading.");
+			const box = fitImage(background.naturalWidth, background.naturalHeight, {
+				x: -cropOffset,
+				y: 0,
+				width: spreadWidth,
+				height: canvas.height
+			}, shot.backgroundImage.fit);
+			layer.add(new Konva.Image({
+				...box,
+				image: background,
+				opacity: shot.backgroundImage.opacity,
+				listening: false,
+				name: "background-image"
+			}));
+		}
 		const deviceNodes = [];
 		const elements = ["device", ...(shot.companions ?? []).map((device) => `device:${device.id}`)];
 		for (const element of elements) {
@@ -8914,6 +8954,10 @@ async function imageFor(asset, project, shot) {
 		scales.push(fitImage(asset.width, asset.height, screen, style.fit).width / asset.width);
 	}
 	for (const owner of linkedShots(project, shot.id)) for (const overlay of owner.overlays ?? []) if (overlay.assetId === asset.id) scales.push(Math.max(overlay.width / asset.width, overlay.height / asset.height));
+	if (shot.backgroundImage?.assetId === asset.id) {
+		const canvas = canonicalCanvas(project);
+		scales.push(Math.max(canvas.width * linkedShots(project, shot.id).length / asset.width, canvas.height / asset.height));
+	}
 	const scale = Math.min(1, Math.max(...scales, 0) * resolveExportProfile(project).width / 1080);
 	if (!(scale > 0)) throw new Error("An image has no valid placement in this scene.");
 	const bytes = await sharp(Buffer.from(await asset.blob.arrayBuffer()), {

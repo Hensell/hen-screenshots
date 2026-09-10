@@ -1,3 +1,4 @@
+import { SCHEMA_VERSION } from "./model";
 import { describe, expect, it } from "vitest";
 import {
   createProject,
@@ -154,7 +155,7 @@ describe("extra image layers", () => {
     const old: V8Project = { ...fixture(), schemaVersion: 8 },
       before = structuredClone(old);
     const migrated = migrateProject(old);
-    expect(migrated).toEqual({ ...before, schemaVersion: 10 });
+    expect(migrated).toEqual({ ...before, schemaVersion: SCHEMA_VERSION });
     expect(old).toEqual(before);
     validateProject(migrated);
   });

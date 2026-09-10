@@ -1,3 +1,4 @@
+import { SCHEMA_VERSION } from "./model";
 import { describe, expect, it } from "vitest";
 import {
   createProject,
@@ -182,7 +183,7 @@ describe("multi-device compositions", () => {
     const old: V7Project = { ...fixture(), schemaVersion: 7 };
     const before = structuredClone(old);
     const upgraded = migrateProject(old);
-    expect(upgraded).toEqual({ ...before, schemaVersion: 10 });
+    expect(upgraded).toEqual({ ...before, schemaVersion: SCHEMA_VERSION });
     expect(old).toEqual(before);
     validateProject(upgraded);
   });

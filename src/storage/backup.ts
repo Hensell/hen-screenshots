@@ -10,6 +10,7 @@ import {
 } from "../core/model";
 import type { Asset, LoadedProject, Project } from "../core/model";
 
+export type ArchiveFormat = "hen-screenshots" | "hen-screenshots-template";
 const MANIFEST_LIMIT = 3 * 1024 * 1024;
 const ARCHIVE_LIMIT = LIMITS.totalBytes + MANIFEST_LIMIT + 1024 * 1024;
 const extensions: Record<Asset["mime"], string> = {
@@ -28,7 +29,7 @@ interface AssetInfo {
   path: string;
 }
 interface Manifest {
-  format: "hen-screenshots";
+  format: ArchiveFormat;
   schemaVersion: typeof SCHEMA_VERSION;
   project: Project;
   assets: AssetInfo[];
@@ -80,20 +81,26 @@ function number(
     fail();
   return value;
 }
-function manifest(value: unknown): Manifest {
+function manifest(value: unknown, format: ArchiveFormat): Manifest {
   const raw = record(value, ["format", "schemaVersion", "project", "assets"]);
+  if (raw.format !== format)
+    fail(
+      format === "hen-screenshots-template"
+        ? "This file is not a reusable template. Export it from My templates."
+        : "This is not a project backup. Open template files from My templates.",
+    );
   if (
-    raw.format !== "hen-screenshots" ||
-    (raw.schemaVersion !== 1 &&
-      raw.schemaVersion !== 2 &&
-      raw.schemaVersion !== 3 &&
-      raw.schemaVersion !== 4 &&
-      raw.schemaVersion !== 5 &&
-      raw.schemaVersion !== 6 &&
-      raw.schemaVersion !== 7 &&
-      raw.schemaVersion !== 8 &&
-      raw.schemaVersion !== 9 &&
-      raw.schemaVersion !== SCHEMA_VERSION)
+    raw.schemaVersion !== 1 &&
+    raw.schemaVersion !== 2 &&
+    raw.schemaVersion !== 3 &&
+    raw.schemaVersion !== 4 &&
+    raw.schemaVersion !== 5 &&
+    raw.schemaVersion !== 6 &&
+    raw.schemaVersion !== 7 &&
+    raw.schemaVersion !== 8 &&
+    raw.schemaVersion !== 9 &&
+    raw.schemaVersion !== 10 &&
+    raw.schemaVersion !== SCHEMA_VERSION
   )
     fail("This backup uses an unsupported project version.");
   validateProject(raw.project);
@@ -102,7 +109,7 @@ function manifest(value: unknown): Manifest {
   const document = migrateProject(raw.project);
   if (
     !Array.isArray(raw.assets) ||
-    raw.assets.length > LIMITS.shots * (3 * MAX_LANGUAGES + LIMITS.overlays)
+    raw.assets.length > LIMITS.shots * (3 * MAX_LANGUAGES + LIMITS.overlays + 1)
   )
     fail();
   const assets: AssetInfo[] = raw.assets.map((value) => {
@@ -150,7 +157,7 @@ function manifest(value: unknown): Manifest {
   )
     fail("The backup is missing screenshot images or contains unused images.");
   return {
-    format: "hen-screenshots",
+    format,
     schemaVersion: SCHEMA_VERSION,
     project: document,
     assets,
@@ -161,6 +168,7 @@ function manifest(value: unknown): Manifest {
 export async function exportProject(
   document: Project,
   sourceAssets: Asset[],
+  format: ArchiveFormat = "hen-screenshots",
 ): Promise<Blob> {
   const assetsById = new Map(sourceAssets.map((asset) => [asset.id, asset]));
   const referenced = [...new Set(referencedAssetIds(document))].map(
@@ -171,20 +179,23 @@ export async function exportProject(
       return asset;
     },
   );
-  const metadata: Manifest = manifest({
-    format: "hen-screenshots",
-    schemaVersion: SCHEMA_VERSION,
-    project: document,
-    assets: referenced.map((asset) => ({
-      id: asset.id,
-      name: asset.name,
-      mime: asset.mime,
-      width: asset.width,
-      height: asset.height,
-      size: asset.blob.size,
-      path: `assets/${asset.id}.${extensions[asset.mime]}`,
-    })),
-  });
+  const metadata: Manifest = manifest(
+    {
+      format,
+      schemaVersion: SCHEMA_VERSION,
+      project: document,
+      assets: referenced.map((asset) => ({
+        id: asset.id,
+        name: asset.name,
+        mime: asset.mime,
+        width: asset.width,
+        height: asset.height,
+        size: asset.blob.size,
+        path: `assets/${asset.id}.${extensions[asset.mime]}`,
+      })),
+    },
+    format,
+  );
   const encoded = strToU8(JSON.stringify(metadata));
   if (encoded.byteLength > MANIFEST_LIMIT)
     fail("The project document is too large to export.");
@@ -202,6 +213,7 @@ export async function exportProject(
 export async function importProject(
   file: File,
   decodeImages: typeof importImages = importImages,
+  format: ArchiveFormat = "hen-screenshots",
 ): Promise<LoadedProject> {
   if (file.size < 22 || file.size > ARCHIVE_LIMIT)
     fail("Choose a valid project backup no larger than 124 MB.");
@@ -215,7 +227,7 @@ export async function importProject(
       filter: (entry) => {
         if (
           entries.size >=
-            LIMITS.shots * (3 * MAX_LANGUAGES + LIMITS.overlays) + 1 ||
+            LIMITS.shots * (3 * MAX_LANGUAGES + LIMITS.overlays + 1) + 1 ||
           entries.has(entry.name)
         )
           fail("The backup contains too many files or duplicate filenames.");
@@ -256,6 +268,7 @@ export async function importProject(
           extracted["project.json"],
         ),
       ),
+      format,
     );
   } catch (error) {
     if (error instanceof SyntaxError || error instanceof TypeError)
@@ -304,6 +317,14 @@ export async function importProject(
         ...shot,
         id: crypto.randomUUID(),
         assetId: shot.assetId === null ? null : ids.get(shot.assetId)!,
+        ...(shot.backgroundImage
+          ? {
+              backgroundImage: {
+                ...shot.backgroundImage,
+                assetId: ids.get(shot.backgroundImage.assetId)!,
+              },
+            }
+          : {}),
         ...(shot.overlays
           ? {
               overlays: shot.overlays.map((item) => ({

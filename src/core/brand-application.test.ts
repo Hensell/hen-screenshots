@@ -1,3 +1,4 @@
+import { SCHEMA_VERSION } from "./model";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   appliedBrand,
@@ -135,7 +136,10 @@ describe("reusable brand identities", () => {
     const old: V5Project = { ...project(), schemaVersion: 5 };
     old.shots[0].textOffsets = { subtitle: { x: 38, y: -91 } };
     const before = structuredClone(old);
-    expect(migrateProject(old)).toEqual({ ...old, schemaVersion: 10 });
+    expect(migrateProject(old)).toEqual({
+      ...old,
+      schemaVersion: SCHEMA_VERSION,
+    });
     expect(old).toEqual(before);
   });
   it("rejects missing brand references, mismatched snapshot keys and unknown fonts", () => {

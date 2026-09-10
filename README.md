@@ -56,7 +56,7 @@ Design the pair together, keep a different caption on each slide, and export two
 
 A local plugin for Codex and Claude Code can turn a folder of captures into a styled series, render a preview, and export PNGs by language plus an editable Hen project. It reuses the web editor’s templates and scene engine, with native rendering through Konva and Skia. Requires Node.js 22.12+ and a one-time dependency installation.
 
-See [plugin setup and commands](plugins/hen-screenshots/README.md) and the [design spec](plugins/hen-screenshots/skills/create-screenshots/references/design-spec.md). Build it with `npm run plugin:build`; create a local ZIP with `npm run plugin:pack`. Version 0.2.0 is distributed through GitHub and the website, with repository marketplaces for Codex and Claude Code. It is not listed in either official plugin directory.
+See [plugin setup and commands](plugins/hen-screenshots/README.md) and the [design spec](plugins/hen-screenshots/skills/create-screenshots/references/design-spec.md). Build it with `npm run plugin:build`; create a local ZIP with `npm run plugin:pack`. Version 0.2.1 is available from this repository and the website, including support for projects with background images (schema 11). The [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6) currently lists v0.2.0. Anthropic review is pending; Codex and Claude Code can also install from the repository marketplace.
 
 The [AI agents guide](https://screenshots.hensell.dev/agents/) includes a built ZIP download, one-time setup, copyable Codex and Claude Code examples, and the workflow for opening generated projects in the studio. It is also available in [Spanish](https://screenshots.hensell.dev/es/agents/) and [Brazilian Portuguese](https://screenshots.hensell.dev/pt-br/agents/). Website builds package the current plugin version automatically; `npm run plugin:pack -- --web` prepares the download for local development.
 
@@ -127,6 +127,16 @@ Use **Canvas → Banner format** to switch between these fixed sizes. Drag the i
 You can keep several alternatives in one project. Select and export the design you want; Google Play uses one banner per format and language. Selecting multiple languages creates a ZIP with a folder per language. Keep essential text and artwork away from the edges, which Google Play may crop or overlay. A feature graphic should communicate your app's experience; avoid simply enlarging its icon.
 
 Dimensions and file requirements checked on **September 8, 2026** against [Google Play's official preview asset requirements](https://support.google.com/googleplay/android-developer/answer/9866151?hl=en).
+
+## Your own reusable templates
+
+Add artwork in **Design → Background image**, then choose whether it fills the canvas or fits inside it. Adjust opacity over the template’s colors and decorations. In a panorama, the background spans both slides continuously. Captions, device frames, and extra images stay independently editable.
+
+Choose **Design → Save as template** to keep a slide or a complete panorama in **My templates**. A saved template includes the current language’s text, typography, layout, background, and extra images (such as logos). Device captures are replaced with empty slots; other language versions and brand-kit metadata are omitted. Text already embedded in an uploaded image stays part of that image.
+
+Open **My templates** from the project library, the template gallery, or the Design tab. Search your saved designs and preview one before using it. **Add to this project** appends new slides when the workspace, proportions, and slide limit are compatible. **Open as new project** keeps the template’s original canvas. Each use is an independent copy, so changing or deleting a saved template never changes existing projects.
+
+Use **Export template** to download a `.hentemplate` file, and **Import template** to bring it into another browser or share it with someone else. Background and extra-image files are included: review that artwork before sharing. Templates are stored locally in IndexedDB and are not published to a public gallery. Clearing site data removes the local library, so keep exported copies. Project backups include the artwork used by that project, not the whole template library.
 
 ## Your screenshots stay with you
 
@@ -203,7 +213,7 @@ The library loads first. Canvas rendering, templates, brand kits, publication pr
 
 The catalog is indexed locally. Only the current page's cards are mounted, and canvas previews render near the visible area. Search and pagination are tested with 10,000 synthetic entries; the actual catalog currently contains 57 templates.
 
-Autosave checks revisions to prevent one tab from overwriting another tab's changes. Image blobs are immutable: caption edits only write the document, and unused images are removed from the saved copy. Undo/redo retains the required original images in the current editing session. Brand kit updates use revision checks too. Project files use schema 8 and support migration from versions 1–7. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots, portability, localization, translation cancellation, and export profiles.
+Autosave checks revisions to prevent one tab from overwriting another tab's changes. Image blobs are immutable: caption edits only write the document, and unused images are removed from the saved copy. Undo/redo retains the required original images in the current editing session. Brand kit updates use revision checks too. Project files use schema 11 and support migration from versions 1–10. Tests cover image and archive validation, persistence conflicts, migrations, undo/redo, template behavior, text placement, geometry, brand snapshots, portability, localization, translation cancellation, and export profiles.
 
 Exports capture one revision of the project and its source images before rendering. Language folders, slide numbering, missing-image errors, cancellation, and packaging limits have dedicated regression tests. The [workflow QA report](docs/workflow-qa-2026-09-08.md) distinguishes automated coverage, visual checks, and validation limits.
 

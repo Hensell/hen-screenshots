@@ -1,3 +1,4 @@
+import { appendTemplate, instantiateTemplate } from "../core/custom-templates";
 import { addEmptySlide } from "../core/slides";
 import { deviceShot, resolveDeviceElement } from "../core/device-composition";
 import { IMAGE_ACCEPT } from "../assets/heif-format";
@@ -83,6 +84,11 @@ import {
 import { Icon } from "./Icon";
 import { resolveExportProfile } from "../core/export-profiles";
 
+const MyTemplatesDialog = lazy(() =>
+  import("../editor/MyTemplatesDialog").then((module) => ({
+    default: module.MyTemplatesDialog,
+  })),
+);
 const TemplateGallery = lazy(() =>
   import("../editor/TemplateGallery").then((module) => ({
     default: module.TemplateGallery,
@@ -150,6 +156,9 @@ export function App() {
   const [exportOpen, setExportOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
   const [publicationOpen, setPublicationOpen] = useState(false);
+  const [myTemplatesOpen, setMyTemplatesOpen] = useState<
+    "browse" | "save" | null
+  >(null);
   const [brandKitsOpen, setBrandKitsOpen] = useState(false);
   const [smartGuides, setSmartGuides] = useState(true);
   const [inspectorTab, setInspectorTab] = useState<InspectorTab>("design");
@@ -271,6 +280,8 @@ export function App() {
   const [exportError, setExportError] = useState<string | null>(null);
   const [readyFile, setReadyFile] = useState<ReadyFile | null>(null);
   const [dragging, setDragging] = useState(false);
+  const backgroundInput = useRef<HTMLInputElement>(null);
+  const backgroundTarget = useRef<string | null>(null);
   const imageInput = useRef<HTMLInputElement>(null);
   const overlayInput = useRef<HTMLInputElement>(null);
   const overlayTarget = useRef<{ shotId: string; replaceId?: string } | null>(
@@ -378,6 +389,7 @@ export function App() {
         templatesOpen ||
         publicationOpen ||
         brandKitsOpen ||
+        myTemplatesOpen ||
         languagesOpen ||
         deleteTarget ||
         slideMenu
@@ -400,6 +412,7 @@ export function App() {
     templatesOpen,
     publicationOpen,
     brandKitsOpen,
+    myTemplatesOpen,
     languagesOpen,
     deleteTarget,
     slideMenu,
@@ -427,6 +440,43 @@ export function App() {
     replaceId.current = replacementId ?? null;
     imageInput.current!.multiple = !replacementId;
     imageInput.current!.click();
+  }
+  async function uploadBackground(files: File[]) {
+    const target = backgroundTarget.current;
+    backgroundTarget.current = null;
+    if (!sourceProject || busy || !files.length || !target) return;
+    const projectId = sourceProject.id;
+    setBusy("Importing images…");
+    setNotice(null);
+    setReadyFile(null);
+    try {
+      const draft = structuredClone(sourceProject);
+      for (const item of linkedShots(draft, target))
+        delete item.backgroundImage;
+      const used = new Set(referencedAssetIds(draft));
+      const bytes = assets
+        .filter((asset) => used.has(asset.id))
+        .reduce((sum, asset) => sum + asset.blob.size, 0);
+      const incoming = await imageImport.request(files.slice(0, 1), {
+        availableBytes: LIMITS.totalBytes - bytes,
+      });
+      if (!incoming || useEditor.getState().project?.id !== projectId) return;
+      state.addAssets(incoming);
+      state.edit((draft) => {
+        for (const item of linkedShots(draft, target))
+          item.backgroundImage = {
+            fit: "cover",
+            opacity: 1,
+            ...item.backgroundImage,
+            assetId: incoming[0].id,
+          };
+      });
+      setNotice({ message: "Background updated. Undo anytime." });
+    } catch (error) {
+      setNotice({ message: errorMessage(error), error: true });
+    } finally {
+      setBusy(null);
+    }
   }
   async function uploadOverlays(files: File[]) {
     const target = overlayTarget.current;
@@ -667,6 +717,7 @@ export function App() {
       exportOpen ||
       publicationOpen ||
       brandKitsOpen ||
+      myTemplatesOpen ||
       languagesOpen
     )
       return;
@@ -723,6 +774,19 @@ export function App() {
   return (
     <>
       {imageImport.dialog}
+      <input
+        ref={backgroundInput}
+        type="file"
+        className="visually-hidden"
+        tabIndex={-1}
+        aria-hidden="true"
+        accept={IMAGE_ACCEPT}
+        onChange={(event) => {
+          const files = Array.from(event.target.files ?? []);
+          event.target.value = "";
+          void uploadBackground(files);
+        }}
+      />
       <input
         ref={imageInput}
         className="visually-hidden"
@@ -954,6 +1018,7 @@ export function App() {
           onNew={() => setNewProjectOpen(true)}
           onImport={() => backupInput.current!.click()}
           onBrandKits={() => setBrandKitsOpen(true)}
+          onMyTemplates={() => setMyTemplatesOpen("browse")}
           onOpen={openExisting}
         />
       ) : (
@@ -1569,6 +1634,13 @@ export function App() {
                 selectCanvasElement(element, shot.id)
               }
               onTemplates={() => setTemplatesOpen(true)}
+              onMyTemplates={(saving) =>
+                setMyTemplatesOpen(saving ? "save" : "browse")
+              }
+              onBackgroundUpload={() => {
+                backgroundTarget.current = shot.id;
+                backgroundInput.current?.click();
+              }}
               onBrandKits={() => setBrandKitsOpen(true)}
               onLanguages={() => setLanguagesOpen(true)}
               locale={locale}
@@ -1704,6 +1776,46 @@ export function App() {
           />
         </DeferredFeature>
       )}
+      {myTemplatesOpen && (
+        <DeferredFeature
+          label="My templates"
+          onClose={() => setMyTemplatesOpen(null)}
+        >
+          <MyTemplatesDialog
+            project={project}
+            shot={shot}
+            assets={assets}
+            savingInitially={myTemplatesOpen === "save"}
+            onClose={() => setMyTemplatesOpen(null)}
+            onUse={async (template, asNew) => {
+              if (asNew) {
+                if (!(await saveNow()))
+                  throw new Error(
+                    "Save your current project before opening a template.",
+                  );
+                open(instantiateTemplate(template));
+              } else {
+                const current = useEditor.getState();
+                if (!current.project) return;
+                const draft = structuredClone(current.project);
+                const copy = appendTemplate(draft, template, current.assets);
+                current.addAssets(copy.assets);
+                current.edit((project) => {
+                  project.shots = draft.shots;
+                });
+                current.select(copy.project.shots[0].id);
+              }
+              setMyTemplatesOpen(null);
+              setReadyFile(null);
+              setSelectedCanvasElement(null);
+              setNotice({
+                message:
+                  "Template ready. Add your screenshots to the empty devices.",
+              });
+            }}
+          />
+        </DeferredFeature>
+      )}
       {brandKitsOpen && (
         <DeferredFeature
           label="Brand kits"
@@ -1792,6 +1904,10 @@ export function App() {
           onClose={() => setTemplatesOpen(false)}
         >
           <TemplateGallery
+            onMyTemplates={() => {
+              setTemplatesOpen(false);
+              setMyTemplatesOpen("browse");
+            }}
             project={project}
             shot={shot}
             images={images}
