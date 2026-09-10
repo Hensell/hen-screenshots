@@ -6,7 +6,7 @@ import {
 import "../i18n/language-selector.css";
 import { initializeScrollReveals } from "./reveal";
 import { initializeNavigation } from "./navigation";
-import { landingLocale, landingPaths } from "./locales";
+import { landingLocale, publicPagePaths } from "./locales";
 
 // A public page has one stable language for visitors and crawlers alike.
 const pageLocale = landingLocale(window.location.pathname);
@@ -22,7 +22,7 @@ if (selector) {
     const language = selector.value as InterfaceLocale;
     setInterfaceLocale(language);
     const url = new URL(window.location.href);
-    url.pathname = landingPaths[language];
+    url.pathname = publicPagePaths(url.pathname)[language];
     window.location.assign(url.href);
   });
   selector.closest<HTMLElement>(".landing-language")?.removeAttribute("hidden");

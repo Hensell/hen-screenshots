@@ -1,7 +1,7 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import type { Plugin, ResolvedConfig } from "vite";
-import { landingLocale, landingPaths } from "./locales.ts";
+import { agentPaths, landingLocale, landingPaths } from "./locales.ts";
 import { renderLanding, sitemap } from "./seo.ts";
 
 /** Emit translated HTML after Vite has rewritten shared scripts, CSS, and fonts. */
@@ -15,9 +15,11 @@ export function landingSeo(): Plugin {
     transformIndexHtml: {
       order: "post",
       handler(html, context) {
-        return context.filename === resolve(config.root, "index.html")
-          ? renderLanding(html, "en")
-          : html;
+        if (context.filename === resolve(config.root, "agents/index.html"))
+          return renderLanding(html, "en", "agents");
+        if (context.filename === resolve(config.root, "index.html"))
+          return renderLanding(html, "en");
+        return html;
       },
     },
     configureServer(server) {
@@ -28,7 +30,13 @@ export function landingSeo(): Plugin {
           response.end(sitemap());
           return;
         }
-        if (!["/es", "/es/", "/pt-br", "/pt-br/"].includes(url.pathname)) {
+        const isGuide = Object.values(agentPaths).some(
+          (path) => url.pathname === path || url.pathname === path.slice(0, -1),
+        );
+        if (
+          !isGuide &&
+          !["/es", "/es/", "/pt-br", "/pt-br/"].includes(url.pathname)
+        ) {
           next();
           return;
         }
@@ -41,32 +49,46 @@ export function landingSeo(): Plugin {
         }
         try {
           const template = await readFile(
-            resolve(config.root, "index.html"),
+            resolve(config.root, isGuide ? "agents/index.html" : "index.html"),
             "utf8",
           );
-          const html = await server.transformIndexHtml("/index.html", template);
+          const html = await server.transformIndexHtml(
+            isGuide ? "/agents/index.html" : "/index.html",
+            template,
+          );
           response.setHeader("Content-Type", "text/html; charset=utf-8");
-          response.end(renderLanding(html, landingLocale(url.pathname)));
+          response.end(
+            renderLanding(
+              html,
+              landingLocale(url.pathname),
+              isGuide ? "agents" : "landing",
+            ),
+          );
         } catch (error) {
           next(error);
         }
       });
     },
     async writeBundle(options, bundle) {
-      const landing = bundle["index.html"];
-      if (landing?.type !== "asset" || typeof landing.source !== "string")
-        return;
       const directory = resolve(
         config.root,
         options.dir ?? config.build.outDir,
       );
-      for (const locale of ["es", "pt-BR"] as const) {
-        const target = resolve(directory, landingPaths[locale].slice(1));
-        await mkdir(target, { recursive: true });
-        await writeFile(
-          resolve(target, "index.html"),
-          renderLanding(landing.source, locale),
-        );
+      for (const [page, file, paths] of [
+        ["landing", "index.html", landingPaths],
+        ["agents", "agents/index.html", agentPaths],
+      ] as const) {
+        const entry = bundle[file];
+        if (entry?.type !== "asset" || typeof entry.source !== "string")
+          throw new Error(`Missing public page build: ${file}`);
+        for (const locale of ["es", "pt-BR"] as const) {
+          const target = resolve(directory, paths[locale].slice(1));
+          await mkdir(target, { recursive: true });
+          await writeFile(
+            resolve(target, "index.html"),
+            renderLanding(entry.source, locale, page),
+          );
+        }
       }
       await writeFile(resolve(directory, "sitemap.xml"), sitemap());
     },

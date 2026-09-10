@@ -10,6 +10,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 650,
     rolldownOptions: {
       input: {
+        agents: fileURLToPath(new URL("./agents/index.html", import.meta.url)),
         landing: fileURLToPath(new URL("./index.html", import.meta.url)),
         studio: fileURLToPath(new URL("./studio/index.html", import.meta.url)),
       },

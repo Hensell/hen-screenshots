@@ -6,6 +6,8 @@ This is **v0.1, a local development preview**, prepared for Codex and Claude Cod
 
 ## Setup
 
+Download the built ZIP and follow the [public setup guide](https://screenshots.hensell.dev/agents/) (English, Spanish, and Brazilian Portuguese). This local preview is available directly from the website; it is not listed in a public plugin directory.
+
 Requires **Node.js 22.12+** and npm. On a supported OS/architecture, npm installs prebuilt native canvas and image-processing libraries. Internet is needed for this one-time setup; rendering itself works offline.
 
 From an extracted, built plugin ZIP:

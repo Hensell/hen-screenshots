@@ -78,4 +78,9 @@ if (process.argv.includes("--zip")) {
   const target = join(root, `artifacts/hen-screenshots-plugin-${version}.zip`);
   await writeFile(target, zipSync(entries, { level: 6 }));
   console.log(`Plugin package: ${target}`);
+  if (process.argv.includes("--web")) {
+    const downloads = join(root, "public/downloads");
+    await mkdir(downloads, { recursive: true });
+    await cp(target, join(downloads, `hen-screenshots-plugin-${version}.zip`));
+  }
 }

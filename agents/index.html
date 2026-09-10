@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F6F4ED" />
+    <!-- seo:start -->
+    <!-- seo:end -->
+    <link rel="icon" type="image/svg+xml" href="/brand/icon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/brand/tokens.css" />
+    <link rel="stylesheet" href="/src/landing/landing.css" />
+    <link rel="stylesheet" href="/src/landing/agents.css" />
+    <script type="module" src="/src/landing/agents.ts"></script>
+  </head>
+  <body class="agents-page">
+    <a class="skip-link" href="#main"
+      ><span data-i18n="Skip to content">Skip to content</span></a
+    >
+    <header class="landing-header wrap">
+      <a
+        class="wordmark"
+        href="/"
+        aria-label="Hen Screenshots home"
+        data-i18n-aria-label="Hen Screenshots home"
+      >
+        <img src="/brand/mark.svg" width="32" height="34" alt="" />
+        <span>hen<small>screenshots</small></span>
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="landing-navigation"
+        hidden
+      >
+        <span class="menu-label-open" data-i18n="Menu">Menu</span>
+        <span class="menu-label-close" data-i18n="Close menu">Close menu</span>
+        <span class="menu-toggle-icon" aria-hidden="true"
+          ><span></span><span></span
+        ></span>
+      </button>
+      <nav
+        id="landing-navigation"
+        aria-label="Main navigation"
+        data-i18n-aria-label="Main navigation"
+      >
+        <a class="nav-section" href="#installation"
+          ><span data-i18n="Installation">Installation</span></a
+        ><a class="nav-section" href="#codex"><span>Codex</span></a
+        ><a class="nav-section" href="#claude"><span>Claude Code</span></a
+        ><a class="nav-section" href="#examples"
+          ><span data-i18n="Examples">Examples</span></a
+        >
+        <a class="action action-small studio-cta" href="/studio/"
+          ><span data-i18n="Open studio">Open studio</span>
+          <span class="studio-cta-icon" aria-hidden="true">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              focusable="false"
+            >
+              <path d="M5 12h14m-6-6 6 6-6 6" />
+            </svg> </span
+        ></a>
+        <label class="interface-language landing-language" hidden>
+          <span data-i18n="Website language">Website language</span>
+          <select
+            id="landing-language"
+            aria-label="Website language"
+            data-i18n-aria-label="Website language"
+          ></select>
+        </label>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="guide-hero wrap" aria-labelledby="guide-title">
+        <div>
+          <p class="eyebrow" data-i18n="THE LOCAL PLUGIN">THE LOCAL PLUGIN</p>
+          <h1 id="guide-title" data-i18n="Use with AI agents.">
+            Use with AI agents.
+          </h1>
+          <p
+            class="guide-standfirst"
+            data-i18n="Your captures. A clear brief. A finished series."
+          >
+            Your captures. A clear brief. A finished series.
+          </p>
+          <p
+            data-i18n="Let Codex or Claude Code choose templates, compose your screenshots, and write captions in several languages. Then fine-tune the result in Hen Screenshots."
+          >
+            Let Codex or Claude Code choose templates, compose your screenshots,
+            and write captions in several languages. Then fine-tune the result
+            in Hen Screenshots.
+          </p>
+          <div class="guide-agent-links">
+            <a href="#codex">Codex <span aria-hidden="true">↗</span></a
+            ><a href="#claude">Claude Code <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <aside class="guide-download" aria-labelledby="download-title">
+          <div class="guide-package-top">
+            <img src="/brand/mark.svg" width="32" height="34" alt="" /><span
+              >v__PLUGIN_VERSION__ ·
+              <span data-i18n="Local preview">Local preview</span></span
+            >
+          </div>
+          <h2
+            id="download-title"
+            data-i18n="A small plugin. Your whole studio."
+          >
+            A small plugin. Your whole studio.
+          </h2>
+          <div class="guide-file-tree" aria-hidden="true">
+            <span>hen-screenshots/</span><span>├─ skills/</span
+            ><span>├─ scripts/hen.mjs</span><span>└─ dist/cli.mjs</span>
+          </div>
+          <a
+            class="action guide-download-link"
+            download
+            href="/downloads/hen-screenshots-plugin-__PLUGIN_VERSION__.zip"
+            ><span data-i18n="Download plugin">Download plugin</span
+            ><svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" /></svg
+          ></a>
+          <p
+            class="guide-download-meta"
+            data-i18n="ZIP · Node.js 22.12+ · One-time setup"
+          >
+            ZIP · Node.js 22.12+ · One-time setup
+          </p>
+          <a
+            class="guide-source"
+            href="https://github.com/Hensell/hen-screenshots/tree/main/plugins/hen-screenshots"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><span data-i18n="View source &amp; documentation"
+              >View source &amp; documentation</span
+            >
+            <span aria-hidden="true">↗</span></a
+          >
+        </aside>
+      </section>
+      <div class="guide-layout wrap">
+        <aside class="guide-outline">
+          <p class="eyebrow" data-i18n="On this page">On this page</p>
+          <nav aria-label="On this page" data-i18n-aria-label="On this page">
+            <a href="#installation"
+              ><span aria-hidden="true">01</span
+              ><span data-i18n="Installation">Installation</span></a
+            >
+            <a href="#codex"
+              ><span aria-hidden="true">02</span><span>Codex</span></a
+            >
+            <a href="#claude"
+              ><span aria-hidden="true">03</span><span>Claude Code</span></a
+            >
+            <a href="#examples"
+              ><span aria-hidden="true">04</span
+              ><span data-i18n="Examples">Examples</span></a
+            >
+            <a href="#your-files"
+              ><span aria-hidden="true">05</span
+              ><span data-i18n="Your files">Your files</span></a
+            >
+            <a href="#help"
+              ><span aria-hidden="true">06</span><span>FAQ</span></a
+            >
+          </nav>
+        </aside>
+        <div class="guide-article">
+          <section id="installation" aria-labelledby="installation-title">
+            <h2 id="installation-title" data-i18n="Get ready once.">
+              Get ready once.
+            </h2>
+            <p
+              data-i18n="This preview runs on your computer. You need Node.js 22.12 or newer, npm, and Codex or Claude Code with access to your local files and terminal."
+            >
+              This preview runs on your computer. You need Node.js 22.12 or
+              newer, npm, and Codex or Claude Code with access to your local
+              files and terminal.
+            </p>
+            <ol class="guide-steps">
+              <li>
+                <h3 data-i18n="Download and extract the ZIP.">
+                  Download and extract the ZIP.
+                </h3>
+                <p
+                  data-i18n="Keep the extracted hen-screenshots folder somewhere permanent. It contains the renderer, fonts, and instructions your agent will use."
+                >
+                  Keep the extracted hen-screenshots folder somewhere permanent.
+                  It contains the renderer, fonts, and instructions your agent
+                  will use.
+                </p>
+              </li>
+              <li>
+                <h3 data-i18n="Install the local dependencies.">
+                  Install the local dependencies.
+                </h3>
+                <p
+                  data-i18n="Open a terminal inside the extracted hen-screenshots folder and run these commands. Setup needs an internet connection to download the rendering libraries."
+                >
+                  Open a terminal inside the extracted hen-screenshots folder
+                  and run these commands. Setup needs an internet connection to
+                  download the rendering libraries.
+                </p>
+                <div class="guide-code">
+                  <div class="guide-code-bar">
+                    <span>Terminal</span
+                    ><button type="button" data-copy="snippet-setup" hidden>
+                      <span data-i18n="Copy">Copy</span
+                      ><svg
+                        aria-hidden="true"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                      >
+                        <rect x="8" y="8" width="12" height="12" rx="2" />
+                        <path d="M16 8V4H4v12h4" />
+                      </svg>
+                    </button>
+                  </div>
+                  <pre
+                    tabindex="0"
+                  ><code id="snippet-setup" data-guide-snippet="setup"></code></pre>
+                </div>
+              </li>
+              <li>
+                <h3 data-i18n="Check the result.">Check the result.</h3>
+                <p
+                  data-i18n='The doctor command should report "ok": true. You can now use either agent below. The ZIP does not install itself or register a plugin in an agent marketplace.'
+                >
+                  The doctor command should report &quot;ok&quot;: true. You can
+                  now use either agent below. The ZIP does not install itself or
+                  register a plugin in an agent marketplace.
+                </p>
+              </li>
+            </ol>
+            <p class="guide-resource">
+              <a
+                href="https://nodejs.org/en/download"
+                target="_blank"
+                rel="noopener noreferrer"
+                ><span data-i18n="Get Node.js">Get Node.js</span> ↗</a
+              >
+            </p>
+            <div class="guide-note">
+              <strong data-i18n="Free plugin. Bring your own agent."
+                >Free plugin. Bring your own agent.</strong
+              >
+              <p
+                data-i18n="Hen Screenshots adds no subscription or API key. Your Codex or Claude plan and usage costs still apply. The plugin renders locally; files you share with your agent follow that provider’s data policies."
+              >
+                Hen Screenshots adds no subscription or API key. Your Codex or
+                Claude plan and usage costs still apply. The plugin renders
+                locally; files you share with your agent follow that provider’s
+                data policies.
+              </p>
+            </div>
+          </section>
+          <section id="codex" aria-labelledby="codex-title">
+            <p class="eyebrow">CODEX</p>
+            <h2 id="codex-title" data-i18n="Start with a local task.">
+              Start with a local task.
+            </h2>
+            <p
+              data-i18n="Open your app project in Codex on your computer. For this preview, ask it to read the bundled skill directly. This loads the instructions for your task without a marketplace installation."
+            >
+              Open your app project in Codex on your computer. For this preview,
+              ask it to read the bundled skill directly. This loads the
+              instructions for your task without a marketplace installation.
+            </p>
+            <p
+              data-i18n="In the prompt, replace PLUGIN_FOLDER with the full path to the extracted hen-screenshots folder, and CAPTURES_FOLDER with the folder containing your screenshots. Keep paths inside quotes if they contain spaces."
+            >
+              In the prompt, replace PLUGIN_FOLDER with the full path to the
+              extracted hen-screenshots folder, and CAPTURES_FOLDER with the
+              folder containing your screenshots. Keep paths inside quotes if
+              they contain spaces.
+            </p>
+            <div class="guide-code guide-prompt">
+              <div class="guide-code-bar">
+                <span>Codex</span
+                ><button type="button" data-copy="snippet-codex" hidden>
+                  <span data-i18n="Copy">Copy</span
+                  ><svg
+                    aria-hidden="true"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  >
+                    <rect x="8" y="8" width="12" height="12" rx="2" />
+                    <path d="M16 8V4H4v12h4" />
+                  </svg>
+                </button>
+              </div>
+              <pre
+                tabindex="0"
+              ><code id="snippet-codex" data-guide-snippet="codex"></code></pre>
+            </div>
+            <p class="guide-resource">
+              <a
+                href="https://developers.openai.com/codex/skills"
+                target="_blank"
+                rel="noopener noreferrer"
+                ><span data-i18n="About Codex skills">About Codex skills</span>
+                ↗</a
+              >
+            </p>
+          </section>
+          <section id="claude" aria-labelledby="claude-title">
+            <p class="eyebrow">CLAUDE CODE</p>
+            <h2 id="claude-title" data-i18n="Load the plugin for your session.">
+              Load the plugin for your session.
+            </h2>
+            <p
+              data-i18n="After setup, open a terminal in your app project. Replace PLUGIN_FOLDER with the full path to the extracted plugin, then start Claude Code:"
+            >
+              After setup, open a terminal in your app project. Replace
+              PLUGIN_FOLDER with the full path to the extracted plugin, then
+              start Claude Code:
+            </p>
+            <div class="guide-code">
+              <div class="guide-code-bar">
+                <span>Terminal</span
+                ><button type="button" data-copy="snippet-claude-load" hidden>
+                  <span data-i18n="Copy">Copy</span
+                  ><svg
+                    aria-hidden="true"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  >
+                    <rect x="8" y="8" width="12" height="12" rx="2" />
+                    <path d="M16 8V4H4v12h4" />
+                  </svg>
+                </button>
+              </div>
+              <pre
+                tabindex="0"
+              ><code id="snippet-claude-load" data-guide-snippet="claude-load"></code></pre>
+            </div>
+            <p
+              data-i18n="The --plugin-dir option loads the plugin for this session. Then send this request, replacing CAPTURES_FOLDER with your screenshot folder:"
+            >
+              The --plugin-dir option loads the plugin for this session. Then
+              send this request, replacing CAPTURES_FOLDER with your screenshot
+              folder:
+            </p>
+            <div class="guide-code guide-prompt">
+              <div class="guide-code-bar">
+                <span>Claude Code</span
+                ><button type="button" data-copy="snippet-claude" hidden>
+                  <span data-i18n="Copy">Copy</span
+                  ><svg
+                    aria-hidden="true"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  >
+                    <rect x="8" y="8" width="12" height="12" rx="2" />
+                    <path d="M16 8V4H4v12h4" />
+                  </svg>
+                </button>
+              </div>
+              <pre
+                tabindex="0"
+              ><code id="snippet-claude" data-guide-snippet="claude"></code></pre>
+            </div>
+            <p class="guide-resource">
+              <a
+                href="https://code.claude.com/docs/en/plugins"
+                target="_blank"
+                rel="noopener noreferrer"
+                ><span data-i18n="Claude Code local plugin guide"
+                  >Claude Code local plugin guide</span
+                >
+                ↗</a
+              >
+            </p>
+          </section>
+          <section id="examples" aria-labelledby="examples-title">
+            <h2 id="examples-title" data-i18n="Give it a useful brief.">
+              Give it a useful brief.
+            </h2>
+            <p
+              data-i18n="Once the skill is loaded, these requests work with either agent. Tell it which images to use, where you will publish, and what makes your app worth trying."
+            >
+              Once the skill is loaded, these requests work with either agent.
+              Tell it which images to use, where you will publish, and what
+              makes your app worth trying.
+            </p>
+            <h3 data-i18n="A portfolio composition">A portfolio composition</h3>
+            <div class="guide-code guide-prompt">
+              <div class="guide-code-bar">
+                <span><span data-i18n="Prompt">Prompt</span></span
+                ><button type="button" data-copy="snippet-portfolio" hidden>
+                  <span data-i18n="Copy">Copy</span
+                  ><svg
+                    aria-hidden="true"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  >
+                    <rect x="8" y="8" width="12" height="12" rx="2" />
+                    <path d="M16 8V4H4v12h4" />
+                  </svg>
+                </button>
+              </div>
+              <pre
+                tabindex="0"
+              ><code id="snippet-portfolio" data-guide-snippet="portfolio"></code></pre>
+            </div>
+            <h3 data-i18n="The same design, in more languages">
+              The same design, in more languages
+            </h3>
+            <div class="guide-code guide-prompt">
+              <div class="guide-code-bar">
+                <span><span data-i18n="Prompt">Prompt</span></span
+                ><button type="button" data-copy="snippet-languages" hidden>
+                  <span data-i18n="Copy">Copy</span
+                  ><svg
+                    aria-hidden="true"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  >
+                    <rect x="8" y="8" width="12" height="12" rx="2" />
+                    <path d="M16 8V4H4v12h4" />
+                  </svg>
+                </button>
+              </div>
+              <pre
+                tabindex="0"
+              ><code id="snippet-languages" data-guide-snippet="languages"></code></pre>
+            </div>
+            <div class="guide-note">
+              <p
+                data-i18n="Translations come from your agent. This plugin does not download Gemma or any other translation model. Review the wording and every exported image before publishing."
+              >
+                Translations come from your agent. This plugin does not download
+                Gemma or any other translation model. Review the wording and
+                every exported image before publishing.
+              </p>
+            </div>
+          </section>
+          <section id="your-files" aria-labelledby="files-title">
+            <h2
+              id="files-title"
+              data-i18n="Ready to export. Still yours to edit."
+            >
+              Ready to export. Still yours to edit.
+            </h2>
+            <p
+              data-i18n="Each run writes to a new output folder. Your original captures stay unchanged, and the plugin checks the export dimensions and opaque RGB PNG format."
+            >
+              Each run writes to a new output folder. Your original captures
+              stay unchanged, and the plugin checks the export dimensions and
+              opaque RGB PNG format.
+            </p>
+            <dl class="guide-outputs">
+              <div>
+                <dt><code>preview.png</code></dt>
+                <dd>
+                  <span data-i18n="See the whole series at a glance."
+                    >See the whole series at a glance.</span
+                  >
+                </dd>
+              </div>
+              <div>
+                <dt><code>screenshots.zip</code></dt>
+                <dd>
+                  <span data-i18n="PNG exports organized by language."
+                    >PNG exports organized by language.</span
+                  >
+                </dd>
+              </div>
+              <div>
+                <dt><code>project.henscreenshots</code></dt>
+                <dd>
+                  <span
+                    data-i18n="The editable project, including images and captions."
+                    >The editable project, including images and captions.</span
+                  >
+                </dd>
+              </div>
+              <div>
+                <dt><code>report.json</code></dt>
+                <dd>
+                  <span data-i18n="Export dimensions and validation results."
+                    >Export dimensions and validation results.</span
+                  >
+                </dd>
+              </div>
+            </dl>
+            <h3 data-i18n="Continue in the web studio">
+              Continue in the web studio
+            </h3>
+            <p
+              data-i18n="Open the studio, choose Open project file on the project screen, and select project.henscreenshots from the output folder. Adjust the text, colors, or device placement and export again."
+            >
+              Open the studio, choose Open project file on the project screen,
+              and select project.henscreenshots from the output folder. Adjust
+              the text, colors, or device placement and export again.
+            </p>
+            <a class="action action-small studio-cta" href="/studio/"
+              ><span data-i18n="Open studio">Open studio</span
+              ><span aria-hidden="true">↗</span></a
+            >
+          </section>
+          <section id="help" class="guide-help" aria-labelledby="help-title">
+            <h2 id="help-title" data-i18n="A few things to know.">
+              A few things to know.
+            </h2>
+            <details>
+              <summary>
+                <span data-i18n="Is it in the Codex or Claude plugin store?"
+                  >Is it in the Codex or Claude plugin store?</span
+                >
+              </summary>
+              <div class="faq-answer">
+                <p
+                  data-i18n="Not yet. This is a downloadable local preview. Use the setup and session instructions above; it is not a one-click store installation."
+                >
+                  Not yet. This is a downloadable local preview. Use the setup
+                  and session instructions above; it is not a one-click store
+                  installation.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>
+                <span data-i18n="Which images can I use?"
+                  >Which images can I use?</span
+                >
+              </summary>
+              <div class="faq-answer">
+                <p
+                  data-i18n="The plugin accepts PNG, JPEG, and still WebP: up to 50 MB and 24 megapixels per image, and 120 MB combined. Convert HEIC, AVIF, or animated files first, or use the web studio for its additional import formats."
+                >
+                  The plugin accepts PNG, JPEG, and still WebP: up to 50 MB and
+                  24 megapixels per image, and 120 MB combined. Convert HEIC,
+                  AVIF, or animated files first, or use the web studio for its
+                  additional import formats.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>
+                <span data-i18n="Setup or rendering failed. What now?"
+                  >Setup or rendering failed. What now?</span
+                >
+              </summary>
+              <div class="faq-answer">
+                <p
+                  data-i18n="Check node --version, then run npm ci --omit=dev in the extracted plugin folder and retry doctor. Native rendering libraries need a supported operating system and architecture. If an output folder already exists, choose a new name. Share the error and your OS when asking for help."
+                >
+                  Check node --version, then run npm ci --omit=dev in the
+                  extracted plugin folder and retry doctor. Native rendering
+                  libraries need a supported operating system and architecture.
+                  If an output folder already exists, choose a new name. Share
+                  the error and your OS when asking for help.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>
+                <span data-i18n="Does the plugin replace the web studio?"
+                  >Does the plugin replace the web studio?</span
+                >
+              </summary>
+              <div class="faq-answer">
+                <p
+                  data-i18n="Use the plugin to draft and export in batches, and the studio for hands-on adjustments. The current plugin does not support source-only Wear OS exports. Native and browser font rendering may also differ slightly."
+                >
+                  Use the plugin to draft and export in batches, and the studio
+                  for hands-on adjustments. The current plugin does not support
+                  source-only Wear OS exports. Native and browser font rendering
+                  may also differ slightly.
+                </p>
+              </div>
+            </details>
+            <p class="guide-resource">
+              <a
+                href="mailto:hensell@hensell.dev?subject=Hen%20Screenshots%20plugin"
+                ><span data-i18n="Need a hand? Email Hensell."
+                  >Need a hand? Email Hensell.</span
+                >
+                ↗</a
+              >
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
+    <div class="guide-copy-feedback" role="status" id="copy-feedback"></div>
+    <span id="copy-success" hidden data-i18n="Copied to clipboard."
+      >Copied to clipboard.</span
+    >
+    <span
+      id="copy-error"
+      hidden
+      data-i18n="Could not copy. Select the text and copy it manually."
+      >Could not copy. Select the text and copy it manually.</span
+    >
+    <footer class="landing-footer wrap">
+      <a
+        class="wordmark"
+        href="/"
+        aria-label="Hen Screenshots home"
+        data-i18n-aria-label="Hen Screenshots home"
+        ><img src="/brand/mark.svg" width="28" height="30" alt="" /><span
+          >hen<small>screenshots</small></span
+        ></a
+      >
+      <p>
+        <span data-i18n="Made for the apps you care about."
+          >Made for the apps you care about.</span
+        >
+      </p>
+      <div class="footer-links">
+        <a
+          class="inline-link"
+          href="https://github.com/Hensell/hen-screenshots"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><img
+            class="github-mark"
+            src="/icons/github.svg"
+            width="20"
+            height="20"
+            alt=""
+          />
+          GitHub <span aria-hidden="true">↗</span></a
+        >
+        <a
+          class="inline-link"
+          href="https://hensell.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><span data-i18n="By Hensell">By Hensell</span>
+          <span aria-hidden="true">↗</span></a
+        >
+      </div>
+      <div
+        class="footer-languages"
+        role="group"
+        aria-label="Website language"
+        data-i18n-aria-label="Website language"
+      >
+        <a href="/agents/" hreflang="en" lang="en">English</a>
+        <a href="/es/agents/" hreflang="es" lang="es">Español</a>
+        <a href="/pt-br/agents/" hreflang="pt-BR" lang="pt-BR">Português</a>
+      </div>
+    </footer>
+  </body>
+</html>

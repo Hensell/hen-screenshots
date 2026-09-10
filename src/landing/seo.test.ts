@@ -1,6 +1,12 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { landingLocale, landingPaths } from "./locales";
+import {
+  agentPaths,
+  landingLocale,
+  landingPaths,
+  publicPagePaths,
+} from "./locales";
+import { version } from "../../plugins/hen-screenshots/package.json";
 import { renderLanding, siteUrl, sitemap } from "./seo";
 
 const template = readFileSync("index.html", "utf8");
@@ -71,8 +77,11 @@ describe("public landing SEO", () => {
 
   it("keeps private editor pages out of the sitemap and allows crawlers to see noindex", () => {
     const xml = sitemap();
-    expect(xml.match(/<url>/g)).toHaveLength(3);
-    for (const path of Object.values(landingPaths))
+    expect(xml.match(/<url>/g)).toHaveLength(6);
+    for (const path of [
+      ...Object.values(landingPaths),
+      ...Object.values(agentPaths),
+    ])
       expect(xml).toContain(`<loc>${siteUrl}${path}</loc>`);
     expect(xml).not.toContain("/studio/");
     expect(readFileSync("public/robots.txt", "utf8")).toContain(
@@ -106,4 +115,67 @@ describe("public landing SEO", () => {
       expect(image.length).toBeLessThan(1_000_000);
     },
   );
+});
+
+describe("AI agent guide", () => {
+  const guide = readFileSync("agents/index.html", "utf8");
+  it.each([
+    ["en", "Use with AI agents.", "Create a three-slide"],
+    ["es", "Usar con agentes AI.", "Crea una serie de tres slides"],
+    ["pt-BR", "Usar com agentes de IA.", "Crie uma série de três slides"],
+  ] as const)(
+    "ships complete %s instructions, localized links, and a real versioned download",
+    (locale, heading, prompt) => {
+      const html = renderLanding(guide, locale, "agents");
+      expect(html).toContain(`>${heading}</h1>`);
+      expect(html).toContain(prompt);
+      expect(html).toContain(
+        `rel="canonical" href="${siteUrl}${agentPaths[locale]}"`,
+      );
+      expect(html).toContain(`hen-screenshots-plugin-${version}.zip`);
+      expect(html).not.toContain("__PLUGIN_VERSION__");
+      expect(html).toContain("npm ci --omit=dev\nnode scripts/hen.mjs doctor");
+      expect(html).toContain("claude --plugin-dir &quot;PLUGIN_FOLDER&quot;");
+      expect(html).toContain("/hen-screenshots:create-screenshots");
+      for (const [language, path] of Object.entries(agentPaths)) {
+        expect(html).toContain(
+          `hreflang="${language}" href="${siteUrl}${path}"`,
+        );
+        expect(html).toContain(`href="${path}" hreflang="${language}"`);
+      }
+      const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(
+        (match) => match[1],
+      );
+      expect(new Set(ids).size).toBe(ids.length);
+      for (const match of html.matchAll(/\bdata-copy="([^"]+)"/g))
+        expect(ids).toContain(match[1]);
+      for (const match of html.matchAll(/\bhref="#([^"]+)"/g))
+        expect(ids).toContain(match[1]);
+      expect(
+        renderLanding(renderLanding(guide, "en", "agents"), locale, "agents"),
+      ).toBe(html);
+      expect(renderLanding(template, locale)).toContain(
+        `data-agent-link href="${agentPaths[locale]}"`,
+      );
+    },
+  );
+  it("keeps visitors on the guide when changing website language", () => {
+    for (const path of Object.values(agentPaths)) {
+      expect(publicPagePaths(path)).toBe(agentPaths);
+      expect(publicPagePaths(path.slice(0, -1))).toBe(agentPaths);
+    }
+    expect(publicPagePaths("/es/")).toBe(landingPaths);
+    expect(publicPagePaths("/not-agents/")).toBe(landingPaths);
+  });
+  it("translates instructions containing literal quotes after HTML formatting", () => {
+    const html = renderLanding(guide, "es", "agents");
+    expect(html).toContain(
+      ">El comando doctor debe indicar &quot;ok&quot;: true.",
+    );
+    expect(html).not.toMatch(/>\s*The doctor command should report/);
+    const portuguese = renderLanding(guide, "pt-BR", "agents");
+    expect(portuguese).toContain(
+      ">O comando doctor deve informar &quot;ok&quot;: true.",
+    );
+  });
 });

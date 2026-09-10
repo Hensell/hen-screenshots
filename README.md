@@ -56,6 +56,8 @@ A local plugin for Codex and Claude Code can turn a folder of captures into a st
 
 See [plugin setup and commands](plugins/hen-screenshots/README.md) and the [design spec](plugins/hen-screenshots/skills/create-screenshots/references/design-spec.md). Build it with `npm run plugin:build`; create a local ZIP with `npm run plugin:pack`. This is a development preview, not a public plugin-directory release.
 
+The [AI agents guide](https://screenshots.hensell.dev/agents/) includes a built ZIP download, one-time setup, copyable Codex and Claude Code examples, and the workflow for opening generated projects in the studio. It is also available in [Spanish](https://screenshots.hensell.dev/es/agents/) and [Brazilian Portuguese](https://screenshots.hensell.dev/pt-br/agents/). Website builds package the current plugin version automatically; `npm run plugin:pack -- --web` prepares the download for local development.
+
 ## From capture to export
 
 1. [Open the studio](https://screenshots.hensell.dev/studio/), create an **App stores** or **Portfolio** project, and add PNG, JPEG, or still WebP screenshots.

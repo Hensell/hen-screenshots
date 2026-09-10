@@ -1,4 +1,6 @@
 export const landingMessages: Record<string, readonly [string, string]> = {
+  "AI agents": ["Agentes AI", "Agentes de IA"],
+  "Use with AI agents": ["Usar con agentes AI", "Usar com agentes de IA"],
   "Free app store screenshots, Google Play banners, portfolio mockups, and caption translations. Create in your browser, with no account or watermarks.":
     [
       "Capturas para tiendas de apps, banners de Google Play, mockups para portafolios y traducción de textos, gratis. Crea en tu navegador, sin cuenta ni marcas de agua.",

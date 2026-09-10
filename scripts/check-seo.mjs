@@ -1,5 +1,13 @@
 // Read the actual HTTP responses as a crawler would; never execute page JavaScript.
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { unzipSync, strFromU8 } from "fflate";
+const { version: pluginVersion } = JSON.parse(
+  await readFile(
+    new URL("../plugins/hen-screenshots/package.json", import.meta.url),
+    "utf8",
+  ),
+);
 const base = new URL(process.argv[2] || "https://screenshots.hensell.dev/");
 const canonicalOrigin = "https://screenshots.hensell.dev";
 async function request(path) {
@@ -13,6 +21,9 @@ for (const [path, language] of [
   ["/", "en"],
   ["/es/", "es"],
   ["/pt-br/", "pt-BR"],
+  ["/agents/", "en"],
+  ["/es/agents/", "es"],
+  ["/pt-br/agents/", "pt-BR"],
 ]) {
   const response = await request(path);
   assert.equal(response.status, 200, path);
@@ -25,6 +36,13 @@ for (const [path, language] of [
   assert.equal((html.match(/hreflang=/g) || []).length, 7); // Four head alternates + three crawlable footer links.
   assert.ok(html.includes('name="twitter:card" content="summary_large_image"'));
   assert.ok(!html.includes('content="noindex"'));
+  if (path.includes("/agents/")) {
+    assert.ok(
+      html.includes(`/downloads/hen-screenshots-plugin-${pluginVersion}.zip`),
+    );
+    assert.ok(html.includes("npm ci --omit=dev"));
+    assert.ok(html.includes("/hen-screenshots:create-screenshots"));
+  }
   const schema = JSON.parse(
     html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1],
   );
@@ -54,7 +72,7 @@ assert.ok((await robots.text()).includes(`${canonicalOrigin}/sitemap.xml`));
 const map = await request("/sitemap.xml");
 assert.equal(map.status, 200);
 const xml = await map.text();
-assert.equal((xml.match(/<url>/g) || []).length, 3);
+assert.equal((xml.match(/<url>/g) || []).length, 6);
 assert.ok(!xml.includes("/studio/"));
 const studio = await request("/studio/");
 assert.equal(studio.status, 200);
@@ -70,4 +88,44 @@ assert.equal(target.pathname, "/es/");
 assert.equal(target.searchParams.get("utm_source"), "seo-check");
 console.log(
   "PASS robots.txt, sitemap.xml, studio noindex, real 404 and canonical redirect",
+);
+const download = await request(
+  `/downloads/hen-screenshots-plugin-${pluginVersion}.zip`,
+);
+assert.equal(download.status, 200);
+assert.match(
+  download.headers.get("content-type"),
+  /application\/(?:zip|octet-stream|x-zip-compressed)/,
+);
+const archive = unzipSync(new Uint8Array(await download.arrayBuffer()));
+for (const file of [
+  "package.json",
+  "package-lock.json",
+  "README.md",
+  "PRIVACY.md",
+  ".codex-plugin/plugin.json",
+  ".claude-plugin/plugin.json",
+  "skills/create-screenshots/SKILL.md",
+  "scripts/hen.mjs",
+  "dist/cli.mjs",
+  "assets/fonts/Manrope.ttf",
+  "assets/fonts/OFL.txt",
+])
+  assert.ok(
+    archive[`hen-screenshots/${file}`]?.length,
+    `Missing plugin file: ${file}`,
+  );
+assert.equal(
+  JSON.parse(strFromU8(archive["hen-screenshots/package.json"])).version,
+  pluginVersion,
+);
+assert.ok(
+  Object.keys(archive).every(
+    (path) =>
+      path.startsWith("hen-screenshots/") &&
+      !/(?:\.env|node_modules|\.henscreenshots$)/.test(path),
+  ),
+);
+console.log(
+  `PASS downloadable plugin v${pluginVersion}: valid ZIP, renderer, fonts, skill and manifests`,
 );

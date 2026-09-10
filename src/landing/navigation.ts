@@ -5,7 +5,7 @@ export function initializeNavigation() {
   const navigation = header?.querySelector<HTMLElement>("#landing-navigation");
   if (!header || !toggle || !navigation) return () => {};
 
-  const compact = window.matchMedia("(max-width: 1120px)");
+  const compact = window.matchMedia("(max-width: 1240px)");
   function setOpen(open: boolean) {
     toggle!.setAttribute("aria-expanded", String(open && compact.matches));
     navigation!.hidden = compact.matches && !open;

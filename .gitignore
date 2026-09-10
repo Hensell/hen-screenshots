@@ -31,3 +31,4 @@ exports/
 # Built local plugin packages
 artifacts/
 plugins/hen-screenshots/assets/
+public/downloads/hen-screenshots-plugin-*.zip

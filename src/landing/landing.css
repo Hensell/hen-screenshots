@@ -973,7 +973,7 @@ details > p {
 .menu-toggle[aria-expanded="true"] .menu-toggle-icon span:last-child {
   transform: rotate(-45deg);
 }
-@media (max-width: 1120px) {
+@media (max-width: 1240px) {
   .landing-header {
     flex-wrap: wrap;
     justify-content: space-between;
@@ -1034,7 +1034,7 @@ details > p {
   .menu-toggle-icon span {
     transition: transform 160ms ease;
   }
-  @media (max-width: 1120px) {
+  @media (max-width: 1240px) {
     .menu-toggle[aria-expanded="true"] + nav {
       animation: landing-menu-enter 180ms ease-out;
     }

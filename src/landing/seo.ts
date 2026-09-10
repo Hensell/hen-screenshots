@@ -1,8 +1,11 @@
 import type { InterfaceLocale } from "../i18n/core.ts";
 import { landingMessages } from "../i18n/landing-messages.ts";
-import { landingPaths } from "./locales.ts";
+import { agentMessages, agentSnippets } from "./agents-content.ts";
+import pluginPackage from "../../plugins/hen-screenshots/package.json" with { type: "json" };
+import { agentPaths, landingPaths } from "./locales.ts";
 
 export const siteUrl = "https://screenshots.hensell.dev";
+const pluginVersion = pluginPackage.version;
 const title = "Hen Screenshots — Free app screenshot & mockup studio";
 const description =
   "Free app store screenshots, Google Play banners, portfolio mockups, and caption translations. Create in your browser, with no account or watermarks.";
@@ -16,11 +19,12 @@ const imageDescriptions = {
 };
 
 function translateFor(locale: InterfaceLocale, source: string) {
-  if (!Object.hasOwn(landingMessages, source))
-    throw new Error(`Missing landing translation: ${source}`);
-  return locale === "en"
-    ? source
-    : landingMessages[source][locale === "es" ? 0 : 1];
+  const messages = Object.hasOwn(agentMessages, source)
+    ? agentMessages
+    : landingMessages;
+  if (!Object.hasOwn(messages, source))
+    throw new Error(`Missing public page translation: ${source}`);
+  return locale === "en" ? source : messages[source][locale === "es" ? 0 : 1];
 }
 
 function escapeHtml(value: string) {
@@ -34,15 +38,28 @@ function decodeHtml(value: string) {
   return value
     .replaceAll("&quot;", '"')
     .replaceAll("&#39;", "'")
+    .replaceAll("&#x27;", "'")
     .replaceAll("&lt;", "<")
     .replaceAll("&gt;", ">")
     .replaceAll("&amp;", "&");
 }
 
-export function seoMarkup(locale: InterfaceLocale) {
-  const url = siteUrl + landingPaths[locale];
-  const localizedTitle = translateFor(locale, title);
-  const localizedDescription = translateFor(locale, description);
+export function seoMarkup(
+  locale: InterfaceLocale,
+  page: "landing" | "agents" = "landing",
+) {
+  const paths = page === "agents" ? agentPaths : landingPaths;
+  const url = siteUrl + paths[locale];
+  const localizedTitle = translateFor(
+    locale,
+    page === "agents" ? "Use with AI agents — Hen Screenshots" : title,
+  );
+  const localizedDescription = translateFor(
+    locale,
+    page === "agents"
+      ? "Download the local Hen Screenshots plugin. Set it up for Codex or Claude Code, create screenshot series, and keep editing in the web studio."
+      : description,
+  );
   const image = `${siteUrl}/social/hen-screenshots-${locale.toLowerCase()}.png`;
   const meta = (name: string, content: string, attribute = "property") =>
     `<meta ${attribute}="${name}" content="${escapeHtml(content)}" />`;
@@ -77,7 +94,7 @@ export function seoMarkup(locale: InterfaceLocale) {
         "@id": `${siteUrl}/#app`,
         name: "Hen Screenshots",
         url: siteUrl + "/studio/",
-        description: localizedDescription,
+        description: translateFor(locale, description),
         applicationCategory: "DesignApplication",
         operatingSystem: "Any",
         browserRequirements: "Requires JavaScript and a modern web browser.",
@@ -104,9 +121,9 @@ export function seoMarkup(locale: InterfaceLocale) {
     `<link rel="canonical" href="${url}" />`,
     ...locales.map(
       (language) =>
-        `<link rel="alternate" hreflang="${language}" href="${siteUrl}${landingPaths[language]}" />`,
+        `<link rel="alternate" hreflang="${language}" href="${siteUrl}${paths[language]}" />`,
     ),
-    `<link rel="alternate" hreflang="x-default" href="${siteUrl}/" />`,
+    `<link rel="alternate" hreflang="x-default" href="${siteUrl}${paths.en}" />`,
     meta("og:type", "website"),
     meta("og:site_name", "Hen Screenshots"),
     meta("og:title", localizedTitle),
@@ -132,21 +149,27 @@ export function seoMarkup(locale: InterfaceLocale) {
 
 /** Translate only the explicitly marked, text-only elements in our static template.
  * Keep source keys so dev rendering and build rendering can safely run twice. */
-export function renderLanding(html: string, locale: InterfaceLocale) {
+export function renderLanding(
+  html: string,
+  locale: InterfaceLocale,
+  page: "landing" | "agents" = "landing",
+) {
   const t = (source: string) =>
     escapeHtml(translateFor(locale, decodeHtml(source)));
   let output = html.replace(
-    /<([a-z][\w-]*)\b([^>]*\bdata-i18n="([^"]+)"[^>]*)>[^<]*<\/\1\s*>/g,
-    (_match, tag, attributes, source) =>
+    /<([a-z][\w-]*)\b([^>]*\bdata-i18n=(["'])(.*?)\3[^>]*)>[^<]*<\/\1\s*>/gs,
+    (_match, tag, attributes, _quote, source) =>
       `<${tag}${attributes}>${t(source)}</${tag}>`,
   );
   output = output.replace(/<[a-z][^>]*>/g, (tag) => {
     for (const attribute of ["aria-label", "alt", "content"]) {
-      const source = tag.match(new RegExp(`data-i18n-${attribute}="([^"]+)"`));
+      const source = tag.match(
+        new RegExp(`data-i18n-${attribute}=(["'])(.*?)\\1`),
+      );
       if (source)
         tag = tag.replace(
-          new RegExp(`(\\s${attribute}=)"[^"]*"`),
-          (_match, prefix) => `${prefix}"${t(source[1])}"`,
+          new RegExp(`(\\s${attribute}=)(["'])(.*?)\\2`),
+          (_match, prefix) => `${prefix}"${t(source[2])}"`,
         );
     }
     return tag;
@@ -155,14 +178,27 @@ export function renderLanding(html: string, locale: InterfaceLocale) {
     .replace(/(<html\b[^>]*\blang=)"[^"]*"/, `$1"${locale}"`)
     .replace(
       /<!-- seo:start -->[\s\S]*?<!-- seo:end -->/,
-      `<!-- seo:start -->\n${seoMarkup(locale)}\n<!-- seo:end -->`,
+      `<!-- seo:start -->\n${seoMarkup(locale, page)}\n<!-- seo:end -->`,
     )
     .replace(
       /(<a\b[^>]*class="wordmark"[^>]*\bhref=)"[^"]*"/g,
       `$1"${landingPaths[locale]}"`,
+    )
+    .replace(
+      /(<a\b[^>]*\bdata-agent-link\b[^>]*\bhref=)"[^"]*"/g,
+      `$1"${agentPaths[locale]}"`,
+    )
+    .replaceAll("__PLUGIN_VERSION__", pluginVersion)
+    .replace(
+      /(<code\b[^>]*\bdata-guide-snippet="([^"]+)"[^>]*>)[\s\S]*?<\/code>/g,
+      (_match, opening, key: string) => {
+        const snippet = agentSnippets[key];
+        if (!snippet) throw new Error(`Missing guide snippet: ${key}`);
+        return `${opening}${escapeHtml(snippet[locale])}</code>`;
+      },
     );
 }
 
 export function sitemap() {
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${locales.map((locale) => `<url><loc>${siteUrl}${landingPaths[locale]}</loc></url>`).join("\n")}\n</urlset>\n`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[landingPaths, agentPaths].flatMap((paths) => locales.map((locale) => `<url><loc>${siteUrl}${paths[locale]}</loc></url>`)).join("\n")}\n</urlset>\n`;
 }
