@@ -4,7 +4,7 @@ Last updated: September 10, 2026.
 
 The next priority is helping new users create and export a series without needing a walkthrough. This roadmap sets a direction; it does not promise release dates. Priorities can change as people use the app and share feedback.
 
-The hosted editor will remain free, with no account or watermarks. We intend to keep development open. Selecting and adding a license for the application and plugin code is still pending; see the [current license status](README.md#feedback-and-contributing).
+The hosted editor will remain free, with no account or watermarks. The application and plugin code are available under the [MIT license](LICENSE).
 
 ## Available today
 
@@ -15,7 +15,7 @@ The hosted editor will remain free, with no account or watermarks. We intend to 
 - Reusable brand kits, language versions, and optional on-device translation packs.
 - Local project storage, portable backups, publication previews, and exports checked for the selected format and dimensions.
 - English, Spanish, and Brazilian Portuguese interfaces.
-- A downloadable local agent plugin preview and [setup guide](https://screenshots.hensell.dev/agents/). Public plugin-directory submission is still pending.
+- A downloadable local agent plugin and [setup guide](https://screenshots.hensell.dev/agents/). Public plugin-directory submission is still pending.
 
 ## Next: make the first export easier
 
@@ -41,9 +41,9 @@ A collection is ready when it solves a specific presentation need and works with
 
 ## Agent plugin: prepare a distributable release
 
-Status: development preview available; release preparation and directory submissions planned.
+Status: GitHub release preparation in progress; official directory submissions planned.
 
-- [ ] Choose and add the code license, and include the required license notices in the release archive.
+- [x] Choose and add the code license, and include the required license notices in the release archive.
 - [ ] Test installation from an extracted release package in clean Codex and Claude Code environments, with no dependency on the source checkout.
 - [ ] Verify the native rendering dependencies on each advertised operating system and architecture. Document the supported combinations.
 - [ ] Publish a versioned GitHub Release with a built ZIP, checksum, release notes, and a reproducible build process.

@@ -258,7 +258,7 @@ export function buildDesign(
   const profile = resolveExportProfile(project);
   if (profile.sourceOnly)
     throw new Error(
-      "Source-only Wear OS exports are not supported by plugin v0.1. Use the web studio.",
+      "Source-only Wear OS exports are not supported by the plugin. Use the web studio.",
     );
   if (spec.customSize) {
     validateCustomSize(spec.customSize);

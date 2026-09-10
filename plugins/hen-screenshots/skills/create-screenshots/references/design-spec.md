@@ -84,4 +84,4 @@ Each target code must have captions on every slide, including continuations. At 
 
 The output also includes `preview.png`, `project.henscreenshots`, and `report.json`. Preview is a contact sheet for review, not a store upload. PNG exports have exact profile dimensions and opaque RGB pixels. Correct dimensions do not guarantee store approval; content guidance and the actual app/device listing still matter.
 
-v0.1 cannot author image overlays or per-language screenshot replacements in this small config. It can render those already present in an imported full Hen project. Source-only Wear OS exports are not supported in the local renderer. Native and browser rasterization can differ slightly, so compare the result visually before publication.
+Design spec v1 cannot author image overlays or per-language screenshot replacements in this small config. It can render those already present in an imported full Hen project. Source-only Wear OS exports are not supported in the local renderer. Native and browser rasterization can differ slightly, so compare the result visually before publication.

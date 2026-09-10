@@ -1,57 +1,55 @@
-# Plugin distribution readiness
+# Plugin distribution
 
-Checked on September 10, 2026. Platform requirements can change; recheck the official links before submitting.
+Hen Screenshots v0.2.0 is the first packaged GitHub release of the local plugin. It is distributed under MIT through the repository marketplaces and a downloadable ZIP. Official OpenAI and Anthropic directory submissions remain pending.
 
-Hen Screenshots currently provides a **v0.1.0 local development preview**, downloadable through the [AI agents guide](https://screenshots.hensell.dev/agents/). It is not listed in either official plugin directory. The [roadmap](../ROADMAP.md#agent-plugin-prepare-a-distributable-release) tracks the remaining work.
+## Install
 
-## What is already in the repository
+See the [plugin README](../plugins/hen-screenshots/README.md) for Codex, Claude Code, ZIP installation, updates, requirements, and troubleshooting. The [website guide](https://screenshots.hensell.dev/agents/) provides translated instructions.
 
-- A portable manifest plus separate Codex and Claude Code compatibility manifests.
-- A screenshot-creation skill, design reference, and local CLI.
-- A build and packaging script that includes the renderer, icon, and licensed fonts in the ZIP.
-- Pinned npm dependencies and a `doctor` command for runtime checks.
-- Installation instructions, example prompts, and a [privacy and file-access explanation](../plugins/hen-screenshots/PRIVACY.md).
+The repository contains `.agents/plugins/marketplace.json` for Codex and `.claude-plugin/marketplace.json` for Claude Code. Both point to `plugins/hen-screenshots`, which includes the built renderer, icon, and fonts. The user or agent runs `scripts/setup.mjs` once in the installed plugin directory to download the locked dependencies and run doctor.
 
-The plugin uses Node.js 22.12+ with native rendering dependencies. It does not contain an MCP server. Rendering works locally after dependency installation; users do not need a Hen account or an `.exe` installer.
+No `node_modules`, personal captures, or project files belong in the release archive. Setup does not require a source build, administrator privileges, or a Hen service.
 
-## Gaps before a release
+## Verification
 
-| Area                 | Current state                                                    | Next step                                                                                                  |
-| -------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Code license         | No application or plugin code license selected                   | Choose a license and include it with the source and release package. Preserve dependency and font notices. |
-| Release              | The website builds a preview ZIP; no GitHub Release is published | Create a tested, versioned release with a checksum and release notes.                                      |
-| Installation         | Setup requires npm and the built package                         | Test from a clean extraction in each agent host and document supported OS/architecture combinations.       |
-| Marketplace catalogs | No repository catalogs for Codex or Claude Code                  | Add the host-specific catalogs and test installation, updates, and package completeness.                   |
-| Listing              | Name, descriptions, icon, website, and support contact exist     | Complete the required public links and test examples for each directory.                                   |
-| Official directories | No submission completed                                          | Follow each platform's process below and record the outcome.                                               |
+The [package-check workflow](../.github/workflows/plugin-release-check.yml) builds the ZIP once, validates the Claude manifests, and verifies the archive checksum before installing and testing the same ZIP on Ubuntu, Windows, and macOS runners. Inspect [workflow results](https://github.com/Hensell/hen-screenshots/actions/workflows/plugin-release-check.yml) and each `qa-report.json` for the actual OS, architecture, Node version, and outcome.
 
-The source checkout alone is not an installable release: generated `dist/`, fonts, and the icon are ignored by Git. A marketplace entry pointing at the source directory must not imply that those files or npm dependencies will be installed automatically. The tested distribution path must provide them.
+The installed-package test checks store output, three isometric panoramas, a multiple-device portfolio, language folders, editable project round trips, invalid configs, corrupt images, original-image preservation, and refusal to overwrite existing outputs. It checks PNG dimensions, bit depth, color type, and ZIP contents. Native rendering can differ visually between operating systems and from the web canvas.
 
-## Codex and OpenAI
+Local release preparation also tests the Codex and Claude Code marketplace installation commands. This proves package discovery and installation, not the quality of every model-generated caption or design.
 
-The appropriate starting point is a **skills-only plugin** because Hen has no MCP server. OpenAI accepts a packaged skill with its helpers and assets. Its migration guidance asks developers whose core workflow depends on local execution or offline operation to contact their OpenAI partner before submission; Hen fits that description, so confirm this review path before promising a public listing. [Official guidance](https://developers.openai.com/plugins/guides/submit-claude-plugin).
+## Publish a plugin update
 
-Public submission also requires a verified individual or business publisher identity, organization access with **Apps Management: Write**, listing and policy URLs, starter prompts, release notes, and five positive plus three negative test cases. Submission is through the [OpenAI plugin portal](https://platform.openai.com/plugins), followed by review. [Submission requirements](https://developers.openai.com/plugins/deploy/submission).
+1. Update the plugin version together in `package.json`, `package-lock.json`, `plugin.json`, `.codex-plugin/plugin.json`, and `.claude-plugin/plugin.json`. The web guide and CLI read the package version.
+2. Run `npm ci`, `npm run check`, and `npm run plugin:pack` from the source root. Include the regenerated renderer, public assets, and license in the commit.
+3. Extract the ZIP outside the repository, run its setup command, then run `node scripts/test-plugin-package.mjs /absolute/path/to/extracted/hen-screenshots`. Inspect `preview.png` and full-size PNGs in the reported output folder.
+4. Push the reviewed commit and wait for the package-check workflow for that exact commit. Investigate any failing platform before advertising support.
+5. Download the `hen-plugin-package` artifact from that passing workflow. Use that ZIP and checksum for the release so the published archive is the one tested on all runners.
+6. Create an immutable version tag such as `plugin-v0.2.0` at the tested commit, and publish a GitHub Release containing the ZIP, checksum, release notes, supported systems, and limitations. Do not replace an existing version's files; publish a new version instead.
+7. Verify the public download and checksum. Keep the website guide and roadmap accurate. Official directory updates are a separate step.
 
-Direct distribution through a repository marketplace is a separate option. Codex documents a repository catalog at `.agents/plugins/marketplace.json`; this catalog still needs to be added and tested for Hen. [Packaging and marketplace documentation](https://developers.openai.com/plugins/build/plugins).
+`npm run plugin:pack` uses fixed ZIP timestamps and produces a `.sha256` companion file. This makes repeated packaging of identical inputs comparable. Node/build-tool changes can still change the bundle; retain the CI artifact used for a release.
 
-## Claude Code and Anthropic
+## Official directory readiness
 
-Anthropic accepts a public GitHub repository or a plugin ZIP for its directory. Validate the package with `claude plugin validate` before submitting through [Claude's submission form](https://claude.ai/settings/plugins/submit) or the [Console form](https://platform.claude.com/plugins/submit). The listing is subject to review; a submission does not guarantee a verified badge. [Official submission guide](https://claude.com/docs/plugins/submit).
+Last documentation check: September 10, 2026. Recheck the official requirements before submitting.
 
-For direct distribution, a repository marketplace uses `.claude-plugin/marketplace.json`. Users add the marketplace and then install a plugin from it. Hen does not yet provide that catalog. [Official marketplace guide](https://code.claude.com/docs/en/plugin-marketplaces).
+### OpenAI
 
-## Suggested release checks
+Hen has no MCP server, so a skills-only submission is the starting point. OpenAI's migration guide asks developers whose core workflow relies on local execution or offline operation to contact their OpenAI partner before submission. Confirm that review path for Hen. [Official guidance](https://developers.openai.com/plugins/guides/submit-claude-plugin).
 
-Use non-private fixture images and a fresh output directory for each check:
+The public submission also needs a verified publisher identity, Apps Management write access, required listing and policy URLs, starter prompts, release notes, and five positive plus three negative test cases. Submit through the [plugin portal](https://platform.openai.com/plugins) and complete its review. [Submission requirements](https://developers.openai.com/plugins/deploy/submission).
 
-- Create a three-slide store series and inspect the preview and PNG dimensions.
-- Create a linked panorama and check the seam in the two exported images.
-- Render a portfolio scene with multiple devices.
-- Export two language versions and inspect the language folders.
-- Reopen the generated `.henscreenshots` project in the web studio and edit it.
-- Check that invalid images and invalid design settings produce useful errors.
-- Check that an existing output directory and original source images are never overwritten.
-- Verify that missing runtime dependencies produce actionable setup instructions.
+### Anthropic
 
-These are proposed release checks, not a claim that fresh installations or directory submissions have already passed. Once they are run, record the package version, host, operating system, results, and any limitations.
+Validate the package with `claude plugin validate`, then submit its public GitHub repository or ZIP through [Claude](https://claude.ai/settings/plugins/submit) or the [Console](https://platform.claude.com/plugins/submit). Inclusion and verified status are subject to Anthropic's review. [Official submission guide](https://claude.com/docs/plugins/submit).
+
+The repository marketplace provides direct distribution while official-directory work remains pending. [Marketplace documentation](https://code.claude.com/docs/en/plugin-marketplaces).
+
+### Still pending for official listings
+
+- Publisher verification and OpenAI's local-execution review path.
+- Final public listing fields and policy/terms URLs required by each portal.
+- Submission of the package and test cases; neither official directory has approved this release.
+
+See the [roadmap](../ROADMAP.md) for the wider project priorities.

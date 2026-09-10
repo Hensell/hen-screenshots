@@ -77,7 +77,7 @@ export async function decodeNativeImages(files: File[]): Promise<Asset[]> {
       });
     } catch (cause) {
       throw new Error(
-        `Could not read “${file.name}”: ${cause instanceof Error ? cause.message : "invalid image"}. Plugin v0.1 accepts PNG, JPEG and still WebP up to 24 megapixels. Use the web studio to convert other formats.`,
+        `Could not read “${file.name}”: ${cause instanceof Error ? cause.message : "invalid image"}. The plugin accepts PNG, JPEG and still WebP up to 24 megapixels. Use the web studio to convert other formats.`,
         { cause },
       );
     }

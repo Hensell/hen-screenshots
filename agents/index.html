@@ -109,7 +109,7 @@
           <div class="guide-package-top">
             <img src="/brand/mark.svg" width="32" height="34" alt="" /><span
               >v__PLUGIN_VERSION__ ·
-              <span data-i18n="Local preview">Local preview</span></span
+              <span data-i18n="Local plugin">Local plugin</span></span
             >
           </div>
           <h2
@@ -190,10 +190,19 @@
             <h2 id="installation-title" data-i18n="Get ready once.">
               Get ready once.
             </h2>
+            <p class="guide-resource">
+              <a
+                href="https://github.com/Hensell/hen-screenshots/releases"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-i18n="Release notes and checksums"
+                >Release notes and checksums</a
+              >
+            </p>
             <p
-              data-i18n="This preview runs on your computer. You need Node.js 22.12 or newer, npm, and Codex or Claude Code with access to your local files and terminal."
+              data-i18n="This plugin runs on your computer. You need Node.js 22.12 or newer, npm, and Codex or Claude Code with access to your local files and terminal."
             >
-              This preview runs on your computer. You need Node.js 22.12 or
+              This plugin runs on your computer. You need Node.js 22.12 or
               newer, npm, and Codex or Claude Code with access to your local
               files and terminal.
             </p>
@@ -283,12 +292,43 @@
             <h2 id="codex-title" data-i18n="Start with a local task.">
               Start with a local task.
             </h2>
+            <h3 data-i18n="Install from GitHub">Install from GitHub</h3>
             <p
-              data-i18n="Open your app project in Codex on your computer. For this preview, ask it to read the bundled skill directly. This loads the instructions for your task without a marketplace installation."
+              data-i18n="Run these commands in your terminal to install from the Hen marketplace. Start a new Codex task, then ask Hen to run doctor and complete setup if needed."
             >
-              Open your app project in Codex on your computer. For this preview,
-              ask it to read the bundled skill directly. This loads the
-              instructions for your task without a marketplace installation.
+              Run these commands in your terminal to install from the Hen
+              marketplace. Start a new Codex task, then ask Hen to run doctor
+              and complete setup if needed.
+            </p>
+            <div class="guide-code">
+              <div class="guide-code-bar">
+                <span>Terminal</span
+                ><button type="button" data-copy="snippet-codex-install" hidden>
+                  <span data-i18n="Copy">Copy</span
+                  ><svg
+                    aria-hidden="true"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  >
+                    <rect x="8" y="8" width="12" height="12" rx="2" />
+                    <path d="M16 8V4H4v12h4" />
+                  </svg>
+                </button>
+              </div>
+              <pre
+                tabindex="0"
+              ><code id="snippet-codex-install" data-guide-snippet="codex-install"></code></pre>
+            </div>
+            <p
+              data-i18n="If you downloaded the ZIP instead, open your app project in Codex and ask it to read the bundled skill directly. This works without a marketplace installation."
+            >
+              If you downloaded the ZIP instead, open your app project in Codex
+              and ask it to read the bundled skill directly. This works without
+              a marketplace installation.
             </p>
             <p
               data-i18n="In the prompt, replace PLUGIN_FOLDER with the full path to the extracted hen-screenshots folder, and CAPTURES_FOLDER with the folder containing your screenshots. Keep paths inside quotes if they contain spaces."
@@ -336,12 +376,47 @@
             <h2 id="claude-title" data-i18n="Load the plugin for your session.">
               Load the plugin for your session.
             </h2>
+            <h3 data-i18n="Install from GitHub">Install from GitHub</h3>
             <p
-              data-i18n="After setup, open a terminal in your app project. Replace PLUGIN_FOLDER with the full path to the extracted plugin, then start Claude Code:"
+              data-i18n="Run these commands inside Claude Code, then start a new session. Ask Hen to run doctor and complete setup before creating your first series."
             >
-              After setup, open a terminal in your app project. Replace
-              PLUGIN_FOLDER with the full path to the extracted plugin, then
-              start Claude Code:
+              Run these commands inside Claude Code, then start a new session.
+              Ask Hen to run doctor and complete setup before creating your
+              first series.
+            </p>
+            <div class="guide-code">
+              <div class="guide-code-bar">
+                <span>Claude Code</span
+                ><button
+                  type="button"
+                  data-copy="snippet-claude-install"
+                  hidden
+                >
+                  <span data-i18n="Copy">Copy</span
+                  ><svg
+                    aria-hidden="true"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  >
+                    <rect x="8" y="8" width="12" height="12" rx="2" />
+                    <path d="M16 8V4H4v12h4" />
+                  </svg>
+                </button>
+              </div>
+              <pre
+                tabindex="0"
+              ><code id="snippet-claude-install" data-guide-snippet="claude-install"></code></pre>
+            </div>
+            <p
+              data-i18n="If you downloaded the ZIP instead, complete setup in that folder, then open a terminal in your app project. Replace PLUGIN_FOLDER with the full path to the extracted plugin and start Claude Code:"
+            >
+              If you downloaded the ZIP instead, complete setup in that folder,
+              then open a terminal in your app project. Replace PLUGIN_FOLDER
+              with the full path to the extracted plugin and start Claude Code:
             </p>
             <div class="guide-code">
               <div class="guide-code-bar">
@@ -555,11 +630,11 @@
               </summary>
               <div class="faq-answer">
                 <p
-                  data-i18n="Not yet. This is a downloadable local preview. Use the setup and session instructions above; it is not a one-click store installation."
+                  data-i18n="Not in the official directories yet. Install from our GitHub marketplace or download the ZIP. Both include the renderer and require one-time dependency setup."
                 >
-                  Not yet. This is a downloadable local preview. Use the setup
-                  and session instructions above; it is not a one-click store
-                  installation.
+                  Not in the official directories yet. Install from our GitHub
+                  marketplace or download the ZIP. Both include the renderer and
+                  require one-time dependency setup.
                 </p>
               </div>
             </details>

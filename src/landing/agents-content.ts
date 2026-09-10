@@ -11,6 +11,21 @@ export const agentMessages: Record<string, readonly [string, string]> = {
       "Descarga el plugin local de Hen Screenshots. Prepáralo para Codex o Claude Code, crea series de capturas y sigue editándolas en el estudio web.",
       "Baixe o plugin local do Hen Screenshots. Configure-o para o Codex ou Claude Code, crie séries de capturas e continue editando no estúdio web.",
     ],
+  "Install from GitHub": ["Instalar desde GitHub", "Instalar pelo GitHub"],
+  "Run these commands in your terminal to install from the Hen marketplace. Start a new Codex task, then ask Hen to run doctor and complete setup if needed.":
+    [
+      "Ejecuta estos comandos en tu terminal para instalar desde el catálogo de Hen. Inicia una tarea nueva en Codex y pídele a Hen que ejecute doctor y complete la instalación si hace falta.",
+      "Execute estes comandos no terminal para instalar pelo catálogo do Hen. Inicie uma nova tarefa no Codex e peça ao Hen que execute doctor e conclua a configuração, se necessário.",
+    ],
+  "Run these commands inside Claude Code, then start a new session. Ask Hen to run doctor and complete setup before creating your first series.":
+    [
+      "Ejecuta estos comandos dentro de Claude Code e inicia una sesión nueva. Pídele a Hen que ejecute doctor y complete la instalación antes de crear tu primera serie.",
+      "Execute estes comandos dentro do Claude Code e inicie uma nova sessão. Peça ao Hen que execute doctor e conclua a configuração antes de criar sua primeira série.",
+    ],
+  "Release notes and checksums": [
+    "Notas de la versión y sumas de verificación",
+    "Notas da versão e somas de verificação",
+  ],
   Installation: ["Instalación", "Instalação"],
   Examples: ["Ejemplos", "Exemplos"],
   "Your files": ["Tus archivos", "Seus arquivos"],
@@ -26,7 +41,7 @@ export const agentMessages: Record<string, readonly [string, string]> = {
       "Deja que Codex o Claude Code elija las plantillas, componga tus capturas y escriba los textos en varios idiomas. Después, ajusta el resultado en Hen Screenshots.",
       "Deixe o Codex ou Claude Code escolher os modelos, compor suas capturas e escrever os textos em vários idiomas. Depois, ajuste o resultado no Hen Screenshots.",
     ],
-  "Local preview": ["Vista previa local", "Prévia local"],
+  "Local plugin": ["Plugin local", "Plugin local"],
   "A small plugin. Your whole studio.": [
     "Un pequeño plugin. Todo tu estudio.",
     "Um pequeno plugin. Todo o seu estúdio.",
@@ -41,10 +56,10 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "Ver código e documentação",
   ],
   "Get ready once.": ["Prepáralo una vez.", "Configure uma vez."],
-  "This preview runs on your computer. You need Node.js 22.12 or newer, npm, and Codex or Claude Code with access to your local files and terminal.":
+  "This plugin runs on your computer. You need Node.js 22.12 or newer, npm, and Codex or Claude Code with access to your local files and terminal.":
     [
-      "Esta versión de prueba se ejecuta en tu computadora. Necesitas Node.js 22.12 o posterior, npm y Codex o Claude Code con acceso a tus archivos locales y al terminal.",
-      "Esta prévia é executada no seu computador. Você precisa do Node.js 22.12 ou mais recente, npm e Codex ou Claude Code com acesso aos arquivos locais e ao terminal.",
+      "Este plugin se ejecuta en tu computadora. Necesitas Node.js 22.12 o posterior, npm y Codex o Claude Code con acceso a tus archivos locales y al terminal.",
+      "Este plugin é executado no seu computador. Você precisa do Node.js 22.12 ou mais recente, npm e Codex ou Claude Code com acesso aos arquivos locais e ao terminal.",
     ],
   "Download and extract the ZIP.": [
     "Descarga y descomprime el ZIP.",
@@ -85,10 +100,10 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "Empieza con una tarea local.",
     "Comece com uma tarefa local.",
   ],
-  "Open your app project in Codex on your computer. For this preview, ask it to read the bundled skill directly. This loads the instructions for your task without a marketplace installation.":
+  "If you downloaded the ZIP instead, open your app project in Codex and ask it to read the bundled skill directly. This works without a marketplace installation.":
     [
-      "Abre el proyecto de tu app en Codex, en tu computadora. Para esta versión de prueba, pídele que lea directamente la skill incluida. Así usará las instrucciones en tu tarea sin instalar el plugin desde un catálogo.",
-      "Abra o projeto do seu app no Codex, no seu computador. Para esta prévia, peça que ele leia diretamente a skill incluída. Assim, ele usa as instruções na sua tarefa sem instalar o plugin por um catálogo.",
+      "Si descargaste el ZIP, abre el proyecto de tu app en Codex y pídele que lea directamente la skill incluida. Funciona sin instalar desde un catálogo.",
+      "Se você baixou o ZIP, abra o projeto do seu app no Codex e peça que ele leia diretamente a skill incluída. Funciona sem instalar por um catálogo.",
     ],
   "In the prompt, replace PLUGIN_FOLDER with the full path to the extracted hen-screenshots folder, and CAPTURES_FOLDER with the folder containing your screenshots. Keep paths inside quotes if they contain spaces.":
     [
@@ -103,10 +118,10 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "Carga el plugin para tu sesión.",
     "Carregue o plugin para a sua sessão.",
   ],
-  "After setup, open a terminal in your app project. Replace PLUGIN_FOLDER with the full path to the extracted plugin, then start Claude Code:":
+  "If you downloaded the ZIP instead, complete setup in that folder, then open a terminal in your app project. Replace PLUGIN_FOLDER with the full path to the extracted plugin and start Claude Code:":
     [
-      "Después de la instalación, abre un terminal en el proyecto de tu app. Sustituye PLUGIN_FOLDER por la ruta completa del plugin descomprimido e inicia Claude Code:",
-      "Após a instalação, abra um terminal no projeto do seu app. Substitua PLUGIN_FOLDER pelo caminho completo do plugin extraído e inicie o Claude Code:",
+      "Si descargaste el ZIP, completa la instalación en esa carpeta y abre un terminal en el proyecto de tu app. Sustituye PLUGIN_FOLDER por la ruta completa del plugin descomprimido e inicia Claude Code:",
+      "Se você baixou o ZIP, conclua a configuração nessa pasta e abra um terminal no projeto do seu app. Substitua PLUGIN_FOLDER pelo caminho completo do plugin extraído e inicie o Claude Code:",
     ],
   "The --plugin-dir option loads the plugin for this session. Then send this request, replacing CAPTURES_FOLDER with your screenshot folder:":
     [
@@ -179,10 +194,10 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "¿Está en la tienda de plugins de Codex o Claude?",
     "Está na loja de plugins do Codex ou Claude?",
   ],
-  "Not yet. This is a downloadable local preview. Use the setup and session instructions above; it is not a one-click store installation.":
+  "Not in the official directories yet. Install from our GitHub marketplace or download the ZIP. Both include the renderer and require one-time dependency setup.":
     [
-      "Todavía no. Es una versión de prueba local que puedes descargar. Sigue las instrucciones de instalación y uso de arriba; aún no se instala con un clic desde una tienda.",
-      "Ainda não. É uma prévia local que você pode baixar. Siga as instruções de instalação e uso acima; ainda não é uma instalação com um clique pela loja.",
+      "Todavía no está en los directorios oficiales. Instala desde nuestro catálogo en GitHub o descarga el ZIP. Ambos incluyen el renderizador y requieren instalar las dependencias una vez.",
+      "Ainda não está nos diretórios oficiais. Instale pelo nosso catálogo no GitHub ou baixe o ZIP. Ambos incluem o renderizador e exigem instalar as dependências uma vez.",
     ],
   "Which images can I use?": [
     "¿Qué imágenes puedo usar?",
@@ -231,7 +246,13 @@ const sharedSnippet = (text: string): Record<InterfaceLocale, string> => ({
   "pt-BR": text,
 });
 export const agentSnippets: Record<string, Record<InterfaceLocale, string>> = {
-  setup: sharedSnippet("npm ci --omit=dev\nnode scripts/hen.mjs doctor"),
+  setup: sharedSnippet("node scripts/setup.mjs"),
+  "codex-install": sharedSnippet(
+    "codex plugin marketplace add Hensell/hen-screenshots\ncodex plugin add hen-screenshots@hen-screenshots",
+  ),
+  "claude-install": sharedSnippet(
+    "/plugin marketplace add Hensell/hen-screenshots\n/plugin install hen-screenshots@hen-screenshots",
+  ),
   "claude-load": sharedSnippet('claude --plugin-dir "PLUGIN_FOLDER"'),
   codex: {
     en: 'Read "PLUGIN_FOLDER/skills/create-screenshots/SKILL.md" and use its local CLI.\n\nCreate a three-slide Google Play series from the screenshots in "CAPTURES_FOLDER". Choose a dark template, use concise English captions based on the app’s actual features, and export to a new folder named launch-v1. Show me preview.png and save an editable .henscreenshots project.',

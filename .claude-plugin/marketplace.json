@@ -1,0 +1,17 @@
+{
+  "name": "hen-screenshots",
+  "owner": {
+    "name": "Hensell",
+    "email": "hensell@hensell.dev"
+  },
+  "plugins": [
+    {
+      "name": "hen-screenshots",
+      "source": "./plugins/hen-screenshots",
+      "description": "Create screenshot series and portfolio mockups from local captures. Includes the built renderer; requires Node.js and one-time setup.",
+      "category": "design",
+      "tags": ["screenshots", "mockups", "app-store", "portfolio"]
+    }
+  ],
+  "description": "Local screenshot templates and rendering tools from Hen Screenshots."
+}

@@ -1,0 +1,20 @@
+{
+  "name": "hen-screenshots",
+  "interface": {
+    "displayName": "Hen Screenshots"
+  },
+  "plugins": [
+    {
+      "name": "hen-screenshots",
+      "source": {
+        "source": "local",
+        "path": "./plugins/hen-screenshots"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Design"
+    }
+  ]
+}

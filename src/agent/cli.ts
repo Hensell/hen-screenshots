@@ -1,3 +1,4 @@
+import { version as pluginVersion } from "../../plugins/hen-screenshots/package.json";
 import { parseArgs } from "node:util";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -18,7 +19,7 @@ import {
 } from "./files";
 import { writeDesign, loadNativeFonts } from "./render";
 
-const help = `Hen Screenshots local plugin · 0.1.0
+const help = `Hen Screenshots local plugin · ${pluginVersion}
 
 hen templates [--query dark]       List template IDs and required images
 hen profiles                      List export profiles and dimensions
@@ -108,7 +109,7 @@ export async function main(argv = process.argv.slice(2)) {
     loadNativeFonts(fonts);
     print({
       ok: true,
-      version: "0.1.0",
+      version: pluginVersion,
       node: process.version,
       renderer: "Konva + Skia",
       fonts: ["Manrope", "Fraunces"],

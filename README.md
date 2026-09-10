@@ -52,11 +52,11 @@ Design the pair together, keep a different caption on each slide, and export two
 
 **Atrium, Obsidian, and Offset** add isometric devices, dimensional pedestals, and architectural shadows. The screenshot, frame, and camera share the projection, so your own image takes on the same depth. Search **3D** or **perspective** to find them. These are fixed isometric poses; you can still move, resize, and rotate the device on the canvas. **Signal, Mosaic, and Folio** use coral bands, rose tiles, and layered paper with different caption and device positions. All six adapt to phone, tablet, and portfolio canvases, preserve linked edits, and export through the same PNG renderer as the editor.
 
-## Local agent plugin (development preview)
+## Local agent plugin
 
 A local plugin for Codex and Claude Code can turn a folder of captures into a styled series, render a preview, and export PNGs by language plus an editable Hen project. It reuses the web editor’s templates and scene engine, with native rendering through Konva and Skia. Requires Node.js 22.12+ and a one-time dependency installation.
 
-See [plugin setup and commands](plugins/hen-screenshots/README.md) and the [design spec](plugins/hen-screenshots/skills/create-screenshots/references/design-spec.md). Build it with `npm run plugin:build`; create a local ZIP with `npm run plugin:pack`. This is a development preview, not a public plugin-directory release.
+See [plugin setup and commands](plugins/hen-screenshots/README.md) and the [design spec](plugins/hen-screenshots/skills/create-screenshots/references/design-spec.md). Build it with `npm run plugin:build`; create a local ZIP with `npm run plugin:pack`. Version 0.2.0 is distributed through GitHub and the website, with repository marketplaces for Codex and Claude Code. It is not listed in either official plugin directory.
 
 The [AI agents guide](https://screenshots.hensell.dev/agents/) includes a built ZIP download, one-time setup, copyable Codex and Claude Code examples, and the workflow for opening generated projects in the studio. It is also available in [Spanish](https://screenshots.hensell.dev/es/agents/) and [Brazilian Portuguese](https://screenshots.hensell.dev/pt-br/agents/). Website builds package the current plugin version automatically; `npm run plugin:pack -- --web` prepares the download for local development.
 
@@ -225,7 +225,7 @@ Enjoying it? Found a bug? Have a template in mind? [Open an issue](https://githu
 
 For code contributions, keep changes focused and run `npm run check`. Check rendering changes in both the preview and a PNG export, and check UI changes on mobile. New templates need a catalog entry and search keywords in [`src/core/templates.ts`](src/core/templates.ts), with any new scene behavior in `src/rendering/`.
 
-**License status:** the hosted editor is free to use forever. An open-source license for the application code has not been selected yet. Bundled fonts retain their [Manrope](brand/fonts/OFL.txt) and [Fraunces](brand/fonts/OFL-Fraunces.txt) licenses.
+**License:** the application and local plugin code use the [MIT license](LICENSE). The hosted editor is free to use forever. Bundled fonts retain their [Manrope](brand/fonts/OFL.txt) and [Fraunces](brand/fonts/OFL-Fraunces.txt) licenses.
 
 ## Project notes
 
@@ -242,4 +242,4 @@ For code contributions, keep changes focused and run `npm run check`. Check rend
 
 These notes record design decisions and earlier milestones; the sections above describe the current app.
 
-Translation model credits: [Helsinki-NLP / OPUS-MT](https://github.com/Helsinki-NLP/OPUS-MT-train), [Xenova’s ONNX conversions](https://huggingface.co/Xenova), and [Transformers.js](https://github.com/huggingface/transformers.js). Model revisions are pinned in [`src/translation/catalog.ts`](src/translation/catalog.ts); their original model licenses apply. The application license status above is unchanged.
+Translation model credits: [Helsinki-NLP / OPUS-MT](https://github.com/Helsinki-NLP/OPUS-MT-train), [Xenova’s ONNX conversions](https://huggingface.co/Xenova), and [Transformers.js](https://github.com/huggingface/transformers.js). Model revisions are pinned in [`src/translation/catalog.ts`](src/translation/catalog.ts); their original model licenses apply. These third-party licenses are separate from the application’s MIT license.

@@ -12,8 +12,8 @@ Turn local captures into a reviewable design using the same scene engine as the 
 The plugin root is two directories above this skill's directory. Resolve it from this file's actual location; never assume the user's working directory is the plugin directory. The CLI is `scripts/hen.mjs` under that root. Quote absolute file paths in shell commands.
 
 1. Run `node "<plugin-root>/scripts/hen.mjs" doctor`.
-2. If dependencies are missing, explain the one-time setup: Node.js 22.12+ and `npm ci --omit=dev` in the plugin root. It downloads native rendering libraries. Follow the host's permissions before installing. Never use sudo or change system-wide Node settings.
-3. A source checkout also needs `npm ci` and `npm run plugin:build` in the repository root. A built ZIP already includes the scene bundle and fonts.
+2. If dependencies are missing, explain the one-time setup: Node.js 22.12+ and `node "<plugin-root>/scripts/setup.mjs"`. It installs pinned dependencies in the plugin folder and checks the renderer. Follow the host's permissions before installing. Never use sudo or change system-wide Node settings.
+3. Git marketplace installations and release ZIPs include the renderer and fonts. Setup must run in the actual installed plugin root, which may be an agent cache directory. Never assume dependencies from another checkout are available. After a plugin update, run `doctor` again and repeat setup if needed.
 
 ## Compose
 

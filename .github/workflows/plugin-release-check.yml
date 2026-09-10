@@ -1,0 +1,84 @@
+name: Plugin package checks
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "plugins/**"
+      - ".agents/plugins/**"
+      - ".claude-plugin/**"
+      - "src/agent/**"
+      - "scripts/*plugin*.mjs"
+      - "package*.json"
+      - "LICENSE"
+      - ".github/workflows/plugin-release-check.yml"
+  pull_request:
+    paths:
+      - "plugins/**"
+      - ".agents/plugins/**"
+      - ".claude-plugin/**"
+      - "src/agent/**"
+      - "scripts/*plugin*.mjs"
+      - "package*.json"
+      - "LICENSE"
+      - ".github/workflows/plugin-release-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run plugin:pack
+      - name: Validate Claude plugin and repository catalog
+        run: |
+          npx --yes --package=@anthropic-ai/claude-code@2.1.268 claude plugin validate plugins/hen-screenshots
+          npx --yes --package=@anthropic-ai/claude-code@2.1.268 claude plugin validate .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hen-plugin-package
+          path: |
+            artifacts/*.zip
+            artifacts/*.zip.sha256
+          if-no-files-found: error
+  install-and-render:
+    needs: package
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-14]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/download-artifact@v4
+        with:
+          name: hen-plugin-package
+          path: ${{ runner.temp }}/hen-download
+      - name: Verify checksum and extract outside the source checkout
+        shell: pwsh
+        run: |
+          $archive = Get-ChildItem '${{ runner.temp }}/hen-download' -Filter '*.zip' | Select-Object -First 1
+          $expected = (Get-Content ($archive.FullName + '.sha256')).Split(' ')[0]
+          if ((Get-FileHash $archive.FullName -Algorithm SHA256).Hash.ToLower() -ne $expected) { throw 'Checksum mismatch' }
+          Expand-Archive -Path $archive.FullName -DestinationPath '${{ runner.temp }}/hen-installed'
+      - name: Install the extracted package
+        run: node "${{ runner.temp }}/hen-installed/hen-screenshots/scripts/setup.mjs"
+      - name: Render and validate outputs from the installed package
+        run: node scripts/test-plugin-package.mjs "${{ runner.temp }}/hen-installed/hen-screenshots" "${{ runner.temp }}/hen-plugin-results"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hen-plugin-qa-${{ matrix.os }}
+          path: ${{ runner.temp }}/hen-plugin-results
+          if-no-files-found: warn

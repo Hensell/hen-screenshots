@@ -134,7 +134,15 @@ describe("AI agent guide", () => {
       );
       expect(html).toContain(`hen-screenshots-plugin-${version}.zip`);
       expect(html).not.toContain("__PLUGIN_VERSION__");
-      expect(html).toContain("npm ci --omit=dev\nnode scripts/hen.mjs doctor");
+      expect(html).toContain("node scripts/setup.mjs");
+      expect(html).toContain(
+        "codex plugin marketplace add Hensell/hen-screenshots",
+      );
+      expect(html).toContain(
+        "codex plugin add hen-screenshots@hen-screenshots",
+      );
+      expect(html).toContain("/plugin marketplace add Hensell/hen-screenshots");
+      expect(html).toContain("/plugin install hen-screenshots@hen-screenshots");
       expect(html).toContain("claude --plugin-dir &quot;PLUGIN_FOLDER&quot;");
       expect(html).toContain("/hen-screenshots:create-screenshots");
       for (const [language, path] of Object.entries(agentPaths)) {

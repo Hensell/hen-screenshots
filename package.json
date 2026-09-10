@@ -20,7 +20,8 @@
     "social:images": "node scripts/generate-social-images.mjs",
     "seo:check": "node scripts/check-seo.mjs",
     "plugin:build": "node scripts/build-plugin.mjs",
-    "plugin:pack": "node scripts/build-plugin.mjs --zip"
+    "plugin:pack": "node scripts/build-plugin.mjs --zip",
+    "plugin:smoke": "node scripts/test-plugin-package.mjs"
   },
   "dependencies": {
     "@huggingface/transformers": "4.2.0",
@@ -54,5 +55,6 @@
     "onnxruntime-node": {
       "adm-zip": "0.6.0"
     }
-  }
+  },
+  "license": "MIT"
 }

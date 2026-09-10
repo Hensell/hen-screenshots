@@ -1,78 +1,128 @@
-# Hen Screenshots — local plugin preview
+# Hen Screenshots — local agent plugin
 
-Create screenshot series from a folder of app captures, using the templates and rendering logic from [Hen Screenshots](https://screenshots.hensell.dev/). Get PNGs, a contact-sheet preview, a ZIP organized by language, and an editable `.henscreenshots` project.
+Create screenshot series from local captures with the same templates and scene engine as [Hen Screenshots](https://screenshots.hensell.dev/). Export PNGs, a contact-sheet preview, a ZIP organized by language, and an editable `.henscreenshots` project.
 
-This is **v0.1, a local development preview**, prepared for Codex and Claude Code. It has not been submitted to either public plugin directory. There is no `.exe`, account, subscription, MCP server, or background service. Node.js runs the local tool when the agent invokes it.
+**Version 0.2.0 · MIT · Local rendering.** Available from GitHub and the website. It is not listed in the official OpenAI or Anthropic directories. No Hen account, API key, MCP server, background service, or `.exe` is required. Your agent provider's plan and data policies still apply.
 
-## Setup
+## Requirements
 
-Download the built ZIP and follow the [public setup guide](https://screenshots.hensell.dev/agents/) (English, Spanish, and Brazilian Portuguese). This local preview is available directly from the website; it is not listed in a public plugin directory.
+- Node.js **22.12+**, including npm, available in your agent's terminal.
+- Codex or Claude Code with local file and terminal access.
+- Internet for installation of pinned npm packages and native rendering libraries. Rendering works offline after setup.
 
-Requires **Node.js 22.12+** and npm. On a supported OS/architecture, npm installs prebuilt native canvas and image-processing libraries. Internet is needed for this one-time setup; rendering itself works offline.
+The release checks exercise clean ZIP installation and rendering on GitHub's Ubuntu, Windows, and macOS runners. See the [package checks](https://github.com/Hensell/hen-screenshots/actions/workflows/plugin-release-check.yml) for the actual results and OS/architecture reports. Other systems and architectures are not certified by that matrix.
 
-From an extracted, built plugin ZIP:
+## Install in Codex
 
-```sh
-cd /path/to/hen-screenshots
-npm ci --omit=dev
-node scripts/hen.mjs doctor
-```
-
-From this repository's source checkout, first run these in the repository root:
+Run in a terminal with the Codex CLI:
 
 ```sh
-npm ci
-npm run plugin:build
-node plugins/hen-screenshots/scripts/hen.mjs doctor
+codex plugin marketplace add Hensell/hen-screenshots
+codex plugin add hen-screenshots@hen-screenshots
 ```
 
-The ZIP includes the built renderer and licensed fonts, but never `node_modules` or personal screenshots. `npm run plugin:pack` creates `artifacts/hen-screenshots-plugin-0.1.0.zip` in the repository root. Source edits to the renderer require rebuilding it.
+Start a new local task after installation. Ask Codex:
 
-## Use with an agent
+> Use Hen Screenshots. Run its doctor command, and complete the one-time setup if dependencies are missing. Then create a three-slide Google Play series from my captures, and show me the preview before exporting.
 
-The skill lives at `skills/create-screenshots/SKILL.md`. Codex and Claude Code have separate compatibility manifests alongside a portable root manifest. Follow the host's local-plugin installation workflow; installing from GitHub alone does not build the renderer or install npm dependencies automatically.
+The skill resolves its own installed folder. Dependencies must be installed there, not in your app's repository or another copy of the plugin. The setup command is `node "PLUGIN_FOLDER/scripts/setup.mjs"`, where `PLUGIN_FOLDER` is the actual installed plugin directory.
 
-For a Claude Code development session, after setup:
+## Install in Claude Code
+
+Inside Claude Code:
+
+```text
+/plugin marketplace add Hensell/hen-screenshots
+/plugin install hen-screenshots@hen-screenshots
+```
+
+Start a new session and invoke `/hen-screenshots:create-screenshots`. Ask it to run doctor and complete setup before the first render, as in the Codex example above.
+
+These commands install from the Hen repository marketplace. They do not install from either platform's official directory.
+
+## Download a ZIP instead
+
+Download the ZIP and matching `.sha256` file from [GitHub Releases](https://github.com/Hensell/hen-screenshots/releases), or use the [website setup guide](https://screenshots.hensell.dev/agents/). Keep the extracted `hen-screenshots` directory somewhere permanent.
+
+From the extracted directory:
 
 ```sh
-claude --plugin-dir /absolute/path/to/hen-screenshots
+node scripts/setup.mjs
 ```
 
-For a Codex source-development session, ask it to read the skill at its absolute path, then give it your captures and desired store/portfolio format. The plugin is not registered in your personal marketplace automatically.
+Setup installs the locked dependencies in that directory and runs `doctor`. It does not install Node globally or alter your source images. A successful check reports `"ok": true` and version `0.2.0`.
 
-Example request:
+To verify the archive before extracting it:
 
-> Use Hen Screenshots to create a three-slide series from ./captures for Google Play. Try a dark template, write concise English and Spanish captions, and show me the preview before I publish it.
+```sh
+# macOS
+shasum -a 256 -c hen-screenshots-plugin-0.2.0.zip.sha256
+# Linux
+sha256sum -c hen-screenshots-plugin-0.2.0.zip.sha256
+```
 
-See the [skill](skills/create-screenshots/SKILL.md) and [design spec](skills/create-screenshots/references/design-spec.md). Platform references: [Codex plugins](https://developers.openai.com/plugins/build/plugins) and [Claude Code plugins](https://code.claude.com/docs/en/plugins-reference).
+On Windows, use `Get-FileHash .\hen-screenshots-plugin-0.2.0.zip -Algorithm SHA256` in PowerShell and compare the hash with the `.sha256` file.
+
+For a Claude Code session using the extracted ZIP:
+
+```sh
+claude --plugin-dir "PLUGIN_FOLDER"
+```
+
+For Codex without a marketplace installation, ask it to read `PLUGIN_FOLDER/skills/create-screenshots/SKILL.md` and use its CLI. Use an absolute path and replace the placeholder with your actual directory.
+
+## Update
+
+For Codex, refresh the repository and reinstall the plugin:
+
+```sh
+codex plugin marketplace upgrade hen-screenshots
+codex plugin add hen-screenshots@hen-screenshots
+```
+
+For Claude Code:
+
+```text
+/plugin marketplace update hen-screenshots
+/plugin update hen-screenshots@hen-screenshots
+```
+
+For a ZIP installation, extract the new release to a new directory and run setup there. Keep your captures and outputs outside the plugin folder. After any update, start a new agent session and run doctor; a new cache directory may need setup again.
 
 ## CLI
 
-Run `node /absolute/path/to/plugin/scripts/hen.mjs` followed by:
+Run `node "PLUGIN_FOLDER/scripts/hen.mjs"` followed by:
 
 ```sh
 templates --query dark
 profiles
 languages
+doctor
 create --config ./design.json --out ./output-v1
 create --input ./captures --name "My app" --template halo --profile play-phone-portrait --out ./output-v1
 inspect --project ./project.henscreenshots
 render --project ./project.henscreenshots --out ./output-v2
 ```
 
-Successful commands print JSON to stdout; failures print `{ "ok": false, "error": "…" }` to stderr and exit nonzero. Outputs always go to a **new directory**. Input files remain unchanged.
+Successful commands return JSON; failures return `{ "ok": false, "error": "…" }` on stderr with a nonzero exit code. Outputs go to a **new directory**. Inputs are unchanged. Read the [design spec](skills/create-screenshots/references/design-spec.md) for captions, panoramas, device placement, brand kits, and language versions.
 
-## Current boundaries
+## Boundaries
 
-- Local PNG, JPEG and still WebP inputs, up to 50 MB each, 24 megapixels, 120 MB combined. The web studio supports additional import/conversion formats.
+- Local PNG, JPEG, and still WebP inputs: up to 50 MB per file, 24 megapixels per image, and 120 MB combined. Use the web studio for additional import formats.
 - Templates include panoramas, multiple-device scenes, portfolio layouts, and Play banners. Source-only Wear OS exports require the web studio.
-- Agent-supplied captions and translations share one design. No translation model is installed by this plugin.
-- Exact export dimensions and opaque RGB PNGs are checked. Review every preview and each store's content rules before uploading.
-- Native font rasterization can differ slightly from a browser. Test the release package on each target operating system before public distribution.
-- The small authoring config covers the main design controls; import a full project for other editor features.
+- Translations are supplied by you or your agent. This plugin does not download a translation model or call an AI API.
+- Export dimensions and opaque RGB PNGs are checked. Review the preview and store content rules before uploading.
+- Native and browser font rendering can differ. Compare typography before publication.
+- Design spec v1 covers the main authoring controls; import a full project for other editor features.
 
-## Before public distribution
+## Development and releases
 
-Choose the repository's code license, complete platform installation and OS compatibility checks, and prepare release notes and directory metadata. The font licenses are included with the built assets; dependency licenses remain in their installed packages. No open-source code license has been selected in the repository yet. This preview does not establish a new one.
+The Git marketplace includes the built renderer, fonts, and icon so a source install does not depend on web build tools. Changes to shared rendering code require `npm run plugin:build` in the repository root. Commit the regenerated bundle when releasing an updated plugin.
 
-Read [privacy and local file access](PRIVACY.md). Feedback: [hensell@hensell.dev](mailto:hensell@hensell.dev). If Hen helps you, [give the repository a star](https://github.com/Hensell/hen-screenshots).
+`npm run plugin:pack` builds a ZIP and SHA-256 checksum in `artifacts/`. Packaging uses fixed ZIP timestamps. Bump the plugin version consistently in all manifests and its lockfile when publishing changes. Website builds also refresh their plugin download. See [release instructions](https://github.com/Hensell/hen-screenshots/blob/main/docs/plugin-distribution.md).
+
+## License and privacy
+
+[MIT](LICENSE). Fonts and dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). Read [privacy and local file access](PRIVACY.md).
+
+Feedback: [hensell@hensell.dev](mailto:hensell@hensell.dev). If Hen helps you, [star the repository](https://github.com/Hensell/hen-screenshots) or [support development](https://ko-fi.com/hensell).

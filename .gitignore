@@ -30,5 +30,18 @@ exports/
 
 # Built local plugin packages
 artifacts/
-plugins/hen-screenshots/assets/
 public/downloads/hen-screenshots-plugin-*.zip
+public/downloads/hen-screenshots-plugin-*.zip.sha256
+
+# The Git marketplace includes its ready-to-run renderer and public assets.
+!plugins/hen-screenshots/dist/
+plugins/hen-screenshots/dist/*
+!plugins/hen-screenshots/dist/cli.mjs
+plugins/hen-screenshots/assets/*
+!plugins/hen-screenshots/assets/icon.png
+!plugins/hen-screenshots/assets/fonts/
+plugins/hen-screenshots/assets/fonts/*
+!plugins/hen-screenshots/assets/fonts/Manrope.ttf
+!plugins/hen-screenshots/assets/fonts/Fraunces-Semibold.ttf
+!plugins/hen-screenshots/assets/fonts/OFL.txt
+!plugins/hen-screenshots/assets/fonts/OFL-Fraunces.txt
