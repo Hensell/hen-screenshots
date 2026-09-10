@@ -1,6 +1,6 @@
 # Plugin distribution
 
-Hen Screenshots v0.2.0 is the first packaged GitHub release of the local plugin. It is distributed under MIT through the repository marketplaces and a downloadable ZIP. Official OpenAI and Anthropic directory submissions remain pending.
+Hen Screenshots [v0.2.0](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.0) is the first packaged GitHub release of the local plugin. It is distributed under MIT through the repository marketplaces and a downloadable ZIP. Official OpenAI and Anthropic directory submissions remain pending.
 
 ## Install
 
@@ -11,6 +11,16 @@ The repository contains `.agents/plugins/marketplace.json` for Codex and `.claud
 No `node_modules`, personal captures, or project files belong in the release archive. Setup does not require a source build, administrator privileges, or a Hen service.
 
 ## Verification
+
+Release v0.2.0 passed [run 34533266931](https://github.com/Hensell/hen-screenshots/actions/runs/34533266931) at commit `78208aaea522479d0b549583c9326cb230c4f4e5` on September 10, 2026:
+
+| Runner   | Platform / architecture | Node.js | Installation and rendering |
+| -------- | ----------------------- | ------- | -------------------------- |
+| Ubuntu   | Linux x64               | 22.23.2 | Passed                     |
+| Windows  | Windows x64             | 22.23.2 | Passed                     |
+| macOS 14 | macOS arm64             | 22.23.2 | Passed                     |
+
+The published ZIP came from that run. Its SHA-256 is `cd2b31a4f45e62ef4324f9e841cebd42e161da05da6316be0df7c9e944be5511`. Two local builds produced the same bytes as CI. Preview images were also inspected visually.
 
 The [package-check workflow](../.github/workflows/plugin-release-check.yml) builds the ZIP once, validates the Claude manifests, and verifies the archive checksum before installing and testing the same ZIP on Ubuntu, Windows, and macOS runners. Inspect [workflow results](https://github.com/Hensell/hen-screenshots/actions/workflows/plugin-release-check.yml) and each `qa-report.json` for the actual OS, architecture, Node version, and outcome.
 

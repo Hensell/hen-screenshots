@@ -39,19 +39,20 @@ Status: planned, with the order guided by requests.
 
 A collection is ready when it solves a specific presentation need and works with users' own images. Template count alone is not a release target.
 
-## Agent plugin: prepare a distributable release
+## Agent plugin: GitHub release available
 
-Status: GitHub release preparation in progress; official directory submissions planned.
+Status: [v0.2.0 published on GitHub](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.0); official directory submissions planned.
 
 - [x] Choose and add the code license, and include the required license notices in the release archive.
-- [ ] Test installation from an extracted release package in clean Codex and Claude Code environments, with no dependency on the source checkout.
-- [ ] Verify the native rendering dependencies on each advertised operating system and architecture. Document the supported combinations.
-- [ ] Publish a versioned GitHub Release with a built ZIP, checksum, release notes, and a reproducible build process.
-- [ ] Add and test repository marketplace catalogs for direct installation in each host. Ensure the install path supplies the built renderer, fonts, and dependency setup.
+- [x] Test the extracted release package outside the source checkout, plus GitHub marketplace installation in Codex and an isolated Claude Code configuration.
+- [x] Verify native rendering on Linux x64, Windows x64, and macOS arm64. Record the exact systems in the [release verification](docs/plugin-distribution.md#verification).
+- [x] Publish a versioned GitHub Release with a built ZIP, checksum, release notes, and a reproducible build process.
+- [x] Add and test repository marketplace catalogs for direct installation in each host. Include the built renderer, fonts, and dependency setup.
 - [ ] Prepare listing assets, public support/privacy/terms links where required, and repeatable success and failure examples.
-- [ ] Validate the Claude Code package and submit it to the Anthropic plugin directory.
+- [x] Validate the Claude Code package and repository marketplace.
+- [ ] Submit the package to the Anthropic plugin directory.
 - [ ] Confirm OpenAI's review path for the plugin's local execution and offline rendering, then prepare its skills-only submission and publisher verification.
-- [ ] Update the website guide with the installation paths and listing links that have actually been verified.
+- [x] Update the website guide with verified GitHub and ZIP installation instructions in English, Spanish, and Brazilian Portuguese.
 
 See [plugin distribution readiness](docs/plugin-distribution.md) for the current gaps and official submission references. Direct distribution and inclusion in an official directory are separate milestones; directory approval is handled by each platform.
 
