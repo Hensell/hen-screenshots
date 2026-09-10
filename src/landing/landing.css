@@ -1331,6 +1331,13 @@ details > p {
 .brand-section {
   border-bottom: 1px solid var(--brand-border);
 }
+.brand-section .section-footnote {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+.brand-section .section-footnote .inline-link {
+  flex-shrink: 0;
+}
 .brand-section,
 .how-section {
   display: grid;

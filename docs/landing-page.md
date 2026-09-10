@@ -5,9 +5,15 @@ Both are HTML entries in the Vite build and are served by Cloudflare Workers Sta
 
 Old `/?project=…` links redirect in the browser to `/studio/?project=…`, preserving the query string and fragment. The origin and database remain the same. The library logo links home; the editor logo still saves and returns to projects.
 
-The public message is **Free forever. No account. No watermarks.** This applies to every existing template, device frame, and full-resolution export. The landing does not claim an open-source license, unlimited project sizes, or guaranteed store approval.
+The public message is **Free forever. No account. No watermarks.** This applies to every existing template, device frame, and full-resolution export. The application and plugin use the MIT license, linked from GitHub and identified on the landing. The page does not promise unlimited project sizes or guaranteed store approval.
 
 The page includes actual template exports, a linked Panorama pair, a portfolio card, the create/style/export workflow, local storage and backup details, and links to the studio and [Hensell's portfolio](https://hensell.dev). The public [GitHub repository](https://github.com/Hensell/hen-screenshots) is linked beneath the hero, in the free section's contribution invitation, and in the footer. The copy is available in English, Spanish, and Portuguese; repository links stay available on mobile.
+
+## Reusable designs and agent downloads
+
+The brand section covers kits, background images, logos, and **My templates**. Users can save a slide or linked panorama and export/import a `.hentemplate` file. The FAQ explains empty device slots, included artwork, independent copies, and the fact that text flattened into an image is not editable. Project, kit, and template libraries stay in the browser; each has its own portable backup format. Nothing is published to a community gallery automatically.
+
+The `/agents/` guide and its Spanish and Brazilian Portuguese versions distinguish the current website ZIP (version read from the plugin package) from the published OpenAI directory version. They explain how to render a web project made from a personal template: open the template in the studio, add captures, download a `.henscreenshots` project, and use plugin v0.2.1 or newer. The CLI does not import `.hentemplate` files directly. Updating the website does not update installed plugins.
 
 ## Example assets
 

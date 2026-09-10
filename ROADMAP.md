@@ -12,6 +12,7 @@ The hosted editor will remain free, with no account or watermarks. The applicati
 - 57 templates, including 11 linked panoramas and three panoramas with fixed isometric device poses.
 - Phone, tablet, desktop, and multiple-device layouts, with movable text, device resizing, and 360° rotation.
 - Template search, filters, pagination, and favorites.
+- Personal templates with editable captions, background images, and artwork. Save slides or panoramas, reuse them with new captures, and import/export `.hentemplate` files.
 - Reusable brand kits, language versions, and optional on-device translation packs.
 - Local project storage, portable backups, publication previews, and exports checked for the selected format and dimensions.
 - English, Spanish, and Brazilian Portuguese interfaces.
@@ -39,9 +40,11 @@ Status: planned, with the order guided by requests.
 
 A collection is ready when it solves a specific presentation need and works with users' own images. Template count alone is not a release target.
 
-## Agent plugin: GitHub release available
+## Agent plugin: available; directory versions tracked separately
 
-Status: [v0.2.0 published on GitHub](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.0) and in the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). Submitted to Anthropic for review on September 10, 2026.
+Current website and repository download: **v0.2.1**, with background-image rendering and schema 11 project support. [Personal-template workflow](README.md#your-own-reusable-templates).
+
+Directory/release status: [v0.2.0 published on GitHub](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.0) and in the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). Submitted to Anthropic for review on September 10, 2026.
 
 - [x] Choose and add the code license, and include the required license notices in the release archive.
 - [x] Test the extracted release package outside the source checkout, plus GitHub marketplace installation in Codex and an isolated Claude Code configuration.
@@ -54,6 +57,7 @@ Status: [v0.2.0 published on GitHub](https://github.com/Hensell/hen-screenshots/
 - [x] Complete OpenAI publisher verification and create the skills-only draft.
 - [x] Pass OpenAI's package validation and automated skill scan.
 - [x] Submit to OpenAI, receive approval in the portal, and publish the approved version in its directory.
+- [ ] Publish v0.2.1 as an immutable GitHub Release and submit the corresponding OpenAI directory update. The current website ZIP and repository marketplace already provide v0.2.1.
 - [ ] Address any follow-up from Anthropic review or OpenAI support about local execution.
 - [x] Update the website guide with verified GitHub and ZIP installation instructions in English, Spanish, and Brazilian Portuguese.
 

@@ -108,8 +108,7 @@
         <aside class="guide-download" aria-labelledby="download-title">
           <div class="guide-package-top">
             <img src="/brand/mark.svg" width="32" height="34" alt="" /><span
-              >v__PLUGIN_VERSION__ ·
-              <span data-i18n="Local plugin">Local plugin</span></span
+              ><span data-i18n="Local plugin">Local plugin</span></span
             >
           </div>
           <h2
@@ -120,9 +119,10 @@
           </h2>
           <p
             class="guide-directory-status"
-            data-i18n="Reviewed and published in the OpenAI Plugins Directory."
+            data-i18n="OpenAI directory: v0.2.0. For projects with background images, use the newer ZIP below or our GitHub marketplace."
           >
-            Reviewed and published in the OpenAI Plugins Directory.
+            OpenAI directory: v0.2.0. For projects with background images, use
+            the newer ZIP below or our GitHub marketplace.
           </p>
           <a
             class="action guide-download-link"
@@ -143,8 +143,8 @@
             class="guide-source"
             download
             href="/downloads/hen-screenshots-plugin-__PLUGIN_VERSION__.zip"
-            ><span data-i18n="Download ZIP instead">Download ZIP instead</span>
-            <span aria-hidden="true">↓</span></a
+            ><span data-i18n="Download ZIP">Download ZIP</span> ·
+            v__PLUGIN_VERSION__ <span aria-hidden="true">↓</span></a
           >
           <br />
           <a
@@ -655,6 +655,53 @@
             <h2 id="help-title" data-i18n="A few things to know.">
               A few things to know.
             </h2>
+            <details>
+              <summary>
+                <span data-i18n="Can I reuse my own templates with an agent?"
+                  >Can I reuse my own templates with an agent?</span
+                >
+              </summary>
+              <div class="faq-answer">
+                <p
+                  data-i18n="Yes. In the web studio, open My templates, import a .hentemplate file if needed, and open it as a new project. Add your captures, then download the .henscreenshots project file. Give that file to your agent for rendering with plugin v0.2.1 or newer, which preserves background images. The plugin reads project files, not .hentemplate files or your browser library."
+                >
+                  Yes. In the web studio, open My templates, import a
+                  .hentemplate file if needed, and open it as a new project. Add
+                  your captures, then download the .henscreenshots project file.
+                  Give that file to your agent for rendering with plugin v0.2.1
+                  or newer, which preserves background images. The plugin reads
+                  project files, not .hentemplate files or your browser library.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>
+                <span data-i18n="Does the plugin update automatically?"
+                  >Does the plugin update automatically?</span
+                >
+              </summary>
+              <div class="faq-answer">
+                <p
+                  data-i18n="Website deployments do not update a plugin on your computer. For a ZIP installation, extract the new version to a new folder and run setup there. For a marketplace installation, follow the update instructions in the plugin README. Start a new agent session and run doctor after updating. Directory versions can lag behind the website download."
+                >
+                  Website deployments do not update a plugin on your computer.
+                  For a ZIP installation, extract the new version to a new
+                  folder and run setup there. For a marketplace installation,
+                  follow the update instructions in the plugin README. Start a
+                  new agent session and run doctor after updating. Directory
+                  versions can lag behind the website download.
+                </p>
+                <a
+                  class="inline-link"
+                  href="https://github.com/Hensell/hen-screenshots/blob/main/plugins/hen-screenshots/README.md#update"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  ><span data-i18n="Plugin update instructions"
+                    >Plugin update instructions</span
+                  ><span aria-hidden="true">↗</span></a
+                >
+              </div>
+            </details>
             <details>
               <summary>
                 <span data-i18n="Is it in the Codex or Claude plugin store?"

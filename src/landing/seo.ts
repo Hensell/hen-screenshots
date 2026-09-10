@@ -8,7 +8,7 @@ export const siteUrl = "https://screenshots.hensell.dev";
 const pluginVersion = pluginPackage.version;
 const title = "Hen Screenshots — Free app screenshot & mockup studio";
 const description =
-  "Free app store screenshots, Google Play banners, portfolio mockups, and caption translations. Create in your browser, with no account or watermarks.";
+  "Free app screenshots, Google Play banners, and portfolio mockups. Make reusable templates and translate captions in your browser. No account or watermarks.";
 const locales = Object.keys(landingPaths) as InterfaceLocale[];
 const graphLocales = { en: "en_US", es: "es_ES", "pt-BR": "pt_BR" };
 const imageDescriptions = {
@@ -100,6 +100,12 @@ export function seoMarkup(
         browserRequirements: "Requires JavaScript and a modern web browser.",
         inLanguage: locales,
         isAccessibleForFree: true,
+        license: "https://github.com/Hensell/hen-screenshots/blob/main/LICENSE",
+        featureList: [
+          "Your own templates",
+          "Brand kits",
+          "Free caption translations",
+        ].map((feature) => translateFor(locale, feature)),
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         author: {
           "@type": "Person",

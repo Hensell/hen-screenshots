@@ -8,9 +8,11 @@ The public landing page is built as three static HTML documents:
 | Spanish              | `https://screenshots.hensell.dev/es/`    |
 | Brazilian Portuguese | `https://screenshots.hensell.dev/pt-br/` |
 
+The AI guide also has `/agents/`, `/es/agents/`, and `/pt-br/agents/` versions.
+
 Each URL delivers translated content, a title and description, canonical and reciprocal `hreflang` links, Open Graph metadata, a Twitter large-image card, and JSON-LD describing the website and free web application. Crawlers do not need JavaScript to read them. The language selector navigates between these URLs and remembers the choice for the editor. It preserves the current query string and section anchor. The footer also provides ordinary language links.
 
-`src/landing/seo.ts` owns the metadata and structured data. The Vite plugin in `src/landing/seo-plugin.ts` renders the existing landing translations at build time, after Vite has resolved scripts, styles, and fonts. Add new translatable copy to `src/i18n/landing-messages.ts` and mark text-only elements with `data-i18n`, as elsewhere in the landing template. Keep the visible product claims and structured data consistent.
+`src/landing/seo.ts` owns the metadata and structured data. The Vite plugin in `src/landing/seo-plugin.ts` renders the existing landing translations at build time, after Vite has resolved scripts, styles, and fonts. Add new translatable copy to `src/i18n/landing-messages.ts` and mark text-only elements with `data-i18n`, as elsewhere in the landing template. Keep the visible product claims and structured data consistent. The metadata includes reusable templates; the application schema identifies the MIT license and localized features. Share images remain actual template examples, with no version-specific claims.
 
 ## Social images and icons
 
@@ -24,7 +26,7 @@ Review all three images visually and commit the generated files with any generat
 
 ## Indexing and routes
 
-- `/sitemap.xml` lists only the three public landing URLs. It is generated from the same locale map used by the metadata.
+- `/sitemap.xml` lists the three public landing URLs and the three localized AI guide URLs. It is generated from the same locale map used by the metadata.
 - `/robots.txt` points crawlers to that sitemap. The editor remains crawlable so search engines can read its `noindex` directive.
 - `/studio/` has both a `noindex` meta tag and an `X-Robots-Tag` response header. Project IDs and private editor views are absent from the sitemap. `noindex` is an indexing instruction, not an access-control mechanism; projects remain stored locally in the browser.
 - Cloudflare serves missing routes with a real HTTP 404 and `public/404.html`, instead of returning the landing page with status 200. Existing project bookmarks still redirect to `/studio/?project=…`.

@@ -1,4 +1,58 @@
 export const landingMessages: Record<string, readonly [string, string]> = {
+  "Backgrounds, logos, and artwork": [
+    "Fondos, logotipos e imágenes",
+    "Fundos, logotipos e imagens",
+  ],
+  "Add your own background image and set its fit and opacity. Layer logos or awards above your screenshots.":
+    [
+      "Añade una imagen de fondo y ajusta su encuadre y opacidad. Coloca logotipos o premios sobre tus capturas.",
+      "Adicione uma imagem de fundo e ajuste o enquadramento e a opacidade. Coloque logotipos ou prêmios sobre suas capturas.",
+    ],
+  "Your own templates": ["Tus propias plantillas", "Seus próprios modelos"],
+  "Save a slide or a panorama in My templates. Keep your text and artwork, then reuse the layout with fresh screenshots.":
+    [
+      "Guarda un slide o un panorama en Mis plantillas. Conserva tus textos e imágenes y reutiliza el diseño con nuevas capturas.",
+      "Salve um slide ou panorama em Meus modelos. Mantenha seus textos e imagens e reutilize o layout com novas capturas.",
+    ],
+  "Export a .hentemplate file to share your design or keep a backup. Your template library stays in this browser.":
+    [
+      "Exporta un archivo .hentemplate para compartir tu diseño o guardar una copia de seguridad. Tu biblioteca de plantillas se guarda en este navegador.",
+      "Exporte um arquivo .hentemplate para compartilhar seu design ou guardar um backup. Sua biblioteca de modelos fica neste navegador.",
+    ],
+  "Create your own template": [
+    "Crear tu propia plantilla",
+    "Criar seu próprio modelo",
+  ],
+  "Can I create and share my own templates?": [
+    "¿Puedo crear y compartir mis propias plantillas?",
+    "Posso criar e compartilhar meus próprios modelos?",
+  ],
+  "Yes. Add a background in Design, arrange your text and images, then choose Save as template. Reuse it from My templates, or export a .hentemplate file to share it. Device screenshots become empty slots for new captures; background images and logos are included, so check them before sharing. Each use creates an independent copy.":
+    [
+      "Sí. Añade un fondo en Diseño, organiza tus textos e imágenes y elige Guardar como plantilla. Reutilízala desde Mis plantillas o exporta un archivo .hentemplate para compartirla. Las capturas de los dispositivos se sustituyen por espacios vacíos; las imágenes de fondo y los logotipos se incluyen, así que revísalos antes de compartir. Cada uso crea una copia independiente.",
+      "Sim. Adicione um fundo em Design, organize seus textos e imagens e escolha Salvar como modelo. Reutilize-o em Meus modelos ou exporte um arquivo .hentemplate para compartilhar. As capturas dos dispositivos são substituídas por espaços vazios; imagens de fundo e logotipos são incluídos, então confira tudo antes de compartilhar. Cada uso cria uma cópia independente.",
+    ],
+  "Text inside an uploaded image stays part of the image. Add captions in the editor to keep them editable.":
+    [
+      "El texto dentro de una imagen sigue siendo parte de ella. Añade los textos en el editor para poder modificarlos después.",
+      "O texto dentro de uma imagem continua fazendo parte dela. Adicione os textos no editor para poder editá-los depois.",
+    ],
+  "Open source under the MIT license. Explore the code, report a bug, or contribute your next idea on GitHub.":
+    [
+      "Código abierto con licencia MIT. Explora el código, informa de un error o aporta tu próxima idea en GitHub.",
+      "Código aberto sob a licença MIT. Explore o código, relate um erro ou contribua com sua próxima ideia no GitHub.",
+    ],
+  "Your captures are processed in your browser. Projects, brand kits, and personal templates stay on this device, with no upload or cloud sync. Export each as a project, kit, or template file to keep a backup or move to another browser. Clearing site data deletes these local libraries.":
+    [
+      "Tus capturas se procesan en el navegador. Los proyectos, kits de marca y plantillas personales se guardan en este dispositivo, sin subidas ni sincronización en la nube. Exporta cada uno como archivo de proyecto, kit o plantilla para guardar una copia de seguridad o llevarlo a otro navegador. Si borras los datos del sitio, se eliminarán estas bibliotecas locales.",
+      "Suas capturas são processadas no navegador. Projetos, kits de marca e modelos pessoais ficam neste dispositivo, sem envio ou sincronização na nuvem. Exporte cada um como arquivo de projeto, kit ou modelo para guardar um backup ou levar a outro navegador. Limpar os dados do site apaga essas bibliotecas locais.",
+    ],
+  "Free app screenshots, Google Play banners, and portfolio mockups. Make reusable templates and translate captions in your browser. No account or watermarks.":
+    [
+      "Capturas de apps, banners de Google Play y mockups gratis. Crea plantillas reutilizables y traduce textos en tu navegador. Sin cuenta ni marcas de agua.",
+      "Capturas de apps, banners do Google Play e mockups grátis. Crie modelos reutilizáveis e traduza textos no navegador. Sem conta nem marcas-d’água.",
+    ],
+
   "Hen for Codex": ["Hen para Codex", "Hen para Codex"],
   "Now available in the OpenAI Plugins Directory.": [
     "Ya disponible en el directorio de plugins de OpenAI.",

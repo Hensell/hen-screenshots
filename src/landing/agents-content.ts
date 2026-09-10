@@ -2,6 +2,35 @@ import type { InterfaceLocale } from "../i18n/core.ts";
 
 // Build-time copy: the guide is readable and translated without JavaScript.
 export const agentMessages: Record<string, readonly [string, string]> = {
+  "OpenAI directory: v0.2.0. For projects with background images, use the newer ZIP below or our GitHub marketplace.":
+    [
+      "Directorio de OpenAI: v0.2.0. Para proyectos con imágenes de fondo, usa el ZIP más reciente de abajo o nuestro catálogo de GitHub.",
+      "Diretório da OpenAI: v0.2.0. Para projetos com imagens de fundo, use o ZIP mais recente abaixo ou nosso catálogo do GitHub.",
+    ],
+  "Download ZIP": ["Descargar ZIP", "Baixar ZIP"],
+  "Can I reuse my own templates with an agent?": [
+    "¿Puedo reutilizar mis plantillas con un agente?",
+    "Posso reutilizar meus modelos com um agente?",
+  ],
+  "Yes. In the web studio, open My templates, import a .hentemplate file if needed, and open it as a new project. Add your captures, then download the .henscreenshots project file. Give that file to your agent for rendering with plugin v0.2.1 or newer, which preserves background images. The plugin reads project files, not .hentemplate files or your browser library.":
+    [
+      "Sí. En el estudio web, abre Mis plantillas, importa un archivo .hentemplate si hace falta y ábrelo como proyecto nuevo. Añade tus capturas y descarga el archivo de proyecto .henscreenshots. Dale ese archivo a tu agente para renderizarlo con el plugin v0.2.1 o posterior, que conserva las imágenes de fondo. El plugin lee archivos de proyecto, no archivos .hentemplate ni tu biblioteca del navegador.",
+      "Sim. No estúdio web, abra Meus modelos, importe um arquivo .hentemplate se necessário e abra-o como um novo projeto. Adicione suas capturas e baixe o arquivo de projeto .henscreenshots. Entregue esse arquivo ao agente para renderizar com o plugin v0.2.1 ou mais recente, que preserva as imagens de fundo. O plugin lê arquivos de projeto, não arquivos .hentemplate nem sua biblioteca do navegador.",
+    ],
+  "Does the plugin update automatically?": [
+    "¿El plugin se actualiza automáticamente?",
+    "O plugin é atualizado automaticamente?",
+  ],
+  "Website deployments do not update a plugin on your computer. For a ZIP installation, extract the new version to a new folder and run setup there. For a marketplace installation, follow the update instructions in the plugin README. Start a new agent session and run doctor after updating. Directory versions can lag behind the website download.":
+    [
+      "Los despliegues de la web no actualizan el plugin de tu computadora. Si usas el ZIP, extrae la nueva versión en otra carpeta y ejecuta la instalación allí. Si lo instalaste desde un catálogo, sigue las instrucciones de actualización del README del plugin. Inicia una sesión nueva del agente y ejecuta doctor después de actualizar. Las versiones de los directorios pueden ir por detrás de la descarga de la web.",
+      "As publicações do site não atualizam o plugin no seu computador. Se você usa o ZIP, extraia a nova versão em outra pasta e execute a configuração nela. Se instalou por um catálogo, siga as instruções de atualização no README do plugin. Inicie uma nova sessão do agente e execute doctor após atualizar. As versões dos diretórios podem estar atrás da versão disponível no site.",
+    ],
+  "Plugin update instructions": [
+    "Instrucciones para actualizar el plugin",
+    "Instruções para atualizar o plugin",
+  ],
+
   "Reviewed and published in the OpenAI Plugins Directory.": [
     "Revisado y publicado en el directorio de plugins de OpenAI.",
     "Revisado e publicado no diretório de plugins da OpenAI.",

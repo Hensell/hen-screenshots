@@ -19,6 +19,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 
 ## Make something worth showing
 
+- **Your own reusable templates.** Add background images, keep editable text and logos, and save a slide or panorama in **My templates**. Reuse it with new screenshots or share a portable `.hentemplate` file. [See how it works](#your-own-reusable-templates).
 - **A template for your story.** 57 designs, from quiet editorial layouts to bold posters, including eleven panoramas that connect two slides into one scene.
 - **Find your look quickly.** Search by name, color, pattern, device position, or visual idea. Filter by style, appearance (Light, Dark, or Colorful), composition, and background, sort results, and browse 12, 24, or 48 templates per page. Previews use your own screenshots.
 - **Keep your favorites close.** Star any template and open **Favorites** to find it again. Favorites work with search, filters, and pagination and are shared across your projects in this browser. They stay on this device, outside project backups; no account is required.
@@ -39,7 +40,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 
 **Halloween collection:** Jack O’ Lantern, Cobweb, Boo, Witching Hour, Candy Club, and the two-slide Moonlight panorama bring carved pumpkins, fine webs, friendly ghosts, stars, candy, and a moonlit sky to your screenshots. Search **Halloween** or **October** in Templates; Spanish and Portuguese searches work too. All colors are editable, and the collection remains available year-round.
 
-The patterns collection adds **Zest, Cabana, Contour, Cherry, Terracotta, Blueprint, Stitch, and Parade**: citrus stripes, aqua awnings, topographic curves, cherry checks, clay fans, cobalt grids, lilac zigzags, and burgundy scallops. Devices sit high, low, to either side, or on a diagonal, with separate space for captions. Search **stripes**, **checker**, **left**, or **diagonal** to find a composition. Open **Templates → Appearance → Dark** to browse the dark templates. Every design remains editable and adapts to the project's frame and canvas.
+The patterns collection adds **Zest, Cabana, Contour, Cherry, Terracotta, Blueprint, Stitch, and Parade**: citrus stripes, aqua awnings, topographic curves, cherry checks, clay fans, cobalt grids, lilac zigzags, and burgundy scallops. Devices sit high, low, to either side, or on a diagonal, with separate space for captions. Search **stripes**, **checker**, **left**, or **diagonal** to find a composition. Open **Open templates → Appearance → Dark** to browse the dark templates. Every design remains editable and adapts to the project's frame and canvas.
 
 ### Two slides. One bigger story.
 
@@ -227,7 +228,7 @@ See [deployment instructions](docs/deployment.md) for build settings, custom dom
 
 Built by [Hensell](https://hensell.dev) for his own apps, and for the things you are building too.
 
-See the [public roadmap](ROADMAP.md) for the next priorities: first-use improvements, collections shaped by real apps, and agent plugin distribution. It records direction and readiness without promising release dates. The [plugin distribution notes](docs/plugin-distribution.md) describe what is still needed for a public release.
+See the [public roadmap](ROADMAP.md) for the next priorities: first-use improvements, collections shaped by real apps, and agent plugin distribution. It records direction and readiness without promising release dates. The [plugin distribution notes](docs/plugin-distribution.md) track released versions, verification, and directory updates.
 
 If Hen Screenshots helps you showcase your apps, you can [support its development on Ko-fi](https://ko-fi.com/hensell). Donations are optional; the editor remains free forever.
 

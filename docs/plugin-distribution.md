@@ -2,6 +2,8 @@
 
 Hen Screenshots [v0.2.0](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.0) is the first packaged GitHub release of the local plugin. It is distributed under MIT through the repository marketplaces, a downloadable ZIP, and the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). The Anthropic submission is pending review.
 
+The current website ZIP and repository marketplace provide **v0.2.1**, including schema 11 project imports and background-image rendering. GitHub Release `plugin-v0.2.0` and the OpenAI listing still provide v0.2.0. A website deployment does not update an installed plugin or an official directory listing. The v0.2.1 GitHub Release and directory update remain pending.
+
 ## Install
 
 See the [plugin README](../plugins/hen-screenshots/README.md) for Codex, Claude Code, ZIP installation, updates, requirements, and troubleshooting. The [website guide](https://screenshots.hensell.dev/agents/) provides translated instructions.
