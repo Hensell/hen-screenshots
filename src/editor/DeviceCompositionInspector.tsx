@@ -99,13 +99,21 @@ export function DeviceCompositionInspector({
           <output>
             {key === "width"
               ? `${Math.round((selected.phone.width / originalWidth) * 100)}%`
-              : Math.round(selected.phone[key])}
-            {key === "rotation" ? "°" : ""}
+              : `${Math.round(selected.phone[key])}${key === "rotation" ? "°" : " px"}`}
           </output>
         </span>
         <input
           type="range"
           aria-label={t(label)}
+          aria-valuetext={
+            key === "width"
+              ? t("{percent}% of template size", {
+                  percent: Math.round(
+                    (selected.phone.width / originalWidth) * 100,
+                  ),
+                })
+              : `${Math.round(selected.phone[key])}${key === "rotation" ? "°" : " px"}`
+          }
           min={min}
           max={max}
           step={1}
@@ -122,6 +130,8 @@ export function DeviceCompositionInspector({
             }, key)
           }
           onPointerUp={endGroup}
+          onPointerCancel={endGroup}
+          onKeyUp={endGroup}
           onBlur={endGroup}
         />
       </label>

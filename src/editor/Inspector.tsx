@@ -223,7 +223,7 @@ export function Inspector({
                     (shot.phone.width / defaultDeviceWidth) * 100,
                   ),
                 })
-              : undefined
+              : `${Math.round(shot.phone[key])}${key === "rotation" ? "°" : " px"}`
           }
           min={min}
           max={max}
@@ -241,6 +241,8 @@ export function Inspector({
             }, key)
           }
           onPointerUp={endGroup}
+          onPointerCancel={endGroup}
+          onKeyUp={endGroup}
           onBlur={endGroup}
         />
       </label>
@@ -376,6 +378,7 @@ export function Inspector({
             <button
               type="button"
               className="button secondary"
+              title={t("Open templates")}
               onClick={onTemplates}
             >
               {t("Change")}
@@ -829,6 +832,7 @@ export function Inspector({
               <input
                 type="range"
                 aria-label={t("Headline size")}
+                aria-valuetext={`${style.titleSize} px`}
                 min={48}
                 max={132}
                 step={1}
@@ -843,6 +847,8 @@ export function Inspector({
                   }, "titleSize")
                 }
                 onPointerUp={endGroup}
+                onPointerCancel={endGroup}
+                onKeyUp={endGroup}
                 onBlur={endGroup}
               />
             </label>
@@ -982,7 +988,10 @@ export function Inspector({
                             })
                           }
                         >
-                          <span className={`device-glyph ${device}`} />
+                          <span
+                            className={`device-glyph ${device}`}
+                            aria-hidden="true"
+                          />
                           {t(name)}
                         </button>
                       ))}

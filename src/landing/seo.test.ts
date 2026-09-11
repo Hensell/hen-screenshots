@@ -121,7 +121,7 @@ describe("AI agent guide", () => {
   const guide = readFileSync("agents/index.html", "utf8");
   it.each([
     ["en", "Use with AI agents.", "Create a three-slide"],
-    ["es", "Usar con agentes AI.", "Crea una serie de tres slides"],
+    ["es", "Usar con agentes de IA.", "Crea una serie de tres slides"],
     ["pt-BR", "Usar com agentes de IA.", "Crie uma série de três slides"],
   ] as const)(
     "ships complete %s instructions, localized links, and a real versioned download",

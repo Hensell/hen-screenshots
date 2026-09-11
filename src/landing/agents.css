@@ -250,6 +250,9 @@
   background: var(--brand-sage);
   border-color: var(--brand-border);
 }
+.guide-prompt :focus-visible {
+  outline-color: var(--brand-clay);
+}
 .guide-prompt pre {
   font: 0.92rem/1.85 var(--font-brand);
 }

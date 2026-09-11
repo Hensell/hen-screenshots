@@ -36,6 +36,7 @@
   margin-left: auto;
 }
 .editor-file-actions .interface-language {
+  min-width: 0;
   margin-right: 4px;
 }
 @media (max-width: 1050px) {
@@ -107,6 +108,44 @@
   .editor-file-actions .interface-language select {
     width: 100%;
     max-width: none;
-    font-size: 12px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .topbar.editor-header .editor-file-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+  .topbar.editor-header .editor-file-actions .button {
+    min-width: 0;
+    min-height: 48px;
+    font-size: 11px;
+    gap: 6px;
+    padding: 8px 6px;
+    white-space: normal;
+  }
+  .topbar.editor-header
+    .editor-file-actions
+    .project-download
+    .download-label-compact {
+    display: inline;
+  }
+  .topbar.editor-header .interface-language {
+    display: grid;
+    grid-template-columns: 17px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    column-gap: 4px;
+    padding: 4px 6px;
+  }
+  .topbar.editor-header .interface-language-label {
+    position: static;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    line-height: 1.4;
+  }
+  .topbar.editor-header .interface-language > svg,
+  .topbar.editor-header .interface-language select {
+    grid-row: 2;
   }
 }

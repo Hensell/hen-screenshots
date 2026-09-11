@@ -22,11 +22,16 @@
 }
 .composition-device-list button > span:nth-child(2) {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.composition-device-list button:hover:not(:disabled) {
+  border-color: var(--brand-clay);
 }
 .composition-device-list small {
   display: block;
   font-size: 11px;
-  opacity: 0.65;
+  color: var(--brand-muted);
   margin-top: 3px;
 }
 .composition-device-list .device-glyph {

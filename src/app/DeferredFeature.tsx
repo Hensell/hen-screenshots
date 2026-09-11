@@ -37,9 +37,12 @@ function FeatureStatus({
   useEffect(() => {
     const dialog = ref.current!;
     const opener = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     dialog.showModal();
     return () => {
       dialog.close();
+      document.body.style.overflow = overflow;
       if (opener?.isConnected) opener.focus({ preventScroll: true });
     };
   }, []);

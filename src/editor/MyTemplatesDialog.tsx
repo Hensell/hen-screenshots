@@ -45,6 +45,10 @@ export function MyTemplatesDialog({
   const dialog = useRef<HTMLDialogElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const nameInput = useRef<HTMLInputElement>(null);
+  const saveTrigger = useRef<HTMLButtonElement>(null);
+  const deleteTrigger = useRef<HTMLButtonElement>(null);
+  const keepTemplate = useRef<HTMLButtonElement>(null);
+  const searchInput = useRef<HTMLInputElement>(null);
   const [records, setRecords] = useState<CustomTemplate[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [loaded, setLoaded] = useState<LoadedProject | null>(null);
@@ -53,6 +57,7 @@ export function MyTemplatesDialog({
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(savingInitially);
+  const wasSaving = useRef(false);
   const [name, setName] = useState(project?.name ?? "");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
@@ -126,8 +131,14 @@ export function MyTemplatesDialog({
     };
   }, [selected]);
   useEffect(() => {
+    if (busy) return;
     if (saving) nameInput.current?.focus();
-  }, [saving]);
+    else if (!saving && wasSaving.current) saveTrigger.current?.focus();
+    wasSaving.current = saving;
+  }, [saving, busy]);
+  useEffect(() => {
+    if (removing) keepTemplate.current?.focus();
+  }, [removing]);
   useEffect(
     () => () => {
       if (ready) URL.revokeObjectURL(ready.url);
@@ -157,6 +168,10 @@ export function MyTemplatesDialog({
   function close() {
     if (!busy) onClose();
   }
+  function cancelRemoval() {
+    setRemoving(false);
+    requestAnimationFrame(() => deleteTrigger.current?.focus());
+  }
   return (
     <dialog
       ref={dialog}
@@ -164,7 +179,8 @@ export function MyTemplatesDialog({
       aria-labelledby="my-templates-title"
       onCancel={(event) => {
         event.preventDefault();
-        close();
+        if (removing && !busy) cancelRemoval();
+        else close();
       }}
     >
       <header className="my-templates-header">
@@ -194,9 +210,12 @@ export function MyTemplatesDialog({
         </button>
         {canSave && (
           <button
+            ref={saveTrigger}
             type="button"
             className="button primary"
             disabled={busy}
+            aria-expanded={saving}
+            aria-controls="my-template-save-form"
             onClick={() => setSaving((value) => !value)}
           >
             <Icon name="plus" size={16} />
@@ -229,6 +248,7 @@ export function MyTemplatesDialog({
       </p>
       {saving && canSave && (
         <form
+          id="my-template-save-form"
           className="my-template-save"
           onSubmit={(event) => {
             event.preventDefault();
@@ -305,6 +325,7 @@ export function MyTemplatesDialog({
           <label className="my-template-search">
             {t("Search my templates")}
             <input
+              ref={searchInput}
               type="search"
               value={query}
               onChange={(event) => {
@@ -466,10 +487,13 @@ export function MyTemplatesDialog({
                   {t("Export template")}
                 </button>
                 <button
+                  ref={deleteTrigger}
                   type="button"
                   className="text-button"
                   disabled={busy}
                   onClick={() => setRemoving(true)}
+                  aria-expanded={removing}
+                  aria-controls="my-template-delete-confirmation"
                 >
                   <Icon name="trash" size={16} />
                   {t("Delete template")}
@@ -477,6 +501,7 @@ export function MyTemplatesDialog({
               </div>
               {removing && (
                 <div
+                  id="my-template-delete-confirmation"
                   className="my-template-delete"
                   role="group"
                   aria-label={t("Delete template?")}
@@ -488,10 +513,11 @@ export function MyTemplatesDialog({
                   </p>
                   <div className="my-template-actions">
                     <button
+                      ref={keepTemplate}
                       type="button"
                       className="button secondary"
                       disabled={busy}
-                      onClick={() => setRemoving(false)}
+                      onClick={cancelRemoval}
                     >
                       {t("Cancel")}
                     </button>
@@ -505,6 +531,9 @@ export function MyTemplatesDialog({
                           await refresh();
                           setRemoving(false);
                           setMessage("Template deleted.");
+                          requestAnimationFrame(() =>
+                            searchInput.current?.focus(),
+                          );
                         })
                       }
                     >

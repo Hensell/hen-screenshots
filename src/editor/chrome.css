@@ -173,6 +173,7 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
+  min-width: 0;
 }
 .canvas-format-button small,
 .language-switch > span {
@@ -380,6 +381,9 @@
     padding-inline: 8px;
     gap: 6px;
   }
+  .canvas-format-button small {
+    white-space: normal;
+  }
   .language-switch {
     flex: 1;
     width: auto;
@@ -407,9 +411,6 @@
     display: none;
   }
   .canvas-format-button > svg:first-child {
-    display: none;
-  }
-  .project-download > svg {
     display: none;
   }
 }

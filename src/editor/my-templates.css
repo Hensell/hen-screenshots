@@ -9,6 +9,8 @@
   border: 1px solid var(--brand-border);
   border-radius: 12px;
   overflow: auto;
+  overscroll-behavior: contain;
+  scroll-padding-block: 100px 20px;
 }
 .my-templates-dialog::backdrop {
   background: rgb(20 27 25 / 45%);
@@ -27,6 +29,19 @@
 .my-templates-header h2 {
   margin: 0 0 6px;
   font-size: 26px;
+}
+.my-templates-header > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.my-templates-header .icon-button,
+.my-template-row > svg {
+  flex-shrink: 0;
+}
+.my-templates-dialog :is(.button, .text-button) {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .my-templates-header p,
 .my-template-detail p,
@@ -175,6 +190,7 @@
   margin: 0 28px 14px;
   font-size: 13px;
   line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 .my-template-message.error {
   color: var(--brand-clay);
@@ -233,11 +249,19 @@
   .my-template-results {
     max-height: 220px;
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .my-template-save {
     margin-inline: 20px;
   }
   .my-template-actions .button {
     flex: 1 1 auto;
+  }
+  .my-template-file-actions .text-button {
+    min-height: 44px;
+  }
+  .my-template-search input,
+  .my-template-save input {
+    font-size: 16px;
   }
 }

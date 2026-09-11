@@ -87,8 +87,10 @@ export function Preview({
       onKeyDown={onKeyDown}
       aria-label={
         shot.title || shot.subtitle
-          ? `${shot.title.replace(/\n/g, " ")} — ${shot.subtitle}`
-          : t("Empty slide")
+          ? [shot.title.replace(/\n/g, " "), shot.subtitle]
+              .filter(Boolean)
+              .join(" — ")
+          : t(shot.assetId === null ? "Empty slide" : "Untitled screenshot")
       }
     >
       {width > 0 &&

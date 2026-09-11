@@ -50,15 +50,29 @@ export function ExportDialog({
   const t = useT();
   const banners = profile.category === "banner";
   const ref = useRef<HTMLDialogElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const resultRef = useRef<HTMLHeadingElement>(null);
+  const phase = busy ? "preparing" : file ? "ready" : "options";
+  const previousPhase = useRef(phase);
   useEffect(() => {
     const dialog = ref.current!;
     const opener = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     dialog.showModal();
     return () => {
       dialog.close();
-      opener?.focus();
+      document.body.style.overflow = overflow;
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
     };
   }, []);
+  useEffect(() => {
+    if (previousPhase.current === phase) return;
+    previousPhase.current = phase;
+    // Preparing replaces the trigger; keep focus in the new dialog state.
+    if (phase === "preparing") cancelRef.current?.focus();
+    else resultRef.current?.focus();
+  }, [phase]);
   return (
     <dialog
       ref={ref}
@@ -85,7 +99,7 @@ export function ExportDialog({
           <Icon name="close" />
         </button>
       </div>
-      <h2 id="export-heading">
+      <h2 id="export-heading" ref={resultRef} tabIndex={-1}>
         {t(
           file && !file.review?.blocked
             ? "Your export is ready."
@@ -139,7 +153,11 @@ export function ExportDialog({
             <span className="spinner" />
             {t(busy)}
           </p>
-          <button className="button secondary full" onClick={onCancel}>
+          <button
+            ref={cancelRef}
+            className="button secondary full"
+            onClick={onCancel}
+          >
             {t("Cancel export")}
           </button>
         </div>

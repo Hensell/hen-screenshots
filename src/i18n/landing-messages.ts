@@ -107,8 +107,8 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Puedes apoyar el desarrollo de Hen en Ko-fi. Las donaciones son opcionales; el estudio seguirá siendo gratis para siempre.",
       "Você pode apoiar o desenvolvimento do Hen no Ko-fi. As doações são opcionais; o estúdio continuará grátis para sempre.",
     ],
-  "AI agents": ["Agentes AI", "Agentes de IA"],
-  "Use with AI agents": ["Usar con agentes AI", "Usar com agentes de IA"],
+  "AI agents": ["Agentes de IA", "Agentes de IA"],
+  "Use with AI agents": ["Usar con agentes de IA", "Usar com agentes de IA"],
   "Free app store screenshots, Google Play banners, portfolio mockups, and caption translations. Create in your browser, with no account or watermarks.":
     [
       "Capturas para tiendas de apps, banners de Google Play, mockups para portafolios y traducción de textos, gratis. Crea en tu navegador, sin cuenta ni marcas de agua.",
@@ -288,7 +288,7 @@ export const landingMessages: Record<string, readonly [string, string]> = {
   "Minimal, bold, dark, colorful, or seasonal. Search by style, filter by layout, and save your favorites for the next launch.":
     [
       "Minimalistas, llamativas, oscuras, coloridas o de temporada. Busca por estilo, filtra por composición y guarda tus favoritas para tu próximo lanzamiento.",
-      "Minimalistas, marcantes, escuras, coloridas ou sazonais. Busque por estilo, filtre por composição e salve suas favoritas para o próximo lançamento.",
+      "Minimalistas, marcantes, escuros, coloridos ou sazonais. Busque por estilo, filtre por composição e salve seus favoritos para o próximo lançamento.",
     ],
   "Can I translate my screenshots for free?": [
     "¿Puedo traducir mis capturas gratis?",

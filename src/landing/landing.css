@@ -959,6 +959,12 @@ details > p {
 .landing-language {
   flex-shrink: 0;
 }
+.landing-header .landing-language {
+  padding-top: 0;
+}
+.landing-header .landing-language select {
+  min-height: 42px;
+}
 .landing-language > span {
   position: absolute;
   width: 1px;

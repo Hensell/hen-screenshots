@@ -1000,6 +1000,10 @@ svg {
 }
 .export-dialog {
   width: min(440px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 30px;
   border: 1px solid #c9d2bf;
   border-radius: 12px;
@@ -1012,8 +1016,10 @@ svg {
 }
 .delete-slides-dialog {
   width: min(440px, calc(100vw - 32px));
+  max-width: none;
   max-height: calc(100dvh - 32px);
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: clamp(20px, 4vw, 30px);
   border: 1px solid var(--brand-border);
   border-radius: 12px;
@@ -1096,6 +1102,9 @@ svg {
 }
 .export-options .button {
   justify-content: flex-start;
+  flex-wrap: wrap;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .export-options .button > span {
   margin-left: auto;
@@ -1449,11 +1458,17 @@ svg {
     display: none;
   }
   .library-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 9px;
+  }
+  .library-actions > :nth-child(-n + 2) {
+    grid-column: 1 / -1;
   }
   .library-actions .button {
     padding-inline: 13px;
     font-size: 11px;
+    min-width: 0;
   }
   .local-note {
     font-size: 10px;
@@ -1711,8 +1726,10 @@ svg {
 /* A purpose belongs to the project; each workspace keeps its own formats. */
 .new-project-dialog {
   width: min(760px, calc(100vw - 32px));
+  max-width: none;
   max-height: calc(100dvh - 40px);
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 30px;
   border: 1px solid var(--brand-line);
   border-radius: 14px;
@@ -1737,6 +1754,8 @@ svg {
   gap: 18px;
 }
 .purpose-options > button {
+  min-width: 0;
+  overflow-wrap: anywhere;
   text-align: left;
   padding: 12px 12px 20px;
   border: 1px solid #c9cfbf;
@@ -1752,8 +1771,13 @@ svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
   margin: 20px 8px 10px;
   font-size: 19px;
+}
+.purpose-options strong svg {
+  flex-shrink: 0;
 }
 .purpose-options p {
   margin: 0 8px 18px;
@@ -1899,7 +1923,7 @@ svg {
     padding: 20px;
   }
   .purpose-options {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }
   .purpose-art {

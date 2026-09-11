@@ -27,6 +27,13 @@
   gap: 20px;
   padding: 24px 28px 16px;
 }
+.brand-kits-heading > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.brand-kits-heading .icon-button {
+  flex-shrink: 0;
+}
 .brand-kits-heading .eyebrow {
   font-size: 10px;
   color: var(--brand-muted);
@@ -230,6 +237,7 @@
 }
 .brand-logo-field > div > div {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 }
 .brand-logo-field .text-button {
@@ -399,6 +407,7 @@
 }
 .brand-kits-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
@@ -431,13 +440,18 @@
   font-size: 11px;
 }
 .brand-kits-footer .button {
-  white-space: nowrap;
+  white-space: normal;
+  min-width: 0;
+  text-align: center;
 }
 .brand-save-short {
   display: none;
 }
 .brand-confirm {
   max-width: min(440px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  overscroll-behavior: contain;
   margin: auto;
   padding: 26px;
   color: var(--brand-ink);
@@ -457,8 +471,13 @@
 }
 .brand-confirm > div {
   display: flex;
+  flex-wrap: wrap;
   justify-content: end;
   gap: 10px;
+}
+.brand-confirm .button {
+  min-width: 0;
+  white-space: normal;
 }
 @media (max-width: 1050px) {
   .brand-kits-body {
@@ -611,6 +630,26 @@
   }
   .brand-apply-controls select {
     padding-inline: 6px;
+    font-size: 16px;
+  }
+}
+@media (max-width: 460px) {
+  .brand-kits-footer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .brand-apply-controls {
+    display: contents;
+  }
+  .brand-apply-controls label {
+    grid-row: 2;
+    grid-column: 2;
+  }
+  .brand-apply-controls > .button {
+    grid-row: 3;
+    grid-column: 1 / -1;
+  }
+  .brand-logo-field .text-button {
+    min-height: 44px;
   }
 }
 @media (max-width: 380px) {

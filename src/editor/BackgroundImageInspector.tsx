@@ -60,6 +60,7 @@ export function BackgroundImageInspector({
             </span>
             <input
               aria-label={t("Background opacity")}
+              aria-valuetext={`${Math.round(background.opacity * 100)}%`}
               type="range"
               min="0"
               max="100"
@@ -71,6 +72,8 @@ export function BackgroundImageInspector({
                 )
               }
               onPointerUp={endGroup}
+              onPointerCancel={endGroup}
+              onKeyUp={endGroup}
               onBlur={endGroup}
             />
           </label>

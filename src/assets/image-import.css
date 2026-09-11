@@ -1,8 +1,10 @@
 .image-import-dialog {
   width: min(620px, calc(100vw - 24px));
+  max-width: none;
   max-height: calc(100dvh - 24px);
   padding: 24px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   color: var(--brand-ink);
   border: 1px solid var(--brand-border);
   border-radius: 12px;

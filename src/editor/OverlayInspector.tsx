@@ -55,8 +55,17 @@ export function OverlayInspector({
   const [removing, setRemoving] = useState<string | null>(null);
   const section = useRef<HTMLElement>(null);
   const addButton = useRef<HTMLButtonElement>(null);
+  const removeButton = useRef<HTMLButtonElement>(null);
+  const cancelButton = useRef<HTMLButtonElement>(null);
   const active = overlayFor(shot, selectedElement);
   const activeId = active?.id;
+  useEffect(() => {
+    if (removing && removing === activeId) cancelButton.current?.focus();
+  }, [removing, activeId]);
+  function cancelRemoval() {
+    setRemoving(null);
+    requestAnimationFrame(() => removeButton.current?.focus());
+  }
   useEffect(() => {
     const panel = section.current?.closest<HTMLElement>(".inspector");
     if (!activeId || !panel || !section.current) return;
@@ -103,6 +112,7 @@ export function OverlayInspector({
         </span>
         <input
           aria-label={t(label)}
+          aria-valuetext={`${Math.round(active[key])}${key === "rotation" ? "°" : " px"}`}
           type="range"
           min={min}
           max={max}
@@ -121,6 +131,8 @@ export function OverlayInspector({
             )
           }
           onPointerUp={endGroup}
+          onPointerCancel={endGroup}
+          onKeyUp={endGroup}
           onBlur={endGroup}
         />
       </label>
@@ -251,13 +263,20 @@ export function OverlayInspector({
               className="overlay-confirm"
               role="group"
               aria-label={t("Remove extra image?")}
+              onKeyDown={(event) => {
+                if (event.key !== "Escape") return;
+                event.preventDefault();
+                event.stopPropagation();
+                cancelRemoval();
+              }}
             >
               <p>{t("Remove extra image? You can undo this change.")}</p>
               <div className="overlay-actions">
                 <button
                   type="button"
                   className="button secondary"
-                  onClick={() => setRemoving(null)}
+                  ref={cancelButton}
+                  onClick={cancelRemoval}
                 >
                   {t("Cancel")}
                 </button>
@@ -283,6 +302,7 @@ export function OverlayInspector({
             <button
               type="button"
               className="text-button overlay-remove"
+              ref={removeButton}
               onClick={() => setRemoving(active.id)}
             >
               <Icon name="trash" size={14} />

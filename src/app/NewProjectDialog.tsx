@@ -15,10 +15,13 @@ export function NewProjectDialog({
   useEffect(() => {
     const dialog = ref.current!;
     const opener = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     dialog.showModal();
     return () => {
       dialog.close();
-      opener?.focus();
+      document.body.style.overflow = overflow;
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
     };
   }, []);
   return (
@@ -26,6 +29,7 @@ export function NewProjectDialog({
       ref={ref}
       className="new-project-dialog"
       aria-labelledby="new-project-heading"
+      aria-describedby="new-project-description"
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -42,7 +46,7 @@ export function NewProjectDialog({
         </button>
       </header>
       <h2 id="new-project-heading">{t("What would you like to create?")}</h2>
-      <p className="dialog-copy">
+      <p className="dialog-copy" id="new-project-description">
         {t("Choose a project type to open the editor.")}
       </p>
       <div className="purpose-options">

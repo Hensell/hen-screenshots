@@ -82,6 +82,10 @@
   min-height: 74px;
   gap: 12px;
 }
+.inspector-header .panel-heading > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 .inspector-header .panel-heading h2 {
   font-size: 14px;
   font-weight: 750;
@@ -150,6 +154,8 @@
 }
 .inspector-tabbed .section-heading {
   align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
   margin-bottom: 12px;
 }
 .inspector-tabbed .section-heading h3 {
@@ -158,6 +164,13 @@
 .inspector-tabbed .template-property {
   background: transparent;
   margin: 0;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.inspector-tabbed .template-property > div {
+  min-width: 0;
+  flex: 1 1 120px;
+  overflow-wrap: anywhere;
 }
 .inspector-tabbed .template-property h3 {
   font-size: 21px;
@@ -186,6 +199,20 @@
 .inspector-tabbed .field select:focus {
   border-color: var(--brand-clay);
 }
+.inspector-tabbed .text-button,
+.inspector-tabbed .check-field {
+  min-height: 44px;
+}
+.inspector-tabbed .text-button {
+  text-align: left;
+}
+.inspector-tabbed .check-field input {
+  flex-shrink: 0;
+}
+.inspector-tabbed .range-field output {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
 .text-editor {
   margin-bottom: 0;
 }
@@ -211,12 +238,17 @@
   gap: 5px;
 }
 .inspector-tabbed .segmented button {
-  min-height: 40px;
+  min-height: 44px;
   font-size: 11px;
 }
 .inspector-tabbed .swatches {
+  flex-wrap: wrap;
   gap: 9px;
   margin-block: 18px;
+}
+.inspector-tabbed .swatches button:focus-visible {
+  outline: 2px solid var(--brand-clay);
+  outline-offset: 4px;
 }
 .inspector-tabbed .swatches button {
   height: 44px;
@@ -225,9 +257,15 @@
   border-radius: 50%;
 }
 .inspector-tabbed .color-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
+.inspector-tabbed .color-fields label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 .inspector-tabbed .color-fields input {
+  flex-shrink: 0;
   min-width: 44px;
   height: 44px;
   border-radius: 6px;
@@ -240,6 +278,12 @@
   border-radius: 6px;
   min-height: 66px;
 }
+.inspector-tabbed
+  .device-options
+  button:hover:not(:disabled):not([aria-pressed="true"]) {
+  border-color: #929d87;
+  background: #f5f5ee;
+}
 .inspector-tabbed .frame-orientation .segmented button {
   min-height: 44px;
 }
@@ -248,6 +292,11 @@
 }
 .inspector-tabbed .orientation-scope {
   font-size: 11px;
+}
+@media (pointer: coarse) {
+  .inspector-tabbed .range-field input {
+    height: 44px;
+  }
 }
 @media (min-width: 801px) {
   .studio {
@@ -370,6 +419,7 @@
     margin-inline: auto;
   }
   .inspector-tabbed .field textarea,
+  .inspector-tabbed .field input[type="number"],
   .inspector-tabbed .field select {
     font-size: 16px;
   }
@@ -383,6 +433,9 @@
   .inspector-tabbed .range-field,
   .inspector-tabbed .color-fields label {
     font-size: 12px;
+  }
+  .inspector-tabbed .range-field input {
+    height: 44px;
   }
 }
 @media (max-width: 540px) {

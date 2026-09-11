@@ -22,13 +22,16 @@ export function DeleteSlidesDialog({
     const dialog = ref.current!;
     const opener = document.activeElement as HTMLElement | null;
     const fallback = fallbackFocus.current;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     dialog.showModal();
     cancelButton.current?.focus();
     return () => {
       dialog.close();
+      document.body.style.overflow = overflow;
       // Deleting the last slide removes its trigger; keep Undo within reach.
-      if (opener?.isConnected) opener.focus();
-      else if (fallback?.isConnected) fallback.focus();
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+      else if (fallback?.isConnected) fallback.focus({ preventScroll: true });
     };
   }, [fallbackFocus]);
 

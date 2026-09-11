@@ -57,14 +57,13 @@ export function ProjectLibrary({
           <>
             <p className="eyebrow">{t("YOUR APPS, IN THEIR BEST LIGHT")}</p>
             <h1>
-              {t("A good app deserves")}
-              <br />
+              {t("A good app deserves")} <br />
               <span>{t("a great first impression.")}</span>
             </h1>
             <p className="intro-copy">
               {t(
                 "Turn your screenshots into a story that makes people want to try your app.",
-              )}
+              )}{" "}
               <br className="desktop-break" />
               {t("A little framing. The right words. All yours.")}
             </p>

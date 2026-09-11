@@ -1,4 +1,8 @@
-export type Notice = { message: string; error?: boolean };
+export type Notice = {
+  message: string;
+  values?: import("../i18n/core").MessageValues;
+  error?: boolean;
+};
 export type ReadyFile = {
   url: string;
   name: string;

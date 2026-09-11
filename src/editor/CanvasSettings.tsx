@@ -65,6 +65,7 @@ function CustomSize({ project }: { project: Project }) {
           <span className="input-unit">
             <input
               type="number"
+              inputMode="numeric"
               aria-label={t("Canvas width")}
               aria-describedby={`${helpId}${error ? ` ${errorId}` : ""}`}
               aria-invalid={error ? true : undefined}
@@ -86,6 +87,7 @@ function CustomSize({ project }: { project: Project }) {
           <span className="input-unit">
             <input
               type="number"
+              inputMode="numeric"
               aria-label={t("Canvas height")}
               aria-describedby={`${helpId}${error ? ` ${errorId}` : ""}`}
               aria-invalid={error ? true : undefined}

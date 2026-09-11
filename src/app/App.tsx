@@ -170,9 +170,11 @@ export function App() {
     setInspectorTab(tab);
     requestAnimationFrame(() => {
       const inspector = document.getElementById("slide-inspector");
-      inspector
-        ?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
-        ?.focus({ preventScroll: true });
+      (
+        inspector?.querySelector<HTMLElement>(
+          '[role="tab"][aria-selected="true"]',
+        ) ?? inspector
+      )?.focus({ preventScroll: true });
       if (window.matchMedia("(max-width: 800px)").matches)
         inspector?.scrollIntoView({ block: "start" });
     });
@@ -607,16 +609,16 @@ export function App() {
       setNotice({
         message: replacement
           ? filling
-            ? t("Image added. Your design is preserved. Undo anytime.")
+            ? "Image added. Your design is preserved. Undo anytime."
             : `${replacedIds.size === 2 ? "Panorama image" : "Image"} replaced. Your layout is preserved. Undo anytime.`
           : banners
-            ? t(
-                incoming.length === 1
-                  ? "{count} banner added. Start with the headline."
-                  : "{count} banners added. Start with the headline.",
-                { count: incoming.length },
-              )
-            : `${incoming.length} screenshot${incoming.length === 1 ? "" : "s"} added. Start with the headline.`,
+            ? incoming.length === 1
+              ? "{count} banner added. Start with the headline."
+              : "{count} banners added. Start with the headline."
+            : incoming.length === 1
+              ? "{count} screenshot added. Start with the headline."
+              : "{count} screenshots added. Start with the headline.",
+        values: { count: incoming.length },
       });
     } catch (error) {
       setNotice({ message: errorMessage(error), error: true });
@@ -942,7 +944,7 @@ export function App() {
           className={`notice ${notice.error ? "notice-error" : ""}`}
           role={notice.error ? "alert" : "status"}
         >
-          <span>{t(notice.message)}</span>
+          <span>{t(notice.message, notice.values)}</span>
           {readyFile && !readyFile.review?.blocked && !notice.error && (
             <a
               className="text-button download-again"
@@ -1176,7 +1178,7 @@ export function App() {
                 type="button"
                 className="canvas-format-button"
                 onClick={() => openInspector("canvas")}
-                disabled={!!busy || !shot}
+                disabled={!!busy}
                 aria-label={t("Canvas settings: {name}, {width} × {height}", {
                   name: t(resolveExportProfile(project).name),
                   width: resolveExportProfile(project).width,
@@ -1298,7 +1300,9 @@ export function App() {
                     className="shot-thumbnail"
                     aria-label={t("Select screenshot {number}: {title}", {
                       number: index + 1,
-                      title: item.title.replace(/\n/g, " "),
+                      title:
+                        item.title.replace(/\n/g, " ") ||
+                        t("Untitled screenshot"),
                     })}
                     aria-current={item.id === selectedId ? "true" : undefined}
                     disabled={!!busy}
@@ -1661,7 +1665,12 @@ export function App() {
               }}
             />
           ) : (
-            <aside className="inspector inspector-empty">
+            <aside
+              id="slide-inspector"
+              className="inspector inspector-empty"
+              aria-label={t("Canvas")}
+              tabIndex={-1}
+            >
               <section className="property-section">
                 <button
                   className="button secondary"

@@ -45,6 +45,7 @@ export function DeviceRotationControl({
           value={angle}
           onChange={(event) => onChange(Number(event.target.value))}
           onPointerUp={onCommit}
+          onPointerCancel={onCommit}
           onKeyUp={onCommit}
           onBlur={onCommit}
         />

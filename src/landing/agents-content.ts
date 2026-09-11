@@ -59,7 +59,7 @@ export const agentMessages: Record<string, readonly [string, string]> = {
       "Abra a página do plugin e selecione Install plugin. Para renderizar localmente, inicie uma nova tarefa no Codex dentro do projeto do seu app e peça ao Hen Screenshots que execute doctor e conclua a configuração. Depois, indique a pasta das suas capturas e use uma das solicitações de exemplo abaixo.",
     ],
   "Use with AI agents — Hen Screenshots": [
-    "Usar con agentes AI — Hen Screenshots",
+    "Usar con agentes de IA — Hen Screenshots",
     "Usar com agentes de IA — Hen Screenshots",
   ],
   "Download the local Hen Screenshots plugin. Set it up for Codex or Claude Code, create screenshot series, and keep editing in the web studio.":
@@ -87,7 +87,7 @@ export const agentMessages: Record<string, readonly [string, string]> = {
   "Your files": ["Tus archivos", "Seus arquivos"],
   "On this page": ["En esta página", "Nesta página"],
   "THE LOCAL PLUGIN": ["EL PLUGIN LOCAL", "O PLUGIN LOCAL"],
-  "Use with AI agents.": ["Usar con agentes AI.", "Usar com agentes de IA."],
+  "Use with AI agents.": ["Usar con agentes de IA.", "Usar com agentes de IA."],
   "Your captures. A clear brief. A finished series.": [
     "Tus capturas. Una idea clara. Una serie lista.",
     "Suas capturas. Uma ideia clara. Uma série pronta.",

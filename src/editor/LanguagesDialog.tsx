@@ -28,9 +28,12 @@ function useModal(ref: React.RefObject<HTMLDialogElement | null>) {
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null;
     const dialog = ref.current!;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     dialog.showModal();
     return () => {
       dialog.close();
+      document.body.style.overflow = overflow;
       if (opener?.isConnected) opener.focus({ preventScroll: true });
     };
   }, [ref]);
@@ -67,6 +70,9 @@ export function LanguagesDialog({
   const [downloadOpen, setDownloadOpen] = useState(false);
   const [addingLanguage, setAddingLanguage] = useState(false);
   const mobileLanguageRef = useRef<HTMLSelectElement>(null);
+  const originalLanguageRef = useRef<HTMLButtonElement>(null);
+  const removeLanguageRef = useRef<HTMLButtonElement>(null);
+  const keepLanguageRef = useRef<HTMLButtonElement>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const sourceLanguage = project.localization?.source ?? source;
@@ -84,6 +90,14 @@ export function LanguagesDialog({
         (shot) => localeStatus(shot, selectedLocale) === "reviewed",
       ).length
     : 0;
+  useEffect(() => {
+    if (deleting === selectedLocale && deleting)
+      keepLanguageRef.current?.focus();
+  }, [deleting, selectedLocale]);
+  function keepLanguage() {
+    setDeleting(null);
+    requestAnimationFrame(() => removeLanguageRef.current?.focus());
+  }
   return (
     <dialog
       ref={ref}
@@ -92,7 +106,8 @@ export function LanguagesDialog({
       onCancel={(event) => {
         event.preventDefault();
         if (event.target !== event.currentTarget) return;
-        onClose();
+        if (deleting === selectedLocale && deleting) keepLanguage();
+        else onClose();
       }}
     >
       <header className="languages-heading">
@@ -156,6 +171,7 @@ export function LanguagesDialog({
           </h3>
           {project.localization ? (
             <button
+              ref={originalLanguageRef}
               className={`language-choice original-language-choice ${!selectedLocale ? "active" : ""}`}
               onClick={() => onLocale(null)}
               aria-pressed={!selectedLocale}
@@ -461,8 +477,9 @@ export function LanguagesDialog({
                     )}
                   </p>
                   <button
+                    ref={keepLanguageRef}
                     className="button secondary"
-                    onClick={() => setDeleting(null)}
+                    onClick={keepLanguage}
                   >
                     {t("Keep language")}
                   </button>
@@ -472,6 +489,11 @@ export function LanguagesDialog({
                       onEdit((draft) => removeLanguage(draft, selectedLocale));
                       onLocale(null);
                       setDeleting(null);
+                      requestAnimationFrame(() => {
+                        const picker = mobileLanguageRef.current;
+                        if (picker?.getClientRects().length) picker.focus();
+                        else originalLanguageRef.current?.focus();
+                      });
                     }}
                   >
                     {t("Remove language")}
@@ -479,6 +501,7 @@ export function LanguagesDialog({
                 </div>
               ) : (
                 <button
+                  ref={removeLanguageRef}
                   className="text-button"
                   onClick={() => setDeleting(selectedLocale)}
                 >

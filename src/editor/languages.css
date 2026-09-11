@@ -23,6 +23,7 @@
 }
 .languages-dialog[open] {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
 }
 .languages-heading {
@@ -49,6 +50,15 @@
   color: var(--brand-muted);
   font-size: 12px;
   line-height: 1.6;
+}
+.languages-heading > div,
+.language-content-heading > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.languages-heading .icon-button,
+.translator-heading .icon-button {
+  flex-shrink: 0;
 }
 .languages-body {
   min-height: 0;
@@ -143,6 +153,7 @@
 }
 .language-content-heading {
   display: flex;
+  flex-wrap: wrap;
   align-items: start;
   justify-content: space-between;
   gap: 18px;
@@ -300,9 +311,15 @@
 .translator-dialog {
   padding: 24px 30px 26px;
   width: min(510px, calc(100vw - 32px));
+  max-width: none;
   max-height: calc(100dvh - 32px);
   overflow: auto;
   overscroll-behavior: contain;
+}
+.translator-dialog .button {
+  min-width: 0;
+  white-space: normal;
+  text-align: center;
 }
 .translator-heading {
   display: flex;
@@ -437,6 +454,7 @@
   display: block;
   text-decoration: underline;
   margin: 4px 0;
+  overflow-wrap: anywhere;
 }
 .translator-details .text-button {
   display: flex;
@@ -490,6 +508,7 @@
   .languages-body {
     display: block;
     overflow: auto;
+    overscroll-behavior: contain;
   }
   .languages-sidebar {
     overflow: visible;
@@ -525,6 +544,7 @@
     min-height: 44px;
     padding: 10px;
     font-size: 11px;
+    white-space: normal;
   }
   .language-add-toggle svg {
     flex-shrink: 0;
@@ -545,6 +565,7 @@
   }
   .add-language .button {
     min-height: 44px;
+    white-space: normal;
   }
   .language-content {
     overflow: visible;
@@ -640,6 +661,10 @@
     padding: 18px;
     width: calc(100vw - 20px);
     max-height: calc(100dvh - 20px);
+  }
+  .translator-details summary,
+  .translator-details .text-button {
+    min-height: 44px;
   }
 }
 @media (max-height: 550px) {
