@@ -44,7 +44,7 @@ A collection is ready when it solves a specific presentation need and works with
 
 Current website and repository download: **v0.2.1**, with background-image rendering and schema 11 project support. [Personal-template workflow](README.md#your-own-reusable-templates).
 
-Directory/release status: [v0.2.0 published on GitHub](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.0) and in the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). Submitted to Anthropic for review on September 10, 2026.
+Directory/release status: [v0.2.1 published on GitHub](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.1) and in the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). Submitted to Anthropic for review on September 10, 2026.
 
 - [x] Choose and add the code license, and include the required license notices in the release archive.
 - [x] Test the extracted release package outside the source checkout, plus GitHub marketplace installation in Codex and an isolated Claude Code configuration.
@@ -57,7 +57,7 @@ Directory/release status: [v0.2.0 published on GitHub](https://github.com/Hensel
 - [x] Complete OpenAI publisher verification and create the skills-only draft.
 - [x] Pass OpenAI's package validation and automated skill scan.
 - [x] Submit to OpenAI, receive approval in the portal, and publish the approved version in its directory.
-- [ ] Publish v0.2.1 as an immutable GitHub Release and submit the corresponding OpenAI directory update. The current website ZIP and repository marketplace already provide v0.2.1.
+- [x] Publish v0.2.1 as an immutable GitHub Release and update the OpenAI directory. Both publications were verified on September 10, 2026; the website ZIP and repository marketplace also provide v0.2.1.
 - [ ] Address any follow-up from Anthropic review or OpenAI support about local execution.
 - [x] Update the website guide with verified GitHub and ZIP installation instructions in English, Spanish, and Brazilian Portuguese.
 

@@ -2,10 +2,10 @@ import type { InterfaceLocale } from "../i18n/core.ts";
 
 // Build-time copy: the guide is readable and translated without JavaScript.
 export const agentMessages: Record<string, readonly [string, string]> = {
-  "OpenAI directory: v0.2.0. For projects with background images, use the newer ZIP below or our GitHub marketplace.":
+  "Version 0.2.1 is available from OpenAI, GitHub, and the ZIP below. Includes support for projects with background images.":
     [
-      "Directorio de OpenAI: v0.2.0. Para proyectos con imágenes de fondo, usa el ZIP más reciente de abajo o nuestro catálogo de GitHub.",
-      "Diretório da OpenAI: v0.2.0. Para projetos com imagens de fundo, use o ZIP mais recente abaixo ou nosso catálogo do GitHub.",
+      "La versión 0.2.1 está disponible en OpenAI, GitHub y el ZIP de abajo. Incluye soporte para proyectos con imágenes de fondo.",
+      "A versão 0.2.1 está disponível na OpenAI, no GitHub e no ZIP abaixo. Inclui suporte a projetos com imagens de fundo.",
     ],
   "Download ZIP": ["Descargar ZIP", "Baixar ZIP"],
   "Can I reuse my own templates with an agent?": [
