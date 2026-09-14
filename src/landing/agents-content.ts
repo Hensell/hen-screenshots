@@ -247,7 +247,7 @@ export const agentMessages: Record<string, readonly [string, string]> = {
   "Give it a useful brief.": ["Dale una idea clara.", "Dê uma direção clara."],
   "Once the skill is loaded, these requests work with any of these agents. Tell it which images to use, where you will publish, and what makes your app worth trying.":
     [
-      "Una vez cargada la skill, estas solicitudes sirven para cualquiera de los dos agentes. Dile qué imágenes usar, dónde vas a publicarlas y qué hace que valga la pena probar tu app.",
+      "Una vez cargada la skill, estas solicitudes sirven para cualquiera de estos agentes. Dile qué imágenes usar, dónde vas a publicarlas y qué hace que valga la pena probar tu app.",
       "Depois de carregar a skill, estas solicitações funcionam com qualquer um dos agentes. Diga quais imagens usar, onde você vai publicar e por que vale a pena experimentar seu app.",
     ],
   "A portfolio composition": [
