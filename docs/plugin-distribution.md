@@ -1,6 +1,6 @@
 # Plugin distribution
 
-Version **0.2.2** adds Cursor manifests, a repository catalog, and local setup instructions. [Release notes](plugin-v0.2.2-release-notes.md). OpenAI still provides v0.2.1; Cursor marketplace submission is being prepared and is not an approved listing. Anthropic was rechecked on September 14, 2026: **Submitted and pending review**.
+Version **0.2.2** is published in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.2) and website download. It adds Cursor manifests, a repository catalog, and local setup instructions. [Release notes](plugin-v0.2.2-release-notes.md). OpenAI still provides v0.2.1; the Cursor marketplace application is filled in and awaits the publisher's acceptance of Cursor's Publisher Terms before submission. It is not an approved listing. Anthropic was rechecked on September 14, 2026: **Submitted and pending review**.
 
 Hen Screenshots **v0.2.1** is published in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.1) and the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6), verified on September 10, 2026. The MIT-licensed package is also available through the repository marketplaces and website ZIP. Anthropic's submission remains pending review.
 
@@ -15,6 +15,8 @@ The repository contains `.agents/plugins/marketplace.json` for Codex and `.claud
 No `node_modules`, personal captures, or project files belong in the release archive. Setup does not require a source build, administrator privileges, or a Hen service.
 
 ## Verification
+
+Release v0.2.2 passed [run 34835601082](https://github.com/Hensell/hen-screenshots/actions/runs/34835601082) at commit `549fb45a70d286adf60e28d96249920caafe9779` on September 14, 2026. Package validation, installation, and rendering passed on Ubuntu, Windows, and macOS 14. The published ZIP is the exact artifact from that run, with SHA-256 `b2648ae29529c767feaedae7a393b8534ea25af6584b882090b173e7eb486167`. The public GitHub and website downloads match that checksum. Cloudflare deployment and the six-route production SEO check passed.
 
 Version 0.2.2 was also tested inside Cursor 3.20.17 on macOS arm64: local plugin discovery, the skill, doctor, and an actual agent render passed. See the [Cursor QA record](plugin-cursor-qa-2026-09-14.md). The panorama output matched the installed-package test byte for byte.
 
@@ -78,6 +80,7 @@ Submit the public repository at [Cursor Marketplace](https://cursor.com/marketpl
 
 ### Still pending for official listings
 
+- Accept Cursor's Publisher Terms, submit the prepared application, and address its review.
 - Anthropic's review and any requested follow-up.
 - Any OpenAI support follow-up about the local-execution review path.
 - Keep future directory versions and their metadata aligned with the tested release packages. Publication does not imply endorsement by either platform.

@@ -32,6 +32,6 @@ Cursor's one-command health-check approval was used. Its persistent automatic-ru
 
 - OpenAI: existing v0.2.1 listing retained; this work does not publish a new OpenAI version.
 - Anthropic: **Submitted and pending review**, shown in Henselldev's Console on September 14, four days after submission. The submissions page was opened for the publisher.
-- Cursor: local installation works. Marketplace publication is separate and has not been confirmed.
+- Cursor: local installation works. The application is filled in under the publisher's account with the public repository, logo, contact, and description. Submission awaits the publisher's explicit acceptance of Cursor's Publisher Terms. No marketplace approval is claimed.
 
-The cross-platform package workflow and release checksum are recorded in the GitHub Release. Local Cursor testing on macOS does not establish application-level testing on Windows or Linux.
+The [v0.2.2 GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.2) contains the exact ZIP from passing [run 34835601082](https://github.com/Hensell/hen-screenshots/actions/runs/34835601082), tested on Ubuntu, Windows, and macOS 14. GitHub and website downloads both match SHA-256 `b2648ae29529c767feaedae7a393b8534ea25af6584b882090b173e7eb486167`. Local Cursor testing on macOS does not establish application-level testing on Windows or Linux.
