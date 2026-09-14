@@ -3,10 +3,10 @@ import type { InterfaceLocale } from "../i18n/core.ts";
 // Build-time copy: the guide is readable and translated without JavaScript.
 export const agentMessages: Record<string, readonly [string, string]> = {
   "Add Hen to Cursor.": ["Añade Hen a Cursor.", "Adicione o Hen ao Cursor."],
-  "Available by local installation. Not yet listed in the Cursor Marketplace.":
+  "Available by local installation. Our Cursor Marketplace submission is pending review.":
     [
-      "Disponible mediante instalación local. Todavía no figura en el catálogo de Cursor.",
-      "Disponível por instalação local. Ainda não está listado no catálogo do Cursor.",
+      "Disponible mediante instalación local. Nuestra solicitud para Cursor Marketplace está pendiente de revisión.",
+      "Disponível por instalação local. Nossa solicitação para o Cursor Marketplace está pendente de análise.",
     ],
   "Place the plugin in Cursor’s local folder.": [
     "Coloca el plugin en la carpeta local de Cursor.",

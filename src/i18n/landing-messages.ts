@@ -57,10 +57,10 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     "Hen para tu agente de IA",
     "Hen para seu agente de IA",
   ],
-  "Available for Codex, Claude Code, and Cursor. Published in the OpenAI Plugins Directory.":
+  "Create with Codex, Claude Code, or Cursor. Refine the result in the studio.":
     [
-      "Disponible para Codex, Claude Code y Cursor. Publicado en el directorio de plugins de OpenAI.",
-      "Disponível para Codex, Claude Code e Cursor. Publicado no diretório de plugins da OpenAI.",
+      "Crea con Codex, Claude Code o Cursor. Ajusta el resultado en el estudio.",
+      "Crie com Codex, Claude Code ou Cursor. Ajuste o resultado no estúdio.",
     ],
   "Get plugin from OpenAI": [
     "Obtener plugin en OpenAI",
@@ -484,7 +484,8 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     "DA PRIMEIRA CAPTURA À EXPORTAÇÃO FINAL",
   ],
   "Find a look.": ["Encuentra un estilo.", "Encontre um estilo."],
-  "Find your look": ["Encuentra tu estilo", "Encontre seu estilo"],
+  "See templates": ["Ver plantillas", "Ver modelos"],
+  "Open source": ["Código abierto", "Código aberto"],
   "Forever.": ["Para siempre.", "Para sempre."],
   "Free forever": ["Gratis para siempre", "Grátis para sempre"],
   "Free forever. No account. No watermarks.": [

@@ -207,12 +207,11 @@ nav {
   flex-basis: 100%;
   margin-top: 0;
 }
-.hero-details .source-link,
-.hero-details .hero-shortcuts {
-  margin-top: 0;
-}
-.hero-details .hero-shortcuts {
-  flex-basis: 100%;
+.hero-capabilities {
+  margin-top: 6px;
+  color: var(--brand-muted);
+  font-size: 0.7rem;
+  line-height: 1.7;
 }
 .hero h1 {
   font-size: clamp(3.2rem, 6vw, 5.25rem);
@@ -247,12 +246,6 @@ nav {
   font-size: 0.7rem;
   margin-top: 16px;
   color: var(--brand-muted);
-}
-.source-link {
-  margin-top: 4px;
-  font-size: 0.75rem;
-  text-decoration: underline;
-  text-underline-offset: 4px;
 }
 .github-mark {
   width: 20px;
@@ -756,7 +749,7 @@ details > p {
   }
   .hero {
     grid-template-columns: 1fr;
-    grid-template-areas: "copy" "art" "details";
+    grid-template-areas: "copy" "details" "art";
     gap: 24px;
     padding-block: 32px;
   }
@@ -768,7 +761,7 @@ details > p {
   }
   .hero-details {
     width: min(100%, 520px);
-    justify-self: center;
+    justify-self: start;
   }
   .hero h1 {
     font-size: clamp(3rem, 11vw, 4.8rem);
@@ -1113,26 +1106,6 @@ details > p {
 }
 
 /* Give each output its own proportions: a store series, a card, and a banner. */
-.hero-shortcuts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 22px;
-  margin-top: 16px;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-.hero-shortcuts a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  text-decoration: underline;
-  text-decoration-color: var(--brand-border);
-  text-underline-offset: 5px;
-}
-.hero-shortcuts a:hover,
-.format-strip a:hover {
-  color: var(--brand-clay);
-}
 .hero-actions {
   margin-top: 18px;
   flex-wrap: wrap;
@@ -1155,19 +1128,12 @@ details > p {
   color: var(--brand-muted);
   font-size: 0.85rem;
 }
-.plugin-announcement-links {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px 24px;
+.plugin-announcement > div {
+  flex: 1 1 420px;
 }
-.plugin-announcement-links a:first-child {
-  color: var(--brand-clay);
+.plugin-announcement > .inline-link {
   text-decoration: underline;
   text-underline-offset: 5px;
-}
-.plugin-announcement-links a:first-child:hover {
-  color: var(--brand-clay-hover);
 }
 .output-grid {
   display: grid;
@@ -1416,9 +1382,6 @@ details > p {
   }
 }
 @media (max-width: 760px) {
-  .hero-shortcuts {
-    gap: 0 18px;
-  }
   .output-grid,
   .output-banner,
   .brand-section,

@@ -18,7 +18,7 @@ The hosted editor will remain free, with no account or watermarks. The applicati
 - English, Spanish, and Brazilian Portuguese interfaces.
 - A downloadable local agent plugin, [setup guide](https://screenshots.hensell.dev/agents/), and [published OpenAI directory listing](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). The Anthropic directory submission is pending review.
 
-The same local plugin now includes Cursor manifests and a [Cursor setup guide](https://screenshots.hensell.dev/agents/#cursor). Marketplace submission is being prepared; it is not yet listed. Anthropic still showed **Submitted and pending review** on September 14, 2026.
+The same local plugin now includes Cursor manifests and a [Cursor setup guide](https://screenshots.hensell.dev/agents/#cursor). Cursor received the marketplace submission on September 14, 2026; review is pending and it is not yet listed. Anthropic still showed **Submitted and pending review** on September 14, 2026.
 
 ## Next: make the first export easier
 
@@ -60,7 +60,8 @@ Directory/release status: [v0.2.1 published on GitHub](https://github.com/Hensel
 - [x] Pass OpenAI's package validation and automated skill scan.
 - [x] Submit to OpenAI, receive approval in the portal, and publish the approved version in its directory.
 - [x] Publish v0.2.1 as an immutable GitHub Release and update the OpenAI directory. Both publications were verified on September 10, 2026; the website ZIP and repository marketplace also provide v0.2.1.
-- [ ] Address any follow-up from Anthropic review or OpenAI support about local execution.
+- [x] Add Cursor support, test local discovery and rendering, and submit the public repository to Cursor Marketplace on September 14, 2026. Review is pending.
+- [ ] Address any follow-up from Cursor or Anthropic review, or OpenAI support about local execution.
 - [x] Update the website guide with verified GitHub and ZIP installation instructions in English, Spanish, and Brazilian Portuguese.
 
 See [plugin distribution readiness](docs/plugin-distribution.md) for the current gaps and official submission references. Direct distribution and inclusion in an official directory are separate milestones; directory approval is handled by each platform.

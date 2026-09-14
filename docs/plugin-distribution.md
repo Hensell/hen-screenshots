@@ -1,6 +1,6 @@
 # Plugin distribution
 
-Version **0.2.2** is published in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.2) and website download. It adds Cursor manifests, a repository catalog, and local setup instructions. [Release notes](plugin-v0.2.2-release-notes.md). OpenAI still provides v0.2.1; the Cursor marketplace application is filled in and awaits the publisher's acceptance of Cursor's Publisher Terms before submission. It is not an approved listing. Anthropic was rechecked on September 14, 2026: **Submitted and pending review**.
+Version **0.2.2** is published in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.2) and website download. It adds Cursor manifests, a repository catalog, and local setup instructions. [Release notes](plugin-v0.2.2-release-notes.md). OpenAI still provides v0.2.1; Cursor received the marketplace application on September 14, 2026 after the publisher authorized acceptance of its Publisher Terms. Review is pending. It is not an approved listing. Anthropic was rechecked on September 14, 2026: **Submitted and pending review**.
 
 Hen Screenshots **v0.2.1** is published in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.1) and the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6), verified on September 10, 2026. The MIT-licensed package is also available through the repository marketplaces and website ZIP. Anthropic's submission remains pending review.
 
@@ -76,11 +76,11 @@ Version 0.2.2 adds `.cursor-plugin/plugin.json` inside the existing plugin and `
 
 Before marketplace approval, install the full plugin under `~/.cursor/plugins/local/hen-screenshots`, run setup there, reload Cursor, and confirm the skill in Customize. Team policies can restrict local imports; an installed marketplace plugin of the same name takes precedence. [Official local installation guide](https://cursor.com/docs/plugins#test-plugins-locally).
 
-Submit the public repository at [Cursor Marketplace](https://cursor.com/marketplace/publish). Cursor reviews each listing and update. [Manifest and submission reference](https://cursor.com/docs/reference/plugins). A local installation is not evidence of marketplace approval.
+Submitted the public repository at [Cursor Marketplace](https://cursor.com/marketplace/publish) on September 14, 2026 using the Henselldev profile, publisher name Hensell, and handle `henselldev`. After explicit authorization to accept the Publisher Terms, the portal confirmed **Thanks for applying** and **We’ve received your submission**. Cursor reviews each listing and update. [Manifest and submission reference](https://cursor.com/docs/reference/plugins). A local installation is not evidence of marketplace approval.
 
 ### Still pending for official listings
 
-- Accept Cursor's Publisher Terms, submit the prepared application, and address its review.
+- Cursor's review and any requested follow-up.
 - Anthropic's review and any requested follow-up.
 - Any OpenAI support follow-up about the local-execution review path.
 - Keep future directory versions and their metadata aligned with the tested release packages. Publication does not imply endorsement by either platform.

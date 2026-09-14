@@ -7,7 +7,7 @@ Old `/?project=…` links redirect in the browser to `/studio/?project=…`, pre
 
 The public message is **Free forever. No account. No watermarks.** This applies to every existing template, device frame, and full-resolution export. The application and plugin use the MIT license, linked from GitHub and identified on the landing. The page does not promise unlimited project sizes or guaranteed store approval.
 
-The page includes actual template exports, a linked Panorama pair, a portfolio card, the create/style/export workflow, local storage and backup details, and links to the studio and [Hensell's portfolio](https://hensell.dev). The public [GitHub repository](https://github.com/Hensell/hen-screenshots) is linked beneath the hero, in the free section's contribution invitation, and in the footer. The copy is available in English, Spanish, and Portuguese; repository links stay available on mobile.
+The page includes actual template exports, a linked Panorama pair, a portfolio card, the create/style/export workflow, local storage and backup details, and links to the studio and [Hensell's portfolio](https://hensell.dev). The public [GitHub repository](https://github.com/Hensell/hen-screenshots) is linked in the free section's star invitation and in the footer. The copy is available in English, Spanish, and Portuguese; repository links stay available on mobile.
 
 ## Reusable designs and agent downloads
 
@@ -17,7 +17,7 @@ The `/agents/` guide and its Spanish and Brazilian Portuguese versions distingui
 
 ## Example assets
 
-The translation section describes the implemented OPUS-MT models by Helsinki-NLP, hosted on Hugging Face. It covers the optional local download, currently supported automatic languages (English, Spanish, French, German), manual editing, linked layouts, and language folders. Gemma is not integrated and is not presented as the translation engine. The section only contains static copy and a link to the studio; visiting the landing does not download models.
+The translation section describes the implemented OPUS-MT models by Helsinki-NLP, hosted on Hugging Face. It covers the optional local download, currently supported automatic languages (English, Spanish, French, German), manual editing, linked layouts, and language folders. Gemma is not integrated and is not presented as the translation engine. The section only contains static copy and examples; visiting the landing does not download models.
 
 The Hugging Face logo in `public/icons/hugging-face.svg` comes from the [official brand assets](https://huggingface.co/brand), [original SVG](https://huggingface.co/datasets/huggingface/brand-assets/resolve/main/hf-logo.svg). It identifies the model hosting platform, not an endorsement or partnership.
 
@@ -28,3 +28,9 @@ Image dimensions are declared in the HTML; images below the hero load lazily. Th
 Selected content below the initial viewport fades and rises into view once, with a short stagger across the template examples. Scroll reveals use IntersectionObserver and CSS opacity/transform animations, with no scrolling listeners or animation dependencies. Content is visible by default, keyboard focus bypasses the reveal, and enabling reduced motion cancels active animations. These effects and smooth anchor navigation are limited to the landing entry; the studio stays unchanged.
 
 The FAQ and translation download disclosure animate their content height and opacity in both directions, with a plus-to-minus indicator. They retain native `details`/`summary` semantics and work without JavaScript. The [native CSS technique](https://developer.chrome.com/blog/styling-details) is feature-detected: browsers without intrinsic-size transitions keep instant, fully functional disclosures. Reduced-motion users also get immediate expansion and collapse.
+
+## Action hierarchy
+
+The landing has three studio entry links: the header, the hero, and the closing free section. Both main calls to action say **Create for free**. The hero also has a quiet **See templates** anchor; device support, translations, and open-source status are informational text. On narrow screens, reassurance stays beside the primary action, before the example artwork.
+
+Feature sections explain and demonstrate the product without repeating studio links. The agent announcement follows the create/style/export explanation and links only to the localized setup guide, which handles platform selection and installation. GitHub and Ko-fi remain accessible in the contribution section and footer.
