@@ -170,10 +170,20 @@ nav {
 .studio-cta:active {
   box-shadow: inset 0 1px 3px #20272526;
 }
-.action [aria-hidden="true"],
-.inline-link [aria-hidden="true"] {
-  font-size: 1.1rem;
-  line-height: 1;
+.link-arrow {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  vertical-align: middle;
+  background: currentColor;
+  mask: url("/icons/arrow-right.svg") center / contain no-repeat;
+}
+.link-arrow-down {
+  transform: rotate(90deg);
+}
+.link-arrow-external {
+  transform: rotate(-45deg);
 }
 .inline-link {
   display: inline-flex;

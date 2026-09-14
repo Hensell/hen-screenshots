@@ -41,7 +41,7 @@
   flex-shrink: 0;
   object-fit: contain;
 }
-.guide-agent-links a > [aria-hidden="true"] {
+.guide-agent-links .link-arrow {
   margin-left: 4px;
 }
 .guide-agent-links a:hover {
@@ -288,6 +288,7 @@
 .guide-resource a {
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   min-height: 44px;
   text-decoration: underline;
   text-underline-offset: 5px;

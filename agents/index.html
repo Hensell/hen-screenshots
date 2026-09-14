@@ -56,19 +56,7 @@
         <a class="action action-small studio-cta" href="/studio/"
           ><span data-i18n="Open studio">Open studio</span>
           <span class="studio-cta-icon" aria-hidden="true">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.4"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              focusable="false"
-            >
-              <path d="M5 12h14m-6-6 6 6-6 6" />
-            </svg> </span
+            <span class="link-arrow"></span> </span
         ></a>
         <label class="interface-language landing-language" hidden>
           <span data-i18n="Website language">Website language</span>
@@ -108,26 +96,35 @@
                 src="/icons/codex.svg"
                 width="20"
                 height="20"
-                alt=""
-              /><span>Codex</span><span aria-hidden="true">↓</span></a
+                alt="" /><span>Codex</span
+              ><span
+                class="link-arrow link-arrow-down"
+                aria-hidden="true"
+              ></span></a
             ><a href="#claude"
               ><img
                 class="agent-brand-icon"
                 src="/icons/claude.svg"
                 width="20"
                 height="20"
-                alt=""
-              /><span>Claude Code</span><span aria-hidden="true">↓</span></a
-            >
+                alt="" /><span>Claude Code</span
+              ><span
+                class="link-arrow link-arrow-down"
+                aria-hidden="true"
+              ></span
+            ></a>
             <a href="#cursor"
               ><img
                 class="agent-brand-icon"
                 src="/icons/cursor.svg"
                 width="20"
                 height="20"
-                alt=""
-              /><span>Cursor</span><span aria-hidden="true">↓</span></a
-            >
+                alt="" /><span>Cursor</span
+              ><span
+                class="link-arrow link-arrow-down"
+                aria-hidden="true"
+              ></span
+            ></a>
           </div>
         </div>
         <aside class="guide-download" aria-labelledby="download-title">
@@ -159,11 +156,13 @@
               src="/icons/openai.svg"
               width="24"
               height="24"
-              alt=""
-            /><span data-i18n="Get plugin from OpenAI"
+              alt="" /><span data-i18n="Get plugin from OpenAI"
               >Get plugin from OpenAI</span
-            ><span aria-hidden="true">↗</span></a
-          >
+            ><span
+              class="link-arrow link-arrow-external"
+              aria-hidden="true"
+            ></span
+          ></a>
           <p
             class="guide-download-meta"
             data-i18n="Local rendering · Node.js 22.12+ · One-time setup"
@@ -175,8 +174,9 @@
             download
             href="/downloads/hen-screenshots-plugin-__PLUGIN_VERSION__.zip"
             ><span data-i18n="Download ZIP">Download ZIP</span> ·
-            v__PLUGIN_VERSION__ <span aria-hidden="true">↓</span></a
-          >
+            v__PLUGIN_VERSION__
+            <span class="link-arrow link-arrow-down" aria-hidden="true"></span
+          ></a>
           <br />
           <a
             class="guide-source"
@@ -186,8 +186,11 @@
             ><span data-i18n="View source &amp; documentation"
               >View source &amp; documentation</span
             >
-            <span aria-hidden="true">↗</span></a
-          >
+            <span
+              class="link-arrow link-arrow-external"
+              aria-hidden="true"
+            ></span
+          ></a>
         </aside>
       </section>
       <div class="guide-layout wrap">
@@ -254,27 +257,36 @@
                   src="/icons/codex.svg"
                   width="20"
                   height="20"
-                  alt=""
-                /><span>Codex</span><span aria-hidden="true">↓</span></a
-              >
+                  alt="" /><span>Codex</span
+                ><span
+                  class="link-arrow link-arrow-down"
+                  aria-hidden="true"
+                ></span
+              ></a>
               <a href="#claude"
                 ><img
                   class="agent-brand-icon"
                   src="/icons/claude.svg"
                   width="20"
                   height="20"
-                  alt=""
-                /><span>Claude Code</span><span aria-hidden="true">↓</span></a
-              >
+                  alt="" /><span>Claude Code</span
+                ><span
+                  class="link-arrow link-arrow-down"
+                  aria-hidden="true"
+                ></span
+              ></a>
               <a href="#cursor"
                 ><img
                   class="agent-brand-icon"
                   src="/icons/cursor.svg"
                   width="20"
                   height="20"
-                  alt=""
-                /><span>Cursor</span><span aria-hidden="true">↓</span></a
-              >
+                  alt="" /><span>Cursor</span
+                ><span
+                  class="link-arrow link-arrow-down"
+                  aria-hidden="true"
+                ></span
+              ></a>
             </div>
             <h3 data-i18n="Manual ZIP setup">Manual ZIP setup</h3>
             <ol class="guide-steps">
@@ -341,8 +353,12 @@
                 href="https://nodejs.org/en/download"
                 target="_blank"
                 rel="noopener noreferrer"
-                ><span data-i18n="Get Node.js">Get Node.js</span> ↗</a
-              >
+                ><span data-i18n="Get Node.js">Get Node.js</span>
+                <span
+                  class="link-arrow link-arrow-external"
+                  aria-hidden="true"
+                ></span
+              ></a>
             </p>
             <div class="guide-note">
               <strong data-i18n="Free plugin. Bring your own agent."
@@ -380,8 +396,11 @@
               ><span data-i18n="Get plugin from OpenAI"
                 >Get plugin from OpenAI</span
               >
-              <span aria-hidden="true">↗</span></a
-            >
+              <span
+                class="link-arrow link-arrow-external"
+                aria-hidden="true"
+              ></span
+            ></a>
             <h3 data-i18n="Install from GitHub">Install from GitHub</h3>
             <p
               data-i18n="Run these commands in your terminal to install from the Hen marketplace. Start a new Codex task, then ask Hen to run doctor and complete setup if needed."
@@ -457,8 +476,11 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 ><span data-i18n="About Codex skills">About Codex skills</span>
-                ↗</a
-              >
+                <span
+                  class="link-arrow link-arrow-external"
+                  aria-hidden="true"
+                ></span
+              ></a>
             </p>
           </section>
           <section id="claude" aria-labelledby="claude-title">
@@ -569,8 +591,11 @@
                 ><span data-i18n="Claude Code local plugin guide"
                   >Claude Code local plugin guide</span
                 >
-                ↗</a
-              >
+                <span
+                  class="link-arrow link-arrow-external"
+                  aria-hidden="true"
+                ></span
+              ></a>
             </p>
           </section>
           <section id="cursor" aria-labelledby="cursor-title">
@@ -672,8 +697,11 @@ Windows
                 ><span data-i18n="Cursor installation and updates"
                   >Cursor installation and updates</span
                 >
-                ↗</a
-              >
+                <span
+                  class="link-arrow link-arrow-external"
+                  aria-hidden="true"
+                ></span
+              ></a>
             </p>
           </section>
           <section id="examples" aria-labelledby="examples-title">
@@ -809,18 +837,7 @@ Windows
             <a class="action action-small studio-cta" href="/studio/"
               ><span data-i18n="Open studio">Open studio</span
               ><span class="studio-cta-icon" aria-hidden="true"
-                ><svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.4"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  focusable="false"
-                >
-                  <path d="M5 12h14m-6-6 6 6-6 6" /></svg></span
+                ><span class="link-arrow"></span></span
             ></a>
           </section>
           <section id="help" class="guide-help" aria-labelledby="help-title">
@@ -870,8 +887,11 @@ Windows
                   rel="noopener noreferrer"
                   ><span data-i18n="Plugin update instructions"
                     >Plugin update instructions</span
-                  ><span aria-hidden="true">↗</span></a
-                >
+                  ><span
+                    class="link-arrow link-arrow-external"
+                    aria-hidden="true"
+                  ></span
+                ></a>
               </div>
             </details>
             <details>
@@ -950,8 +970,11 @@ Windows
                 ><span data-i18n="Need a hand? Email Hensell."
                   >Need a hand? Email Hensell.</span
                 >
-                ↗</a
-              >
+                <span
+                  class="link-arrow link-arrow-external"
+                  aria-hidden="true"
+                ></span
+              ></a>
             </p>
           </section>
         </div>
@@ -1006,8 +1029,11 @@ Windows
               d="M7 11c0-2 3-2 3 0 0-2 3-2 3 0 0 1.5-3 3.5-3 3.5S7 12.5 7 11Z"
             /></svg
           ><span data-i18n="Support on Ko-fi">Support on Ko-fi</span
-          ><span aria-hidden="true">↗</span></a
-        >
+          ><span
+            class="link-arrow link-arrow-external"
+            aria-hidden="true"
+          ></span
+        ></a>
         <a
           class="inline-link"
           href="https://github.com/Hensell/hen-screenshots"
@@ -1018,18 +1044,18 @@ Windows
             src="/icons/github.svg"
             width="20"
             height="20"
-            alt=""
-          />
-          GitHub <span aria-hidden="true">↗</span></a
-        >
+            alt="" />
+          GitHub
+          <span class="link-arrow link-arrow-external" aria-hidden="true"></span
+        ></a>
         <a
           class="inline-link"
           href="https://hensell.dev"
           target="_blank"
           rel="noopener noreferrer"
           ><span data-i18n="By Hensell">By Hensell</span>
-          <span aria-hidden="true">↗</span></a
-        >
+          <span class="link-arrow link-arrow-external" aria-hidden="true"></span
+        ></a>
       </div>
       <div
         class="footer-languages"
