@@ -1,3 +1,4 @@
+import { Select } from "../ui/Select";
 import "./my-templates.css";
 import { BackgroundImageInspector } from "./BackgroundImageInspector";
 import { resolveExportProfile } from "../core/export-profiles";
@@ -1042,7 +1043,7 @@ export function Inspector({
                     </p>
                     <label className="field">
                       {t("Screenshot fit")}
-                      <select
+                      <Select
                         value={style.fit}
                         onChange={(event) =>
                           setStyle({ fit: event.target.value as Style["fit"] })
@@ -1054,7 +1055,7 @@ export function Inspector({
                         <option value="cover">
                           {t("Fill screen · crop edges")}
                         </option>
-                      </select>
+                      </Select>
                     </label>
                   </>
                 )}

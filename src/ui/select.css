@@ -1,0 +1,27 @@
+/* Shared by React's Select and the static public-page language selectors.
+   Consumers own the surface, typography and block/start padding; this file
+   owns the arrow and its reserved inline space. Keep background-color longhand. */
+select.hen-select {
+  min-width: 0;
+  cursor: pointer;
+}
+select.hen-select:not([multiple]):not([size]) {
+  appearance: none;
+  padding-inline-end: 44px;
+  background-image: url("./select-chevron.svg");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px 16px;
+}
+select.hen-select:not([multiple]):not([size]):dir(rtl) {
+  background-position: left 14px center;
+}
+select.hen-select:disabled {
+  cursor: not-allowed;
+}
+@media (forced-colors: active) {
+  select.hen-select:not([multiple]):not([size]) {
+    appearance: auto;
+    background-image: none;
+  }
+}

@@ -1,3 +1,4 @@
+import { Select } from "../ui/Select";
 import { useT } from "../i18n/react";
 import { Icon } from "../app/Icon";
 import { linkedShots } from "../core/panorama";
@@ -43,7 +44,7 @@ export function BackgroundImageInspector({
         <>
           <label className="field">
             {t("Background fit")}
-            <select
+            <Select
               value={background.fit}
               onChange={(event) =>
                 update({ fit: event.target.value as BackgroundImage["fit"] })
@@ -51,7 +52,7 @@ export function BackgroundImageInspector({
             >
               <option value="cover">{t("Fill canvas")}</option>
               <option value="contain">{t("Fit entire image")}</option>
-            </select>
+            </Select>
           </label>
           <label className="range-field">
             <span>

@@ -190,7 +190,7 @@
 }
 .inspector-tabbed .field textarea,
 .inspector-tabbed .field select {
-  background: #fffefa;
+  background-color: #fffefa;
   font-size: 12px;
   border-color: #d2d7cb;
   border-radius: 6px;

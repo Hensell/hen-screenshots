@@ -1,3 +1,4 @@
+import { Select } from "../ui/Select";
 import { appendTemplate, instantiateTemplate } from "../core/custom-templates";
 import { addEmptySlide } from "../core/slides";
 import { deviceShot, resolveDeviceElement } from "../core/device-composition";
@@ -1211,7 +1212,7 @@ export function App() {
                 {project.localization && (
                   <label className="language-switch">
                     <span>{t("Screenshot language")}</span>
-                    <select
+                    <Select
                       aria-label={t("Editing language")}
                       title={`${languageName(locale ?? project.localization.source)}${locale ? "" : ` · ${t("Original")}`}`}
                       value={locale ?? project.localization.source}
@@ -1233,23 +1234,22 @@ export function App() {
                           {languageName(code)}
                         </option>
                       ))}
-                    </select>
+                    </Select>
                   </label>
                 )}
                 <button
                   type="button"
-                  className="language-manage"
+                  className="language-translate"
                   disabled={!!busy || !shot}
                   onClick={() => setLanguagesOpen(true)}
-                  aria-label={t("Manage languages")}
-                  title={t("Add or manage language versions")}
+                  aria-haspopup="dialog"
+                  aria-label={t("Translate captions with AI or manually")}
+                  title={t("Translate captions with AI or manually")}
                 >
-                  <Icon
-                    name={project.localization ? "plus" : "languages"}
-                    size={18}
-                  />
+                  <Icon name="languages" size={21} />
                   <span>
-                    {t(project.localization ? "Manage" : "Languages")}
+                    <strong>{t("Translate")}</strong>
+                    <small>{t("With AI or manually")}</small>
                   </span>
                 </button>
               </div>

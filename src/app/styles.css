@@ -683,13 +683,18 @@ svg {
 .field select {
   border: 1px solid #cdd3c6;
   border-radius: 5px;
-  background: #fbfaf6;
+  background-color: #fbfaf6;
   color: var(--brand-ink);
   font-size: 12px;
-  padding: 10px 11px;
+  padding-block: 10px;
+  padding-inline-start: 11px;
   line-height: 1.6;
   min-width: 0;
   width: 100%;
+}
+.field input[type="number"],
+.field textarea {
+  padding-inline-end: 11px;
 }
 .field textarea {
   resize: vertical;

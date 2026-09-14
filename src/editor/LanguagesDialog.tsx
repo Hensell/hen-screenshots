@@ -1,3 +1,4 @@
+import { Select } from "../ui/Select";
 import { useT } from "../i18n/react";
 import { useEffect, useRef, useState } from "react";
 import type { Project } from "../core/model";
@@ -143,7 +144,7 @@ export function LanguagesDialog({
             <div className="mobile-language-picker">
               <label className="field">
                 {t("Editing language")}
-                <select
+                <Select
                   ref={mobileLanguageRef}
                   value={selectedLocale ?? "original"}
                   onChange={(event) => {
@@ -163,7 +164,7 @@ export function LanguagesDialog({
                       {languageName(code)}
                     </option>
                   ))}
-                </select>
+                </Select>
               </label>
               <button
                 className="button secondary language-add-toggle"
@@ -195,7 +196,7 @@ export function LanguagesDialog({
           ) : (
             <label className="field">
               <span className="sr-only">{t("Original language")}</span>
-              <select
+              <Select
                 aria-label={t("Original language")}
                 value={source}
                 onChange={(event) => setSource(event.target.value)}
@@ -205,7 +206,7 @@ export function LanguagesDialog({
                     {name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
           )}
           <h3 className="translations-heading">
@@ -269,7 +270,7 @@ export function LanguagesDialog({
           >
             <label className="field">
               {t("Add a language")}
-              <select
+              <Select
                 aria-label={t("New language")}
                 value={selectedTarget}
                 onChange={(event) => setTarget(event.target.value)}
@@ -283,7 +284,7 @@ export function LanguagesDialog({
                     {name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
             <button
               className="button secondary full"

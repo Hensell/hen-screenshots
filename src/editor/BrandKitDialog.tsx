@@ -1,3 +1,4 @@
+import { Select } from "../ui/Select";
 import { IMAGE_ACCEPT } from "../assets/heif-format";
 import { useT } from "../i18n/react";
 import { BrandBadge } from "./BrandBadge";
@@ -376,7 +377,7 @@ export function BrandKitDialog({
             </div>
             <label className="brand-kits-mobile-select">
               {t("Choose a brand")}
-              <select
+              <Select
                 disabled={working || loading}
                 value={revision ? (draft?.id ?? "") : ""}
                 onChange={(event) => {
@@ -394,7 +395,7 @@ export function BrandKitDialog({
                     {kit.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
             <div className="brand-kits-list">
               {kits.map((kit) => (
@@ -635,7 +636,7 @@ export function BrandKitDialog({
                       ).map(([key, label]) => (
                         <label className="brand-kit-field" key={key}>
                           {t(label)}
-                          <select
+                          <Select
                             value={draft.fonts[key]}
                             onChange={(event) =>
                               setDraft({
@@ -658,7 +659,7 @@ export function BrandKitDialog({
                                 )}
                               </option>
                             ))}
-                          </select>
+                          </Select>
                         </label>
                       ))}
                     </div>
@@ -781,7 +782,7 @@ export function BrandKitDialog({
             <div className="brand-apply-controls">
               <label>
                 <span>{t("Apply to")}</span>
-                <select
+                <Select
                   aria-label={t("Apply brand to")}
                   disabled={working}
                   value={scope}
@@ -799,7 +800,7 @@ export function BrandKitDialog({
                         })
                       : t("Project style")}
                   </option>
-                </select>
+                </Select>
               </label>
               <button
                 className={`button ${dirty ? "secondary" : "primary"}`}

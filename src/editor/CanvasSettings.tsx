@@ -1,3 +1,4 @@
+import { Select } from "../ui/Select";
 import { useT } from "../i18n/react";
 import { useId, useState, type ReactNode } from "react";
 import { errorMessage, type Project } from "../core/model";
@@ -234,7 +235,7 @@ export function CanvasSettings({
         <h3>{t("Google Play banners")}</h3>
         <label className="field">
           {t("Banner format")}
-          <select
+          <Select
             value={profile.id}
             onChange={(event) => select(event.target.value as ExportProfileId)}
           >
@@ -245,7 +246,7 @@ export function CanvasSettings({
                   {t(item.name)}
                 </option>
               ))}
-          </select>
+          </Select>
         </label>
         <strong className="format-dimensions">
           {profile.width} × {profile.height}
@@ -276,7 +277,7 @@ export function CanvasSettings({
       {portfolio ? (
         <label className="field">
           {t("Canvas format")}
-          <select
+          <Select
             value={format?.id}
             onChange={(event) =>
               select(profileForPortfolioFormat(event.target.value, orientation))
@@ -287,13 +288,13 @@ export function CanvasSettings({
                 {t(item.name)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       ) : (
         <>
           <label className="field">
             {t("Store")}
-            <select
+            <Select
               value={profile.store}
               onChange={(event) =>
                 select(
@@ -306,11 +307,11 @@ export function CanvasSettings({
             >
               <option value="apple">Apple App Store</option>
               <option value="google">Google Play</option>
-            </select>
+            </Select>
           </label>
           <label className="field">
             {t("Device size")}
-            <select
+            <Select
               value={slot?.id}
               onChange={(event) =>
                 select(profileForSlot(event.target.value, orientation))
@@ -323,7 +324,7 @@ export function CanvasSettings({
                     {t(item.name)}
                   </option>
                 ))}
-            </select>
+            </Select>
           </label>
         </>
       )}

@@ -1,3 +1,4 @@
+import { Select } from "../ui/Select";
 import { useT } from "../i18n/react";
 import {
   useEffect,
@@ -11,6 +12,8 @@ import { projectPurpose } from "../core/canvas-formats";
 import { resolveExportProfile } from "../core/export-profiles";
 import { Icon } from "../app/Icon";
 import { Preview } from "./Preview";
+import { PublicationContext } from "./PublicationContext";
+import { sceneAssetIds } from "../core/overlays";
 import "./publication-preview.css";
 
 function PublicationImage({
@@ -47,10 +50,10 @@ function PublicationImage({
       className="publication-image"
       style={{ aspectRatio: `${profile.width} / ${profile.height}` }}
     >
-      {shot.assetId !== null && !image ? (
+      {sceneAssetIds(project, shot).some((id) => !images.has(id)) ? (
         <p className="publication-missing">
           {t(
-            "Image unavailable. Replace this slide’s screenshot in the editor.",
+            "An image is unavailable. Check this slide’s images in the editor.",
           )}
         </p>
       ) : visible ? (
@@ -108,6 +111,11 @@ export function PublicationPreview({
       : profile.store === "apple"
         ? "App Store"
         : "Google Play";
+  const emptySlots = project.shots.some(
+    (shot) =>
+      shot.assetId === null ||
+      shot.companions?.some((device) => device.assetId === null),
+  );
   const ratio = profile.width / profile.height;
   const tileWidth = Math.max(
     1,
@@ -197,7 +205,9 @@ export function PublicationPreview({
     >
       <header className="publication-heading">
         <div>
-          <p className="eyebrow">{t("SEE IT BEFORE YOU SHARE IT")}</p>
+          <p className="publication-destination">
+            {destination} <span>· {t("Simulated page")}</span>
+          </p>
           <h2 id="publication-heading">{t("Publication preview")}</h2>
         </div>
         <button
@@ -220,19 +230,29 @@ export function PublicationPreview({
         </p>
         <label>
           {t("Preview width")}
-          <select
+          <Select
             value={viewport}
             onChange={(event) => setViewport(Number(event.target.value))}
           >
             <option value={320}>{t("Compact · 320 px")}</option>
             <option value={390}>{t("Phone · 390 px")}</option>
             <option value={760}>{t("Wide · 760 px")}</option>
-          </select>
+          </Select>
         </label>
       </div>
       <div className="publication-body">
+        {emptySlots && (
+          <p className="publication-empty-notice">
+            <Icon name="image" size={18} />
+            <span>
+              {t(
+                "Some image slots are empty. Devices without screenshots do not appear in exports. Add images in the editor to see them here.",
+              )}
+            </span>
+          </p>
+        )}
         <div
-          className={`publication-viewport ${portfolio ? "publication-portfolio" : "publication-store"}`}
+          className={`publication-viewport ${portfolio ? "publication-portfolio" : profile.store === "apple" ? "publication-store publication-apple" : "publication-store publication-google"}`}
           ref={viewportRef}
           style={
             {
@@ -241,88 +261,21 @@ export function PublicationPreview({
             } as CSSProperties
           }
         >
-          <div className="publication-sitebar">
-            <Icon name={portfolio || banners ? "canvas" : "phone"} size={15} />
-            <span>{t("{destination} preview", { destination })}</span>
-          </div>
-          <div className="publication-app">
-            <h3>{project.name || t("Untitled app")}</h3>
-            <p>
-              {banners
-                ? t("Banners")
-                : portfolio
-                  ? t("Project cards")
-                  : t("Screenshots")}
-              <span>{project.shots.length}</span>
-            </p>
-          </div>
-          {portfolio ? (
-            <div className="publication-grid">
-              {project.shots.map((shot, index) => (
-                <button
-                  className="publication-card"
-                  key={shot.id}
-                  onClick={() => onEdit(shot.id)}
-                  aria-label={t("Edit slide {number}: {title}", {
-                    number: index + 1,
-                    title: shot.title.replace(/\n/g, " "),
-                  })}
-                >
-                  <PublicationImage
-                    project={project}
-                    shot={shot}
-                    images={images}
-                    image={images.get(shot.assetId ?? "")}
-                  />
-                  <span>
-                    {t("Slide {number}", {
-                      number: String(index + 1).padStart(2, "0"),
-                    })}
-                    <Icon name="arrow" size={16} />
-                  </span>
-                </button>
-              ))}
-            </div>
-          ) : (
-            <>
-              <div
-                className="publication-carousel"
-                ref={carouselRef}
-                role="region"
-                aria-roledescription={
-                  project.shots.length > 1 ? t("carousel") : undefined
-                }
-                aria-label={t(
-                  project.shots.length === 1
-                    ? "Publication preview"
-                    : banners
-                      ? "Banner designs. Use arrow keys or swipe to browse."
-                      : "{destination} screenshots. Use arrow keys or swipe to browse.",
-                  { destination },
-                )}
-                tabIndex={0}
-                onScroll={trackScroll}
-                onKeyDown={(event) => {
-                  let next: number | undefined;
-                  if (event.key === "ArrowRight") next = active + 1;
-                  if (event.key === "ArrowLeft") next = active - 1;
-                  if (event.key === "Home") next = 0;
-                  if (event.key === "End") next = project.shots.length - 1;
-                  if (next !== undefined) {
-                    event.preventDefault();
-                    go(next);
-                  }
-                }}
-              >
+          <PublicationContext
+            project={project}
+            portfolio={portfolio}
+            apple={profile.store === "apple"}
+            banners={banners}
+          >
+            {portfolio ? (
+              <div className="publication-grid">
                 {project.shots.map((shot, index) => (
-                  <div
+                  <button
+                    className="publication-card"
                     key={shot.id}
-                    className="publication-tile"
-                    role="group"
-                    aria-roledescription={t("slide")}
-                    aria-label={t("{number} of {count}: {title}", {
+                    onClick={() => onEdit(shot.id)}
+                    aria-label={t("Edit slide {number}: {title}", {
                       number: index + 1,
-                      count: project.shots.length,
                       title: shot.title.replace(/\n/g, " "),
                     })}
                   >
@@ -332,31 +285,103 @@ export function PublicationPreview({
                       images={images}
                       image={images.get(shot.assetId ?? "")}
                     />
-                  </div>
+                    <span className="publication-card-caption">
+                      <span>
+                        <small>
+                          {t("Project {number}", {
+                            number: String(index + 1).padStart(2, "0"),
+                          })}
+                        </small>
+                        <strong>
+                          {shot.title.replace(/\n/g, " ") ||
+                            project.name ||
+                            t("Untitled app")}
+                        </strong>
+                      </span>
+                      <Icon name="arrow" size={16} />
+                    </span>
+                  </button>
                 ))}
-                <div
-                  aria-hidden="true"
-                  style={{
-                    flex: `0 0 ${Math.max(0, width - 36 - tileWidth - 10)}px`,
-                  }}
-                />
               </div>
-              {project.shots.length > 1 && (
-                <p className="publication-swipe">
-                  {t("Swipe to see the story unfold")}
-                  <Icon name="right" size={13} />
-                </p>
-              )}
-            </>
-          )}
+            ) : (
+              <>
+                <div
+                  className="publication-carousel"
+                  ref={carouselRef}
+                  role="region"
+                  aria-roledescription={
+                    project.shots.length > 1 ? t("carousel") : undefined
+                  }
+                  aria-label={t(
+                    project.shots.length === 1
+                      ? "Publication preview"
+                      : banners
+                        ? "Banner designs. Use arrow keys or swipe to browse."
+                        : "{destination} screenshots. Use arrow keys or swipe to browse.",
+                    { destination },
+                  )}
+                  tabIndex={0}
+                  onScroll={trackScroll}
+                  onKeyDown={(event) => {
+                    let next: number | undefined;
+                    if (event.key === "ArrowRight") next = active + 1;
+                    if (event.key === "ArrowLeft") next = active - 1;
+                    if (event.key === "Home") next = 0;
+                    if (event.key === "End") next = project.shots.length - 1;
+                    if (next !== undefined) {
+                      event.preventDefault();
+                      go(next);
+                    }
+                  }}
+                >
+                  {project.shots.map((shot, index) => (
+                    <div
+                      key={shot.id}
+                      className="publication-tile"
+                      role="group"
+                      aria-roledescription={t("slide")}
+                      aria-label={t("{number} of {count}: {title}", {
+                        number: index + 1,
+                        count: project.shots.length,
+                        title: shot.title.replace(/\n/g, " "),
+                      })}
+                    >
+                      <PublicationImage
+                        project={project}
+                        shot={shot}
+                        images={images}
+                        image={images.get(shot.assetId ?? "")}
+                      />
+                    </div>
+                  ))}
+                  {project.shots.length > 1 && (
+                    <div
+                      aria-hidden="true"
+                      style={{
+                        flex: `0 0 ${Math.max(0, width - 36 - tileWidth - 10)}px`,
+                      }}
+                    />
+                  )}
+                </div>
+                {project.shots.length > 1 && (
+                  <p className="publication-swipe">
+                    {t("Swipe to see the story unfold")}
+                    <Icon name="right" size={13} />
+                  </p>
+                )}
+              </>
+            )}
+          </PublicationContext>
         </div>
         <p className="publication-note">
           {portfolio
-            ? t("Preview how your exported cards look on a website.")
+            ? t(
+                "Example website. Your images and their proportions are preserved.",
+              )
             : t(
                 banners
                   ? "Check your banner at a smaller size. Google Play may crop or overlay parts of the artwork."
-                  : "Check how your screenshots read. Store layouts and spacing vary by device.",
+                  : "Illustrative store layout. App details are placeholders; the screenshots are yours. Actual listings vary by device.",
               )}{" "}
           {width < viewport - 2 && t("Scaled to fit your screen.")}
         </p>

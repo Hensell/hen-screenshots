@@ -1,3 +1,4 @@
+import { Select } from "../ui/Select";
 import { useT } from "../i18n/react";
 import { useEffect, useRef, useState } from "react";
 import { languageName } from "../core/localization";
@@ -234,7 +235,7 @@ export function ExportDialog({
         <div className="export-options">
           <label className="export-encoding">
             {t("Image format")}
-            <select
+            <Select
               value={format}
               onChange={(event) =>
                 setFormat(event.target.value as ExportImageFormat)
@@ -244,7 +245,7 @@ export function ExportDialog({
               <option value="jpeg">
                 {t("JPEG · Smaller files, same resolution")}
               </option>
-            </select>
+            </Select>
           </label>
           <details className="export-validation">
             <summary>{t("File checks and store requirements")}</summary>

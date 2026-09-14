@@ -1,3 +1,4 @@
+import { publicationMessages } from "./publication-messages";
 import { customTemplateMessages } from "./custom-template-messages";
 import { exportReviewMessages } from "./export-review-messages";
 import { imageImportMessages } from "./image-import-messages";
@@ -25,6 +26,7 @@ export const localeOptions = [
 export const INTERFACE_LANGUAGE_KEY = "hen.interface-language";
 export const messageCatalog: Record<string, readonly [string, string]> = {
   ...appMessages,
+  ...publicationMessages,
   ...customTemplateMessages,
   ...editorMessages,
   ...dialogMessages,

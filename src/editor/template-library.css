@@ -92,10 +92,11 @@
 .template-dialog select {
   min-width: 0;
   min-height: 44px;
-  padding: 8px 10px;
+  padding-block: 8px;
+  padding-inline-start: 10px;
   border: 1px solid var(--brand-border);
   border-radius: 5px;
-  background: #fffdf7;
+  background-color: #fffdf7;
   font-size: 12px;
 }
 .catalog-filter-toggle,
@@ -129,7 +130,7 @@
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: 202px minmax(0, 1fr);
+  grid-template-columns: 260px minmax(0, 1fr);
 }
 .catalog-filters {
   padding: 22px 20px;
@@ -683,6 +684,9 @@
     grid-template-columns: 1fr;
     padding-inline: 14px;
     gap: 12px;
+  }
+  .catalog-display-options {
+    grid-template-columns: minmax(0, 1fr);
   }
   .catalog-categories button {
     padding-inline: 8px;

@@ -1,3 +1,4 @@
+import { Select } from "../ui/Select";
 import { Icon } from "../app/Icon";
 import {
   localeOptions,
@@ -18,7 +19,7 @@ export function LanguageSelector() {
       <span className="interface-language-label">
         {t("Interface language")}
       </span>
-      <select
+      <Select
         aria-label={t("Interface language")}
         value={locale}
         onChange={(event) =>
@@ -30,7 +31,7 @@ export function LanguageSelector() {
             {option.label}
           </option>
         ))}
-      </select>
+      </Select>
     </label>
   );
 }

@@ -1,3 +1,4 @@
+import { Select } from "../ui/Select";
 import { useT } from "../i18n/react";
 import { useEditor } from "./store";
 import { Icon } from "../app/Icon";
@@ -276,7 +277,7 @@ export function DeviceCompositionInspector({
         <h3>{t("Device frame")}</h3>
         <label className="field">
           {t("Device family")}
-          <select
+          <Select
             value={style.device}
             onChange={(event) => {
               const device = event.target.value as DeviceFamily;
@@ -290,12 +291,12 @@ export function DeviceCompositionInspector({
                 {t(name)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         {style.device !== "monitor" && style.device !== "laptop" && (
           <label className="field">
             {t("Frame orientation")}
-            <select
+            <Select
               value={style.deviceOrientation}
               onChange={(event) =>
                 setStyle({
@@ -306,12 +307,12 @@ export function DeviceCompositionInspector({
             >
               <option value="portrait">{t("Portrait")}</option>
               <option value="landscape">{t("Landscape")}</option>
-            </select>
+            </Select>
           </label>
         )}
         <label className="field">
           {t("Screenshot fit")}
-          <select
+          <Select
             value={style.fit}
             onChange={(event) =>
               setStyle({ fit: event.target.value as Style["fit"] })
@@ -319,7 +320,7 @@ export function DeviceCompositionInspector({
           >
             <option value="contain">{t("Fit entire screenshot")}</option>
             <option value="cover">{t("Fill screen · crop edges")}</option>
-          </select>
+          </Select>
         </label>
         <label className="check-field">
           <input

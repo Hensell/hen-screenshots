@@ -16,10 +16,11 @@
   min-width: 0;
   max-width: 130px;
   min-height: 40px;
-  padding: 4px 2px;
+  padding-block: 4px;
+  padding-inline-start: 2px;
   border: 0;
   border-radius: 4px;
-  background: transparent;
+  background-color: transparent;
   color: inherit;
   font: inherit;
   font-size: 12px;
@@ -51,9 +52,6 @@
   .interface-language {
     gap: 3px;
     padding-inline: 5px;
-  }
-  .interface-language select {
-    max-width: 103px;
   }
 }
 
@@ -114,7 +112,7 @@
 
 @media (max-width: 400px) {
   .topbar.editor-header .editor-file-actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
     align-items: stretch;
   }
   .topbar.editor-header .editor-file-actions .button {

@@ -1,3 +1,4 @@
+import { Select } from "../ui/Select";
 import { bannerTemplates } from "../core/banner-templates";
 import { isBannerProfile } from "../core/export-profiles";
 import { compositionId } from "../core/device-composition-spec";
@@ -433,7 +434,7 @@ export function TemplateGallery({
         >
           <label className="catalog-filter-field">
             {t("Appearance")}
-            <select
+            <Select
               value={filters.appearance}
               onChange={(event) =>
                 updateFilters({
@@ -446,7 +447,7 @@ export function TemplateGallery({
               <option value="light">{t("Light")}</option>
               <option value="dark">{t("Dark")}</option>
               <option value="colorful">{t("Colorful")}</option>
-            </select>
+            </Select>
           </label>
           <fieldset className="catalog-categories">
             <legend>{t("Style")}</legend>
@@ -465,7 +466,7 @@ export function TemplateGallery({
           {!banners && (
             <label className="catalog-filter-field">
               {t("Composition")}
-              <select
+              <Select
                 value={filters.layout}
                 onChange={(event) =>
                   updateFilters({
@@ -477,12 +478,12 @@ export function TemplateGallery({
                 <option value="single">{t("Single slide")}</option>
                 <option value="multi-device">{t("Multiple devices")}</option>
                 <option value="panorama">{t("2-slide panorama")}</option>
-              </select>
+              </Select>
             </label>
           )}
           <label className="catalog-filter-field">
             {t("Background")}
-            <select
+            <Select
               value={filters.background}
               onChange={(event) =>
                 updateFilters({
@@ -494,7 +495,7 @@ export function TemplateGallery({
               <option value="all">{t("Any background")}</option>
               <option value="solid">{t("Solid")}</option>
               <option value="gradient">{t("Gradient")}</option>
-            </select>
+            </Select>
           </label>
           {hasFilters && (
             <button
@@ -510,7 +511,7 @@ export function TemplateGallery({
             <legend>{t("Browse options")}</legend>
             <label className="catalog-sort">
               <span>{t("Sort by")}</span>
-              <select
+              <Select
                 aria-label={t("Sort by")}
                 value={filters.sort}
                 onChange={(event) =>
@@ -524,11 +525,11 @@ export function TemplateGallery({
                 </option>
                 <option value="name-asc">{t("Name A–Z")}</option>
                 <option value="name-desc">{t("Name Z–A")}</option>
-              </select>
+              </Select>
             </label>
             <label>
               {t("Per page")}
-              <select
+              <Select
                 aria-label={t("Templates per page")}
                 value={pageSize}
                 onChange={(event) => {
@@ -541,7 +542,7 @@ export function TemplateGallery({
                     {size}
                   </option>
                 ))}
-              </select>
+              </Select>
             </label>
           </fieldset>
           <button
@@ -817,7 +818,7 @@ export function TemplateGallery({
         <div className="template-settings">
           <label className="catalog-scope">
             {t("Apply to")}
-            <select
+            <Select
               aria-label={t("Apply template to")}
               value={all ? "all" : "selected"}
               onChange={(event) => setAll(event.target.value === "all")}
@@ -830,7 +831,7 @@ export function TemplateGallery({
               <option value="all" disabled={panoramic}>
                 {t("Whole series ({count})", { count: project.shots.length })}
               </option>
-            </select>
+            </Select>
           </label>
           <label className="check-field">
             <input

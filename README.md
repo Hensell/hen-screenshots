@@ -26,7 +26,7 @@ Turn raw screenshots into polished App Store images, Google Play listings, and p
 - **Choose the right frame.** iPhone, Android phone, iPad, Android tablet, monitor, laptop, or a simple screenshot card.
 - **Make the composition yours.** Customize captions, colors, typography, and backgrounds. Drag devices and text independently. Resize devices from their corner handles, with proportions preserved, or use the **Device size** slider. Rotate a device through 360° using its round canvas handle or the **Device rotation** slider. **Reset rotation** restores the template’s angle without changing size or position. Panorama halves rotate together; devices in a composition rotate independently.
 - **Line things up.** Smart guides snap devices and text to centers, edges, margins, and nearby objects, including across panoramas. Hold Alt/Option to move freely, or turn guides off.
-- **Preview before publishing.** Review store screenshots in a swipeable carousel or portfolio cards in a website grid. Check compact, phone, and wide reading sizes, then jump back to any slide to edit it.
+- **Preview before publishing.** See your screenshots inside distinct Google Play and App Store listing mockups, or your portfolio cards on an example website. Check compact, phone, and wide reading sizes, then jump back to any slide to edit it.
 - **One brand, every project.** Save an app’s palette, fonts for headlines and supporting text, and identifying logo in a reusable brand kit. Preview it on your screenshots and apply it to a slide, linked panorama, or entire series.
 - **One design, multiple languages.** Edit independent captions, keep layouts linked, and export a folder per language. Translate manually or download optional local translation packs.
 - **Edit a whole series.** Apply a template to one slide or the series. Replace an image while keeping its design, duplicate and reorder slides, and undo or redo changes.
@@ -69,13 +69,13 @@ The [AI agents guide](https://screenshots.hensell.dev/agents/) includes a built 
 
 **Keyboard:** focus the preview and press **Enter** to select an object. Move it with the arrow keys, or resize the selected device with **+ / −**; hold **Shift** for larger steps. Outside text fields, **⌘/Ctrl + Z** undoes changes and **⌘/Ctrl + Shift + Z** redoes them.
 
-**Before exporting:** open **Preview** beside Export to check small-screen readability and the spacing between panorama slides. Use the carousel's arrow keys, Home/End, or swipe. This is a reading-size simulation; store layouts vary. Guides and preview controls never appear in exported images.
+**Before exporting:** open **Preview** beside Export to check small-screen readability and the spacing between panorama slides. Use the carousel's arrow keys, Home/End, or swipe. The surrounding page is illustrative: app details are placeholders, and the applied brand kit supplies the app icon when available. The artwork keeps its export proportions. Empty image slots are explained, and unavailable images are flagged. Store layouts vary by device. Guides and preview controls never appear in exported images.
 
 ## One design, every language
 
 The **Website language** selector changes the interface, including the landing page, project library, editor, and dialogs. It starts with your browser's preferred supported language and remembers an explicit choice. This is separate from the **Languages** dialog inside a project, which manages the text you export in your screenshots.
 
-Open **Manage** beside the text language selector in the studio toolbar, choose the language of your original captions, and add a language version. The original text and translation appear side by side. Everything saves automatically. The toolbar’s language selector changes the canvas, thumbnails, inspector, and publication preview together.
+Open **Translate** in the studio toolbar, labeled **With AI or manually**, choose the language of your original captions, and add a language version. The original text and translation appear side by side. Everything saves automatically. The separate screenshot language selector changes the canvas, thumbnails, inspector, and publication preview together.
 
 - Colors, templates, frames, device positions, and slide order stay shared.
 - Captions are independent. Each language can override text positions, headline size, and screenshot images; reset controls restore the shared settings.

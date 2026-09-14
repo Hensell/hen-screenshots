@@ -213,12 +213,16 @@
   min-width: 0;
   width: 100%;
   min-height: 44px;
-  background: #fdfcf8;
+  background-color: #fdfcf8;
   color: var(--brand-ink);
   border: 1px solid var(--brand-border);
   border-radius: 5px;
-  padding: 9px 11px;
+  padding-block: 9px;
+  padding-inline-start: 11px;
   font: inherit;
+}
+.brand-kit-field input {
+  padding-inline-end: 11px;
 }
 .brand-logo-field {
   display: flex;
@@ -629,14 +633,11 @@
     display: none;
   }
   .brand-apply-controls select {
-    padding-inline: 6px;
+    padding-inline-start: 6px;
     font-size: 16px;
   }
 }
 @media (max-width: 460px) {
-  .brand-kits-footer {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
   .brand-apply-controls {
     display: contents;
   }

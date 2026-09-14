@@ -1,5 +1,11 @@
 // Application chrome, notices and export format descriptions.
 export const appMessages: Record<string, readonly [string, string]> = {
+  Translate: ["Traducir", "Traduzir"],
+  "With AI or manually": ["Con IA o manualmente", "Com IA ou manualmente"],
+  "Translate captions with AI or manually": [
+    "Traducir textos con IA o manualmente",
+    "Traduzir textos com IA ou manualmente",
+  ],
   "Check your headline and composition at publishing size.": [
     "Revisa el título y la composición al tamaño de publicación.",
     "Confira o título e a composição no tamanho de publicação.",

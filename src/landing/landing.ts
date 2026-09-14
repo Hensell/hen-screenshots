@@ -1,3 +1,4 @@
+import "../ui/select.css";
 import {
   localeOptions,
   setInterfaceLocale,
