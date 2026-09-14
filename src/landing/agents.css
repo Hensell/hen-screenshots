@@ -24,16 +24,25 @@
 .guide-agent-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 8px 20px;
   margin-top: 20px;
 }
 .guide-agent-links a {
   display: flex;
-  gap: 18px;
+  gap: 8px;
   align-items: center;
   min-height: 44px;
   border-bottom: 1px solid var(--brand-border);
   font-weight: 650;
+  white-space: nowrap;
+}
+.agent-brand-icon {
+  display: block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.guide-agent-links a > [aria-hidden="true"] {
+  margin-left: 4px;
 }
 .guide-agent-links a:hover {
   color: var(--brand-clay);
@@ -66,9 +75,14 @@
   font-size: 0.9rem;
 }
 .guide-download-link {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
   width: 100%;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
+  padding-inline: 18px;
+}
+.guide-download-link .agent-brand-icon {
+  filter: brightness(0) invert(1);
 }
 .guide-download-meta {
   font-size: 0.7rem;
