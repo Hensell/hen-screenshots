@@ -1,4 +1,120 @@
 export const dialogMessages: Record<string, readonly [string, string]> = {
+  "Translate your titles and supporting text. Keep one shared design.": [
+    "Traduce los títulos y textos de apoyo. Conserva un diseño compartido.",
+    "Traduza títulos e textos de apoio. Mantenha um design compartilhado.",
+  ],
+  "AI translation": ["Traducción con IA", "Tradução com IA"],
+  "Translate every slide into your added languages, one at a time. Free, on your device.":
+    [
+      "Traduce todas las diapositivas a los idiomas que agregaste, una por una. Gratis, en tu dispositivo.",
+      "Traduza todos os slides para os idiomas adicionados, um por vez. Grátis, no seu dispositivo.",
+    ],
+  "Add a language below to get started.": [
+    "Agrega un idioma abajo para comenzar.",
+    "Adicione um idioma abaixo para começar.",
+  ],
+  "Translate with AI": ["Traducir con IA", "Traduzir com IA"],
+  "Language added. Edit the text below or choose Translate with AI.": [
+    "Idioma agregado. Edita los textos de abajo o elige Traducir con IA.",
+    "Idioma adicionado. Edite os textos abaixo ou escolha Traduzir com IA.",
+  ],
+  "Manual editing": ["Edición manual", "Edição manual"],
+  "{language} · Original": ["{language} · Original", "{language} · Original"],
+  "Choose languages for the whole series. Each slide is translated separately, then you review the wording.":
+    [
+      "Elige los idiomas para toda la serie. Se traduce cada diapositiva por separado y después revisas los textos.",
+      "Escolha os idiomas para toda a série. Cada slide é traduzido separadamente e depois você revisa os textos.",
+    ],
+  "Original language: {language}": [
+    "Idioma original: {language}",
+    "Idioma original: {language}",
+  ],
+  "Translate into": ["Traducir a", "Traduzir para"],
+  "Manual editing · no local model": [
+    "Edición manual · sin modelo local",
+    "Edição manual · sem modelo local",
+  ],
+  "Drafts saved": ["Borradores guardados", "Rascunhos salvos"],
+  "No untranslated slides": [
+    "Todas las diapositivas tienen traducción",
+    "Todos os slides têm tradução",
+  ],
+  "Untranslated slides: {count}": [
+    "Diapositivas por traducir: {count}",
+    "Slides para traduzir: {count}",
+  ],
+  "Slides to translate: {count}": [
+    "Diapositivas que se traducirán: {count}",
+    "Slides que serão traduzidos: {count}",
+  ],
+  "In progress": ["En curso", "Em andamento"],
+  "This replaces edited and reviewed text in the selected languages. You can undo each completed language.":
+    [
+      "Se reemplazarán los textos editados y revisados de los idiomas seleccionados. Puedes deshacer cada idioma completado.",
+      "Os textos editados e revisados dos idiomas selecionados serão substituídos. Você pode desfazer cada idioma concluído.",
+    ],
+  "Checking saved language packs…": [
+    "Comprobando los paquetes de idiomas guardados…",
+    "Verificando os pacotes de idiomas salvos…",
+  ],
+  "No new language packs needed": [
+    "No se necesitan nuevos paquetes de idiomas",
+    "Nenhum novo pacote de idioma necessário",
+  ],
+  "Downloaded only when you start. Shared packs are counted once; runtime files are also needed the first time.":
+    [
+      "Se descargan solo cuando comienzas. Los paquetes compartidos se cuentan una vez; la primera vez también se necesitan archivos del motor.",
+      "O download só começa quando você inicia. Pacotes compartilhados são contados uma vez; na primeira vez, também são necessários arquivos do mecanismo.",
+    ],
+  "Free local AI · OPUS-MT. Your captions stay on this device. Text inside uploaded images is not translated.":
+    [
+      "IA local gratis · OPUS-MT. Tus textos se quedan en este dispositivo. No se traduce el texto dentro de las imágenes que subes.",
+      "IA local grátis · OPUS-MT. Seus textos ficam neste dispositivo. O texto dentro das imagens enviadas não é traduzido.",
+    ],
+  "One language runs at a time to limit memory use. If you stop, completed languages stay saved; the unfinished language stays unchanged.":
+    [
+      "Se procesa un idioma a la vez para limitar el uso de memoria. Si detienes la traducción, se conservan los idiomas completados; el idioma pendiente queda sin cambios.",
+      "Um idioma é processado por vez para limitar o uso de memória. Se você parar, os idiomas concluídos ficam salvos; o idioma incompleto permanece sem alterações.",
+    ],
+  "Completed languages are saved. Retry to continue with the remaining languages.":
+    [
+      "Los idiomas completados están guardados. Reintenta para continuar con los restantes.",
+      "Os idiomas concluídos estão salvos. Tente novamente para continuar com os restantes.",
+    ],
+  "Translation stopped. Completed languages are saved. You can continue when you are ready.":
+    [
+      "Traducción detenida. Los idiomas completados están guardados. Puedes continuar cuando quieras.",
+      "Tradução interrompida. Os idiomas concluídos estão salvos. Você pode continuar quando quiser.",
+    ],
+  "Languages completed: {count}": [
+    "Idiomas completados: {count}",
+    "Idiomas concluídos: {count}",
+  ],
+  "Stop translation": ["Detener traducción", "Parar tradução"],
+  "Continue translation": ["Continuar traducción", "Continuar tradução"],
+  "Start AI translation": [
+    "Iniciar traducción con IA",
+    "Iniciar tradução com IA",
+  ],
+  "Slide translations: {count} · Languages: {languages}": [
+    "Traducciones de diapositivas: {count} · Idiomas: {languages}",
+    "Traduções de slides: {count} · Idiomas: {languages}",
+  ],
+  "Select a supported language with untranslated slides, or enable replacement to create new drafts.":
+    [
+      "Selecciona un idioma compatible con diapositivas sin traducir o activa el reemplazo para crear nuevos borradores.",
+      "Selecione um idioma compatível com slides sem tradução ou ative a substituição para criar novos rascunhos.",
+    ],
+  "Review translations": ["Revisar traducciones", "Revisar traduções"],
+  "Back to manual editing": [
+    "Volver a la edición manual",
+    "Voltar à edição manual",
+  ],
+  "English, Spanish, French, and German support local AI translation. Some pairs use English as an intermediate step. Other languages use manual editing.":
+    [
+      "La IA local admite inglés, español, francés y alemán. Algunas combinaciones usan el inglés como paso intermedio. Los demás idiomas se editan manualmente.",
+      "A IA local oferece suporte a inglês, espanhol, francês e alemão. Algumas combinações usam o inglês como etapa intermediária. Os demais idiomas são editados manualmente.",
+    ],
   "Delete this brand kit?": [
     "¿Eliminar este kit de marca?",
     "Excluir este kit de marca?",
