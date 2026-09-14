@@ -21,6 +21,8 @@ The translation section describes the implemented OPUS-MT models by Helsinki-NLP
 
 The Hugging Face logo in `public/icons/hugging-face.svg` comes from the [official brand assets](https://huggingface.co/brand), [original SVG](https://huggingface.co/datasets/huggingface/brand-assets/resolve/main/hf-logo.svg). It identifies the model hosting platform, not an endorsement or partnership.
 
+The Ko-fi mark in `public/icons/kofi.avif` is the unmodified transparent icon from the [official creator kit](https://more.ko-fi.com/brand-assets), [original AVIF](https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229bf8a18f97a3c1_favion.avif). It is hosted locally, preserves the official colors and proportions, and accompanies the translated support link in the free section and both page footers. Do not substitute a generic coffee icon or recolor the brand asset.
+
 `public/examples/` contains resized WebP previews of Hen Screenshots exports. The phone examples use FrogHappy captures made with sample data during the creator's capture session. The portfolio card uses the project's own brand identity showcase. These are promotional examples, not customer content or editable project backups. Full-resolution originals remain in the local, ignored `exports/` directory.
 
 Image dimensions are declared in the HTML; images below the hero load lazily. The page uses the existing local Manrope font and brand tokens. FAQ items use native disclosure controls and work without JavaScript. The landing scripts preserve old project links and apply the selected interface language.

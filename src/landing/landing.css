@@ -634,7 +634,10 @@ details > p {
 .support-link {
   min-height: 44px;
 }
-.support-link svg {
+.kofi-mark {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 @media (max-width: 1000px) {
