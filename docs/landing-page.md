@@ -36,3 +36,9 @@ The landing has three studio entry links: the header, the hero, and the closing 
 Feature sections explain and demonstrate the product without repeating studio links. The agent announcement follows the create/style/export explanation and links only to the localized setup guide, which handles platform selection and installation. GitHub and Ko-fi remain accessible in the contribution section and footer.
 
 Landing and agent-guide arrows share `/icons/arrow-right.svg` through the `.link-arrow` CSS mask: 20px, rounded ends, and the surrounding text color. Rotate the same mark down for section links/downloads and diagonally for external destinations; internal navigation points right. Keep arrows decorative and outside translated text so their shape and accessible link names stay consistent across languages.
+
+## Visual and editorial restraint
+
+Public pages lead with their headings and real examples. Avoid decorative uppercase eyebrows, ornamental rules, and image counters that imply a carousel. Format headings name the output (store screenshots, portfolio mockups, banners); template captions describe the visible design instead of adding slogans. Keep the free-forever promise, attribution, and practical details about translations and local storage.
+
+Studio calls to action use a single surface and the shared arrow, without a separate tile behind the icon. Reserve plus/minus signs for actual disclosure controls. Numbering belongs to sequential instructions and the two panorama slides, not unrelated feature categories. The guide follows the same conventions with explicit installation headings for each agent. Apply these choices consistently in English, Spanish, and Brazilian Portuguese.

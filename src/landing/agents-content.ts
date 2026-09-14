@@ -2,7 +2,7 @@ import type { InterfaceLocale } from "../i18n/core.ts";
 
 // Build-time copy: the guide is readable and translated without JavaScript.
 export const agentMessages: Record<string, readonly [string, string]> = {
-  "Add Hen to Cursor.": ["Añade Hen a Cursor.", "Adicione o Hen ao Cursor."],
+  "Install in Cursor.": ["Instala en Cursor.", "Instale no Cursor."],
   "Available by local installation. Our Cursor Marketplace submission is pending review.":
     [
       "Disponible mediante instalación local. Nuestra solicitud para Cursor Marketplace está pendiente de revisión.",
@@ -142,21 +142,16 @@ export const agentMessages: Record<string, readonly [string, string]> = {
   Examples: ["Ejemplos", "Exemplos"],
   "Your files": ["Tus archivos", "Seus arquivos"],
   "On this page": ["En esta página", "Nesta página"],
-  "THE LOCAL PLUGIN": ["EL PLUGIN LOCAL", "O PLUGIN LOCAL"],
   "Use with AI agents.": ["Usar con agentes de IA.", "Usar com agentes de IA."],
-  "Your captures. A clear brief. A finished series.": [
-    "Tus capturas. Una idea clara. Una serie lista.",
-    "Suas capturas. Uma ideia clara. Uma série pronta.",
-  ],
   "Let Codex, Claude Code, or Cursor choose templates, compose your screenshots, and write captions in several languages. Then fine-tune the result in Hen Screenshots.":
     [
       "Deja que Codex, Claude Code o Cursor elija las plantillas, componga tus capturas y escriba los textos en varios idiomas. Después, ajusta el resultado en Hen Screenshots.",
       "Deixe o Codex, Claude Code ou Cursor escolher os modelos, compor suas capturas e escrever os textos em vários idiomas. Depois, ajuste o resultado no Hen Screenshots.",
     ],
   "Local plugin": ["Plugin local", "Plugin local"],
-  "A small plugin. Your whole studio.": [
-    "Un pequeño plugin. Todo tu estudio.",
-    "Um pequeno plugin. Todo o seu estúdio.",
+  "Get Hen Screenshots.": [
+    "Descarga Hen Screenshots.",
+    "Baixe o Hen Screenshots.",
   ],
   "Download plugin": ["Descargar plugin", "Baixar plugin"],
   "ZIP · Node.js 22.12+ · One-time setup": [
@@ -208,10 +203,7 @@ export const agentMessages: Record<string, readonly [string, string]> = {
       "Hen Screenshots no añade una suscripción ni pide una clave API. Se siguen aplicando el plan y los costos de uso de Codex, Claude o Cursor. El plugin renderiza localmente; los archivos que compartas con tu agente están sujetos a las políticas de datos de ese proveedor.",
       "O Hen Screenshots não adiciona assinatura nem pede chave de API. O plano e os custos de uso do Codex, Claude ou Cursor continuam valendo. O plugin renderiza localmente; os arquivos que você compartilhar com seu agente seguem as políticas de dados desse provedor.",
     ],
-  "Start with a local task.": [
-    "Empieza con una tarea local.",
-    "Comece com uma tarefa local.",
-  ],
+  "Install in Codex.": ["Instala en Codex.", "Instale no Codex."],
   "If you downloaded the ZIP instead, open your app project in Codex and ask it to read the bundled skill directly. This works without a marketplace installation.":
     [
       "Si descargaste el ZIP, abre el proyecto de tu app en Codex y pídele que lea directamente la skill incluida. Funciona sin instalar desde un catálogo.",
@@ -226,9 +218,9 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "Sobre las skills de Codex",
     "Sobre as skills do Codex",
   ],
-  "Load the plugin for your session.": [
-    "Carga el plugin para tu sesión.",
-    "Carregue o plugin para a sua sessão.",
+  "Install in Claude Code.": [
+    "Instala en Claude Code.",
+    "Instale no Claude Code.",
   ],
   "If you downloaded the ZIP instead, complete setup in that folder, then open a terminal in your app project. Replace PLUGIN_FOLDER with the full path to the extracted plugin and start Claude Code:":
     [

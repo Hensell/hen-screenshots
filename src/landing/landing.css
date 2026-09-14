@@ -58,13 +58,6 @@ em {
 .landing-page .section-space {
   padding-block: 72px;
 }
-.eyebrow {
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  line-height: 1.8;
-  margin-bottom: 24px;
-}
 h2 {
   font-size: clamp(2.1rem, 4vw, 3.35rem);
   letter-spacing: -0.045em;
@@ -149,26 +142,12 @@ nav {
 }
 .action.studio-cta {
   min-height: 48px;
-  gap: 14px;
-  padding: 8px 10px 8px 18px;
-  border: 1px solid #983d2a;
-  border-radius: 10px;
-  font-weight: 750;
-  box-shadow:
-    0 2px 3px #20272514,
-    inset 0 1px 0 #ffffff20;
+  gap: 16px;
+  padding: 12px 18px;
 }
 .studio-cta-icon {
-  display: grid;
-  place-items: center;
+  display: inline-flex;
   flex-shrink: 0;
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  background: #ffffff1c;
-}
-.studio-cta:active {
-  box-shadow: inset 0 1px 3px #20272526;
 }
 .link-arrow {
   display: inline-block;
@@ -229,17 +208,6 @@ nav {
   line-height: 1.02;
   letter-spacing: -0.06em;
 }
-.hero .eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.59rem;
-}
-.short-rule {
-  width: 25px;
-  height: 2px;
-  background: var(--brand-clay);
-}
 .lead {
   max-width: 410px;
   margin-top: 28px;
@@ -271,19 +239,10 @@ nav {
   padding: 24px;
   min-width: 0;
 }
-.art-label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.5rem;
-  font-weight: 750;
-  letter-spacing: 0.12em;
-  color: var(--brand-muted);
-  gap: 12px;
-}
 .hero-prints {
   position: relative;
   aspect-ratio: 1.12;
-  margin-block: 20px 28px;
+  margin-block: 16px 28px;
 }
 .print {
   position: absolute;
@@ -307,26 +266,6 @@ nav {
   gap: 4px 12px;
   font-size: 0.57rem;
   color: var(--brand-muted);
-}
-.format-strip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding-block: 24px;
-  border-block: 1px solid var(--brand-border);
-}
-.format-strip p {
-  font-size: 0.75rem;
-  color: var(--brand-muted);
-}
-.format-strip ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 40px;
-  font-size: 0.85rem;
-  font-weight: 650;
 }
 .section-intro {
   display: grid;
@@ -397,7 +336,7 @@ nav {
   font-size: 0.65rem;
   color: var(--brand-muted);
 }
-.feature-copy > p:not(.eyebrow) {
+.feature-copy > p {
   color: var(--brand-muted);
   margin-top: 24px;
 }
@@ -431,11 +370,6 @@ nav {
   margin-top: 24px;
   font-size: 0.73rem;
   font-weight: 700;
-}
-.frame-list li::before {
-  content: "＋";
-  color: var(--brand-clay);
-  padding-right: 8px;
 }
 .steps {
   list-style: none;
@@ -540,9 +474,6 @@ nav {
 }
 .free-layout em {
   color: #eeb796;
-}
-.free-layout .eyebrow {
-  color: #ccd1c7;
 }
 .free-copy > p {
   color: #ccd1c7;
@@ -694,10 +625,6 @@ details > p {
 .landing-footer .wordmark {
   font-size: 22px;
 }
-.landing-footer p {
-  font-size: 0.73rem;
-  color: var(--brand-muted);
-}
 .footer-links {
   display: flex;
   align-items: center;
@@ -723,9 +650,6 @@ details > p {
   }
   .hero-art {
     padding: 20px;
-  }
-  .art-label span:last-child {
-    display: none;
   }
   .hero-actions {
     gap: 16px;
@@ -766,9 +690,6 @@ details > p {
   .hero .lead {
     margin-top: 20px;
   }
-  .hero .eyebrow {
-    margin-bottom: 18px;
-  }
   .hero-details {
     width: min(100%, 520px);
     justify-self: start;
@@ -778,10 +699,6 @@ details > p {
   }
   .hero-copy {
     max-width: 520px;
-  }
-  .hero .eyebrow {
-    font-size: 0.56rem;
-    gap: 10px;
   }
   .hero-art {
     width: min(100%, 520px);
@@ -795,17 +712,6 @@ details > p {
   }
   .hero-actions {
     gap: 22px;
-  }
-  .format-strip {
-    align-items: start;
-    flex-direction: column;
-    gap: 12px;
-    padding-block: 20px;
-  }
-  .format-strip ul {
-    flex-wrap: wrap;
-    gap: 8px 24px;
-    font-size: 0.8rem;
   }
   .section-intro {
     grid-template-columns: 1fr;
@@ -862,10 +768,6 @@ details > p {
   .landing-footer {
     flex-wrap: wrap;
     gap: 20px;
-  }
-  .landing-footer p {
-    flex-basis: 100%;
-    order: 3;
   }
 }
 @media (max-width: 360px) {
@@ -1157,12 +1059,6 @@ details > p {
 .output-copy {
   padding: 30px 32px 0;
 }
-.output-label {
-  font-size: 0.6rem;
-  font-weight: 750;
-  letter-spacing: 0.09em;
-  margin-bottom: 16px;
-}
 .output-copy h3 {
   font-size: clamp(1.3rem, 2.2vw, 1.8rem);
   letter-spacing: -0.04em;
@@ -1271,11 +1167,6 @@ details > p {
   border-radius: 3px;
   font-size: 0.73rem;
 }
-.demo-note {
-  font-size: 0.7rem;
-  color: var(--brand-muted);
-  margin-top: 14px;
-}
 .translation-section {
   align-items: center;
   gap: 40px 64px;
@@ -1372,10 +1263,6 @@ details > p {
   }
 }
 @media (max-width: 1000px) {
-  .format-strip ul {
-    flex-wrap: wrap;
-    gap: 12px 24px;
-  }
   .output-copy {
     padding: 24px 24px 0;
   }

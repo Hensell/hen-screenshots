@@ -1,4 +1,12 @@
 export const landingMessages: Record<string, readonly [string, string]> = {
+  "Panoramas across two slides.": [
+    "Panoramas en dos diapositivas.",
+    "Panoramas em dois slides.",
+  ],
+  "Translate your screenshot captions.": [
+    "Traduce los textos de tus capturas.",
+    "Traduza os textos das suas capturas.",
+  ],
   "Backgrounds, logos, and artwork": [
     "Fondos, logotipos e imágenes",
     "Fundos, logotipos e imagens",
@@ -67,23 +75,18 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     "Obter plugin na OpenAI",
   ],
   "Setup guide": ["Guía de instalación", "Guia de instalação"],
-  "FREE SCREENSHOT STUDIO": [
-    "ESTUDIO DE CAPTURAS GRATIS",
-    "ESTÚDIO DE CAPTURAS GRÁTIS",
-  ],
   "Store screenshots, banners, and portfolio mockups. Made in your browser.": [
     "Capturas para tiendas, banners y mockups para tu portafolio. Desde tu navegador.",
     "Capturas para lojas, banners e mockups para seu portfólio. No seu navegador.",
   ],
   "Choose your canvas.": ["Elige tu lienzo.", "Escolha sua tela."],
-  "57 TEMPLATES": ["57 PLANTILLAS", "57 MODELOS"],
   "Start with a template.": [
     "Empieza con una plantilla.",
     "Comece com um modelo.",
   ],
-  "Phone, tablet, and desktop. Together.": [
-    "Móvil, tablet y desktop. Juntos.",
-    "Celular, tablet e desktop. Juntos.",
+  "Combine phones, tablets, and desktop.": [
+    "Combina móviles, tablets y desktop.",
+    "Combine celulares, tablets e desktop.",
   ],
   "Your brand, on every slide.": [
     "Tu marca, en cada slide.",
@@ -135,10 +138,6 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     "Tradução de textos grátis",
   ],
   "Create for free": ["Crear gratis", "Criar grátis"],
-  "One studio. Your whole launch.": [
-    "Un estudio. Todo tu lanzamiento.",
-    "Um estúdio. Todo o seu lançamento.",
-  ],
   "Language versions": ["Versiones por idioma", "Versões por idioma"],
   "MORE THAN A PHONE MOCKUP": [
     "MUCHO MÁS QUE UN MOCKUP DE MÓVIL",
@@ -153,9 +152,9 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "¿Vas a lanzar una app o renovar tu portafolio? Empieza con el lienzo adecuado y dale tu estilo.",
       "Vai lançar um app ou renovar seu portfólio? Comece com a tela no formato certo e deixe com a sua cara.",
     ],
-  "Screenshots that tell the whole story.": [
-    "Capturas que cuentan toda la historia.",
-    "Capturas que contam a história toda.",
+  "App Store & Google Play screenshots.": [
+    "Capturas para App Store y Google Play.",
+    "Capturas para App Store e Google Play.",
   ],
   "Build a matching series for iPhone, Android, iPad, and more. Portrait or landscape, with built-in store size presets.":
     [
@@ -166,19 +165,18 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     "Slides individuales · Series · Panoramas de dos slides",
     "Slides individuais · Séries · Panoramas de dois slides",
   ],
-  "PORTFOLIOS & WEBSITES": ["PORTAFOLIOS Y SITIOS WEB", "PORTFÓLIOS E SITES"],
-  "Give your work a place to shine.": [
-    "Haz que tu trabajo se luzca.",
-    "Dê destaque ao seu trabalho.",
+  "Mockups for your portfolio.": [
+    "Mockups para tu portafolio.",
+    "Mockups para seu portfólio.",
   ],
   "Project cards, square posts, or wide website visuals. Choose a preset or set your own dimensions.":
     [
       "Tarjetas de proyectos, publicaciones cuadradas o imágenes anchas para tu web. Elige un formato o define tus propias dimensiones.",
       "Cards de projetos, posts quadrados ou imagens largas para seu site. Escolha um formato ou defina suas próprias dimensões.",
     ],
-  "A banner to complete your listing.": [
-    "Un banner para completar tu página.",
-    "Um banner para completar sua página.",
+  "Banners for Google Play.": [
+    "Banners para Google Play.",
+    "Banners para Google Play.",
   ],
   "Add your artwork or app icon. Create a 1024 × 500 feature graphic or a 1280 × 720 Android TV banner.":
     [
@@ -213,10 +211,6 @@ export const landingMessages: Record<string, readonly [string, string]> = {
     "Un ZIP. Una carpeta por idioma.",
     "Um ZIP. Uma pasta por idioma.",
   ],
-  "Translate the captions. Keep the colors, frames, and layout linked.": [
-    "Traduce los textos. Mantén vinculados los colores, marcos y diseño.",
-    "Traduza os textos. Mantenha as cores, molduras e o layout vinculados.",
-  ],
   "ALL YOUR DEVICES, TOGETHER": [
     "TODOS TUS DISPOSITIVOS, JUNTOS",
     "TODOS OS SEUS DISPOSITIVOS, JUNTOS",
@@ -230,10 +224,6 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Muestra tu app en móvil, tablet y desktop, lado a lado. Cada dispositivo tiene su propia captura, marco, tamaño y posición.",
       "Mostre seu app no celular, tablet e desktop, lado a lado. Cada dispositivo tem sua própria captura, moldura, tamanho e posição.",
     ],
-  "Pair any two. Bring all three. Or let a single screen take the spotlight.": [
-    "Combina dos, reúne los tres o deja que una sola pantalla sea la protagonista.",
-    "Combine dois, reúna os três ou deixe uma única tela ser a protagonista.",
-  ],
   "Build your composition": ["Crear tu composición", "Criar sua composição"],
   "Ecosystem template combining a laptop, tablet, and phone in one composition.":
     [
@@ -304,12 +294,6 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Sim. Crie versões por idioma e edite os textos manualmente, ou baixe modelos OPUS-MT opcionais para traduzir entre inglês, espanhol, francês e alemão. Os demais idiomas disponíveis usam edição manual. Os layouts continuam vinculados e o ZIP inclui uma pasta por idioma.",
     ],
 
-  "FREE TRANSLATION, ON YOUR DEVICE": [
-    "TRADUCCIÓN GRATIS, EN TU DISPOSITIVO",
-    "TRADUÇÃO GRÁTIS, NO SEU DISPOSITIVO",
-  ],
-  "One design.": ["Un diseño.", "Um design."],
-  "More languages.": ["Más idiomas.", "Mais idiomas."],
   "Give every language its own words while keeping your layout linked. Review your captions, then export a folder for each language.":
     [
       "Adapta los textos a cada idioma y mantén el diseño vinculado. Revisa los textos y exporta una carpeta por idioma.",
@@ -364,17 +348,9 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Una captura de FrogHappy en la plantilla Halo, con fondo oscuro, un círculo en tonos cálidos y el título «Pequeños hábitos. Días más felices».",
       "Uma captura do FrogHappy no modelo Halo, com fundo escuro, um círculo em tons quentes e o título “Pequenos hábitos. Dias mais felizes”.",
     ],
-  "A NOTE TO THE MAKER": [
-    "UNA NOTA PARA EL CREADOR",
-    "UMA MENSAGEM PARA O CRIADOR",
-  ],
-  "A TOOL FOR PEOPLE WHO MAKE THINGS": [
-    "UNA HERRAMIENTA PARA QUIENES CREAN",
-    "UMA FERRAMENTA PARA QUEM CRIA",
-  ],
-  "A few of the 57 templates waiting in your studio.": [
-    "Algunas de las 57 plantillas que te esperan en el estudio.",
-    "Alguns dos 57 modelos que esperam por você no estúdio.",
+  "4 of the 57 templates in the studio.": [
+    "4 de las 57 plantillas del estudio.",
+    "4 dos 57 modelos do estúdio.",
   ],
   "A free screenshot studio for your next launch. Make app store screenshots and portfolio mockups right in your browser.":
     [
@@ -390,7 +366,10 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Una tarjeta horizontal para portafolio con la identidad de Hen Screenshots y el texto «Ideas hechas realidad».",
       "Um cartão horizontal para portfólio com a identidade do Hen Screenshots e o texto “Ideias que viram realidade”.",
     ],
-  "A little drama.": ["Un toque de dramatismo.", "Um toque de impacto."],
+  "Dark background, circular accent.": [
+    "Fondo oscuro y acento circular.",
+    "Fundo escuro e detalhe circular.",
+  ],
   "A matching FrogHappy progress screenshot in the minimal Studio template.": [
     "Una captura del progreso en FrogHappy en la plantilla minimalista Studio, a juego con la anterior.",
     "Uma captura do progresso no FrogHappy no modelo minimalista Studio, combinando com a anterior.",
@@ -428,9 +407,9 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Elige Tiendas de apps para usar los tamaños de las tiendas o Portafolio para crear tarjetas y definir tus propias dimensiones. Cada espacio incluye los formatos que necesitas.",
       "Escolha Lojas de apps para usar os tamanhos das lojas ou Portfólio para criar cartões e definir suas próprias dimensões. Cada espaço inclui os formatos de que você precisa.",
     ],
-  "Color with confidence.": [
-    "Color con personalidad.",
-    "Cor com personalidade.",
+  "Warm blocks of color.": [
+    "Bloques de colores cálidos.",
+    "Blocos de cores quentes.",
   ],
   "Composed in Hen Screenshots.": [
     "Diseñado en Hen Screenshots.",
@@ -475,10 +454,6 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Todos os modelos, todas as molduras e as exportações em resolução total são grátis. Você não precisa de uma conta, e suas imagens são exportadas sem marcas-d’água.",
     ],
   "Export. Show it off.": ["Exporta y comparte.", "Exporte e compartilhe."],
-  "FROM CAPTURE TO COMPOSITION": [
-    "DE LA CAPTURA A LA COMPOSICIÓN",
-    "DA CAPTURA À COMPOSIÇÃO",
-  ],
   "FROM FIRST CAPTURE TO FINAL EXPORT": [
     "DE LA PRIMERA CAPTURA A LA EXPORTACIÓN FINAL",
     "DA PRIMEIRA CAPTURA À EXPORTAÇÃO FINAL",
@@ -528,20 +503,15 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Diapositiva izquierda: «Pequeños hábitos. Una gran historia». Un teléfono inclinado se extiende hacia la siguiente diapositiva.",
       "Slide esquerdo: “Pequenos hábitos. Uma grande história”. Um celular inclinado se estende até o próximo slide.",
     ],
-  "Let the details speak.": [
-    "Que hablen los detalles.",
-    "Deixe os detalhes falarem.",
+  "An oversized screenshot.": [
+    "Una captura en primer plano.",
+    "Uma captura em destaque.",
   ],
   "Let your design flow from one screenshot into the next. A shared background and device connect the scene, with room for a different message on each slide.":
     [
       "Deja que tu diseño fluya de una captura a la siguiente. Un fondo y un dispositivo compartidos unen la escena, con espacio para un mensaje diferente en cada diapositiva.",
       "Deixe seu design fluir de uma captura para a próxima. Um fundo e um dispositivo compartilhados conectam a cena, com espaço para uma mensagem diferente em cada slide.",
     ],
-  "MEET PANORAMA": ["DESCUBRE PANORAMA", "CONHEÇA O PANORAMA"],
-  "Made for the apps you care about.": [
-    "Hecho para las apps que te importan.",
-    "Feito para os apps que importam para você.",
-  ],
   "Made with FrogHappy": ["Hecho con FrogHappy", "Feito com FrogHappy"],
   "Main navigation": ["Navegación principal", "Navegação principal"],
   Menu: ["Menú", "Menu"],
@@ -558,7 +528,6 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "No. Abre el estudio en tu navegador y crea un proyecto. Una pantalla grande te da más espacio para diseñar. Descarga tus archivos de proyecto para continuar en otro equipo.",
       "Não. Abra o estúdio no navegador e crie um projeto. Uma tela maior dá mais espaço para criar. Baixe seus arquivos de projeto para continuar em outro computador.",
     ],
-  "One bigger story.": ["Una gran historia.", "Uma grande história."],
   "Open studio": ["Abrir estudio", "Abrir estúdio"],
   "Pick a template, choose a frame, and make the colors and captions your own. Apply the style across your series.":
     [
@@ -571,7 +540,10 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Diapositiva derecha: el mismo teléfono y la cinta continúan, con el texto «Cada día, un poco más brillante».",
       "Slide direito: o mesmo celular e a faixa continuam, com o texto “A cada dia, um pouco mais de luz”.",
     ],
-  "Room to breathe.": ["Espacio para respirar.", "Espaço para respirar."],
+  "Light background, fine border.": [
+    "Fondo claro y borde fino.",
+    "Fundo claro e borda fina.",
+  ],
   "Simple cards": ["Tarjetas sencillas", "Cartões simples"],
   "Skip to content": ["Ir al contenido", "Pular para o conteúdo"],
   "Split template with a warm yellow and terracotta color block.": [
@@ -607,7 +579,6 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Convierte tus capturas en una presentación que destaque. Para las tiendas de apps, tu portafolio y donde quieras mostrar tu trabajo.",
       "Transforme suas capturas em uma apresentação que se destaque. Para as lojas de apps, seu portfólio e onde você quiser mostrar seu trabalho.",
     ],
-  "Two slides.": ["Dos diapositivas.", "Dois slides."],
   "Where do my screenshots and projects go?": [
     "¿Dónde se guardan mis capturas y proyectos?",
     "Onde minhas capturas e projetos ficam salvos?",
@@ -642,10 +613,6 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Tus capturas se procesan en el navegador y tus proyectos se guardan en este dispositivo. No se suben a un servidor. Descarga un archivo de proyecto para guardar una copia de seguridad o continuar tu trabajo en otro navegador o equipo. Si borras los datos de este sitio en el navegador, también se eliminarán los proyectos guardados.",
       "Suas capturas são processadas no navegador e seus projetos ficam salvos neste dispositivo. Eles não são enviados a um servidor. Baixe um arquivo de projeto para guardar um backup ou continuar seu trabalho em outro navegador ou computador. Se você limpar os dados deste site no navegador, os projetos salvos também serão excluídos.",
     ],
-  "Your next great screenshot shouldn’t come with a subscription.": [
-    "No deberías necesitar una suscripción para crear una gran captura.",
-    "Você não deveria precisar de uma assinatura para criar uma ótima captura.",
-  ],
   "Your work.": ["Tu trabajo.", "Seu trabalho."],
   "for his own apps, and for the things you’re building, too.": [
     "para sus propias apps y también para todo lo que estás creando.",

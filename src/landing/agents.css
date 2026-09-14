@@ -11,13 +11,8 @@
   font-weight: 650;
   letter-spacing: -0.065em;
 }
-.guide-standfirst {
-  margin: 28px 0 14px;
-  font-weight: 650;
-  font-size: 1.15rem;
-  line-height: 1.5;
-}
-.guide-hero > div > p:not(.eyebrow, .guide-standfirst) {
+.guide-intro {
+  margin-top: 24px;
   max-width: 540px;
   color: var(--brand-muted);
 }
@@ -111,7 +106,10 @@
   top: 32px;
   padding-top: 50px;
 }
-.guide-outline .eyebrow {
+.guide-outline-title {
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--brand-muted);
   margin-bottom: 12px;
 }
 .guide-outline nav {
@@ -160,10 +158,6 @@
 }
 .guide-article p {
   margin-block: 14px;
-}
-.guide-article .eyebrow {
-  margin-block: 0 16px;
-  color: var(--brand-clay);
 }
 .guide-steps {
   list-style: none;
@@ -368,7 +362,7 @@
   .guide-outline a {
     gap: 8px;
   }
-  .guide-outline .eyebrow {
+  .guide-outline-title {
     margin-bottom: 4px;
   }
   .guide-article {
@@ -382,9 +376,6 @@
   }
   .guide-hero h1 {
     font-size: clamp(2.6rem, 10vw, 3.3rem);
-  }
-  .guide-standfirst {
-    margin-top: 24px;
   }
   .guide-download {
     padding: 24px;
