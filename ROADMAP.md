@@ -1,6 +1,6 @@
 # Hen Screenshots roadmap
 
-Last updated: September 10, 2026.
+Last updated: September 14, 2026.
 
 The next priority is helping new users create and export a series without needing a walkthrough. This roadmap sets a direction; it does not promise release dates. Priorities can change as people use the app and share feedback.
 
@@ -17,6 +17,8 @@ The hosted editor will remain free, with no account or watermarks. The applicati
 - Local project storage, portable backups, publication previews, and exports checked for the selected format and dimensions.
 - English, Spanish, and Brazilian Portuguese interfaces.
 - A downloadable local agent plugin, [setup guide](https://screenshots.hensell.dev/agents/), and [published OpenAI directory listing](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). The Anthropic directory submission is pending review.
+
+The same local plugin now includes Cursor manifests and a [Cursor setup guide](https://screenshots.hensell.dev/agents/#cursor). Marketplace submission is being prepared; it is not yet listed. Anthropic still showed **Submitted and pending review** on September 14, 2026.
 
 ## Next: make the first export easier
 
@@ -42,7 +44,7 @@ A collection is ready when it solves a specific presentation need and works with
 
 ## Agent plugin: available; directory versions tracked separately
 
-Current website and repository download: **v0.2.1**, with background-image rendering and schema 11 project support. [Personal-template workflow](README.md#your-own-reusable-templates).
+Current website and repository download: **v0.2.2**, adding Cursor packaging and setup instructions while retaining background-image rendering and schema 11 project support. [Personal-template workflow](README.md#your-own-reusable-templates).
 
 Directory/release status: [v0.2.1 published on GitHub](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.1) and in the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). Submitted to Anthropic for review on September 10, 2026.
 

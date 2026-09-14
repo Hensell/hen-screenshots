@@ -145,6 +145,10 @@ describe("AI agent guide", () => {
       expect(html).toContain("/plugin install hen-screenshots@hen-screenshots");
       expect(html).toContain("claude --plugin-dir &quot;PLUGIN_FOLDER&quot;");
       expect(html).toContain("/hen-screenshots:create-screenshots");
+      expect(html).toContain('id="cursor"');
+      expect(html).toContain("~/.cursor/plugins/local/hen-screenshots");
+      expect(html).toContain("create-screenshots");
+      expect(html).toContain("cursor-launch-v1");
       for (const [language, path] of Object.entries(agentPaths)) {
         expect(html).toContain(
           `hreflang="${language}" href="${siteUrl}${path}"`,

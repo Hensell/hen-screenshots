@@ -13,12 +13,24 @@ for (const file of [
   "plugin.json",
   ".codex-plugin/plugin.json",
   ".claude-plugin/plugin.json",
+  ".cursor-plugin/plugin.json",
   "package-lock.json",
 ]) {
   const manifest = JSON.parse(await readFile(join(plugin, file), "utf8"));
   if (manifest.version !== version)
     throw new Error(`Plugin version mismatch in ${file}.`);
 }
+// Resolve the monorepo catalog exactly as Cursor does.
+const cursorCatalog = JSON.parse(
+  await readFile(join(root, ".cursor-plugin/marketplace.json"), "utf8"),
+);
+const cursorEntry = cursorCatalog.plugins.find(
+  (entry) => entry.name === "hen-screenshots",
+);
+if (!cursorEntry || resolve(root, cursorEntry.source) !== plugin)
+  throw new Error(
+    "Cursor marketplace must point to the shared plugin directory.",
+  );
 await cp(join(root, "LICENSE"), join(plugin, "LICENSE"));
 await build({
   configFile: false,
@@ -67,6 +79,7 @@ if (process.argv.includes("--zip")) {
   for (const directory of [
     ".codex-plugin",
     ".claude-plugin",
+    ".cursor-plugin",
     "skills",
     "scripts",
     "dist",

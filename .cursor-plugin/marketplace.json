@@ -1,0 +1,17 @@
+{
+  "name": "hen-screenshots",
+  "owner": {
+    "name": "Hensell",
+    "email": "hensell@hensell.dev"
+  },
+  "metadata": {
+    "description": "Free, local screenshot and mockup tools for app developers."
+  },
+  "plugins": [
+    {
+      "name": "hen-screenshots",
+      "source": "plugins/hen-screenshots",
+      "description": "Create app-store screenshots, portfolio mockups and Play banners from local images. Export PNGs and editable Hen projects."
+    }
+  ]
+}

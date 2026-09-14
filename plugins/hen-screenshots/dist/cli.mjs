@@ -8,7 +8,7 @@ import Konva from "konva";
 import "konva/skia-backend";
 import { FontLibrary, Image as Image$1 } from "skia-canvas";
 //#region plugins/hen-screenshots/package.json
-var version = "0.2.1";
+var version = "0.2.2";
 //#endregion
 //#region src/core/device-composition-spec.ts
 var deviceCompositions = {

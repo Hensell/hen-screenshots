@@ -57,7 +57,7 @@ export function seoMarkup(
   const localizedDescription = translateFor(
     locale,
     page === "agents"
-      ? "Download the local Hen Screenshots plugin. Set it up for Codex or Claude Code, create screenshot series, and keep editing in the web studio."
+      ? "Download the local Hen Screenshots plugin. Set it up for Codex, Claude Code, or Cursor, create screenshot series, and keep editing in the web studio."
       : description,
   );
   const image = `${siteUrl}/social/hen-screenshots-${locale.toLowerCase()}.png`;

@@ -4,11 +4,12 @@
   "description": "Create app-store screenshots, portfolio mockups and Play banners from local images. Export PNGs and editable Hen projects.",
   "author": {
     "name": "Hensell",
-    "email": "hensell@hensell.dev",
-    "url": "https://hensell.dev"
+    "email": "hensell@hensell.dev"
   },
   "homepage": "https://screenshots.hensell.dev/",
   "repository": "https://github.com/Hensell/hen-screenshots",
   "keywords": ["screenshots", "mockups", "app-store", "google-play", "local"],
-  "license": "MIT"
+  "license": "MIT",
+  "logo": "assets/icon.png",
+  "skills": "./skills/"
 }

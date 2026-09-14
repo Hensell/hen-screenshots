@@ -49,6 +49,7 @@
           ><span data-i18n="Installation">Installation</span></a
         ><a class="nav-section" href="#codex"><span>Codex</span></a
         ><a class="nav-section" href="#claude"><span>Claude Code</span></a
+        ><a class="nav-section" href="#cursor"><span>Cursor</span></a
         ><a class="nav-section" href="#examples"
           ><span data-i18n="Examples">Examples</span></a
         >
@@ -94,15 +95,16 @@
             Your captures. A clear brief. A finished series.
           </p>
           <p
-            data-i18n="Let Codex or Claude Code choose templates, compose your screenshots, and write captions in several languages. Then fine-tune the result in Hen Screenshots."
+            data-i18n="Let Codex, Claude Code, or Cursor choose templates, compose your screenshots, and write captions in several languages. Then fine-tune the result in Hen Screenshots."
           >
-            Let Codex or Claude Code choose templates, compose your screenshots,
-            and write captions in several languages. Then fine-tune the result
-            in Hen Screenshots.
+            Let Codex, Claude Code, or Cursor choose templates, compose your
+            screenshots, and write captions in several languages. Then fine-tune
+            the result in Hen Screenshots.
           </p>
           <div class="guide-agent-links">
             <a href="#codex">Codex <span aria-hidden="true">↓</span></a
             ><a href="#claude">Claude Code <span aria-hidden="true">↓</span></a>
+            <a href="#cursor">Cursor <span aria-hidden="true">↓</span></a>
           </div>
         </div>
         <aside class="guide-download" aria-labelledby="download-title">
@@ -119,10 +121,10 @@
           </h2>
           <p
             class="guide-directory-status"
-            data-i18n="Version 0.2.1 is available from OpenAI, GitHub, and the ZIP below. Includes support for projects with background images."
+            data-i18n="Version 0.2.2 adds Cursor support to the GitHub and ZIP download. The OpenAI directory currently provides v0.2.1."
           >
-            Version 0.2.1 is available from OpenAI, GitHub, and the ZIP below.
-            Includes support for projects with background images.
+            Version 0.2.2 adds Cursor support to the GitHub and ZIP download.
+            The OpenAI directory currently provides v0.2.1.
           </p>
           <a
             class="action guide-download-link"
@@ -173,16 +175,19 @@
             <a href="#claude"
               ><span aria-hidden="true">03</span><span>Claude Code</span></a
             >
+            <a href="#cursor"
+              ><span aria-hidden="true">04</span><span>Cursor</span></a
+            >
             <a href="#examples"
-              ><span aria-hidden="true">04</span
+              ><span aria-hidden="true">05</span
               ><span data-i18n="Examples">Examples</span></a
             >
             <a href="#your-files"
-              ><span aria-hidden="true">05</span
+              ><span aria-hidden="true">06</span
               ><span data-i18n="Your files">Your files</span></a
             >
             <a href="#help"
-              ><span aria-hidden="true">06</span><span>FAQ</span></a
+              ><span aria-hidden="true">07</span><span>FAQ</span></a
             >
           </nav>
         </aside>
@@ -201,23 +206,24 @@
               >
             </p>
             <p
-              data-i18n="This plugin runs on your computer. You need Node.js 22.12 or newer, npm, and Codex or Claude Code with access to your local files and terminal."
+              data-i18n="This plugin runs on your computer. You need Node.js 22.12 or newer, npm, and Codex, Claude Code, or Cursor with access to your local files and terminal."
             >
               This plugin runs on your computer. You need Node.js 22.12 or
-              newer, npm, and Codex or Claude Code with access to your local
-              files and terminal.
+              newer, npm, and Codex, Claude Code, or Cursor with access to your
+              local files and terminal.
             </p>
             <p
-              data-i18n="Choose Codex or Claude Code below for installation. If you prefer a manual ZIP setup, follow these steps."
+              data-i18n="Choose Codex, Claude Code, or Cursor below for installation. If you prefer a manual ZIP setup, follow these steps."
             >
-              Choose Codex or Claude Code below for installation. If you prefer
-              a manual ZIP setup, follow these steps.
+              Choose Codex, Claude Code, or Cursor below for installation. If
+              you prefer a manual ZIP setup, follow these steps.
             </p>
             <div class="guide-agent-links">
               <a href="#codex">Codex <span aria-hidden="true">↓</span></a>
               <a href="#claude"
                 >Claude Code <span aria-hidden="true">↓</span></a
               >
+              <a href="#cursor">Cursor <span aria-hidden="true">↓</span></a>
             </div>
             <h3 data-i18n="Manual ZIP setup">Manual ZIP setup</h3>
             <ol class="guide-steps">
@@ -271,11 +277,11 @@
               <li>
                 <h3 data-i18n="Check the result.">Check the result.</h3>
                 <p
-                  data-i18n='The doctor command should report "ok": true. You can now use either agent below. The ZIP does not install itself or register a plugin in an agent marketplace.'
+                  data-i18n='The doctor command should report "ok": true. You can now use any of these agents below. The ZIP does not install itself or register a plugin in an agent marketplace.'
                 >
                   The doctor command should report &quot;ok&quot;: true. You can
-                  now use either agent below. The ZIP does not install itself or
-                  register a plugin in an agent marketplace.
+                  now use any of these agents below. The ZIP does not install
+                  itself or register a plugin in an agent marketplace.
                 </p>
               </li>
             </ol>
@@ -292,12 +298,12 @@
                 >Free plugin. Bring your own agent.</strong
               >
               <p
-                data-i18n="Hen Screenshots adds no subscription or API key. Your Codex or Claude plan and usage costs still apply. The plugin renders locally; files you share with your agent follow that provider’s data policies."
+                data-i18n="Hen Screenshots adds no subscription or API key. Your Codex, Claude, or Cursor plan and usage costs still apply. The plugin renders locally; files you share with your agent follow that provider’s data policies."
               >
-                Hen Screenshots adds no subscription or API key. Your Codex or
-                Claude plan and usage costs still apply. The plugin renders
-                locally; files you share with your agent follow that provider’s
-                data policies.
+                Hen Screenshots adds no subscription or API key. Your Codex,
+                Claude, or Cursor plan and usage costs still apply. The plugin
+                renders locally; files you share with your agent follow that
+                provider’s data policies.
               </p>
             </div>
           </section>
@@ -516,16 +522,119 @@
               >
             </p>
           </section>
+          <section id="cursor" aria-labelledby="cursor-title">
+            <p class="eyebrow">CURSOR</p>
+            <h2 id="cursor-title" data-i18n="Add Hen to Cursor.">
+              Add Hen to Cursor.
+            </h2>
+            <p
+              class="guide-note"
+              data-i18n="Available by local installation. Not yet listed in the Cursor Marketplace."
+            >
+              Available by local installation. Not yet listed in the Cursor
+              Marketplace.
+            </p>
+            <ol class="guide-steps">
+              <li>
+                <h3 data-i18n="Place the plugin in Cursor’s local folder.">
+                  Place the plugin in Cursor’s local folder.
+                </h3>
+                <p
+                  data-i18n="Download the ZIP above and extract it. Copy the whole hen-screenshots folder, including hidden folders, to this location:"
+                >
+                  Download the ZIP above and extract it. Copy the whole
+                  hen-screenshots folder, including hidden folders, to this
+                  location:
+                </p>
+                <div class="guide-code">
+                  <pre tabindex="0"><code>macOS / Linux
+~/.cursor/plugins/local/hen-screenshots
+
+Windows
+%USERPROFILE%\.cursor\plugins\local\hen-screenshots</code></pre>
+                </div>
+                <p
+                  data-i18n="The plugin.json file must sit directly inside that folder. Avoid a second nested hen-screenshots folder."
+                >
+                  The plugin.json file must sit directly inside that folder.
+                  Avoid a second nested hen-screenshots folder.
+                </p>
+              </li>
+              <li>
+                <h3 data-i18n="Run setup in the final plugin folder.">
+                  Run setup in the final plugin folder.
+                </h3>
+                <p
+                  data-i18n="Open a terminal in the folder above and run node scripts/setup.mjs. Setup downloads the rendering libraries once and checks that they work."
+                >
+                  Open a terminal in the folder above and run node
+                  scripts/setup.mjs. Setup downloads the rendering libraries
+                  once and checks that they work.
+                </p>
+              </li>
+              <li>
+                <h3 data-i18n="Reload Cursor and check the skill.">
+                  Reload Cursor and check the skill.
+                </h3>
+                <p
+                  data-i18n="Restart Cursor. In Customize, open Plugins, then Hen Screenshots, and confirm that create-screenshots appears under Skills. Start a new agent chat in your app project."
+                >
+                  Restart Cursor. In Customize, open Plugins, then Hen
+                  Screenshots, and confirm that create-screenshots appears under
+                  Skills. Start a new agent chat in your app project.
+                </p>
+              </li>
+            </ol>
+            <h3 data-i18n="Ask for your first series.">
+              Ask for your first series.
+            </h3>
+            <p
+              data-i18n="Replace CAPTURES_FOLDER with the folder containing your screenshots."
+            >
+              Replace CAPTURES_FOLDER with the folder containing your
+              screenshots.
+            </p>
+            <div class="guide-code guide-prompt">
+              <div class="guide-code-bar">
+                <span>Cursor</span
+                ><button type="button" data-copy="snippet-cursor" hidden>
+                  <span data-i18n="Copy">Copy</span>
+                </button>
+              </div>
+              <pre
+                tabindex="0"
+              ><code id="snippet-cursor" data-guide-snippet="cursor"></code></pre>
+            </div>
+            <p
+              class="guide-note"
+              data-i18n="If the skill does not appear, check your team’s local plugin policy with an administrator. A marketplace installation with the same name takes precedence over a local copy."
+            >
+              If the skill does not appear, check your team’s local plugin
+              policy with an administrator. A marketplace installation with the
+              same name takes precedence over a local copy.
+            </p>
+            <p class="guide-resource">
+              <a
+                href="https://github.com/Hensell/hen-screenshots/tree/main/plugins/hen-screenshots#install-in-cursor"
+                target="_blank"
+                rel="noopener noreferrer"
+                ><span data-i18n="Cursor installation and updates"
+                  >Cursor installation and updates</span
+                >
+                ↗</a
+              >
+            </p>
+          </section>
           <section id="examples" aria-labelledby="examples-title">
             <h2 id="examples-title" data-i18n="Give it a useful brief.">
               Give it a useful brief.
             </h2>
             <p
-              data-i18n="Once the skill is loaded, these requests work with either agent. Tell it which images to use, where you will publish, and what makes your app worth trying."
+              data-i18n="Once the skill is loaded, these requests work with any of these agents. Tell it which images to use, where you will publish, and what makes your app worth trying."
             >
-              Once the skill is loaded, these requests work with either agent.
-              Tell it which images to use, where you will publish, and what
-              makes your app worth trying.
+              Once the skill is loaded, these requests work with any of these
+              agents. Tell it which images to use, where you will publish, and
+              what makes your app worth trying.
             </p>
             <h3 data-i18n="A portfolio composition">A portfolio composition</h3>
             <div class="guide-code guide-prompt">

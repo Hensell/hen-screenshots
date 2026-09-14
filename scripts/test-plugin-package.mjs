@@ -14,6 +14,29 @@ const { unzipSync } = require("fflate");
 const version = JSON.parse(
   await readFile(join(plugin, "package.json"), "utf8"),
 ).version;
+// Validate discovery from the extracted ZIP, including hidden manifests and assets.
+const cursor = JSON.parse(
+  await readFile(join(plugin, ".cursor-plugin/plugin.json"), "utf8"),
+);
+assert.equal(cursor.name, "hen-screenshots");
+assert.equal(cursor.version, version);
+assert.equal(cursor.skills, "./skills/");
+assert.equal(cursor.logo, "assets/icon.png");
+assert.ok((await readFile(join(plugin, cursor.logo))).length > 100);
+const skill = await readFile(
+  join(plugin, cursor.skills, "create-screenshots/SKILL.md"),
+  "utf8",
+);
+assert.match(skill, /^---\r?\nname: create-screenshots\r?\ndescription: .+/);
+for (const manifest of [
+  "plugin.json",
+  ".codex-plugin/plugin.json",
+  ".claude-plugin/plugin.json",
+])
+  assert.equal(
+    JSON.parse(await readFile(join(plugin, manifest), "utf8")).version,
+    version,
+  );
 const work = process.argv[3]
   ? resolve(process.argv[3])
   : await mkdtemp(join(tmpdir(), "hen-plugin-release-"));

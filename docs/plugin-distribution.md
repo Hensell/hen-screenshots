@@ -1,18 +1,22 @@
 # Plugin distribution
 
+Version **0.2.2** adds Cursor manifests, a repository catalog, and local setup instructions. [Release notes](plugin-v0.2.2-release-notes.md). OpenAI still provides v0.2.1; Cursor marketplace submission is being prepared and is not an approved listing. Anthropic was rechecked on September 14, 2026: **Submitted and pending review**.
+
 Hen Screenshots **v0.2.1** is published in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.1) and the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6), verified on September 10, 2026. The MIT-licensed package is also available through the repository marketplaces and website ZIP. Anthropic's submission remains pending review.
 
 Version 0.2.1 adds schema 11 project imports and background-image rendering. See the [release notes](plugin-v0.2.1-release-notes.md). A website deployment does not update an installed plugin or an official directory listing.
 
 ## Install
 
-See the [plugin README](../plugins/hen-screenshots/README.md) for Codex, Claude Code, ZIP installation, updates, requirements, and troubleshooting. The [website guide](https://screenshots.hensell.dev/agents/) provides translated instructions.
+See the [plugin README](../plugins/hen-screenshots/README.md) for Codex, Claude Code, Cursor, ZIP installation, updates, requirements, and troubleshooting. The [website guide](https://screenshots.hensell.dev/agents/) provides translated instructions.
 
-The repository contains `.agents/plugins/marketplace.json` for Codex and `.claude-plugin/marketplace.json` for Claude Code. Both point to `plugins/hen-screenshots`, which includes the built renderer, icon, and fonts. The user or agent runs `scripts/setup.mjs` once in the installed plugin directory to download the locked dependencies and run doctor.
+The repository contains `.agents/plugins/marketplace.json` for Codex and `.claude-plugin/marketplace.json` for Claude Code. The Cursor catalog is `.cursor-plugin/marketplace.json`. All three point to `plugins/hen-screenshots`, which includes the built renderer, icon, and fonts. The user or agent runs `scripts/setup.mjs` once in the installed plugin directory to download the locked dependencies and run doctor.
 
 No `node_modules`, personal captures, or project files belong in the release archive. Setup does not require a source build, administrator privileges, or a Hen service.
 
 ## Verification
+
+Version 0.2.2 was also tested inside Cursor 3.20.17 on macOS arm64: local plugin discovery, the skill, doctor, and an actual agent render passed. See the [Cursor QA record](plugin-cursor-qa-2026-09-14.md). The panorama output matched the installed-package test byte for byte.
 
 Release v0.2.1 passed [run 34544076299](https://github.com/Hensell/hen-screenshots/actions/runs/34544076299) at commit `6f800c633ae6c1dbb2d15ecbf1ce45c59603f793` on September 10, 2026:
 
@@ -32,7 +36,7 @@ Local release preparation also tests the Codex and Claude Code marketplace insta
 
 ## Publish a plugin update
 
-1. Update the plugin version together in `package.json`, `package-lock.json`, `plugin.json`, `.codex-plugin/plugin.json`, and `.claude-plugin/plugin.json`. The web guide and CLI read the package version.
+1. Update the plugin version together in `package.json`, `package-lock.json`, `plugin.json`, `.codex-plugin/plugin.json`, `.claude-plugin/plugin.json`, and `.cursor-plugin/plugin.json`. The web guide and CLI read the package version.
 2. Run `npm ci`, `npm run check`, and `npm run plugin:pack` from the source root. Include the regenerated renderer, public assets, and license in the commit.
 3. Extract the ZIP outside the repository, run its setup command, then run `node scripts/test-plugin-package.mjs /absolute/path/to/extracted/hen-screenshots`. Inspect `preview.png` and full-size PNGs in the reported output folder.
 4. Push the reviewed commit and wait for the package-check workflow for that exact commit. Investigate any failing platform before advertising support.
@@ -63,6 +67,14 @@ Submitted for Claude Code through the Console on September 10, 2026. The Console
 Validate the package with `claude plugin validate`, then submit its public GitHub repository or ZIP through [Claude](https://claude.ai/settings/plugins/submit) or the [Console](https://platform.claude.com/plugins/submit). Inclusion and verified status are subject to Anthropic's review. [Official submission guide](https://claude.com/docs/plugins/submit).
 
 The repository marketplace provides direct distribution while official-directory work remains pending. [Marketplace documentation](https://code.claude.com/docs/en/plugin-marketplaces).
+
+### Cursor
+
+Version 0.2.2 adds `.cursor-plugin/plugin.json` inside the existing plugin and `.cursor-plugin/marketplace.json` at the repository root. The same ZIP and Git source include all host manifests; no separate renderer or skill fork is maintained.
+
+Before marketplace approval, install the full plugin under `~/.cursor/plugins/local/hen-screenshots`, run setup there, reload Cursor, and confirm the skill in Customize. Team policies can restrict local imports; an installed marketplace plugin of the same name takes precedence. [Official local installation guide](https://cursor.com/docs/plugins#test-plugins-locally).
+
+Submit the public repository at [Cursor Marketplace](https://cursor.com/marketplace/publish). Cursor reviews each listing and update. [Manifest and submission reference](https://cursor.com/docs/reference/plugins). A local installation is not evidence of marketplace approval.
 
 ### Still pending for official listings
 

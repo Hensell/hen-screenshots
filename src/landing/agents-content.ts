@@ -2,10 +2,66 @@ import type { InterfaceLocale } from "../i18n/core.ts";
 
 // Build-time copy: the guide is readable and translated without JavaScript.
 export const agentMessages: Record<string, readonly [string, string]> = {
-  "Version 0.2.1 is available from OpenAI, GitHub, and the ZIP below. Includes support for projects with background images.":
+  "Add Hen to Cursor.": ["Añade Hen a Cursor.", "Adicione o Hen ao Cursor."],
+  "Available by local installation. Not yet listed in the Cursor Marketplace.":
     [
-      "La versión 0.2.1 está disponible en OpenAI, GitHub y el ZIP de abajo. Incluye soporte para proyectos con imágenes de fondo.",
-      "A versão 0.2.1 está disponível na OpenAI, no GitHub e no ZIP abaixo. Inclui suporte a projetos com imagens de fundo.",
+      "Disponible mediante instalación local. Todavía no figura en el catálogo de Cursor.",
+      "Disponível por instalação local. Ainda não está listado no catálogo do Cursor.",
+    ],
+  "Place the plugin in Cursor’s local folder.": [
+    "Coloca el plugin en la carpeta local de Cursor.",
+    "Coloque o plugin na pasta local do Cursor.",
+  ],
+  "Download the ZIP above and extract it. Copy the whole hen-screenshots folder, including hidden folders, to this location:":
+    [
+      "Descarga el ZIP de arriba y descomprímelo. Copia la carpeta hen-screenshots completa, incluidas las carpetas ocultas, en esta ubicación:",
+      "Baixe o ZIP acima e extraia-o. Copie a pasta hen-screenshots inteira, incluindo as pastas ocultas, para este local:",
+    ],
+  "The plugin.json file must sit directly inside that folder. Avoid a second nested hen-screenshots folder.":
+    [
+      "El archivo plugin.json debe quedar directamente dentro de esa carpeta. Evita crear otra carpeta hen-screenshots dentro.",
+      "O arquivo plugin.json deve ficar diretamente nessa pasta. Evite criar outra pasta hen-screenshots dentro dela.",
+    ],
+  "Run setup in the final plugin folder.": [
+    "Ejecuta la instalación en la carpeta final del plugin.",
+    "Execute a configuração na pasta final do plugin.",
+  ],
+  "Open a terminal in the folder above and run node scripts/setup.mjs. Setup downloads the rendering libraries once and checks that they work.":
+    [
+      "Abre un terminal en la carpeta anterior y ejecuta node scripts/setup.mjs. La instalación descarga las librerías de renderizado una vez y comprueba que funcionen.",
+      "Abra um terminal na pasta acima e execute node scripts/setup.mjs. A configuração baixa as bibliotecas de renderização uma vez e verifica se funcionam.",
+    ],
+  "Reload Cursor and check the skill.": [
+    "Recarga Cursor y comprueba la skill.",
+    "Recarregue o Cursor e confira a skill.",
+  ],
+  "Restart Cursor. In Customize, open Plugins, then Hen Screenshots, and confirm that create-screenshots appears under Skills. Start a new agent chat in your app project.":
+    [
+      "Reinicia Cursor. En Customize, abre Plugins, luego Hen Screenshots, y confirma que create-screenshots aparece en Skills. Inicia un chat nuevo con el agente dentro del proyecto de tu app.",
+      "Reinicie o Cursor. Em Customize, abra Plugins, depois Hen Screenshots, e confirme que create-screenshots aparece em Skills. Inicie um novo chat com o agente no projeto do seu app.",
+    ],
+  "Ask for your first series.": [
+    "Pide tu primera serie.",
+    "Peça sua primeira série.",
+  ],
+  "Replace CAPTURES_FOLDER with the folder containing your screenshots.": [
+    "Sustituye CAPTURES_FOLDER por la carpeta que contiene tus capturas.",
+    "Substitua CAPTURES_FOLDER pela pasta que contém suas capturas.",
+  ],
+  "If the skill does not appear, check your team’s local plugin policy with an administrator. A marketplace installation with the same name takes precedence over a local copy.":
+    [
+      "Si la skill no aparece, consulta con un administrador la política de plugins locales de tu equipo. Una instalación del catálogo con el mismo nombre tiene prioridad sobre una copia local.",
+      "Se a skill não aparecer, consulte um administrador sobre a política de plugins locais da sua equipe. Uma instalação do catálogo com o mesmo nome tem prioridade sobre uma cópia local.",
+    ],
+  "Cursor installation and updates": [
+    "Instalación y actualizaciones en Cursor",
+    "Instalação e atualizações no Cursor",
+  ],
+
+  "Version 0.2.2 adds Cursor support to the GitHub and ZIP download. The OpenAI directory currently provides v0.2.1.":
+    [
+      "La versión 0.2.2 añade soporte para Cursor a la descarga de GitHub y al ZIP. El directorio de OpenAI ofrece actualmente la v0.2.1.",
+      "A versão 0.2.2 adiciona suporte ao Cursor na versão do GitHub e no ZIP. O diretório da OpenAI oferece atualmente a v0.2.1.",
     ],
   "Download ZIP": ["Descargar ZIP", "Baixar ZIP"],
   "Can I reuse my own templates with an agent?": [
@@ -43,10 +99,10 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "También puedes descargar el ZIP",
     "Você também pode baixar o ZIP",
   ],
-  "Choose Codex or Claude Code below for installation. If you prefer a manual ZIP setup, follow these steps.":
+  "Choose Codex, Claude Code, or Cursor below for installation. If you prefer a manual ZIP setup, follow these steps.":
     [
-      "Elige Codex o Claude Code más abajo para ver cómo instalarlo. Si prefieres instalarlo manualmente con el ZIP, sigue estos pasos.",
-      "Escolha Codex ou Claude Code abaixo para ver como instalar. Se preferir a instalação manual pelo ZIP, siga estes passos.",
+      "Elige Codex, Claude Code o Cursor más abajo para ver cómo instalarlo. Si prefieres instalarlo manualmente con el ZIP, sigue estos pasos.",
+      "Escolha Codex, Claude Code ou Cursor abaixo para ver como instalar. Se preferir a instalação manual pelo ZIP, siga estes passos.",
     ],
   "Manual ZIP setup": [
     "Instalación manual con el ZIP",
@@ -62,10 +118,10 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "Usar con agentes de IA — Hen Screenshots",
     "Usar com agentes de IA — Hen Screenshots",
   ],
-  "Download the local Hen Screenshots plugin. Set it up for Codex or Claude Code, create screenshot series, and keep editing in the web studio.":
+  "Download the local Hen Screenshots plugin. Set it up for Codex, Claude Code, or Cursor, create screenshot series, and keep editing in the web studio.":
     [
-      "Descarga el plugin local de Hen Screenshots. Prepáralo para Codex o Claude Code, crea series de capturas y sigue editándolas en el estudio web.",
-      "Baixe o plugin local do Hen Screenshots. Configure-o para o Codex ou Claude Code, crie séries de capturas e continue editando no estúdio web.",
+      "Descarga el plugin local de Hen Screenshots. Prepáralo para Codex, Claude Code o Cursor, crea series de capturas y sigue editándolas en el estudio web.",
+      "Baixe o plugin local do Hen Screenshots. Configure-o para o Codex, Claude Code ou Cursor, crie séries de capturas e continue editando no estúdio web.",
     ],
   "Install from GitHub": ["Instalar desde GitHub", "Instalar pelo GitHub"],
   "Run these commands in your terminal to install from the Hen marketplace. Start a new Codex task, then ask Hen to run doctor and complete setup if needed.":
@@ -92,10 +148,10 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "Tus capturas. Una idea clara. Una serie lista.",
     "Suas capturas. Uma ideia clara. Uma série pronta.",
   ],
-  "Let Codex or Claude Code choose templates, compose your screenshots, and write captions in several languages. Then fine-tune the result in Hen Screenshots.":
+  "Let Codex, Claude Code, or Cursor choose templates, compose your screenshots, and write captions in several languages. Then fine-tune the result in Hen Screenshots.":
     [
-      "Deja que Codex o Claude Code elija las plantillas, componga tus capturas y escriba los textos en varios idiomas. Después, ajusta el resultado en Hen Screenshots.",
-      "Deixe o Codex ou Claude Code escolher os modelos, compor suas capturas e escrever os textos em vários idiomas. Depois, ajuste o resultado no Hen Screenshots.",
+      "Deja que Codex, Claude Code o Cursor elija las plantillas, componga tus capturas y escriba los textos en varios idiomas. Después, ajusta el resultado en Hen Screenshots.",
+      "Deixe o Codex, Claude Code ou Cursor escolher os modelos, compor suas capturas e escrever os textos em vários idiomas. Depois, ajuste o resultado no Hen Screenshots.",
     ],
   "Local plugin": ["Plugin local", "Plugin local"],
   "A small plugin. Your whole studio.": [
@@ -112,10 +168,10 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "Ver código e documentação",
   ],
   "Get ready once.": ["Prepáralo una vez.", "Configure uma vez."],
-  "This plugin runs on your computer. You need Node.js 22.12 or newer, npm, and Codex or Claude Code with access to your local files and terminal.":
+  "This plugin runs on your computer. You need Node.js 22.12 or newer, npm, and Codex, Claude Code, or Cursor with access to your local files and terminal.":
     [
-      "Este plugin se ejecuta en tu computadora. Necesitas Node.js 22.12 o posterior, npm y Codex o Claude Code con acceso a tus archivos locales y al terminal.",
-      "Este plugin é executado no seu computador. Você precisa do Node.js 22.12 ou mais recente, npm e Codex ou Claude Code com acesso aos arquivos locais e ao terminal.",
+      "Este plugin se ejecuta en tu computadora. Necesitas Node.js 22.12 o posterior, npm y Codex, Claude Code o Cursor con acceso a tus archivos locales y al terminal.",
+      "Este plugin é executado no seu computador. Você precisa do Node.js 22.12 ou mais recente, npm e Codex, Claude Code ou Cursor com acesso aos arquivos locais e ao terminal.",
     ],
   "Download and extract the ZIP.": [
     "Descarga y descomprime el ZIP.",
@@ -137,7 +193,7 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     ],
   Copy: ["Copiar", "Copiar"],
   "Check the result.": ["Comprueba el resultado.", "Confira o resultado."],
-  'The doctor command should report "ok": true. You can now use either agent below. The ZIP does not install itself or register a plugin in an agent marketplace.':
+  'The doctor command should report "ok": true. You can now use any of these agents below. The ZIP does not install itself or register a plugin in an agent marketplace.':
     [
       'El comando doctor debe indicar "ok": true. Ya puedes usar cualquiera de los agentes de abajo. El ZIP no se instala solo ni registra un plugin en el catálogo de un agente.',
       'O comando doctor deve informar "ok": true. Agora você pode usar qualquer um dos agentes abaixo. O ZIP não se instala sozinho nem registra um plugin no catálogo de um agente.',
@@ -147,10 +203,10 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "Plugin gratuito. Usa tu propio agente.",
     "Plugin grátis. Use seu próprio agente.",
   ],
-  "Hen Screenshots adds no subscription or API key. Your Codex or Claude plan and usage costs still apply. The plugin renders locally; files you share with your agent follow that provider’s data policies.":
+  "Hen Screenshots adds no subscription or API key. Your Codex, Claude, or Cursor plan and usage costs still apply. The plugin renders locally; files you share with your agent follow that provider’s data policies.":
     [
-      "Hen Screenshots no añade una suscripción ni pide una clave API. Se siguen aplicando el plan y los costos de uso de Codex o Claude. El plugin renderiza localmente; los archivos que compartas con tu agente están sujetos a las políticas de datos de ese proveedor.",
-      "O Hen Screenshots não adiciona assinatura nem pede chave de API. O plano e os custos de uso do Codex ou Claude continuam valendo. O plugin renderiza localmente; os arquivos que você compartilhar com seu agente seguem as políticas de dados desse provedor.",
+      "Hen Screenshots no añade una suscripción ni pide una clave API. Se siguen aplicando el plan y los costos de uso de Codex, Claude o Cursor. El plugin renderiza localmente; los archivos que compartas con tu agente están sujetos a las políticas de datos de ese proveedor.",
+      "O Hen Screenshots não adiciona assinatura nem pede chave de API. O plano e os custos de uso do Codex, Claude ou Cursor continuam valendo. O plugin renderiza localmente; os arquivos que você compartilhar com seu agente seguem as políticas de dados desse provedor.",
     ],
   "Start with a local task.": [
     "Empieza con una tarea local.",
@@ -189,7 +245,7 @@ export const agentMessages: Record<string, readonly [string, string]> = {
     "Guia de plugins locais do Claude Code",
   ],
   "Give it a useful brief.": ["Dale una idea clara.", "Dê uma direção clara."],
-  "Once the skill is loaded, these requests work with either agent. Tell it which images to use, where you will publish, and what makes your app worth trying.":
+  "Once the skill is loaded, these requests work with any of these agents. Tell it which images to use, where you will publish, and what makes your app worth trying.":
     [
       "Una vez cargada la skill, estas solicitudes sirven para cualquiera de los dos agentes. Dile qué imágenes usar, dónde vas a publicarlas y qué hace que valga la pena probar tu app.",
       "Depois de carregar a skill, estas solicitações funcionam com qualquer um dos agentes. Diga quais imagens usar, onde você vai publicar e por que vale a pena experimentar seu app.",
@@ -302,6 +358,12 @@ const sharedSnippet = (text: string): Record<InterfaceLocale, string> => ({
   "pt-BR": text,
 });
 export const agentSnippets: Record<string, Record<InterfaceLocale, string>> = {
+  cursor: {
+    en: 'Use the Hen Screenshots create-screenshots skill. Run doctor and complete setup if needed.\n\nCreate a two-slide panorama from the images in "CAPTURES_FOLDER". Use a dark template and captions based on my app’s actual features. Add English and Spanish versions. Export to a new folder named cursor-launch-v1, show me preview.png, and save the editable .henscreenshots project.',
+    es: 'Usa la skill create-screenshots de Hen Screenshots. Ejecuta doctor y completa la instalación si hace falta.\n\nCrea un panorama de dos slides con las imágenes de "CAPTURES_FOLDER". Usa una plantilla oscura y textos basados en las funciones reales de mi app. Añade versiones en inglés y español. Exporta a una carpeta nueva llamada cursor-launch-v1, muéstrame preview.png y guarda el proyecto .henscreenshots editable.',
+    "pt-BR":
+      'Use a skill create-screenshots do Hen Screenshots. Execute doctor e conclua a configuração se necessário.\n\nCrie um panorama de dois slides com as imagens de "CAPTURES_FOLDER". Use um modelo escuro e textos baseados nas funções reais do meu app. Adicione versões em inglês e português. Exporte para uma pasta nova chamada cursor-launch-v1, mostre preview.png e salve o projeto .henscreenshots editável.',
+  },
   setup: sharedSnippet("node scripts/setup.mjs"),
   "codex-install": sharedSnippet(
     "codex plugin marketplace add Hensell/hen-screenshots\ncodex plugin add hen-screenshots@hen-screenshots",

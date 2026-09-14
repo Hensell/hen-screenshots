@@ -53,11 +53,15 @@ export const landingMessages: Record<string, readonly [string, string]> = {
       "Capturas de apps, banners do Google Play e mockups grátis. Crie modelos reutilizáveis e traduza textos no navegador. Sem conta nem marcas-d’água.",
     ],
 
-  "Hen for Codex": ["Hen para Codex", "Hen para Codex"],
-  "Now available in the OpenAI Plugins Directory.": [
-    "Ya disponible en el directorio de plugins de OpenAI.",
-    "Já disponível no diretório de plugins da OpenAI.",
+  "Hen for your AI agent": [
+    "Hen para tu agente de IA",
+    "Hen para seu agente de IA",
   ],
+  "Available for Codex, Claude Code, and Cursor. Published in the OpenAI Plugins Directory.":
+    [
+      "Disponible para Codex, Claude Code y Cursor. Publicado en el directorio de plugins de OpenAI.",
+      "Disponível para Codex, Claude Code e Cursor. Publicado no diretório de plugins da OpenAI.",
+    ],
   "Get plugin from OpenAI": [
     "Obtener plugin en OpenAI",
     "Obter plugin na OpenAI",
