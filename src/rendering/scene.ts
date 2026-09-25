@@ -559,7 +559,12 @@ export function createScene(
         offset: textOffset(owner, "subtitle"),
         interaction: options,
         fitWords,
-        fontSize: template.subtitleSize,
+        fontSize:
+          ownerStyle.subtitleSize !== undefined
+            ? Math.round(
+                ownerStyle.subtitleSize * (canvas.height <= 1080 ? 0.72 : 1),
+              )
+            : template.subtitleSize,
         weight: style.bodyFont === "Fraunces" ? "600" : "400",
         fontFamily: style.bodyFont,
         color: style.textColor,

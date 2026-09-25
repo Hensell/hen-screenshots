@@ -142,6 +142,14 @@ export const editorMessages: Record<string, readonly [string, string]> = {
     "Restablecer el tamaño compartido del título",
     "Restaurar tamanho compartilhado do título",
   ],
+  "Supporting text size": [
+    "Tamaño del texto de apoyo",
+    "Tamanho do texto de apoio",
+  ],
+  "Reset to shared supporting text size": [
+    "Restablecer el tamaño compartido del texto de apoyo",
+    "Restaurar tamanho compartilhado do texto de apoio",
+  ],
   "Accent the last headline line": [
     "Destacar la última línea del título",
     "Destacar a última linha do título",

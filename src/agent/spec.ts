@@ -229,6 +229,7 @@ export function parseDesignSpec(value: unknown): DesignSpec {
           "titleFont",
           "bodyFont",
           "titleSize",
+          "subtitleSize",
           "align",
           "texture",
           "accentTitle",

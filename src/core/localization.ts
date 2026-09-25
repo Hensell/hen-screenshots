@@ -35,6 +35,7 @@ export interface LocalizedShot {
   status: "untranslated" | "draft" | "reviewed";
   textOffsets?: Shot["textOffsets"];
   titleSize?: number;
+  subtitleSize?: number;
   assetId?: string;
 }
 
@@ -138,6 +139,9 @@ export function localizedProject(
               ...(content.titleSize === undefined
                 ? {}
                 : { titleSize: content.titleSize }),
+              ...(content.subtitleSize === undefined
+                ? {}
+                : { subtitleSize: content.subtitleSize }),
             },
           }
         : shot;

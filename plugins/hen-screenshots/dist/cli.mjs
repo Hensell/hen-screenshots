@@ -728,7 +728,8 @@ function localizedProject(project, locale) {
 				},
 				style: {
 					...shot.style,
-					...content.titleSize === void 0 ? {} : { titleSize: content.titleSize }
+					...content.titleSize === void 0 ? {} : { titleSize: content.titleSize },
+					...content.subtitleSize === void 0 ? {} : { subtitleSize: content.subtitleSize }
 				}
 			} : shot;
 		})
@@ -943,6 +944,7 @@ function createShot(assetId, index) {
 }
 function resolveStyle(project, shot) {
 	const style = {
+		subtitleSize: 32,
 		...project.style,
 		...shot.style
 	};
@@ -997,7 +999,8 @@ function numeric(value, minimum, maximum, integer = false) {
 	if (typeof value !== "number" || !Number.isFinite(value) || value < minimum || value > maximum || integer && !Number.isSafeInteger(value)) invalid();
 }
 function validateStyle(value, version, partial = false) {
-	const entries = object$1(value, version === 1 ? legacyStyleKeys : version === 2 ? v2StyleKeys : [...styleKeys, ...version >= 6 ? ["titleFont", "bodyFont"].filter((key) => value && typeof value === "object" && Object.hasOwn(value, key)) : []], partial);
+	const optionalKeys = [...version >= 6 ? ["titleFont", "bodyFont"] : [], ...version >= 2 ? ["subtitleSize"] : []].filter((key) => value && typeof value === "object" && Object.hasOwn(value, key));
+	const entries = object$1(value, version === 1 ? legacyStyleKeys : version === 2 ? [...v2StyleKeys, ...optionalKeys] : [...styleKeys, ...optionalKeys], partial);
 	for (const [key, item] of Object.entries(entries)) if ([
 		"background",
 		"textColor",
@@ -1012,6 +1015,7 @@ function validateStyle(value, version, partial = false) {
 	].includes(key)) {
 		if (typeof item !== "boolean") invalid();
 	} else if (key === "titleSize") numeric(item, 48, 132);
+	else if (key === "subtitleSize") numeric(item, 16, 64);
 	else {
 		const allowed = {
 			device: version >= 4 ? [
@@ -1193,6 +1197,7 @@ function validateProject(value) {
 					...[
 						"textOffsets",
 						"titleSize",
+						"subtitleSize",
 						"assetId",
 						...version >= 8 ? ["deviceAssets"] : []
 					].filter((key) => item && typeof item === "object" && Object.hasOwn(item, key))
@@ -1207,6 +1212,7 @@ function validateProject(value) {
 					"reviewed"
 				].includes(content.status)) invalid();
 				if (Object.hasOwn(content, "titleSize")) numeric(content.titleSize, 48, 132);
+				if (Object.hasOwn(content, "subtitleSize")) numeric(content.subtitleSize, 16, 64);
 				if (Object.hasOwn(content, "assetId")) identifier(content.assetId);
 				if (Object.hasOwn(content, "deviceAssets")) {
 					const assets = object$1(content.deviceAssets, [...companions], true);
@@ -1294,7 +1300,8 @@ function validateProject(value) {
 			].some((key) => left.backgroundImage?.[key] !== right.backgroundImage?.[key]) || [
 				...styleKeys,
 				"titleFont",
-				"bodyFont"
+				"bodyFont",
+				"subtitleSize"
 			].some((key) => key !== "template" && style[key] !== other[key]) || [
 				"x",
 				"y",
@@ -2079,7 +2086,7 @@ function panoramaPreview(project, shot, keepColors = false, family = "panorama")
 			...content,
 			...source.overlays ? { overlays: structuredClone(source.overlays) } : {},
 			...source.translations || left.translations ? { translations: Object.fromEntries((project.localization?.targets ?? []).map((locale) => {
-				const { assetId: _asset, deviceAssets: _deviceAssets, textOffsets: _translatedOffsets, titleSize: _translatedSize, ...words } = source.translations?.[locale] ?? {
+				const { assetId: _asset, deviceAssets: _deviceAssets, textOffsets: _translatedOffsets, titleSize: _translatedSize, subtitleSize: _translatedSubtitleSize, ...words } = source.translations?.[locale] ?? {
 					title: source.title,
 					subtitle: source.subtitle,
 					sourceTitle: source.title,
@@ -3303,7 +3310,10 @@ function refitText(shot, resetSizes = false) {
 	resetText(shot);
 	for (const text of Object.values(shot.translations ?? {})) {
 		delete text.textOffsets;
-		if (resetSizes) delete text.titleSize;
+		if (resetSizes) {
+			delete text.titleSize;
+			delete text.subtitleSize;
+		}
 	}
 }
 //#endregion
@@ -5006,6 +5016,7 @@ function parseDesignSpec(value) {
 			"titleFont",
 			"bodyFont",
 			"titleSize",
+			"subtitleSize",
 			"align",
 			"texture",
 			"accentTitle",
@@ -8829,7 +8840,7 @@ function createScene(project, shot, image, options = {}) {
 				offset: textOffset(owner, "subtitle"),
 				interaction: options,
 				fitWords,
-				fontSize: template.subtitleSize,
+				fontSize: ownerStyle.subtitleSize !== void 0 ? Math.round(ownerStyle.subtitleSize * (canvas.height <= 1080 ? .72 : 1)) : template.subtitleSize,
 				weight: style.bodyFont === "Fraunces" ? "600" : "400",
 				fontFamily: style.bodyFont,
 				color: style.textColor,

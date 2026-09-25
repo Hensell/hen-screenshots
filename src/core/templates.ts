@@ -91,6 +91,7 @@ export interface Template {
     | "accentTitle"
     | "align"
     | "titleSize"
+    | "subtitleSize"
   >;
   phone: Shot["phone"];
   title: TextBox;

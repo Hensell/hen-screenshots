@@ -39,6 +39,9 @@ export function refitText(shot: Shot, resetSizes = false): void {
   resetText(shot);
   for (const text of Object.values(shot.translations ?? {})) {
     delete text.textOffsets;
-    if (resetSizes) delete text.titleSize;
+    if (resetSizes) {
+      delete text.titleSize;
+      delete text.subtitleSize;
+    }
   }
 }

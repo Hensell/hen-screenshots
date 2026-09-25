@@ -363,6 +363,7 @@ export function panoramaPreview(
                   deviceAssets: _deviceAssets,
                   textOffsets: _translatedOffsets,
                   titleSize: _translatedSize,
+                  subtitleSize: _translatedSubtitleSize,
                   ...words
                 } = translated;
                 return [

@@ -892,6 +892,10 @@ describe("portable project backups", () => {
     ["titleSize", 132.1],
     ["titleSize", "84"],
     ["titleSize", null],
+    ["subtitleSize", 15.9],
+    ["subtitleSize", 64.1],
+    ["subtitleSize", "32"],
+    ["subtitleSize", null],
   ])(
     "rejects invalid template field %s = %j in full styles and overrides",
     async (key, invalid) => {
@@ -943,6 +947,8 @@ describe("portable project backups", () => {
     original.shots[1].phone = { width: 2160, x: 2160, y: 4096, rotation: 180 };
     original.style.titleSize = 48;
     original.shots[1].style.titleSize = 132;
+    original.style.subtitleSize = 16;
+    original.shots[1].style.subtitleSize = 64;
     const restored = await importProject(
       new File(
         [await exportProject(original, [image()])],
@@ -963,6 +969,8 @@ describe("portable project backups", () => {
         phone: shot.phone,
       })),
     );
+    expect(restored.project.style.subtitleSize).toBe(16);
+    expect(restored.project.shots[1].style.subtitleSize).toBe(64);
   });
   it("rejects images whose real dimensions differ from the manifest", async () => {
     const file = await changedBackup((value) => {

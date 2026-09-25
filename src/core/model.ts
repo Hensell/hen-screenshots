@@ -166,6 +166,7 @@ export interface Style {
   texture: "none" | "dots";
   accentTitle: boolean;
   titleSize: number;
+  subtitleSize?: number;
 }
 export interface BackgroundImage {
   assetId: string;
@@ -403,7 +404,11 @@ export function createEmptyShot(): Shot {
   return { ...createShot(null, 0), title: "", subtitle: "" };
 }
 export function resolveStyle(project: Project, shot: Shot): Style {
-  const style = { ...project.style, ...shot.style };
+  const style = {
+    subtitleSize: 32,
+    ...project.style,
+    ...shot.style,
+  };
   // Banners contain artwork, never a device shell, including after applying a brand kit.
   if (isBannerProfile(project.exportProfile)) {
     style.device = "card";
@@ -502,23 +507,19 @@ function validateStyle(
   version: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11,
   partial = false,
 ): void {
+  const optionalKeys = [
+    ...(version >= 6 ? ["titleFont", "bodyFont"] : []),
+    ...(version >= 2 ? ["subtitleSize"] : []),
+  ].filter(
+    (key) => value && typeof value === "object" && Object.hasOwn(value, key),
+  );
   const entries = object(
     value,
     version === 1
       ? legacyStyleKeys
       : version === 2
-        ? v2StyleKeys
-        : [
-            ...styleKeys,
-            ...(version >= 6
-              ? ["titleFont", "bodyFont"].filter(
-                  (key) =>
-                    value &&
-                    typeof value === "object" &&
-                    Object.hasOwn(value, key),
-                )
-              : []),
-          ],
+        ? [...v2StyleKeys, ...optionalKeys]
+        : [...styleKeys, ...optionalKeys],
     partial,
   );
   for (const [key, item] of Object.entries(entries)) {
@@ -530,6 +531,8 @@ function validateStyle(
       if (typeof item !== "boolean") invalid();
     } else if (key === "titleSize") {
       numeric(item, 48, 132);
+    } else if (key === "subtitleSize") {
+      numeric(item, 16, 64);
     } else {
       const allowed: Record<string, string[]> = {
         device:
@@ -811,6 +814,7 @@ export function validateProject(
           ...[
             "textOffsets",
             "titleSize",
+            "subtitleSize",
             "assetId",
             ...(version >= 8 ? ["deviceAssets"] : []),
           ].filter(
@@ -830,6 +834,8 @@ export function validateProject(
           invalid();
         if (Object.hasOwn(content, "titleSize"))
           numeric(content.titleSize, 48, 132);
+        if (Object.hasOwn(content, "subtitleSize"))
+          numeric(content.subtitleSize, 16, 64);
         if (Object.hasOwn(content, "assetId")) identifier(content.assetId);
         if (Object.hasOwn(content, "deviceAssets")) {
           const assets = object(content.deviceAssets, [...companions], true);
@@ -925,9 +931,14 @@ export function validateProject(
         (["assetId", "fit", "opacity"] as const).some(
           (key) => left.backgroundImage?.[key] !== right.backgroundImage?.[key],
         ) ||
-        ([...styleKeys, "titleFont", "bodyFont"] as (keyof Style)[]).some(
-          (key) => key !== "template" && style[key] !== other[key],
-        ) ||
+        (
+          [
+            ...styleKeys,
+            "titleFont",
+            "bodyFont",
+            "subtitleSize",
+          ] as (keyof Style)[]
+        ).some((key) => key !== "template" && style[key] !== other[key]) ||
         (["x", "y", "width", "rotation"] as const).some(
           (key) => left.phone[key] !== right.phone[key],
         )

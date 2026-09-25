@@ -70,12 +70,15 @@ describe("linked language versions", () => {
     });
     localContent(shot, "es").textOffsets = { title: { x: 0, y: 0 } };
     localContent(shot, "es").titleSize = 60;
+    localContent(shot, "es").subtitleSize = 24;
     expect(localizedProject(p, "es").shots[0].textOffsets?.title).toEqual({
       x: 0,
       y: 0,
     });
     expect(localizedProject(p, "es").shots[0].style.titleSize).toBe(60);
+    expect(localizedProject(p, "es").shots[0].style.subtitleSize).toBe(24);
     expect(shot.style.titleSize).toBeUndefined();
+    expect(shot.style.subtitleSize).toBeUndefined();
     delete localContent(shot, "es").textOffsets;
     expect(localizedProject(p, "es").shots[0].textOffsets?.title).toEqual(
       shot.textOffsets.title,
@@ -104,19 +107,24 @@ describe("linked language versions", () => {
     const translated = localContent(shot, "es");
     translated.textOffsets = { title: { x: 90, y: 120 } };
     translated.titleSize = 60;
+    translated.subtitleSize = 25;
     templatePreview(p, shot, "studio", false);
     expect(translated.textOffsets).toBeDefined();
     changeExportProfile(p, "play-phone-landscape");
     expect(translated.textOffsets).toBeUndefined();
     expect(translated.titleSize).toBe(60);
+    expect(translated.subtitleSize).toBe(25);
     translated.textOffsets = { title: { x: 40, y: 50 } };
     applyTemplate(p, shot.id, "studio");
     expect(translated.textOffsets).toBeUndefined();
     expect(translated.titleSize).toBeUndefined();
+    expect(translated.subtitleSize).toBeUndefined();
     expect(translated.title).toBe("Mis hábitos");
     translated.titleSize = 70;
+    translated.subtitleSize = 28;
     applyTemplate(p, shot.id, "panorama");
     expect(p.shots[0].translations!.es.titleSize).toBeUndefined();
+    expect(p.shots[0].translations!.es.subtitleSize).toBeUndefined();
     expect(p.shots[0].translations!.es.title).toBe("Mis hábitos");
     validateProject(p);
   });

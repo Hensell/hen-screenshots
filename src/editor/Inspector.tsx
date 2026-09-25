@@ -866,6 +866,50 @@ export function Inspector({
                 {t("Reset to shared headline size")}
               </button>
             )}
+            <label className="range-field">
+              <span>
+                {t("Supporting text size")}
+                <output>
+                  {style.subtitleSize}
+                  <span className="unit"> px</span>
+                </output>
+              </span>
+              <input
+                type="range"
+                aria-label={t("Supporting text size")}
+                aria-valuetext={`${style.subtitleSize} px`}
+                min={16}
+                max={64}
+                step={1}
+                value={style.subtitleSize}
+                onChange={(event) =>
+                  updateShot((shot) => {
+                    if (locale)
+                      localContent(shot, locale).subtitleSize = Number(
+                        event.target.value,
+                      );
+                    else shot.style.subtitleSize = Number(event.target.value);
+                  }, "subtitleSize")
+                }
+                onPointerUp={endGroup}
+                onPointerCancel={endGroup}
+                onKeyUp={endGroup}
+                onBlur={endGroup}
+              />
+            </label>
+            {locale && (
+              <button
+                type="button"
+                className="text-button"
+                onClick={() =>
+                  updateShot((target) => {
+                    delete localContent(target, locale).subtitleSize;
+                  })
+                }
+              >
+                {t("Reset to shared supporting text size")}
+              </button>
+            )}
             <label className="check-field">
               <input
                 type="checkbox"
