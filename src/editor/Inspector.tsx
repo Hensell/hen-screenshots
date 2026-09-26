@@ -24,6 +24,7 @@ import {
   getTemplate,
   resetComposition,
   templateLayout,
+  supportingTextSize,
 } from "../core/templates";
 import { linkedShots, panoramaPair } from "../core/panorama";
 import { CanvasSettings } from "./CanvasSettings";
@@ -160,6 +161,7 @@ export function Inspector({
   const sourceShot =
     originalProject?.shots.find((item) => item.id === shot.id) ?? shot;
   const style = resolveStyle(project, shot);
+  const subtitleSize = supportingTextSize(project, style);
   const defaultPlacement = templateLayout(project, style).phone;
   const defaultDeviceWidth = defaultPlacement.width;
   const brand = appliedBrand(project, shot);
@@ -870,18 +872,18 @@ export function Inspector({
               <span>
                 {t("Supporting text size")}
                 <output>
-                  {style.subtitleSize}
+                  {subtitleSize}
                   <span className="unit"> px</span>
                 </output>
               </span>
               <input
                 type="range"
                 aria-label={t("Supporting text size")}
-                aria-valuetext={`${style.subtitleSize} px`}
+                aria-valuetext={`${subtitleSize} px`}
                 min={16}
                 max={64}
                 step={1}
-                value={style.subtitleSize}
+                value={subtitleSize}
                 onChange={(event) =>
                   updateShot((shot) => {
                     if (locale)

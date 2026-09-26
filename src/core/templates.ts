@@ -608,6 +608,27 @@ function collectionLayout(project: Project, style: Style, template: Template) {
   };
 }
 
+/** Slider values use portrait units; untouched layouts keep their exact defaults. */
+export function supportingTextSize(project: Project, style: Style): number {
+  return (
+    style.subtitleSize ??
+    Math.round(
+      templateLayout(project, style).subtitleSize /
+        (canonicalCanvas(project).height <= 1080 ? 0.72 : 1),
+    )
+  );
+}
+
+function resetSupportingTextSize(project: Project, shot: Shot): void {
+  delete shot.style.subtitleSize;
+  // A per-slide template must also override an inherited series size.
+  if (project.style.subtitleSize !== undefined)
+    shot.style.subtitleSize = supportingTextSize(project, {
+      ...resolveStyle(project, shot),
+      subtitleSize: undefined,
+    });
+}
+
 export function resetComposition(project: Project, shot: Shot): void {
   const id = resolveStyle(project, shot).template;
   if (compositionId(id)) {
@@ -691,7 +712,10 @@ export function applyTemplate(
   }
   const targets = new Set(linkedShots(project, shotId).map((shot) => shot.id));
   const patch = templateStyle(id, keepColors);
-  if (all) Object.assign(project.style, patch);
+  if (all) {
+    Object.assign(project.style, patch);
+    delete project.style.subtitleSize;
+  }
   for (const shot of project.shots) {
     if (!all && !targets.has(shot.id)) continue;
     configureDevices(project, shot, id);
@@ -699,6 +723,7 @@ export function applyTemplate(
       for (const key of Object.keys(patch) as (keyof Style)[])
         delete shot.style[key];
     } else Object.assign(shot.style, patch);
+    resetSupportingTextSize(project, shot);
     resetComposition(project, shot);
     refitText(shot, true);
   }
@@ -719,6 +744,7 @@ export function templatePreview(
     },
     phone: { ...shot.phone },
   };
+  resetSupportingTextSize(project, preview);
   configureDevices(project, preview, id);
   resetComposition(project, preview);
   resetText(preview);

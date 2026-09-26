@@ -333,7 +333,14 @@ export function panoramaPreview(
     ] as const)
       delete patch[key];
   const shared = { ...resolveStyle(project, left), ...patch };
-  const phone = panoramaLayout(project, shared).phone;
+  delete shared.subtitleSize;
+  const layout = panoramaLayout(project, shared);
+  if (project.style.subtitleSize !== undefined)
+    shared.subtitleSize = Math.round(
+      layout.subtitleSize /
+        (canonicalCanvas(project).height <= 1080 ? 0.72 : 1),
+    );
+  const phone = layout.phone;
   return [left, right].map((source, index) => {
     const {
       textOffsets: _offsets,

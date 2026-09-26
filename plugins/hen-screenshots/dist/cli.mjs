@@ -944,7 +944,6 @@ function createShot(assetId, index) {
 }
 function resolveStyle(project, shot) {
 	const style = {
-		subtitleSize: 32,
 		...project.style,
 		...shot.style
 	};
@@ -2079,7 +2078,10 @@ function panoramaPreview(project, shot, keepColors = false, family = "panorama")
 		...resolveStyle(project, left),
 		...patch
 	};
-	const phone = panoramaLayout(project, shared).phone;
+	delete shared.subtitleSize;
+	const layout = panoramaLayout(project, shared);
+	if (project.style.subtitleSize !== void 0) shared.subtitleSize = Math.round(layout.subtitleSize / (canonicalCanvas(project).height <= 1080 ? .72 : 1));
+	const phone = layout.phone;
 	return [left, right].map((source, index) => {
 		const { textOffsets: _offsets, companions: _companions, overlays: _overlays, backgroundImage: _backgroundImage, ...content } = source;
 		return {
@@ -4443,6 +4445,17 @@ function collectionLayout(project, style, template) {
 		panel
 	};
 }
+/** Slider values use portrait units; untouched layouts keep their exact defaults. */
+function supportingTextSize(project, style) {
+	return style.subtitleSize ?? Math.round(templateLayout(project, style).subtitleSize / (canonicalCanvas(project).height <= 1080 ? .72 : 1));
+}
+function resetSupportingTextSize(project, shot) {
+	delete shot.style.subtitleSize;
+	if (project.style.subtitleSize !== void 0) shot.style.subtitleSize = supportingTextSize(project, {
+		...resolveStyle(project, shot),
+		subtitleSize: void 0
+	});
+}
 function resetComposition(project, shot) {
 	const id = resolveStyle(project, shot).template;
 	if (compositionId(id)) {
@@ -4476,12 +4489,16 @@ function applyTemplate(project, shotId, id, all = false, keepColors = false) {
 	}
 	const targets = new Set(linkedShots(project, shotId).map((shot) => shot.id));
 	const patch = templateStyle(id, keepColors);
-	if (all) Object.assign(project.style, patch);
+	if (all) {
+		Object.assign(project.style, patch);
+		delete project.style.subtitleSize;
+	}
 	for (const shot of project.shots) {
 		if (!all && !targets.has(shot.id)) continue;
 		configureDevices(project, shot, id);
 		if (all) for (const key of Object.keys(patch)) delete shot.style[key];
 		else Object.assign(shot.style, patch);
+		resetSupportingTextSize(project, shot);
 		resetComposition(project, shot);
 		refitText(shot, true);
 	}

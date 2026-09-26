@@ -404,11 +404,7 @@ export function createEmptyShot(): Shot {
   return { ...createShot(null, 0), title: "", subtitle: "" };
 }
 export function resolveStyle(project: Project, shot: Shot): Style {
-  const style = {
-    subtitleSize: 32,
-    ...project.style,
-    ...shot.style,
-  };
+  const style = { ...project.style, ...shot.style };
   // Banners contain artwork, never a device shell, including after applying a brand kit.
   if (isBannerProfile(project.exportProfile)) {
     style.device = "card";
