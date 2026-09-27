@@ -2,7 +2,7 @@
 
 Create screenshot series from local captures with the same templates and scene engine as [Hen Screenshots](https://screenshots.hensell.dev/). Export PNGs, a contact-sheet preview, a ZIP organized by language, and an editable `.henscreenshots` project.
 
-**Version 0.2.2 · MIT · Local rendering.** Available from GitHub and the website. The OpenAI directory lists v0.2.1. Version 0.2.2 adds Cursor packaging and keeps support for project background images (schema 11). Anthropic review is pending. Cursor is available by local installation; it is not yet listed in the Cursor Marketplace. No Hen account, API key, MCP server, background service, or `.exe` is required. Your agent provider's plan and data policies still apply.
+**Version 0.2.3 · MIT · Local rendering.** This version adds supporting-text size overrides while preserving template defaults and resetting sizes when applying a new template. It includes manifests for Codex, Claude Code, and Cursor. Official directory availability is tracked in the [distribution notes](https://github.com/Hensell/hen-screenshots/blob/main/docs/plugin-distribution.md). No Hen account, API key, MCP server, background service, or `.exe` is required. Your agent provider's plan and data policies still apply.
 
 ## Requirements
 
@@ -42,7 +42,7 @@ These commands install from the Hen repository marketplace. They do not install 
 
 ## Install in Cursor
 
-Download and verify the v0.2.2 ZIP from [GitHub Releases](https://github.com/Hensell/hen-screenshots/releases), then extract it. Copy the **whole** `hen-screenshots` directory, including hidden manifest folders, into Cursor's local plugin directory:
+Download and verify the versioned ZIP from [GitHub Releases](https://github.com/Hensell/hen-screenshots/releases), then extract it. Copy the **whole** `hen-screenshots` directory, including hidden manifest folders, into Cursor's local plugin directory:
 
 - macOS / Linux: `~/.cursor/plugins/local/hen-screenshots`
 - Windows: `%USERPROFILE%\.cursor\plugins\local\hen-screenshots`
@@ -73,18 +73,18 @@ From the extracted directory:
 node scripts/setup.mjs
 ```
 
-Setup installs the locked dependencies in that directory and runs `doctor`. It does not install Node globally or alter your source images. A successful check reports `"ok": true` and version `0.2.2`.
+Setup installs the locked dependencies in that directory and runs `doctor`. It does not install Node globally or alter your source images. A successful check reports `"ok": true` and version `0.2.3`.
 
 To verify the archive before extracting it:
 
 ```sh
 # macOS
-shasum -a 256 -c hen-screenshots-plugin-0.2.2.zip.sha256
+shasum -a 256 -c hen-screenshots-plugin-0.2.3.zip.sha256
 # Linux
-sha256sum -c hen-screenshots-plugin-0.2.2.zip.sha256
+sha256sum -c hen-screenshots-plugin-0.2.3.zip.sha256
 ```
 
-On Windows, use `Get-FileHash .\hen-screenshots-plugin-0.2.2.zip -Algorithm SHA256` in PowerShell and compare the hash with the `.sha256` file.
+On Windows, use `Get-FileHash .\hen-screenshots-plugin-0.2.3.zip -Algorithm SHA256` in PowerShell and compare the hash with the `.sha256` file.
 
 For a Claude Code session using the extracted ZIP:
 
