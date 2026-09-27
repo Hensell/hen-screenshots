@@ -44,7 +44,7 @@ A collection is ready when it solves a specific presentation need and works with
 
 ## Agent plugin: available; directory versions tracked separately
 
-Current website and repository download: **v0.2.2**, adding Cursor packaging and setup instructions while retaining background-image rendering and schema 11 project support. [Personal-template workflow](README.md#your-own-reusable-templates).
+Current repository release: **v0.2.3**, adding supporting-text size control while preserving template defaults. [Personal-template workflow](README.md#your-own-reusable-templates).
 
 Directory/release status: [v0.2.1 published on GitHub](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.1) and in the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). Submitted to Anthropic for review on September 10, 2026.
 
