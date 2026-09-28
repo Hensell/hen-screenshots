@@ -46,7 +46,7 @@ A collection is ready when it solves a specific presentation need and works with
 
 Current repository release: **v0.2.3**, adding supporting-text size control while preserving template defaults. [Personal-template workflow](README.md#your-own-reusable-templates).
 
-Directory/release status: [v0.2.1 published on GitHub](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.1) and in the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6). Submitted to Anthropic for review on September 10, 2026.
+Directory/release status: [v0.2.3 published on GitHub](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.3) and in the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6), verified on September 28, 2026. Submitted to Anthropic for review on September 10, 2026.
 
 - [x] Choose and add the code license, and include the required license notices in the release archive.
 - [x] Test the extracted release package outside the source checkout, plus GitHub marketplace installation in Codex and an isolated Claude Code configuration.
