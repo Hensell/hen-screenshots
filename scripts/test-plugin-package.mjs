@@ -122,7 +122,25 @@ const slide = {
   title: "Small steps. Real progress.",
   subtitle: "A little more, every day.",
 };
-const store = await create("store", {}, [slide, slide, slide], 1080, 1920, 3);
+const copiedTypography = {
+  titleFont: "Manrope",
+  bodyFont: "Manrope",
+  titleWeight: "700",
+  bodyWeight: "600",
+  titleScale: 0.96,
+  titleLineHeight: 1.04,
+  subtitleOpacity: 0.78,
+};
+const store = await create(
+  "store",
+  {},
+  [{ ...slide, style: copiedTypography }, slide, slide],
+  1080,
+  1920,
+  3,
+);
+for (const [key, value] of Object.entries(copiedTypography))
+  assert.equal(store.loaded.project.shots[0].style[key], value);
 for (const template of ["atrium", "obsidian", "offset"]) {
   const panorama = await create(
     template,

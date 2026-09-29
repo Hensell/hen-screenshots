@@ -8,7 +8,7 @@ import Konva from "konva";
 import "konva/skia-backend";
 import { FontLibrary, Image as Image$1 } from "skia-canvas";
 //#region plugins/hen-screenshots/package.json
-var version = "0.2.3";
+var version = "0.2.4";
 //#endregion
 //#region src/core/device-composition-spec.ts
 var deviceCompositions = {
@@ -5059,6 +5059,11 @@ function parseDesignSpec(value) {
 			"backgroundMode",
 			"textColor",
 			"accentColor",
+			"titleWeight",
+			"bodyWeight",
+			"titleScale",
+			"titleLineHeight",
+			"subtitleOpacity",
 			"titleFont",
 			"bodyFont",
 			"titleSize",

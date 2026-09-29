@@ -36,6 +36,28 @@ describe("agent design contract", () => {
     const tablet = build({ profile: "apple-ipad13-portrait" });
     expect(resolveStyle(tablet, tablet.shots[0]).device).toBe("ipad");
   });
+  it("retains copied typography overrides in agent designs", () => {
+    const style = {
+      titleWeight: "700",
+      bodyWeight: "600",
+      titleScale: 0.96,
+      titleLineHeight: 1.04,
+      subtitleOpacity: 0.78,
+    };
+    const project = build({ slides: [{ ...base.slides[0], style }] });
+    expect(resolveStyle(project, project.shots[0])).toMatchObject(style);
+    for (const invalid of [
+      { titleWeight: "bold" },
+      { bodyWeight: "900" },
+      { titleScale: 0 },
+      { titleLineHeight: 4 },
+      { subtitleOpacity: 2 },
+    ]) {
+      expect(() =>
+        build({ slides: [{ ...base.slides[0], style: invalid }] }),
+      ).toThrow();
+    }
+  });
   it.each([
     { typo: true },
     { template: 12 },

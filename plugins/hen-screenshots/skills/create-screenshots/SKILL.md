@@ -30,6 +30,7 @@ For a quick first pass, `create --input "<captures-folder>" --name "My app" --te
 - Open `preview.png` and representative full-size PNGs with the host's image viewer. Check crop, readability, frame choice, text overlap and panorama continuity. Do not call a result visually verified unless you inspected it.
 - Read `report.json`: it records dimensions, file sizes and applicable store guidance. Correct layout issues by editing the config and rendering to a **new** output folder. Output directories are never overwritten.
 - Translations are supplied in the config. Run `languages` for supported codes; include every slide and panorama continuation in each target language. Preserve the shared design and review translations as drafts. This plugin does not download a translation model or call an AI API itself.
+- Preserve copied typography when reusing styles: include the source’s explicit fonts, weights, sizes, scale, line height, opacity, alignment, and accent settings. Read the supported fields in the design spec; do not invent unsupported text formatting.
 - To render an existing project, run `render --project "<project.henscreenshots>" --out "<new-folder>"`. `inspect --project ...` prints its structure and image metadata. Do not hand-edit ZIP internals or browser storage.
 - Return the preview, PNG folder or `screenshots.zip`, and `project.henscreenshots`. The user can import the project through **Open project file** on the Hen studio home screen. Explain any unverified languages or native-rendering differences.
 

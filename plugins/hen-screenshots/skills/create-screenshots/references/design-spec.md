@@ -50,7 +50,9 @@ Input images: PNG, JPEG and still WebP, at most 50 MB per file, 24 megapixels pe
 
 `textOffsets` moves captions relative to their template positions: `{ "title": { "x": 0, "y": 20 }, "subtitle": { "x": 0, "y": 20 } }`. Omit it to use the template defaults.
 
-`style` can override `background`, `backgroundEnd`, `backgroundMode` (`solid`/`gradient`), `textColor`, `accentColor`, `titleFont`/`bodyFont` (`Manrope`/`Fraunces`), `titleSize`, `subtitleSize`, `align` (`left`/`center`), `texture` (`none`/`dots`), `accentTitle`, `fit` (`contain`/`cover`), `frame`, `camera`, and `deviceOrientation` (`portrait`/`landscape`). Colors use six-digit hex notation. Boolean fields require actual JSON booleans. A supplied brand kit takes precedence over style colors and fonts.
+`style` can override `background`, `backgroundEnd`, `backgroundMode` (`solid`/`gradient`), `textColor`, `accentColor`, `titleFont`/`bodyFont` (`Manrope`/`Fraunces`), `titleSize`, `subtitleSize`, `titleWeight`, `bodyWeight`, `titleScale`, `titleLineHeight`, `subtitleOpacity`, `align` (`left`/`center`), `texture` (`none`/`dots`), `accentTitle`, `fit` (`contain`/`cover`), `frame`, `camera`, and `deviceOrientation` (`portrait`/`landscape`). Colors use six-digit hex notation. Boolean fields require actual JSON booleans. A supplied brand kit takes precedence over style colors and fonts.
+
+`titleWeight` and `bodyWeight` accept strings `"400"`, `"600"`, `"700"`, or `"800"`. `titleScale` multiplies `titleSize`; it and `titleLineHeight` accept numbers from 0.1 to 3. `subtitleOpacity` accepts numbers from 0 to 1. Omit these fields to retain template defaults. Existing projects containing styles copied in the web studio retain these attributes during import and rendering. Copy/paste controls are part of the web editor; the CLI uses explicit style overrides.
 
 `subtitleSize` accepts values from 16 to 64 in portrait canvas units. Landscape layouts scale explicit values by 0.72 and round to whole units. Omit it to retain the template’s original supporting-text size. Text may shrink further to fit its box.
 
