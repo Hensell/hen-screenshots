@@ -188,7 +188,14 @@ describe("adaptive compositions", () => {
                 template.id,
                 false,
               );
-              expect(preview.phone).toEqual(shot.phone);
+              if (template.style.device) {
+                expect(resolveStyle(project, preview).device).toBe(
+                  template.style.device,
+                );
+                expect(preview.phone).toEqual(
+                  templateLayout(project, resolveStyle(project, preview)).phone,
+                );
+              } else expect(preview.phone).toEqual(shot.phone);
             }
     },
   );

@@ -806,6 +806,10 @@ var templateIds = [
 	"orbit",
 	"orbit-end",
 	"workbench",
+	"portfolio-laptop",
+	"portfolio-monitor",
+	"portfolio-laptop-editorial",
+	"portfolio-monitor-dark",
 	"nocturne",
 	"carbon",
 	"ember",
@@ -2601,6 +2605,102 @@ function bannerLayout(project, style) {
 	};
 }
 //#endregion
+//#region src/core/portfolio-templates.ts
+/** Explicit hardware presets; other single-device templates keep the user's frame. */
+var portfolioTemplates = [
+	{
+		id: "portfolio-laptop",
+		name: "Laptop Studio",
+		device: "laptop",
+		appearance: "light",
+		colors: [
+			"#ECEFEA",
+			"#D7DED4",
+			"#2C382E",
+			"#72856C"
+		],
+		description: "A spacious laptop cover for your next case study."
+	},
+	{
+		id: "portfolio-monitor",
+		name: "Monitor Gallery",
+		device: "monitor",
+		appearance: "light",
+		colors: [
+			"#F4EDE3",
+			"#E6D8C7",
+			"#43382C",
+			"#A1805F"
+		],
+		description: "A desktop centerpiece on a warm gallery wall."
+	},
+	{
+		id: "portfolio-laptop-editorial",
+		name: "Laptop Editorial",
+		device: "laptop",
+		appearance: "light",
+		colors: [
+			"#F2ECE0",
+			"#E2D7C5",
+			"#3C352E",
+			"#987352"
+		],
+		description: "Warm paper, a serif headline, and your work on a laptop."
+	},
+	{
+		id: "portfolio-monitor-dark",
+		name: "Monitor Focus",
+		device: "monitor",
+		appearance: "dark",
+		colors: [
+			"#232C30",
+			"#344248",
+			"#F0EDE4",
+			"#97B6B8"
+		],
+		description: "A quiet dark stage for detailed desktop interfaces."
+	}
+].map((design) => {
+	const template = defineTemplate({
+		id: design.id,
+		name: design.name,
+		category: design.id === "portfolio-laptop-editorial" ? "Editorial" : "Minimal",
+		appearance: design.appearance,
+		composition: "desk",
+		description: design.description,
+		note: "Sets up a landscape hardware frame with a large screenshot area, a headline above, and a caption below. Your text and image are preserved.",
+		surfaceLabel: design.device === "laptop" ? "Laptop showcase" : "Monitor showcase",
+		keywords: [
+			"portfolio",
+			"case study",
+			"desktop",
+			"web",
+			"website",
+			"hardware",
+			"laptop",
+			"monitor",
+			"portafolio",
+			"computadora",
+			design.device
+		],
+		...design.id === "portfolio-laptop-editorial" ? {
+			titleFont: "Fraunces",
+			titleWeight: "600"
+		} : {}
+	}, design.colors, { size: 100 });
+	return {
+		...template,
+		style: {
+			...template.style,
+			device: design.device,
+			deviceOrientation: "landscape",
+			frame: true,
+			camera: false,
+			fit: "contain"
+		}
+	};
+});
+//#endregion
 //#region src/core/device-composition.ts
 function companionFor(shot, element) {
 	return shot.companions?.find((device) => `device:${device.id}` === element);
@@ -3662,6 +3762,7 @@ function patternAreas(composition, h) {
 //#region src/core/templates.ts
 /** IDs and geometry are part of document v2. Add new IDs for incompatible designs. */
 var templates = [
+	...portfolioTemplates,
 	...collectionPanoramaTemplates,
 	...holidayTemplates,
 	...multiDeviceTemplates,
@@ -7004,6 +7105,38 @@ function drawShowcaseDecoration(layer, style, h, panel) {
 		fill,
 		opacity
 	}));
+	if (style.template.startsWith("portfolio-")) {
+		const editorial = style.template === "portfolio-laptop-editorial";
+		rect({
+			x: x - 16,
+			y: y - 16,
+			width: w + 32,
+			height: ph + 32,
+			fill: style.backgroundEnd,
+			opacity: editorial ? .45 : .7,
+			cornerRadius: editorial ? 4 : 24
+		});
+		line([
+			80,
+			h * .85,
+			1e3,
+			h * .85
+		], .45, 1);
+		if (editorial) {
+			line([
+				76,
+				h * .235,
+				1004,
+				h * .235
+			], .65, 1.5);
+			line([
+				76,
+				h * .035,
+				1004,
+				h * .035
+			], .65, 2);
+		}
+	}
 	if (style.template === "prism") {
 		polygon([
 			x - 30,

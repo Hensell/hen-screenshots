@@ -29,6 +29,23 @@ export function drawShowcaseDecoration(
   const polygon = (points: number[], fill: string, opacity = 1) =>
     group.add(new Konva.Line({ points, closed: true, fill, opacity }));
 
+  if (style.template.startsWith("portfolio-")) {
+    const editorial = style.template === "portfolio-laptop-editorial";
+    rect({
+      x: x - 16,
+      y: y - 16,
+      width: w + 32,
+      height: ph + 32,
+      fill: style.backgroundEnd,
+      opacity: editorial ? 0.45 : 0.7,
+      cornerRadius: editorial ? 4 : 24,
+    });
+    line([80, h * 0.85, 1000, h * 0.85], 0.45, 1);
+    if (editorial) {
+      line([76, h * 0.235, 1004, h * 0.235], 0.65, 1.5);
+      line([76, h * 0.035, 1004, h * 0.035], 0.65, 2);
+    }
+  }
   if (style.template === "prism") {
     polygon(
       [

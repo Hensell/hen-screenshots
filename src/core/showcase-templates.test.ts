@@ -7,6 +7,7 @@ import {
 } from "./model";
 import { applyTemplate, templateLayout } from "./templates";
 import { showcaseTemplates } from "./showcase-templates";
+import { portfolioTemplates } from "./portfolio-templates";
 import { patternTemplates } from "./pattern-templates";
 import { holidayTemplates } from "./holiday-templates";
 import { halloweenTemplates } from "./halloween-templates";
@@ -24,6 +25,7 @@ describe("showcase collection geometry", () => {
   it.each(
     [
       ...showcaseTemplates,
+      ...portfolioTemplates,
       ...patternTemplates,
       ...halloweenTemplates,
       ...holidayTemplates,
@@ -58,10 +60,10 @@ describe("showcase collection geometry", () => {
             const style = resolveStyle(project, shot);
             const layout = templateLayout(project, style);
             const geometry = deviceGeometry(
-              device,
+              style.device,
               shot.phone.width,
               style.frame,
-              orientation,
+              style.deviceOrientation,
             );
             const angle = (Math.abs(shot.phone.rotation) * Math.PI) / 180;
             const width =

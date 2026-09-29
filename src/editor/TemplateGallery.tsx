@@ -804,7 +804,7 @@ export function TemplateGallery({
                   : t(
                       compositionId(selected)
                         ? "The template sets up each device. Your text and matching screenshots are preserved."
-                        : banners
+                        : banners || getTemplate(selected).style.device
                           ? "The layout resets. Your text and images are preserved."
                           : "The layout resets. Your text, images, and frames are preserved.",
                     )}

@@ -3,6 +3,7 @@ import {
   bannerLayout,
   isBannerTemplate,
 } from "./banner-templates";
+import { portfolioTemplates } from "./portfolio-templates";
 import { multiDeviceTemplates } from "./multi-device-templates";
 import {
   compositionId,
@@ -79,20 +80,23 @@ export interface Template {
     | "technical"
     | "pedestal"
     | "collage";
-  style: Pick<
-    Style,
-    | "template"
-    | "background"
-    | "backgroundEnd"
-    | "backgroundMode"
-    | "textColor"
-    | "accentColor"
-    | "texture"
-    | "accentTitle"
-    | "align"
-    | "titleSize"
-    | "subtitleSize"
-  >;
+  style: Partial<
+    Pick<Style, "device" | "deviceOrientation" | "frame" | "camera" | "fit">
+  > &
+    Pick<
+      Style,
+      | "template"
+      | "background"
+      | "backgroundEnd"
+      | "backgroundMode"
+      | "textColor"
+      | "accentColor"
+      | "texture"
+      | "accentTitle"
+      | "align"
+      | "titleSize"
+      | "subtitleSize"
+    >;
   phone: Shot["phone"];
   title: TextBox;
   subtitle: TextBox;
@@ -101,6 +105,7 @@ export interface Template {
 
 /** IDs and geometry are part of document v2. Add new IDs for incompatible designs. */
 export const templates: readonly Template[] = [
+  ...portfolioTemplates,
   ...collectionPanoramaTemplates,
   ...holidayTemplates,
   ...multiDeviceTemplates,
