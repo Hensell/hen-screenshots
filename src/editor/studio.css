@@ -635,3 +635,12 @@
     font-size: 11px;
   }
 }
+
+.style-clipboard-actions {
+  display: grid;
+  gap: 8px;
+}
+.style-clipboard-actions .button {
+  white-space: normal;
+  min-height: 44px;
+}

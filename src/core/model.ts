@@ -149,6 +149,11 @@ export interface CompanionDevice {
 }
 export const TEXT_OFFSET_LIMITS = { x: 2160, y: 4320 } as const;
 export interface Style {
+  titleWeight?: string;
+  bodyWeight?: string;
+  titleScale?: number;
+  titleLineHeight?: number;
+  subtitleOpacity?: number;
   titleFont?: BrandFont;
   bodyFont?: BrandFont;
   background: string;
@@ -504,6 +509,15 @@ function validateStyle(
   partial = false,
 ): void {
   const optionalKeys = [
+    ...(version >= 11
+      ? [
+          "titleWeight",
+          "bodyWeight",
+          "titleScale",
+          "titleLineHeight",
+          "subtitleOpacity",
+        ]
+      : []),
     ...(version >= 6 ? ["titleFont", "bodyFont"] : []),
     ...(version >= 2 ? ["subtitleSize"] : []),
   ].filter(
@@ -525,6 +539,10 @@ function validateStyle(
       if (typeof item !== "string" || !/^#[\da-f]{6}$/i.test(item)) invalid();
     } else if (["frame", "camera", "accentTitle"].includes(key)) {
       if (typeof item !== "boolean") invalid();
+    } else if (key === "titleScale" || key === "titleLineHeight") {
+      numeric(item, 0.1, 3);
+    } else if (key === "subtitleOpacity") {
+      numeric(item, 0, 1);
     } else if (key === "titleSize") {
       numeric(item, 48, 132);
     } else if (key === "subtitleSize") {
@@ -558,6 +576,8 @@ function validateStyle(
         template: [...(version >= 4 ? templateIds : legacyTemplateIds)],
         backgroundMode: ["solid", "gradient"],
         texture: ["none", "dots"],
+        titleWeight: ["400", "600", "700", "800"],
+        bodyWeight: ["400", "600", "700", "800"],
         titleFont: [...brandFonts],
         bodyFont: [...brandFonts],
       };
@@ -930,6 +950,11 @@ export function validateProject(
         (
           [
             ...styleKeys,
+            "titleWeight",
+            "bodyWeight",
+            "titleScale",
+            "titleLineHeight",
+            "subtitleOpacity",
             "titleFont",
             "bodyFont",
             "subtitleSize",

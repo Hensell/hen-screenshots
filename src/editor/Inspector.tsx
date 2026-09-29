@@ -14,7 +14,7 @@ import {
   languageName,
   localeStatus,
 } from "../core/localization";
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { resolveStyle, PLACEMENT_LIMITS } from "../core/model";
 import type { Project, Shot, Style, CanvasElement } from "../core/model";
 import { useEditor } from "./store";
@@ -150,6 +150,9 @@ export function Inspector({
   onOverlayUpload: (replaceId?: string) => void;
 }) {
   const t = useT();
+  const [styleNotice, setStyleNotice] = useState("");
+  const { styleClipboard, copyStyle, pasteStyle } = useEditor();
+  useEffect(() => setStyleNotice(""), [shot.id]);
   const banners = isBannerProfile(project.exportProfile);
   const panelId = useId();
   const inspectorRef = useRef<HTMLElement>(null);
@@ -603,6 +606,58 @@ export function Inspector({
               </p>
             </section>
           )}
+          <section className="property-section style-clipboard">
+            <h3>{t("Reuse style")}</h3>
+            <p className="field-help">
+              {t(
+                "Copy a slide’s style, then choose what to paste on another. Text, images, templates, and positions are preserved.",
+              )}
+            </p>
+            <div className="style-clipboard-actions">
+              <button
+                type="button"
+                className="button secondary full"
+                onClick={() => {
+                  copyStyle(shot.id);
+                  setStyleNotice("Style copied");
+                }}
+              >
+                {t("Copy style")}
+              </button>
+              {(
+                [
+                  ["all", "Paste style"],
+                  ["colors", "Paste only colors"],
+                  ["typography", "Paste only typography"],
+                ] as const
+              ).map(([mode, label]) => (
+                <button
+                  key={mode}
+                  type="button"
+                  className="button secondary full"
+                  disabled={!styleClipboard}
+                  onClick={() => {
+                    pasteStyle(shot.id, mode);
+                    setStyleNotice(
+                      pair
+                        ? "Style pasted to both linked slides"
+                        : "Style pasted",
+                    );
+                  }}
+                >
+                  {t(label)}
+                </button>
+              ))}
+            </div>
+            <p className="field-help" role="status">
+              {t(
+                styleNotice ||
+                  (styleClipboard
+                    ? "Style ready to paste"
+                    : "Copy a style to enable pasting"),
+              )}
+            </p>
+          </section>
           <section className="property-section series-style">
             <h3>{t("Keep the series together")}</h3>
             <p className="field-help">

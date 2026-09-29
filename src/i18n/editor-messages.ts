@@ -1,5 +1,29 @@
 // Editor interface copy. Project text and template names remain untouched.
 export const editorMessages: Record<string, readonly [string, string]> = {
+  "Reuse style": ["Reutilizar estilo", "Reutilizar estilo"],
+  "Copy style": ["Copiar estilo", "Copiar estilo"],
+  "Paste style": ["Pegar estilo", "Colar estilo"],
+  "Paste only colors": ["Pegar solo colores", "Colar apenas cores"],
+  "Paste only typography": ["Pegar solo tipografía", "Colar apenas tipografia"],
+  "Style copied": ["Estilo copiado", "Estilo copiado"],
+  "Style pasted": ["Estilo pegado", "Estilo colado"],
+  "Style pasted to both linked slides": [
+    "Estilo pegado en ambas diapositivas vinculadas",
+    "Estilo colado nos dois slides vinculados",
+  ],
+  "Style ready to paste": [
+    "Estilo listo para pegar",
+    "Estilo pronto para colar",
+  ],
+  "Copy a style to enable pasting": [
+    "Copia un estilo para habilitar el pegado",
+    "Copie um estilo para habilitar a colagem",
+  ],
+  "Copy a slide’s style, then choose what to paste on another. Text, images, templates, and positions are preserved.":
+    [
+      "Copia el estilo de una diapositiva y elige qué pegar en otra. Se conservan textos, imágenes, plantillas y posiciones.",
+      "Copie o estilo de um slide e escolha o que colar em outro. Textos, imagens, modelos e posições são preservados.",
+    ],
   Design: ["Diseño", "Design"],
   Text: ["Texto", "Texto"],
   Device: ["Dispositivo", "Dispositivo"],

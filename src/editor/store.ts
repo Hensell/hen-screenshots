@@ -3,8 +3,18 @@ import type { Asset, LoadedProject, Project } from "../core/model";
 import { errorMessage } from "../core/model";
 import { saveProject } from "../storage/repository";
 
+import {
+  copyShotStyle,
+  pasteShotStyle,
+  type CopiedStyle,
+  type StylePasteMode,
+} from "../core/style-clipboard";
+
 type SaveStatus = "saved" | "pending" | "saving" | "error";
 interface EditorState {
+  styleClipboard: CopiedStyle | null;
+  copyStyle: (shotId: string) => void;
+  pasteStyle: (shotId: string, mode: StylePasteMode) => void;
   project: Project | null;
   locale: string | null;
   setLocale: (locale: string | null) => void;
@@ -32,6 +42,18 @@ const historyLimit = 60;
 let editorSession = 0;
 let saving: Promise<boolean> | undefined;
 export const useEditor = create<EditorState>((set, get) => ({
+  styleClipboard: null,
+  copyStyle: (shotId) => {
+    const { project } = get();
+    const shot = project?.shots.find((item) => item.id === shotId);
+    if (project && shot)
+      set({ styleClipboard: copyShotStyle(project, shot), group: null });
+  },
+  pasteStyle: (shotId, mode) => {
+    const copied = get().styleClipboard;
+    if (copied)
+      get().edit((project) => pasteShotStyle(project, shotId, copied, mode));
+  },
   project: null,
   locale: null,
   setLocale: (locale) => set({ locale, group: null }),

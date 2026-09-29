@@ -538,15 +538,18 @@ export function createScene(
         offset: textOffset(owner, "title"),
         interaction: options,
         fitWords,
-        fontSize: ownerStyle.titleSize * template.fontScale,
-        weight: style.titleFont
-          ? style.titleFont === "Fraunces"
-            ? "600"
-            : "800"
-          : (template.titleWeight ??
-            (style.template === "classic" ? "700" : "800")),
+        fontSize:
+          ownerStyle.titleSize * (ownerStyle.titleScale ?? template.fontScale),
+        weight:
+          ownerStyle.titleWeight ??
+          (style.titleFont
+            ? style.titleFont === "Fraunces"
+              ? "600"
+              : "800"
+            : (template.titleWeight ??
+              (style.template === "classic" ? "700" : "800"))),
         fontFamily: style.titleFont ?? template.titleFont,
-        lineHeight: template.lineHeight,
+        lineHeight: ownerStyle.titleLineHeight ?? template.lineHeight,
         color: style.textColor,
         accent: style.accentTitle ? style.accentColor : undefined,
         align: style.align,
@@ -565,11 +568,15 @@ export function createScene(
                 ownerStyle.subtitleSize * (canvas.height <= 1080 ? 0.72 : 1),
               )
             : template.subtitleSize,
-        weight: style.bodyFont === "Fraunces" ? "600" : "400",
+        weight:
+          ownerStyle.bodyWeight ??
+          (style.bodyFont === "Fraunces" ? "600" : "400"),
         fontFamily: style.bodyFont,
         color: style.textColor,
         align: style.align,
-        opacity: style.template === "classic" ? 0.78 : 0.88,
+        opacity:
+          ownerStyle.subtitleOpacity ??
+          (style.template === "classic" ? 0.78 : 0.88),
       });
     }
     if (style.template === "classic") {

@@ -998,7 +998,17 @@ function numeric(value, minimum, maximum, integer = false) {
 	if (typeof value !== "number" || !Number.isFinite(value) || value < minimum || value > maximum || integer && !Number.isSafeInteger(value)) invalid();
 }
 function validateStyle(value, version, partial = false) {
-	const optionalKeys = [...version >= 6 ? ["titleFont", "bodyFont"] : [], ...version >= 2 ? ["subtitleSize"] : []].filter((key) => value && typeof value === "object" && Object.hasOwn(value, key));
+	const optionalKeys = [
+		...version >= 11 ? [
+			"titleWeight",
+			"bodyWeight",
+			"titleScale",
+			"titleLineHeight",
+			"subtitleOpacity"
+		] : [],
+		...version >= 6 ? ["titleFont", "bodyFont"] : [],
+		...version >= 2 ? ["subtitleSize"] : []
+	].filter((key) => value && typeof value === "object" && Object.hasOwn(value, key));
 	const entries = object$1(value, version === 1 ? legacyStyleKeys : version === 2 ? [...v2StyleKeys, ...optionalKeys] : [...styleKeys, ...optionalKeys], partial);
 	for (const [key, item] of Object.entries(entries)) if ([
 		"background",
@@ -1013,7 +1023,9 @@ function validateStyle(value, version, partial = false) {
 		"accentTitle"
 	].includes(key)) {
 		if (typeof item !== "boolean") invalid();
-	} else if (key === "titleSize") numeric(item, 48, 132);
+	} else if (key === "titleScale" || key === "titleLineHeight") numeric(item, .1, 3);
+	else if (key === "subtitleOpacity") numeric(item, 0, 1);
+	else if (key === "titleSize") numeric(item, 48, 132);
 	else if (key === "subtitleSize") numeric(item, 16, 64);
 	else {
 		const allowed = {
@@ -1039,6 +1051,18 @@ function validateStyle(value, version, partial = false) {
 			template: [...version >= 4 ? templateIds : legacyTemplateIds],
 			backgroundMode: ["solid", "gradient"],
 			texture: ["none", "dots"],
+			titleWeight: [
+				"400",
+				"600",
+				"700",
+				"800"
+			],
+			bodyWeight: [
+				"400",
+				"600",
+				"700",
+				"800"
+			],
 			titleFont: [...brandFonts],
 			bodyFont: [...brandFonts]
 		};
@@ -1298,6 +1322,11 @@ function validateProject(value) {
 				"opacity"
 			].some((key) => left.backgroundImage?.[key] !== right.backgroundImage?.[key]) || [
 				...styleKeys,
+				"titleWeight",
+				"bodyWeight",
+				"titleScale",
+				"titleLineHeight",
+				"subtitleOpacity",
 				"titleFont",
 				"bodyFont",
 				"subtitleSize"
@@ -8841,10 +8870,10 @@ function createScene(project, shot, image, options = {}) {
 				offset: textOffset(owner, "title"),
 				interaction: options,
 				fitWords,
-				fontSize: ownerStyle.titleSize * template.fontScale,
-				weight: style.titleFont ? style.titleFont === "Fraunces" ? "600" : "800" : template.titleWeight ?? (style.template === "classic" ? "700" : "800"),
+				fontSize: ownerStyle.titleSize * (ownerStyle.titleScale ?? template.fontScale),
+				weight: ownerStyle.titleWeight ?? (style.titleFont ? style.titleFont === "Fraunces" ? "600" : "800" : template.titleWeight ?? (style.template === "classic" ? "700" : "800")),
 				fontFamily: style.titleFont ?? template.titleFont,
-				lineHeight: template.lineHeight,
+				lineHeight: ownerStyle.titleLineHeight ?? template.lineHeight,
 				color: style.textColor,
 				accent: style.accentTitle ? style.accentColor : void 0,
 				align: style.align
@@ -8858,11 +8887,11 @@ function createScene(project, shot, image, options = {}) {
 				interaction: options,
 				fitWords,
 				fontSize: ownerStyle.subtitleSize !== void 0 ? Math.round(ownerStyle.subtitleSize * (canvas.height <= 1080 ? .72 : 1)) : template.subtitleSize,
-				weight: style.bodyFont === "Fraunces" ? "600" : "400",
+				weight: ownerStyle.bodyWeight ?? (style.bodyFont === "Fraunces" ? "600" : "400"),
 				fontFamily: style.bodyFont,
 				color: style.textColor,
 				align: style.align,
-				opacity: style.template === "classic" ? .78 : .88
+				opacity: ownerStyle.subtitleOpacity ?? (style.template === "classic" ? .78 : .88)
 			});
 		}
 		if (style.template === "classic") {
