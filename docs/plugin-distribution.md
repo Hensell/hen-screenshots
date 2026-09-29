@@ -1,6 +1,6 @@
 # Plugin distribution
 
-Version **0.2.4** is being prepared to preserve copied typography in imported projects and expose the same attributes in design specifications. [Release notes](plugin-v0.2.4-release-notes.md). Official directory listings remain on their previously published versions until separately updated.
+Version **0.2.4** is available in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.4) and website download. It preserves copied typography in imported projects and exposes the same attributes in design specifications. [Release notes](plugin-v0.2.4-release-notes.md). The OpenAI directory remains on **0.2.3**; updating that listing is a separate step.
 
 Version **0.2.3** is available in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.3). It adds supporting-text size control and preserves template defaults. [Release notes](plugin-v0.2.3-release-notes.md). The OpenAI skill scan passed on September 28, 2026. After the publisher confirmed the terms and compliance declarations, the portal approved the version and publication completed. The [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6) now provides **0.2.3**; the portal confirmed **Published**. Earlier scan attempts returned `Activity task failed` without an actionable package finding. Anthropic remains **In review**; Cursor was not found in its public marketplace. Follow-up emails were sent to both publishers on September 26, 2026.
 
@@ -19,6 +19,8 @@ The repository contains `.agents/plugins/marketplace.json` for Codex and `.claud
 No `node_modules`, personal captures, or project files belong in the release archive. Setup does not require a source build, administrator privileges, or a Hen service.
 
 ## Verification
+
+Release v0.2.4 passed [run 36524811308](https://github.com/Hensell/hen-screenshots/actions/runs/36524811308) at commit `87ad3c0fc83b7e730be3a02f8a85138a09eb17d2`. Installation and rendering passed on Ubuntu, Windows, and macOS 14. The GitHub release uses the exact tested CI ZIP, SHA-256 `41a6463a74f49310b6452176e74f6c5c4f53283ac88595bd5526b2fd537aa3f6`. Local validation passed 714 tests, lint, formatting, build, plugin and skill validation, extracted-package setup and rendering, and a clean autoreview. Cloudflare deployed the commit successfully; the production SEO and plugin-download checks passed.
 
 Release v0.2.3 passed [run 36292470887](https://github.com/Hensell/hen-screenshots/actions/runs/36292470887) at commit `91a49331647bd9d032053ffcf37952e765aec1c3`. Installation and rendering passed on Ubuntu, Windows, and macOS 14. The GitHub release and OpenAI upload use the CI archive with SHA-256 `d37005752432f7b432d4fc24c4f77648183afc55c5d74469f222f8fce4e94f7e`; the public release download was verified. Local validation included 708 tests, lint, formatting, build, installed-package checks, visual inspection, and a clean autoreview.
 
