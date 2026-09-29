@@ -1,6 +1,6 @@
 # Plugin distribution
 
-Version **0.2.4** is available in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.4) and website download. It preserves copied typography in imported projects and exposes the same attributes in design specifications. [Release notes](plugin-v0.2.4-release-notes.md). The OpenAI directory remains on **0.2.3**. Version **0.2.4** has been uploaded as a draft in the [plugin portal](https://platform.openai.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6/submissions/appsub_6abb48d805748191a39d5431c77e7b24); its automated skill scan is running. Final submission requires the publisher to confirm the terms and compliance declarations.
+Version **0.2.4** is available in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.4) and website download. It preserves copied typography in imported projects and exposes the same attributes in design specifications. [Release notes](plugin-v0.2.4-release-notes.md). Version **0.2.4** was also approved and published in the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6) on September 29, 2026. Its skill scan passed; after the publisher explicitly confirmed the terms and compliance declarations, submission was approved and the portal confirmed **Plugin published!**. ChatGPT visibility may take a short time to refresh.
 
 Version **0.2.3** is available in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.3). It adds supporting-text size control and preserves template defaults. [Release notes](plugin-v0.2.3-release-notes.md). The OpenAI skill scan passed on September 28, 2026. After the publisher confirmed the terms and compliance declarations, the portal approved the version and publication completed. The [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6) now provides **0.2.3**; the portal confirmed **Published**. Earlier scan attempts returned `Activity task failed` without an actionable package finding. Anthropic remains **In review**; Cursor was not found in its public marketplace. Follow-up emails were sent to both publishers on September 26, 2026.
 
@@ -61,6 +61,8 @@ Local release preparation also tests the Codex and Claude Code marketplace insta
 Last documentation check: September 10, 2026. Recheck the official requirements before submitting.
 
 ### OpenAI
+
+Version **0.2.4** was submitted, approved, and published on September 29, 2026 using the exact tested CI ZIP recorded above. The skill scan passed, the publisher explicitly confirmed all final declarations, and the portal confirmed publication with a directory link. The portal normalized the portable manifest during import.
 
 Version **0.2.3** was submitted, approved, and published on September 28, 2026 as an update to the existing listing. The skill scan passed and the publisher explicitly confirmed the final declarations. The upload used the exact tested CI archive recorded above; the portal normalized the portable manifest during import. Publication was confirmed by **Published** and its directory link.
 
