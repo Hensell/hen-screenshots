@@ -32,7 +32,7 @@ export const PLACEMENT_LIMITS = {
   width: { min: 32, max: 2160 },
 } as const;
 export const LIMITS = {
-  shots: 20,
+  shots: 50,
   overlays: 8,
   assetBytes: 50 * 1024 * 1024,
   totalBytes: 120 * 1024 * 1024,

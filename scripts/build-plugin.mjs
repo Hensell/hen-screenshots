@@ -15,11 +15,29 @@ for (const file of [
   ".claude-plugin/plugin.json",
   ".cursor-plugin/plugin.json",
   "package-lock.json",
+  "gemini-extension.json",
 ]) {
   const manifest = JSON.parse(await readFile(join(plugin, file), "utf8"));
   if (manifest.version !== version)
     throw new Error(`Plugin version mismatch in ${file}.`);
 }
+// Git installs load the same instructions from the shared plugin directory.
+const geminiRoot = JSON.parse(
+  await readFile(join(root, "gemini-extension.json"), "utf8"),
+);
+const geminiPackage = JSON.parse(
+  await readFile(join(plugin, "gemini-extension.json"), "utf8"),
+);
+if (
+  geminiRoot.name !== geminiPackage.name ||
+  geminiRoot.version !== version ||
+  resolve(root, geminiRoot.contextFileName) !==
+    resolve(plugin, geminiPackage.contextFileName)
+)
+  throw new Error(
+    "Gemini manifests must use the shared plugin version and skill.",
+  );
+await readFile(resolve(root, geminiRoot.contextFileName), "utf8");
 // Resolve the monorepo catalog exactly as Cursor does.
 const cursorCatalog = JSON.parse(
   await readFile(join(root, ".cursor-plugin/marketplace.json"), "utf8"),
@@ -87,6 +105,7 @@ if (process.argv.includes("--zip")) {
     await include(directory);
   for (const name of [
     "plugin.json",
+    "gemini-extension.json",
     "package.json",
     "package-lock.json",
     "README.md",

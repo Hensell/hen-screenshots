@@ -63,8 +63,8 @@ describe("image import boundaries", () => {
   });
   it("enforces count, per-image size and aggregate size before reading files", async () => {
     await expect(
-      importImages(Array.from({ length: 21 }, () => png())),
-    ).rejects.toThrow("20 images");
+      importImages(Array.from({ length: 51 }, () => png())),
+    ).rejects.toThrow("50 images");
     const large = png();
     Object.defineProperty(large, "size", { value: LIMITS.assetBytes + 1 });
     await expect(importImages([large])).rejects.toThrow("50 MB");

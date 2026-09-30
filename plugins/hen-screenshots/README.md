@@ -2,12 +2,12 @@
 
 Create screenshot series from local captures with the same templates and scene engine as [Hen Screenshots](https://screenshots.hensell.dev/). Export PNGs, a contact-sheet preview, a ZIP organized by language, and an editable `.henscreenshots` project.
 
-**Version 0.2.4 · MIT · Local rendering.** This version preserves copied typography from the web studio, including font weight, scale, line height, and supporting-text opacity, when importing and rendering editable projects. These attributes are also available in design specifications. It includes manifests for Codex, Claude Code, and Cursor. Official directory availability is tracked in the [distribution notes](https://github.com/Hensell/hen-screenshots/blob/main/docs/plugin-distribution.md). No Hen account, API key, MCP server, background service, or `.exe` is required. Your agent provider's plan and data policies still apply.
+**Version 0.2.6 · MIT · Local rendering.** This version adds Apple device formats and matching frames, Google Play large-screen presets up to 7680 px, and a shared editing limit of 50 slides for adding, duplicating, and panoramas. It preserves copied typography from the web studio, including font weight, scale, line height, and supporting-text opacity, when importing and rendering editable projects. These attributes are also available in design specifications. It includes manifests for Codex, Claude Code, Cursor, and Gemini CLI. Official directory availability is tracked in the [distribution notes](https://github.com/Hensell/hen-screenshots/blob/main/docs/plugin-distribution.md). No Hen account, API key, MCP server, background service, or `.exe` is required. Your agent provider's plan and data policies still apply.
 
 ## Requirements
 
 - Node.js **22.12+**, including npm, available in your agent's terminal.
-- Codex, Claude Code, or Cursor with local file and terminal access.
+- Codex, Claude Code, Cursor, or Gemini CLI with local file and terminal access.
 - Internet for installation of pinned npm packages and native rendering libraries. Rendering works offline after setup.
 
 The release checks exercise clean ZIP installation and rendering on GitHub's Ubuntu, Windows, and macOS runners. See the [package checks](https://github.com/Hensell/hen-screenshots/actions/workflows/plugin-release-check.yml) for the actual results and OS/architecture reports. Other systems and architectures are not certified by that matrix.
@@ -39,6 +39,22 @@ Inside Claude Code:
 Start a new session and invoke `/hen-screenshots:create-screenshots`. Ask it to run doctor and complete setup before the first render, as in the Codex example above.
 
 These commands install from the Hen repository marketplace. They do not install from either platform's official directory.
+
+## Install in Gemini CLI
+
+Install the tagged release from the repository:
+
+```sh
+gemini extensions install https://github.com/Hensell/hen-screenshots --ref plugin-v0.2.6
+```
+
+Review Gemini's installation consent prompt, then start a new Gemini CLI session. Ask:
+
+> Use Hen Screenshots to create an app-store screenshot series from my local captures. Run doctor and setup if needed, then show the preview before exporting.
+
+The Git extension loads the same skill from `plugins/hen-screenshots/skills/create-screenshots/SKILL.md`. The versioned ZIP is also a valid extension: extract the complete `hen-screenshots` folder and run `gemini extensions install /absolute/path/to/hen-screenshots`. In that package, the skill is available under `skills/`. Both installations use the same local renderer and setup script.
+
+To update later, run `gemini extensions update hen-screenshots`. An installation pinned with `--ref` stays on that tag; install the new release tag when upgrading a pinned installation. Gemini CLI extensions are separate from the consumer Gemini web app. The [Gemini extension gallery](https://geminicli.com/extensions/) is indexed separately from installation support.
 
 ## Install in Cursor
 
@@ -73,18 +89,18 @@ From the extracted directory:
 node scripts/setup.mjs
 ```
 
-Setup installs the locked dependencies in that directory and runs `doctor`. It does not install Node globally or alter your source images. A successful check reports `"ok": true` and version `0.2.4`.
+Setup installs the locked dependencies in that directory and runs `doctor`. It does not install Node globally or alter your source images. A successful check reports `"ok": true` and version `0.2.6`.
 
 To verify the archive before extracting it:
 
 ```sh
 # macOS
-shasum -a 256 -c hen-screenshots-plugin-0.2.4.zip.sha256
+shasum -a 256 -c hen-screenshots-plugin-0.2.6.zip.sha256
 # Linux
-sha256sum -c hen-screenshots-plugin-0.2.4.zip.sha256
+sha256sum -c hen-screenshots-plugin-0.2.6.zip.sha256
 ```
 
-On Windows, use `Get-FileHash .\hen-screenshots-plugin-0.2.4.zip -Algorithm SHA256` in PowerShell and compare the hash with the `.sha256` file.
+On Windows, use `Get-FileHash .\hen-screenshots-plugin-0.2.6.zip -Algorithm SHA256` in PowerShell and compare the hash with the `.sha256` file.
 
 For a Claude Code session using the extracted ZIP:
 

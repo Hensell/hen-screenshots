@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - "plugins/**"
+      - "gemini-extension.json"
       - ".agents/plugins/**"
       - ".claude-plugin/**"
       - ".cursor-plugin/**"
@@ -17,6 +18,7 @@ on:
   pull_request:
     paths:
       - "plugins/**"
+      - "gemini-extension.json"
       - ".agents/plugins/**"
       - ".claude-plugin/**"
       - ".cursor-plugin/**"
@@ -44,6 +46,10 @@ jobs:
         run: |
           npx --yes --package=@anthropic-ai/claude-code@2.1.268 claude plugin validate plugins/hen-screenshots
           npx --yes --package=@anthropic-ai/claude-code@2.1.268 claude plugin validate .
+      - name: Validate Gemini Git and packaged extension manifests
+        run: |
+          npx --yes --package=@google/gemini-cli@0.60.0 gemini extensions validate .
+          npx --yes --package=@google/gemini-cli@0.60.0 gemini extensions validate plugins/hen-screenshots
       - uses: actions/upload-artifact@v4
         with:
           name: hen-plugin-package

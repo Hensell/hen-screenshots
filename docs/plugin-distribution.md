@@ -1,5 +1,9 @@
 # Plugin distribution
 
+Version **0.2.6** is being prepared on September 30, 2026. It includes the 0.2.5 device formats and slide-capacity improvements and adds Gemini CLI extension manifests for Git and ZIP installations. The shared skill and local renderer are unchanged between providers. OpenAI publication and Gemini gallery indexing remain unconfirmed until verified.
+
+Version **0.2.5** is prepared for the website ZIP on September 30, 2026. It adds Apple formats and frame variants, Google Play large-screen presets up to 7680 px, and consistent 50-slide editing capacity. Local validation passed 763 tests, lint, formatting, build, and package smoke checks. GitHub release and official-directory submission are separate and have not been performed for this version. The latest confirmed OpenAI directory version remains **0.2.4**.
+
 Version **0.2.4** is available in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.4) and website download. It preserves copied typography in imported projects and exposes the same attributes in design specifications. [Release notes](plugin-v0.2.4-release-notes.md). Version **0.2.4** was also approved and published in the [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6) on September 29, 2026. Its skill scan passed; after the publisher explicitly confirmed the terms and compliance declarations, submission was approved and the portal confirmed **Plugin published!**. ChatGPT visibility may take a short time to refresh.
 
 Version **0.2.3** is available in the [GitHub Release](https://github.com/Hensell/hen-screenshots/releases/tag/plugin-v0.2.3). It adds supporting-text size control and preserves template defaults. [Release notes](plugin-v0.2.3-release-notes.md). The OpenAI skill scan passed on September 28, 2026. After the publisher confirmed the terms and compliance declarations, the portal approved the version and publication completed. The [OpenAI Plugins Directory](https://chatgpt.com/plugins/plugins_6aa32bb05be881918e9fa402a5a1cde6) now provides **0.2.3**; the portal confirmed **Published**. Earlier scan attempts returned `Activity task failed` without an actionable package finding. Anthropic remains **In review**; Cursor was not found in its public marketplace. Follow-up emails were sent to both publishers on September 26, 2026.
@@ -12,9 +16,9 @@ Version 0.2.1 adds schema 11 project imports and background-image rendering. See
 
 ## Install
 
-See the [plugin README](../plugins/hen-screenshots/README.md) for Codex, Claude Code, Cursor, ZIP installation, updates, requirements, and troubleshooting. The [website guide](https://screenshots.hensell.dev/agents/) provides translated instructions.
+See the [plugin README](../plugins/hen-screenshots/README.md) for Codex, Claude Code, Cursor, Gemini CLI, ZIP installation, updates, requirements, and troubleshooting. The [website guide](https://screenshots.hensell.dev/agents/) provides translated instructions.
 
-The repository contains `.agents/plugins/marketplace.json` for Codex and `.claude-plugin/marketplace.json` for Claude Code. The Cursor catalog is `.cursor-plugin/marketplace.json`. All three point to `plugins/hen-screenshots`, which includes the built renderer, icon, and fonts. The user or agent runs `scripts/setup.mjs` once in the installed plugin directory to download the locked dependencies and run doctor.
+The repository contains `.agents/plugins/marketplace.json` for Codex and `.claude-plugin/marketplace.json` for Claude Code. The Cursor catalog is `.cursor-plugin/marketplace.json`. All three point to `plugins/hen-screenshots`, which includes the built renderer, icon, and fonts. Gemini CLI uses the root `gemini-extension.json` for Git installation and the package manifest for ZIP installation. Both load the shared skill. The user or agent runs `scripts/setup.mjs` once in the installed plugin directory to download the locked dependencies and run doctor.
 
 No `node_modules`, personal captures, or project files belong in the release archive. Setup does not require a source build, administrator privileges, or a Hen service.
 
@@ -46,7 +50,7 @@ Local release preparation also tests the Codex and Claude Code marketplace insta
 
 ## Publish a plugin update
 
-1. Update the plugin version together in `package.json`, `package-lock.json`, `plugin.json`, `.codex-plugin/plugin.json`, `.claude-plugin/plugin.json`, and `.cursor-plugin/plugin.json`. The web guide and CLI read the package version.
+1. Update the plugin version together in `package.json`, `package-lock.json`, `plugin.json`, `.codex-plugin/plugin.json`, `.claude-plugin/plugin.json`, `.cursor-plugin/plugin.json`, both `gemini-extension.json` manifests, and release-tag installation examples. The web guide and CLI read the package version.
 2. Run `npm ci`, `npm run check`, and `npm run plugin:pack` from the source root. Include the regenerated renderer, public assets, and license in the commit.
 3. Extract the ZIP outside the repository, run its setup command, then run `node scripts/test-plugin-package.mjs /absolute/path/to/extracted/hen-screenshots`. Inspect `preview.png` and full-size PNGs in the reported output folder.
 4. Push the reviewed commit and wait for the package-check workflow for that exact commit. Investigate any failing platform before advertising support.

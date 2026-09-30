@@ -133,7 +133,7 @@ describe("personal templates", () => {
     expect(() => appendTemplate(target, template, [])).toThrow();
     expect(target).toEqual(before);
     target.exportProfile = "play-phone-portrait";
-    target.shots = Array.from({ length: 8 }, (_, index) =>
+    target.shots = Array.from({ length: LIMITS.shots }, (_, index) =>
       createShot("capture", index),
     );
     expect(templateAppendIssue(target, template.project)).toMatch(

@@ -18,6 +18,44 @@ const ids = (filters: Partial<CatalogFilters>) =>
   browse(filters).items.map((item) => item.id);
 
 describe("template discovery", () => {
+  it("combines quick device filters with search and favorites and clears back to the full catalog", () => {
+    expect(ids({ device: "desktop" })).toEqual([
+      "portfolio-laptop",
+      "portfolio-monitor",
+      "portfolio-laptop-editorial",
+      "portfolio-monitor-dark",
+    ]);
+    expect(
+      ids({ device: "desktop", query: "monitor", appearance: "dark" }),
+    ).toEqual(["portfolio-monitor-dark"]);
+    expect(ids({ device: "multi-device" })).toEqual([
+      "sidekick",
+      "handoff",
+      "companion",
+      "duet",
+      "workspace",
+      "desktop-suite",
+      "ecosystem",
+      "constellation",
+    ]);
+    expect(ids({ device: "mobile", layout: "panorama" })).toHaveLength(11);
+    const favoriteResults = queryCatalog(
+      templateCatalogIndex,
+      { ...defaultCatalogFilters, device: "desktop", favoritesOnly: true },
+      new Set(["portfolio-laptop", "sidekick"]),
+    );
+    expect(favoriteResults.items.map((item) => item.id)).toEqual([
+      "portfolio-laptop",
+    ]);
+    expect(
+      new Set([
+        ...ids({ device: "mobile" }),
+        ...ids({ device: "desktop" }),
+        ...ids({ device: "multi-device" }),
+      ]).size,
+    ).toBe(templates.length);
+    expect(ids(defaultCatalogFilters)).toHaveLength(templates.length);
+  });
   it("combines favorites with search, appearance, categories and sorting without hiding category counts", () => {
     const favorites = new Set(["cobweb", "boo", "moonlight", "stale-id"]);
     const filtered = queryCatalog(

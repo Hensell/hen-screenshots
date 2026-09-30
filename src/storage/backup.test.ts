@@ -211,7 +211,7 @@ describe("portable project backups", () => {
     );
     const restored = await importProject(backup);
     expect(restored.project.shots).toHaveLength(LIMITS.shots);
-    expect(restored.assets).toHaveLength(40);
+    expect(restored.assets).toHaveLength(LIMITS.shots * 2);
     expect(new Set(referencedAssetIds(restored.project))).toEqual(
       new Set(restored.assets.map((asset) => asset.id)),
     );

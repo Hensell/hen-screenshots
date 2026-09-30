@@ -1,0 +1,104 @@
+.screenshot-fit {
+  min-width: 0;
+}
+.screenshot-fit-heading {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 13px;
+}
+.screenshot-fit-options {
+  display: flex;
+  gap: 6px;
+}
+.screenshot-fit-options button {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border: 1px solid var(--brand-border);
+  border-radius: 8px;
+  background: #f9f8f3;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.screenshot-fit-options button[aria-pressed="true"] {
+  border-color: var(--brand-accent, #b9472f);
+  background: #f5e8df;
+  color: #a23f2d;
+  box-shadow: inset 0 0 0 1px var(--brand-accent, #b9472f);
+}
+.screenshot-fit-options button:hover:not(:disabled) {
+  border-color: #b9472f;
+}
+.screenshot-fit-options button:focus-visible {
+  outline: 2px solid #b9472f;
+  outline-offset: 3px;
+}
+.screenshot-fit-options button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.screenshot-fit-options small {
+  color: var(--brand-muted, #686e67);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.screenshot-fit-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 38px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.screenshot-fit-diagram > span {
+  display: block;
+  width: 100%;
+  height: 24px;
+  background: currentColor;
+  opacity: 0.45;
+}
+.screenshot-fit-cover > span {
+  height: 100%;
+}
+.screenshot-fit-compact {
+  flex-shrink: 0;
+}
+.screenshot-fit-compact .screenshot-fit-options {
+  gap: 2px;
+  border: 1px solid var(--brand-border);
+  border-radius: 8px;
+  padding: 3px;
+}
+.screenshot-fit-compact button {
+  flex: none;
+  min-height: 38px;
+  justify-content: center;
+  padding: 6px 10px;
+  border-color: transparent;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+}
+@media (max-width: 950px) {
+  .editing-actions,
+  .slide-tools {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 600px) {
+  .screenshot-fit-compact {
+    width: 100%;
+  }
+  .screenshot-fit-compact button {
+    flex: 1;
+  }
+}

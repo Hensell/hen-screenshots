@@ -165,6 +165,7 @@ describe("adaptive compositions", () => {
                 shot.phone.width,
                 frame,
                 orientation,
+                project.exportProfile,
               );
               const radians = (Math.abs(shot.phone.rotation) * Math.PI) / 180;
               const boundW =

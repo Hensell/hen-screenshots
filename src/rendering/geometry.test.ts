@@ -237,3 +237,85 @@ describe("capture geometry", () => {
     ).toThrow();
   });
 });
+
+describe("11-inch iPad frame", () => {
+  it.each([true, false])(
+    "uses the selected screen proportions with frame=%s",
+    (frame) => {
+      const portrait = deviceGeometry(
+        "ipad",
+        620,
+        frame,
+        "portrait",
+        "apple-ipad11-portrait",
+      );
+      const landscape = deviceGeometry(
+        "ipad",
+        620,
+        frame,
+        "landscape",
+        "apple-ipad11-landscape",
+      );
+      expect(portrait.screen.height / portrait.screen.width).toBeCloseTo(
+        2420 / 1668,
+      );
+      expect(landscape.screen.width / landscape.screen.height).toBeCloseTo(
+        2420 / 1668,
+      );
+      expect(portrait.height).toBeGreaterThan(
+        deviceGeometry("ipad", 620, frame).height,
+      );
+      expect(
+        deviceGeometry("ios", 620, frame, "portrait", "apple-ipad11-portrait"),
+      ).toEqual(deviceGeometry("ios", 620, frame));
+    },
+  );
+});
+
+describe("additional Apple hardware", () => {
+  it.each([
+    ["apple-iphone63", "ios", 2622 / 1206, "island"],
+    ["apple-iphone61", "ios", 2532 / 1170, "notch"],
+    ["apple-iphone55", "ios", 2208 / 1242, "lens"],
+    ["apple-iphone47", "ios", 1334 / 750, "lens"],
+    ["apple-iphone4", "ios", 1136 / 640, "lens"],
+    ["apple-iphone35", "ios", 960 / 640, "lens"],
+    ["apple-ipad129", "ipad", 2732 / 2048, "lens"],
+    ["apple-ipad105", "ipad", 2224 / 1668, "lens"],
+    ["apple-ipad97", "ipad", 2048 / 1536, "lens"],
+  ] as const)(
+    "fits %s hardware in both orientations",
+    (profile, family, ratio, cameraKind) => {
+      for (const orientation of ["portrait", "landscape"] as const) {
+        const geometry = deviceGeometry(
+          family,
+          620,
+          true,
+          orientation,
+          `${profile}-${orientation}`,
+        );
+        expect(
+          orientation === "portrait"
+            ? geometry.screen.height / geometry.screen.width
+            : geometry.screen.width / geometry.screen.height,
+        ).toBeCloseTo(ratio);
+        expect(geometry.cameraKind).toBe(cameraKind);
+        expect(Boolean(geometry.homeButton)).toBe(cameraKind === "lens");
+        for (const part of [
+          geometry.screen,
+          geometry.camera,
+          ...(geometry.homeButton ? [geometry.homeButton] : []),
+        ]) {
+          expect(part.x).toBeGreaterThanOrEqual(0);
+          expect(part.y).toBeGreaterThanOrEqual(0);
+          expect(part.x + part.width).toBeLessThanOrEqual(
+            geometry.width + 0.001,
+          );
+          expect(part.y + part.height).toBeLessThanOrEqual(
+            geometry.height + 0.001,
+          );
+        }
+      }
+    },
+  );
+});

@@ -55,12 +55,9 @@ export function editLinkedShots(
 ): void {
   linkedShots(project, shotId).forEach(recipe);
 }
-export function shotCapacity(project: Project): number {
-  const profile = resolveExportProfile(project);
-  // Banner projects can keep alternatives; publishing still uses one per language.
-  return profile.category === "banner"
-    ? LIMITS.shots
-    : Math.min(LIMITS.shots, profile.maxCount);
+export function shotCapacity(_project: Project): number {
+  // Editing capacity is independent of the destination's publication limit.
+  return LIMITS.shots;
 }
 
 export const panoramaStyle = {
@@ -121,6 +118,7 @@ function collectionLayout(
   h: number,
   style: Style,
   id: keyof typeof collectionPanoramaLayouts,
+  exportProfile: string,
 ) {
   const {
     composition,
@@ -142,6 +140,7 @@ function collectionLayout(
     1000,
     style.frame,
     style.deviceOrientation,
+    exportProfile,
   );
   const angle = (Math.abs(rotation) * Math.PI) / 180;
   const scale = Math.min(
@@ -155,6 +154,7 @@ function collectionLayout(
     width,
     style.frame,
     style.deviceOrientation,
+    exportProfile,
   ).height;
   // Keep asymmetric devices across the join even on very wide custom canvases.
   const boundWidth = Math.cos(angle) * width + Math.sin(angle) * height;
@@ -221,7 +221,8 @@ function collectionLayout(
 export function panoramaLayout(project: Project, style: Style) {
   const { height: h } = canonicalCanvas(project);
   const collection = collectionPanoramaId(style.template);
-  if (collection) return collectionLayout(h, style, collection);
+  if (collection)
+    return collectionLayout(h, style, collection, project.exportProfile);
   const right = isPanoramaEnd(style.template);
   const family = panoramaStart(style.template);
   const expressive = family !== "panorama";
@@ -241,6 +242,7 @@ export function panoramaLayout(project: Project, style: Style) {
     1000,
     style.frame,
     style.deviceOrientation,
+    project.exportProfile,
   );
   const radians = (Math.abs(rotation) * Math.PI) / 180;
   const boundW =
@@ -257,6 +259,7 @@ export function panoramaLayout(project: Project, style: Style) {
     width,
     style.frame,
     style.deviceOrientation,
+    project.exportProfile,
   ).height;
   if (expressive)
     return {

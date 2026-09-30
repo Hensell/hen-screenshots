@@ -119,14 +119,31 @@ export function drawDeviceDetails(
       }),
     );
   }
+  if (device.frame && device.homeButton) {
+    group.add(
+      new Konva.Rect({
+        ...device.homeButton,
+        cornerRadius: device.homeButton.radius,
+        fill: "#101114",
+        stroke: "#70747A",
+        strokeWidth: Math.min(device.width, device.height) * 0.002,
+        listening: false,
+      }),
+    );
+  }
   if (!camera || device.family === "card") return;
   const cutout = device.camera;
   const diameter = Math.min(cutout.width, cutout.height);
-  const island = device.family === "ios";
+  const island = device.family === "ios" && device.cameraKind !== "lens";
   group.add(
     new Konva.Rect({
       ...cutout,
-      cornerRadius: cutout.radius,
+      cornerRadius:
+        device.cameraKind === "notch"
+          ? cutout.width > cutout.height
+            ? [0, 0, cutout.radius, cutout.radius]
+            : [0, cutout.radius, cutout.radius, 0]
+          : cutout.radius,
       fill: "#050608",
       stroke: "#24262B",
       strokeWidth: diameter * 0.035,

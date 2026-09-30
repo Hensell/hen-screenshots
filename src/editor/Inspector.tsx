@@ -1,4 +1,4 @@
-import { Select } from "../ui/Select";
+import { ScreenshotFitControl } from "./ScreenshotFitControl";
 import "./my-templates.css";
 import { BackgroundImageInspector } from "./BackgroundImageInspector";
 import { resolveExportProfile } from "../core/export-profiles";
@@ -242,6 +242,7 @@ export function Inspector({
                   shot,
                   resolveStyle(project, shot),
                   Number(event.target.value),
+                  project.exportProfile,
                 );
               else shot.phone[key] = Number(event.target.value);
             }, key)
@@ -1020,6 +1021,7 @@ export function Inspector({
                           target,
                           resolveStyle(project, target),
                           defaultDeviceWidth,
+                          project.exportProfile,
                         ),
                       )
                     }
@@ -1142,22 +1144,10 @@ export function Inspector({
                             "Original status and navigation bars stay in your screenshot. Keep the cutout off if one is already visible.",
                           )}
                     </p>
-                    <label className="field">
-                      {t("Screenshot fit")}
-                      <Select
-                        value={style.fit}
-                        onChange={(event) =>
-                          setStyle({ fit: event.target.value as Style["fit"] })
-                        }
-                      >
-                        <option value="contain">
-                          {t("Fit entire screenshot")}
-                        </option>
-                        <option value="cover">
-                          {t("Fill screen · crop edges")}
-                        </option>
-                      </Select>
-                    </label>
+                    <ScreenshotFitControl
+                      value={style.fit}
+                      onChange={(fit) => setStyle({ fit })}
+                    />
                   </>
                 )}
                 <button

@@ -81,9 +81,9 @@ export const imageImportMessages: Record<string, readonly [string, string]> = {
       "Esta imagen mide {width} × {height} píxeles; el límite es de 24 megapíxeles. Comprime una copia para reducir sus dimensiones.",
       "Esta imagem mede {width} × {height} pixels; o limite é de 24 megapixels. Comprima uma cópia para reduzir suas dimensões.",
     ],
-  "You selected {count} files. Choose up to 20 images at a time.": [
-    "Seleccionaste {count} archivos. Elige hasta 20 imágenes a la vez.",
-    "Você selecionou {count} arquivos. Escolha até 20 imagens de cada vez.",
+  "You selected {count} files. Choose up to 50 images at a time.": [
+    "Seleccionaste {count} archivos. Elige hasta 50 imágenes a la vez.",
+    "Você selecionou {count} arquivos. Escolha até 50 imagens de cada vez.",
   ],
   "This browser could not compress the image. Try a smaller JPEG or PNG.": [
     "Este navegador no pudo comprimir la imagen. Prueba con un JPEG o PNG más pequeño.",

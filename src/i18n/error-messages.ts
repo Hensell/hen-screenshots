@@ -261,9 +261,9 @@ export const errorMessages: Record<string, readonly [string, string]> = {
     "No se pudo leer «{name}». Elige otra imagen.",
     "Não foi possível ler “{name}”. Escolha outra imagem.",
   ],
-  "Choose up to 20 images at a time.": [
-    "Elige hasta 20 imágenes a la vez.",
-    "Escolha até 20 imagens por vez.",
+  "Choose up to 50 images at a time.": [
+    "Elige hasta 50 imágenes a la vez.",
+    "Escolha até 50 imagens por vez.",
   ],
   "Each image must be between 1 byte and 50 MB.": [
     "Cada imagen debe tener entre 1 byte y 50 MB.",

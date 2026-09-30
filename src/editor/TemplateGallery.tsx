@@ -264,6 +264,7 @@ export function TemplateGallery({
   const selectedInResults = results.items.some((item) => item.id === selected);
   const activeFilters =
     Number(filters.favoritesOnly) +
+    Number(filters.device !== "all") +
     Number(filters.category !== "All") +
     Number(filters.layout !== "all") +
     Number(filters.background !== "all") +
@@ -578,6 +579,59 @@ export function TemplateGallery({
               >
                 {t("All templates")}
               </button>
+              {!banners && (
+                <div
+                  className="catalog-device-shortcuts"
+                  role="group"
+                  aria-label={t("Quick device filters")}
+                >
+                  {(
+                    [
+                      {
+                        device: "mobile",
+                        icon: "phone",
+                        label: "Mobile templates",
+                      },
+                      {
+                        device: "desktop",
+                        icon: "laptop",
+                        label: "Laptop and monitor templates",
+                      },
+                      {
+                        device: "multi-device",
+                        icon: "devices",
+                        label: "Multiple-device templates",
+                      },
+                    ] as const
+                  ).map(({ device, icon, label }) => (
+                    <button
+                      key={device}
+                      type="button"
+                      aria-label={t(label)}
+                      title={t(label)}
+                      aria-pressed={filters.device === device}
+                      onClick={() =>
+                        updateFilters({
+                          device: filters.device === device ? "all" : device,
+                        })
+                      }
+                    >
+                      <Icon name={icon} size={20} />
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="catalog-quick-clear"
+                    title={t("Clear filters")}
+                    aria-label={t("Clear filters")}
+                    disabled={!hasFilters}
+                    onClick={clearFilters}
+                  >
+                    <Icon name="reset" size={16} />
+                    {t("Clear")}
+                  </button>
+                </div>
+              )}
               <button
                 type="button"
                 aria-pressed={filters.favoritesOnly}

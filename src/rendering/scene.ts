@@ -440,6 +440,7 @@ export function createScene(
         slot.phone.width,
         style.frame,
         style.deviceOrientation,
+        project.exportProfile,
       );
       const phone = new Konva.Group({
         x: slot.phone.x + device.width / 2 - cropOffset,

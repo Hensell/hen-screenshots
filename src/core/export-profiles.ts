@@ -1,3 +1,4 @@
+import { additionalStoreProfiles } from "./additional-store-formats";
 import { specialProfiles } from "./special-profiles";
 import type { Project } from "./model";
 
@@ -50,6 +51,7 @@ export function validateCustomSize(size: {
 // Fixed, dated store presets. IDs include their device slot, not just an aspect ratio.
 export const exportProfiles = [
   ...specialProfiles,
+  ...additionalStoreProfiles,
   {
     id: "play-feature-graphic",
     name: "Google Play · Feature graphic",
@@ -216,6 +218,28 @@ export const exportProfiles = [
     source: APPLE_SCREENSHOTS,
   },
   {
+    id: "apple-ipad11-portrait",
+    name: "App Store · iPad 11-inch · Portrait",
+    store: "apple",
+    category: "tablet",
+    width: 1668,
+    height: 2420,
+    maxCount: 10,
+    note: "An accepted size for the 11-inch iPad slot.",
+    source: APPLE_SCREENSHOTS,
+  },
+  {
+    id: "apple-ipad11-landscape",
+    name: "App Store · iPad 11-inch · Landscape",
+    store: "apple",
+    category: "tablet",
+    width: 2420,
+    height: 1668,
+    maxCount: 10,
+    note: "An accepted size for the 11-inch iPad slot.",
+    source: APPLE_SCREENSHOTS,
+  },
+  {
     id: "apple-mac",
     name: "App Store · Mac",
     store: "apple",
@@ -351,7 +375,9 @@ export function validateDimensions(
     throw new Error(
       "The exported image does not match the selected preset dimensions.",
     );
-  const special = specialProfiles.find((item) => item.id === profile.id);
+  const special = [...specialProfiles, ...additionalStoreProfiles].find(
+    (item) => item.id === profile.id,
+  );
   if (special) {
     if (
       profile.store !== special.store ||
@@ -384,7 +410,11 @@ export function validateDimensions(
   if (profile.store === "google") {
     const short = Math.min(width, height),
       long = Math.max(width, height);
-    if (short < 320 || long > 3840 || long > short * 2)
+    if (
+      short < 320 ||
+      long > (profile.category === "phone" ? 3840 : 7680) ||
+      long > short * 2
+    )
       throw new Error(
         "These dimensions do not satisfy Google Play screenshot rules.",
       );
@@ -412,12 +442,23 @@ export function validateDimensions(
             [1260, 2736],
             [2736, 1260],
           ],
-      tablet: [
-        [2064, 2752],
-        [2752, 2064],
-        [2048, 2732],
-        [2732, 2048],
-      ],
+      tablet: profile.id.includes("ipad11")
+        ? [
+            [1488, 2266],
+            [2266, 1488],
+            [1668, 2420],
+            [2420, 1668],
+            [1668, 2388],
+            [2388, 1668],
+            [1640, 2360],
+            [2360, 1640],
+          ]
+        : [
+            [2064, 2752],
+            [2752, 2064],
+            [2048, 2732],
+            [2732, 2048],
+          ],
       desktop: [
         [1280, 800],
         [1440, 900],

@@ -168,8 +168,8 @@ describe("image upload recovery", () => {
       reviewImages([png()], LIMITS.assetBytes, c.signal),
     ).rejects.toMatchObject({ name: "AbortError" });
     await expect(
-      reviewImages(Array.from({ length: 21 }, () => png())),
-    ).rejects.toThrow("21 files");
+      reviewImages(Array.from({ length: 51 }, () => png())),
+    ).rejects.toThrow("51 files");
     expect(URL.createObjectURL).not.toHaveBeenCalled();
   });
   it("times out a stalled decoder and releases its URL", async () => {

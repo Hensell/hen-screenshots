@@ -41,13 +41,13 @@ function fixture() {
   return p;
 }
 describe("Google Play banner workspace", () => {
-  it("keeps up to 20 banner alternatives without changing the one-banner export limit", () => {
+  it("keeps up to 50 banner alternatives without changing the one-banner export limit", () => {
     const p = fixture();
-    expect(shotCapacity(p)).toBe(20);
-    for (let i = 1; i < 20; i++)
+    expect(shotCapacity(p)).toBe(50);
+    for (let i = 1; i < 50; i++)
       expect(duplicateUnit(p, p.shots[0].id)).toBeTruthy();
     expect(duplicateUnit(p, p.shots[0].id)).toBeUndefined();
-    expect(p.shots).toHaveLength(20);
+    expect(p.shots).toHaveLength(50);
     expect(getExportProfile(p.exportProfile).maxCount).toBe(1);
   });
   it.each([

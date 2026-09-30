@@ -483,6 +483,7 @@ export function templateLayout(project: Project, style: Style) {
     1000,
     style.frame,
     style.deviceOrientation,
+    project.exportProfile,
   );
   const radians = (Math.abs(rotation) * Math.PI) / 180;
   const boundW =
@@ -496,6 +497,7 @@ export function templateLayout(project: Project, style: Style) {
     width,
     style.frame,
     style.deviceOrientation,
+    project.exportProfile,
   ).height;
   const phone = {
     width,
@@ -575,6 +577,7 @@ function collectionLayout(project: Project, style: Style, template: Template) {
     1000,
     style.frame,
     style.deviceOrientation,
+    project.exportProfile,
   );
   const rotation = template.composition
     ? template.phone.rotation
@@ -596,6 +599,7 @@ function collectionLayout(project: Project, style: Style, template: Template) {
     width,
     style.frame,
     style.deviceOrientation,
+    project.exportProfile,
   ).height;
   return {
     ...template,

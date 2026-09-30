@@ -294,6 +294,7 @@ describe("panorama spread geometry", () => {
                 phone.width,
                 frame,
                 deviceOrientation,
+                project.exportProfile,
               );
               const radians = (Math.abs(phone.rotation) * Math.PI) / 180;
               const boundWidth =
@@ -412,9 +413,9 @@ describe("panorama units in a series", () => {
   });
 
   it.each([
-    ["play-phone-portrait", 8],
-    ["apple-iphone69-portrait", 10],
-    ["portfolio-card", 20],
+    ["play-phone-portrait", 50],
+    ["apple-iphone69-portrait", 50],
+    ["portfolio-card", 50],
   ] as const)(
     "honors %s capacity %i without partial mutations",
     (profile, capacity) => {

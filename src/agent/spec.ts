@@ -170,7 +170,7 @@ export function parseDesignSpec(value: unknown): DesignSpec {
     !raw.slides.length ||
     raw.slides.length > LIMITS.shots
   )
-    throw new Error("Provide 1–20 slides.");
+    throw new Error("Provide 1–50 slides.");
   raw.slides.forEach((value, index) => {
     const at = `slides[${index}]`;
     const slide = object(

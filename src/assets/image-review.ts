@@ -84,7 +84,7 @@ export async function reviewImages(
 ): Promise<ReviewedImage[]> {
   if (files.length > LIMITS.shots)
     throw new Error(
-      `You selected ${files.length} files. Choose up to 20 images at a time.`,
+      `You selected ${files.length} files. Choose up to 50 images at a time.`,
     );
   const results: ReviewedImage[] = [];
   for (const file of files) {

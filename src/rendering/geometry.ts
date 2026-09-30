@@ -1,3 +1,4 @@
+import { appleFrameVariants } from "../core/additional-store-formats";
 import type { DeviceFamily, Style } from "../core/model";
 
 export interface Rect {
@@ -16,6 +17,8 @@ export interface DeviceGeometry {
   radius: number;
   screen: Rect & { radius: number };
   camera: Rect & { radius: number };
+  homeButton?: RoundedRect;
+  cameraKind?: "island" | "notch" | "lens";
   /** Physical details stay inside the same footprint and rotate with the frame. */
   handheld?: {
     shell: RoundedRect;
@@ -40,40 +43,69 @@ function handheldGeometry(
   family: DeviceFamily,
   width: number,
   frame: boolean,
+  exportProfile?: string,
 ): DeviceGeometry {
   const tablet = family === "ipad" || family === "android-tablet";
+  const variant =
+    (family === "ipad" && exportProfile?.startsWith("apple-ipad")) ||
+    (family === "ios" && exportProfile?.startsWith("apple-iphone"))
+      ? appleFrameVariants[
+          exportProfile?.replace(/-(portrait|landscape)$/, "") ?? ""
+        ]
+      : undefined;
+  const home = variant?.hardware === "home";
+  const notch = variant?.hardware === "notch";
+  const ipad11 = exportProfile?.startsWith("apple-ipad11-") ?? false;
   const inset = frame
-    ? width * (tablet ? 0.035 : family === "ios" ? 0.027 : 0.024)
+    ? width * (home ? 0.045 : tablet ? 0.035 : family === "ios" ? 0.027 : 0.024)
     : 0;
+  const verticalInset = frame && home ? width * 0.14 : inset;
   const screenWidth = width - inset * 2;
   const screenHeight =
     screenWidth *
-    (family === "ipad"
-      ? 4 / 3
-      : family === "android-tablet"
-        ? 16 / 10
-        : family === "ios"
-          ? 19.5 / 9
-          : 20 / 9);
-  const radius = tablet
+    (variant?.ratio ??
+      (family === "ipad"
+        ? ipad11
+          ? 2420 / 1668
+          : 4 / 3
+        : family === "android-tablet"
+          ? 16 / 10
+          : family === "ios"
+            ? 19.5 / 9
+            : 20 / 9));
+  const radius = home
     ? frame
-      ? width * (family === "ipad" ? 0.058 : 0.043)
+      ? width * 0.055
       : 0
-    : width * (family === "ios" ? (frame ? 0.13 : 0.102) : 0.078);
+    : tablet
+      ? frame
+        ? width * (family === "ipad" ? 0.058 : 0.043)
+        : 0
+      : width * (family === "ios" ? (frame ? 0.13 : 0.102) : 0.078);
   const screen = {
     x: inset,
-    y: inset,
+    y: verticalInset,
     width: screenWidth,
     height: screenHeight,
-    radius: Math.max(0, radius - inset),
+    radius: home ? 0 : Math.max(0, radius - inset),
   };
-  const cameraWidth = tablet
-    ? width * 0.009
-    : family === "ios"
-      ? screenWidth * 0.29
-      : screenWidth * 0.032;
-  const cameraHeight = family === "ios" ? screenWidth * 0.081 : cameraWidth;
-  const height = screenHeight + inset * 2;
+  const cameraWidth = home
+    ? width * 0.013
+    : notch
+      ? screenWidth * 0.42
+      : tablet
+        ? width * 0.009
+        : family === "ios"
+          ? screenWidth * 0.29
+          : screenWidth * 0.032;
+  const cameraHeight = home
+    ? cameraWidth
+    : notch
+      ? screenWidth * 0.075
+      : family === "ios"
+        ? screenWidth * 0.081
+        : cameraWidth;
+  const height = screenHeight + verticalInset * 2;
   const edge = width * (family === "ios" ? 0.006 : 0.004);
   const sideButton = (
     right: boolean,
@@ -115,16 +147,33 @@ function handheldGeometry(
     height,
     radius,
     screen,
+    cameraKind:
+      home || tablet || family !== "ios" ? "lens" : notch ? "notch" : "island",
+    ...(home && frame
+      ? {
+          homeButton: {
+            x: width * 0.465,
+            y: height - verticalInset / 2 - width * 0.035,
+            width: width * 0.07,
+            height: width * 0.07,
+            radius: width * 0.035,
+          },
+        }
+      : {}),
     camera: {
       x:
-        tablet && frame
+        !home && tablet && frame
           ? width - (inset + cameraWidth) / 2
           : (width - cameraWidth) / 2,
-      y: tablet
-        ? frame
-          ? (height - cameraHeight) / 2
-          : width * 0.012
-        : inset + screenWidth * (family === "ios" ? 0.026 : 0.022),
+      y: home
+        ? verticalInset * 0.42
+        : notch
+          ? inset
+          : tablet
+            ? frame
+              ? (height - cameraHeight) / 2
+              : width * 0.012
+            : inset + screenWidth * (family === "ios" ? 0.026 : 0.022),
       width: cameraWidth,
       height: cameraHeight,
       radius: cameraHeight / 2,
@@ -174,6 +223,7 @@ export function deviceGeometry(
   width: number,
   frame: boolean,
   orientation: "portrait" | "landscape" = "portrait",
+  exportProfile?: string,
 ): DeviceGeometry {
   positive(width, "Device width");
   if (family === "card") {
@@ -305,13 +355,15 @@ export function deviceGeometry(
   }
   if (!["android", "ios", "ipad", "android-tablet"].includes(family))
     throw new Error("This device frame is not supported.");
-  if (orientation === "portrait") return handheldGeometry(family, width, frame);
+  if (orientation === "portrait")
+    return handheldGeometry(family, width, frame, exportProfile);
 
   // Rotate the physical geometry; landscape bezels retain their original proportions.
   const portrait = handheldGeometry(
     family,
-    width / handheldGeometry(family, 1, frame).height,
+    width / handheldGeometry(family, 1, frame, exportProfile).height,
     frame,
+    exportProfile,
   );
   const rotate = (rect: Rect & { radius: number }) => ({
     x: rect.y,
@@ -326,6 +378,7 @@ export function deviceGeometry(
     height: portrait.width,
     screen: rotate(portrait.screen),
     camera: rotate(portrait.camera),
+    ...(portrait.homeButton ? { homeButton: rotate(portrait.homeButton) } : {}),
     ...(portrait.handheld
       ? {
           handheld: {

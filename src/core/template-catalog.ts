@@ -6,11 +6,13 @@ import { templates } from "./templates";
 export const catalogPageSizes = [12, 24, 48] as const;
 export type CatalogPageSize = (typeof catalogPageSizes)[number];
 export type CatalogLayout = "all" | "single" | "panorama" | "multi-device";
+export type CatalogDevice = "all" | "mobile" | "desktop" | "multi-device";
 export type CatalogBackground = "all" | "solid" | "gradient";
 export type CatalogAppearance = "all" | "light" | "dark" | "colorful";
 export type CatalogSort = "recommended" | "name-asc" | "name-desc";
 export interface CatalogFilters {
   favoritesOnly: boolean;
+  device: CatalogDevice;
   query: string;
   category: string;
   layout: CatalogLayout;
@@ -20,6 +22,7 @@ export interface CatalogFilters {
 }
 export const defaultCatalogFilters: CatalogFilters = {
   favoritesOnly: false,
+  device: "all",
   query: "",
   category: "All",
   layout: "all",
@@ -40,6 +43,7 @@ export interface CatalogItem {
   description: string;
   note: string;
   layout: Exclude<CatalogLayout, "all">;
+  device?: Exclude<CatalogDevice, "all">;
   background: Exclude<CatalogBackground, "all">;
   appearance?: Exclude<CatalogAppearance, "all">;
   keywords?: readonly string[];
@@ -89,6 +93,7 @@ export function queryCatalog<T extends CatalogItem>(
   ]);
   const candidates = index.filter(
     ({ item, text }) =>
+      (filters.device === "all" || item.device === filters.device) &&
       (!filters.favoritesOnly || favorites.has(item.id)) &&
       (filters.layout === "all" || item.layout === filters.layout) &&
       (filters.background === "all" ||
@@ -177,6 +182,12 @@ export function catalogPageNumbers(
 function catalogItems(items: typeof templates) {
   return items.map((template) => ({
     ...template,
+    device: compositionId(template.id)
+      ? ("multi-device" as const)
+      : template.style.device === "laptop" ||
+          template.style.device === "monitor"
+        ? ("desktop" as const)
+        : ("mobile" as const),
     layout: isPanoramaTemplate(template.id)
       ? ("panorama" as const)
       : compositionId(template.id)

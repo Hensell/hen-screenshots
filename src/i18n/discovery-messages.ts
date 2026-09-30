@@ -1,4 +1,32 @@
 export const discoveryMessages: Record<string, readonly [string, string]> = {
+  "How your screenshot fits": [
+    "Cómo encaja tu captura",
+    "Como sua captura se encaixa",
+  ],
+  "Full image": ["Completa", "Completa"],
+  "Fill screen": ["Llenar", "Preencher"],
+  "Keeps everything visible; may leave margins.": [
+    "Muestra todo; puede dejar márgenes.",
+    "Mostra tudo; pode deixar margens.",
+  ],
+  "Fills the screen; crops the edges.": [
+    "Llena la pantalla; recorta los bordes.",
+    "Preenche a tela; recorta as bordas.",
+  ],
+  "Quick device filters": [
+    "Filtros rápidos de dispositivo",
+    "Filtros rápidos de dispositivo",
+  ],
+  "Mobile templates": ["Plantillas para móvil", "Modelos para celular"],
+  "Laptop and monitor templates": [
+    "Plantillas con laptop y monitor",
+    "Modelos com notebook e monitor",
+  ],
+  "Multiple-device templates": [
+    "Plantillas con varios dispositivos",
+    "Modelos com vários dispositivos",
+  ],
+  Clear: ["Limpiar", "Limpar"],
   "Browse options": ["Opciones de vista", "Opções de visualização"],
   "Show results": ["Ver resultados", "Ver resultados"],
   "All templates": ["Todas las plantillas", "Todos os modelos"],

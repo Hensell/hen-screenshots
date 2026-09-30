@@ -215,6 +215,7 @@ export function compositionLayout(
       pose.width,
       frame.frame,
       frame.deviceOrientation,
+      project.exportProfile,
     );
     if (mirrored) {
       pose.x = 1000 - pose.x - size.width;
@@ -249,6 +250,7 @@ export function compositionLayout(
       width,
       frame.frame,
       frame.deviceOrientation,
+      project.exportProfile,
     );
     const angle = (Math.abs(box.rotation) * Math.PI) / 180;
     const rotatedWidth =

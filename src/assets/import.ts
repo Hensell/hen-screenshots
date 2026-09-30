@@ -61,7 +61,7 @@ export function loadImage(asset: Asset): Promise<HTMLImageElement> {
 /** Validate the whole batch before returning any assets; the caller owns persistence. */
 export async function importImages(files: File[]): Promise<Asset[]> {
   if (files.length > LIMITS.shots)
-    throw new Error("Choose up to 20 images at a time.");
+    throw new Error("Choose up to 50 images at a time.");
   for (const file of files) {
     if (!file.size)
       throw new Error(

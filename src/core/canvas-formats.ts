@@ -1,3 +1,4 @@
+import { additionalStoreSlots } from "./additional-store-formats";
 import {
   getExportProfile,
   isBannerProfile,
@@ -49,6 +50,16 @@ export const storeSlots: readonly StoreSlot[] = [
     profiles: {
       portrait: "apple-ipad13-portrait",
       landscape: "apple-ipad13-landscape",
+    },
+  },
+  {
+    id: "apple-ipad11",
+    name: "iPad · 11-inch",
+    store: "apple",
+    category: "tablet",
+    profiles: {
+      portrait: "apple-ipad11-portrait",
+      landscape: "apple-ipad11-landscape",
     },
   },
   {
@@ -189,6 +200,7 @@ export const storeSlots: readonly StoreSlot[] = [
     category: "tv",
     profiles: { landscape: "apple-tv-4k" },
   },
+  ...additionalStoreSlots,
 ];
 
 interface PortfolioFormat {

@@ -1,3 +1,4 @@
+import { ScreenshotFitControl } from "./ScreenshotFitControl";
 import { Select } from "../ui/Select";
 import { useT } from "../i18n/react";
 import { useEditor } from "./store";
@@ -126,6 +127,7 @@ export function DeviceCompositionInspector({
                   device,
                   resolveStyle(draft, device),
                   Number(event.target.value),
+                  draft.exportProfile,
                 );
               else device.phone[key] = Number(event.target.value);
             }, key)
@@ -310,18 +312,10 @@ export function DeviceCompositionInspector({
             </Select>
           </label>
         )}
-        <label className="field">
-          {t("Screenshot fit")}
-          <Select
-            value={style.fit}
-            onChange={(event) =>
-              setStyle({ fit: event.target.value as Style["fit"] })
-            }
-          >
-            <option value="contain">{t("Fit entire screenshot")}</option>
-            <option value="cover">{t("Fill screen · crop edges")}</option>
-          </Select>
-        </label>
+        <ScreenshotFitControl
+          value={style.fit}
+          onChange={(fit) => setStyle({ fit })}
+        />
         <label className="check-field">
           <input
             type="checkbox"

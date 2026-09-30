@@ -37,6 +37,16 @@ for (const manifest of [
     JSON.parse(await readFile(join(plugin, manifest), "utf8")).version,
     version,
   );
+const gemini = JSON.parse(
+  await readFile(join(plugin, "gemini-extension.json"), "utf8"),
+);
+assert.equal(gemini.name, "hen-screenshots");
+assert.equal(gemini.version, version);
+assert.equal(gemini.contextFileName, "skills/create-screenshots/SKILL.md");
+assert.equal(
+  await readFile(join(plugin, gemini.contextFileName), "utf8"),
+  skill,
+);
 const work = process.argv[3]
   ? resolve(process.argv[3])
   : await mkdtemp(join(tmpdir(), "hen-plugin-release-"));

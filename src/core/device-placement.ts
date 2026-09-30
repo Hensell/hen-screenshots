@@ -31,6 +31,7 @@ export function resizeDevice(
   shot: Shot,
   style: Style,
   requestedWidth: number,
+  exportProfile?: string,
 ): void {
   if (!Number.isFinite(requestedWidth)) return;
   const width = Math.round(
@@ -44,12 +45,14 @@ export function resizeDevice(
     shot.phone.width,
     style.frame,
     style.deviceOrientation,
+    exportProfile,
   );
   const next = deviceGeometry(
     style.device,
     width,
     style.frame,
     style.deviceOrientation,
+    exportProfile,
   );
   setDevicePlacement(shot, {
     x: shot.phone.x + (current.width - next.width) / 2,

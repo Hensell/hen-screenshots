@@ -290,6 +290,7 @@ export function Artboard({
                   next,
                   resolveStyle(project, slot),
                   slot.phone.width + direction * (event.shiftKey ? 50 : 10),
+                  project.exportProfile,
                 );
                 onResize(
                   { x: next.phone.x, y: next.phone.y, width: next.phone.width },

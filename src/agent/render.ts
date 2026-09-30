@@ -47,6 +47,7 @@ async function imageFor(asset: Asset, project: Project, shot: Shot) {
       slot.phone.width,
       style.frame,
       style.deviceOrientation,
+      project.exportProfile,
     ).screen;
     scales.push(
       fitImage(asset.width, asset.height, screen, style.fit).width /

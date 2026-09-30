@@ -8,7 +8,7 @@ import Konva from "konva";
 import "konva/skia-backend";
 import { FontLibrary, Image as Image$1 } from "skia-canvas";
 //#region plugins/hen-screenshots/package.json
-var version = "0.2.4";
+var version = "0.2.6";
 //#endregion
 //#region src/core/device-composition-spec.ts
 var deviceCompositions = {
@@ -56,6 +56,303 @@ function isPanoramaEnd(id) {
 function isPanoramaTemplate(id) {
 	return panoramaStart(id) !== void 0;
 }
+//#endregion
+//#region src/core/additional-store-formats.ts
+var APPLE_SCREENSHOTS$1 = "https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/";
+var PLAY_SCREENSHOTS$1 = "https://support.google.com/googleplay/android-developer/answer/9866151?hl=en";
+var additionalStoreProfiles = [
+	{
+		id: "apple-iphone63-portrait",
+		name: "App Store · iPhone · 6.3-inch · Portrait",
+		store: "apple",
+		category: "phone",
+		width: 1206,
+		height: 2622,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-iphone63-landscape",
+		name: "App Store · iPhone · 6.3-inch · Landscape",
+		store: "apple",
+		category: "phone",
+		width: 2622,
+		height: 1206,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-iphone61-portrait",
+		name: "App Store · iPhone · 6.1-inch · Portrait",
+		store: "apple",
+		category: "phone",
+		width: 1170,
+		height: 2532,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-iphone61-landscape",
+		name: "App Store · iPhone · 6.1-inch · Landscape",
+		store: "apple",
+		category: "phone",
+		width: 2532,
+		height: 1170,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-iphone55-portrait",
+		name: "App Store · iPhone · 5.5-inch · Portrait",
+		store: "apple",
+		category: "phone",
+		width: 1242,
+		height: 2208,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-iphone55-landscape",
+		name: "App Store · iPhone · 5.5-inch · Landscape",
+		store: "apple",
+		category: "phone",
+		width: 2208,
+		height: 1242,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-iphone47-portrait",
+		name: "App Store · iPhone · 4.7-inch · Portrait",
+		store: "apple",
+		category: "phone",
+		width: 750,
+		height: 1334,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-iphone47-landscape",
+		name: "App Store · iPhone · 4.7-inch · Landscape",
+		store: "apple",
+		category: "phone",
+		width: 1334,
+		height: 750,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-iphone4-portrait",
+		name: "App Store · iPhone · 4-inch · Portrait",
+		store: "apple",
+		category: "phone",
+		width: 640,
+		height: 1136,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-iphone4-landscape",
+		name: "App Store · iPhone · 4-inch · Landscape",
+		store: "apple",
+		category: "phone",
+		width: 1136,
+		height: 640,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-iphone35-portrait",
+		name: "App Store · iPhone · 3.5-inch · Portrait",
+		store: "apple",
+		category: "phone",
+		width: 640,
+		height: 960,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-iphone35-landscape",
+		name: "App Store · iPhone · 3.5-inch · Landscape",
+		store: "apple",
+		category: "phone",
+		width: 960,
+		height: 640,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-ipad129-portrait",
+		name: "App Store · iPad · 12.9-inch · Portrait",
+		store: "apple",
+		category: "tablet",
+		width: 2048,
+		height: 2732,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-ipad129-landscape",
+		name: "App Store · iPad · 12.9-inch · Landscape",
+		store: "apple",
+		category: "tablet",
+		width: 2732,
+		height: 2048,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-ipad105-portrait",
+		name: "App Store · iPad · 10.5-inch · Portrait",
+		store: "apple",
+		category: "tablet",
+		width: 1668,
+		height: 2224,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-ipad105-landscape",
+		name: "App Store · iPad · 10.5-inch · Landscape",
+		store: "apple",
+		category: "tablet",
+		width: 2224,
+		height: 1668,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-ipad97-portrait",
+		name: "App Store · iPad · 9.7-inch · Portrait",
+		store: "apple",
+		category: "tablet",
+		width: 1536,
+		height: 2048,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "apple-ipad97-landscape",
+		name: "App Store · iPad · 9.7-inch · Landscape",
+		store: "apple",
+		category: "tablet",
+		width: 2048,
+		height: 1536,
+		maxCount: 10,
+		note: "Optional device slot; larger screenshots can be scaled by App Store Connect.",
+		source: APPLE_SCREENSHOTS$1
+	},
+	{
+		id: "play-tablet7-8k-portrait",
+		name: "Google Play · Tablet · 7-inch · 8K · Portrait",
+		store: "google",
+		category: "tablet",
+		width: 4320,
+		height: 7680,
+		maxCount: 8,
+		note: "Large-screen screenshot: 16:9 or 9:16, up to 7680 pixels.",
+		source: PLAY_SCREENSHOTS$1
+	},
+	{
+		id: "play-tablet7-8k-landscape",
+		name: "Google Play · Tablet · 7-inch · 8K · Landscape",
+		store: "google",
+		category: "tablet",
+		width: 7680,
+		height: 4320,
+		maxCount: 8,
+		note: "Large-screen screenshot: 16:9 or 9:16, up to 7680 pixels.",
+		source: PLAY_SCREENSHOTS$1
+	},
+	{
+		id: "play-tablet10-8k-portrait",
+		name: "Google Play · Tablet · 10-inch · 8K · Portrait",
+		store: "google",
+		category: "tablet",
+		width: 4320,
+		height: 7680,
+		maxCount: 8,
+		note: "Large-screen screenshot: 16:9 or 9:16, up to 7680 pixels.",
+		source: PLAY_SCREENSHOTS$1
+	},
+	{
+		id: "play-tablet10-8k-landscape",
+		name: "Google Play · Tablet · 10-inch · 8K · Landscape",
+		store: "google",
+		category: "tablet",
+		width: 7680,
+		height: 4320,
+		maxCount: 8,
+		note: "Large-screen screenshot: 16:9 or 9:16, up to 7680 pixels.",
+		source: PLAY_SCREENSHOTS$1
+	},
+	{
+		id: "play-chromebook-8k-landscape",
+		name: "Google Play · Chromebook · 8K · Landscape",
+		store: "google",
+		category: "desktop",
+		width: 7680,
+		height: 4320,
+		maxCount: 8,
+		note: "Large-screen screenshot: 16:9 or 9:16, up to 7680 pixels.",
+		source: PLAY_SCREENSHOTS$1
+	}
+];
+var appleFrameVariants = {
+	"apple-iphone63": {
+		ratio: 2622 / 1206,
+		hardware: "island"
+	},
+	"apple-iphone61": {
+		ratio: 2532 / 1170,
+		hardware: "notch"
+	},
+	"apple-iphone55": {
+		ratio: 2208 / 1242,
+		hardware: "home"
+	},
+	"apple-iphone47": {
+		ratio: 1334 / 750,
+		hardware: "home"
+	},
+	"apple-iphone4": {
+		ratio: 1136 / 640,
+		hardware: "home"
+	},
+	"apple-iphone35": {
+		ratio: 960 / 640,
+		hardware: "home"
+	},
+	"apple-ipad129": {
+		ratio: 2732 / 2048,
+		hardware: "home"
+	},
+	"apple-ipad105": {
+		ratio: 2224 / 1668,
+		hardware: "home"
+	},
+	"apple-ipad97": {
+		ratio: 2048 / 1536,
+		hardware: "home"
+	}
+};
 //#endregion
 //#region src/core/special-profiles.ts
 var specialProfiles = [
@@ -238,6 +535,7 @@ function validateCustomSize(size) {
 }
 var exportProfiles = [
 	...specialProfiles,
+	...additionalStoreProfiles,
 	{
 		id: "play-feature-graphic",
 		name: "Google Play · Feature graphic",
@@ -404,6 +702,28 @@ var exportProfiles = [
 		source: APPLE_SCREENSHOTS
 	},
 	{
+		id: "apple-ipad11-portrait",
+		name: "App Store · iPad 11-inch · Portrait",
+		store: "apple",
+		category: "tablet",
+		width: 1668,
+		height: 2420,
+		maxCount: 10,
+		note: "An accepted size for the 11-inch iPad slot.",
+		source: APPLE_SCREENSHOTS
+	},
+	{
+		id: "apple-ipad11-landscape",
+		name: "App Store · iPad 11-inch · Landscape",
+		store: "apple",
+		category: "tablet",
+		width: 2420,
+		height: 1668,
+		maxCount: 10,
+		note: "An accepted size for the 11-inch iPad slot.",
+		source: APPLE_SCREENSHOTS
+	},
+	{
 		id: "apple-mac",
 		name: "App Store · Mac",
 		store: "apple",
@@ -521,7 +841,7 @@ function canonicalCanvas(project) {
 /** Size rules are separate from the allowlisted preset values, so bad edits fail closed. */
 function validateDimensions(profile, width, height) {
 	if (width !== profile.width || height !== profile.height || !Number.isInteger(width) || !Number.isInteger(height)) throw new Error("The exported image does not match the selected preset dimensions.");
-	const special = specialProfiles.find((item) => item.id === profile.id);
+	const special = [...specialProfiles, ...additionalStoreProfiles].find((item) => item.id === profile.id);
 	if (special) {
 		if (profile.store !== special.store || profile.category !== special.category || width !== special.width || height !== special.height) throw new Error("These dimensions do not match the selected store device slot.");
 		return;
@@ -538,7 +858,7 @@ function validateDimensions(profile, width, height) {
 	});
 	if (profile.store === "google") {
 		const short = Math.min(width, height), long = Math.max(width, height);
-		if (short < 320 || long > 3840 || long > short * 2) throw new Error("These dimensions do not satisfy Google Play screenshot rules.");
+		if (short < 320 || long > (profile.category === "phone" ? 3840 : 7680) || long > short * 2) throw new Error("These dimensions do not satisfy Google Play screenshot rules.");
 		if (profile.category !== "phone" && (short < 1080 || long * 9 !== short * 16)) throw new Error("Google Play large-screen presets require 16:9 or 9:16 and at least 1080 pixels.");
 	} else if (profile.store === "apple") {
 		if (!{
@@ -555,7 +875,16 @@ function validateDimensions(profile, width, height) {
 				[1260, 2736],
 				[2736, 1260]
 			],
-			tablet: [
+			tablet: profile.id.includes("ipad11") ? [
+				[1488, 2266],
+				[2266, 1488],
+				[1668, 2420],
+				[2420, 1668],
+				[1668, 2388],
+				[2388, 1668],
+				[1640, 2360],
+				[2360, 1640]
+			] : [
 				[2064, 2752],
 				[2752, 2064],
 				[2048, 2732],
@@ -763,7 +1092,7 @@ var PLACEMENT_LIMITS = {
 	}
 };
 var LIMITS = {
-	shots: 20,
+	shots: 50,
 	overlays: 8,
 	assetBytes: 52428800,
 	totalBytes: 125829120,
@@ -1348,22 +1677,27 @@ function validateProject(value) {
 function positive(value, name) {
 	if (!Number.isFinite(value) || value <= 0) throw new Error(`${name} must be a positive number.`);
 }
-function handheldGeometry(family, width, frame) {
+function handheldGeometry(family, width, frame, exportProfile) {
 	const tablet = family === "ipad" || family === "android-tablet";
-	const inset = frame ? width * (tablet ? .035 : family === "ios" ? .027 : .024) : 0;
+	const variant = family === "ipad" && exportProfile?.startsWith("apple-ipad") || family === "ios" && exportProfile?.startsWith("apple-iphone") ? appleFrameVariants[exportProfile?.replace(/-(portrait|landscape)$/, "") ?? ""] : void 0;
+	const home = variant?.hardware === "home";
+	const notch = variant?.hardware === "notch";
+	const ipad11 = exportProfile?.startsWith("apple-ipad11-") ?? false;
+	const inset = frame ? width * (home ? .045 : tablet ? .035 : family === "ios" ? .027 : .024) : 0;
+	const verticalInset = frame && home ? width * .14 : inset;
 	const screenWidth = width - inset * 2;
-	const screenHeight = screenWidth * (family === "ipad" ? 4 / 3 : family === "android-tablet" ? 16 / 10 : family === "ios" ? 19.5 / 9 : 20 / 9);
-	const radius = tablet ? frame ? width * (family === "ipad" ? .058 : .043) : 0 : width * (family === "ios" ? frame ? .13 : .102 : .078);
+	const screenHeight = screenWidth * (variant?.ratio ?? (family === "ipad" ? ipad11 ? 2420 / 1668 : 4 / 3 : family === "android-tablet" ? 16 / 10 : family === "ios" ? 19.5 / 9 : 20 / 9));
+	const radius = home ? frame ? width * .055 : 0 : tablet ? frame ? width * (family === "ipad" ? .058 : .043) : 0 : width * (family === "ios" ? frame ? .13 : .102 : .078);
 	const screen = {
 		x: inset,
-		y: inset,
+		y: verticalInset,
 		width: screenWidth,
 		height: screenHeight,
-		radius: Math.max(0, radius - inset)
+		radius: home ? 0 : Math.max(0, radius - inset)
 	};
-	const cameraWidth = tablet ? width * .009 : family === "ios" ? screenWidth * .29 : screenWidth * .032;
-	const cameraHeight = family === "ios" ? screenWidth * .081 : cameraWidth;
-	const height = screenHeight + inset * 2;
+	const cameraWidth = home ? width * .013 : notch ? screenWidth * .42 : tablet ? width * .009 : family === "ios" ? screenWidth * .29 : screenWidth * .032;
+	const cameraHeight = home ? cameraWidth : notch ? screenWidth * .075 : family === "ios" ? screenWidth * .081 : cameraWidth;
+	const height = screenHeight + verticalInset * 2;
 	const edge = width * (family === "ios" ? .006 : .004);
 	const sideButton = (right, y, length) => ({
 		x: right ? width - edge * 1.5 : 0,
@@ -1397,9 +1731,17 @@ function handheldGeometry(family, width, frame) {
 		height,
 		radius,
 		screen,
+		cameraKind: home || tablet || family !== "ios" ? "lens" : notch ? "notch" : "island",
+		...home && frame ? { homeButton: {
+			x: width * .465,
+			y: height - verticalInset / 2 - width * .035,
+			width: width * .07,
+			height: width * .07,
+			radius: width * .035
+		} } : {},
 		camera: {
-			x: tablet && frame ? width - (inset + cameraWidth) / 2 : (width - cameraWidth) / 2,
-			y: tablet ? frame ? (height - cameraHeight) / 2 : width * .012 : inset + screenWidth * (family === "ios" ? .026 : .022),
+			x: !home && tablet && frame ? width - (inset + cameraWidth) / 2 : (width - cameraWidth) / 2,
+			y: home ? verticalInset * .42 : notch ? inset : tablet ? frame ? (height - cameraHeight) / 2 : width * .012 : inset + screenWidth * (family === "ios" ? .026 : .022),
 			width: cameraWidth,
 			height: cameraHeight,
 			radius: cameraHeight / 2
@@ -1431,7 +1773,7 @@ function handheldGeometry(family, width, frame) {
 	};
 }
 /** Generic geometry. Width covers the entire device, including a laptop's base. */
-function deviceGeometry(family, width, frame, orientation = "portrait") {
+function deviceGeometry(family, width, frame, orientation = "portrait", exportProfile) {
 	positive(width, "Device width");
 	if (family === "card") {
 		const height = width * (orientation === "landscape" ? 3 / 4 : 4 / 3);
@@ -1595,8 +1937,8 @@ function deviceGeometry(family, width, frame, orientation = "portrait") {
 		"ipad",
 		"android-tablet"
 	].includes(family)) throw new Error("This device frame is not supported.");
-	if (orientation === "portrait") return handheldGeometry(family, width, frame);
-	const portrait = handheldGeometry(family, width / handheldGeometry(family, 1, frame).height, frame);
+	if (orientation === "portrait") return handheldGeometry(family, width, frame, exportProfile);
+	const portrait = handheldGeometry(family, width / handheldGeometry(family, 1, frame, exportProfile).height, frame, exportProfile);
 	const rotate = (rect) => ({
 		x: rect.y,
 		y: portrait.width - rect.x - rect.width,
@@ -1610,6 +1952,7 @@ function deviceGeometry(family, width, frame, orientation = "portrait") {
 		height: portrait.width,
 		screen: rotate(portrait.screen),
 		camera: rotate(portrait.camera),
+		...portrait.homeButton ? { homeButton: rotate(portrait.homeButton) } : {},
 		...portrait.handheld ? { handheld: {
 			shell: rotate(portrait.handheld.shell),
 			buttons: portrait.handheld.buttons.map(rotate),
@@ -1904,9 +2247,8 @@ function panoramaPair(project, shotId) {
 function linkedShots(project, shotId) {
 	return panoramaPair(project, shotId) ?? project.shots.filter((shot) => shot.id === shotId);
 }
-function shotCapacity(project) {
-	const profile = resolveExportProfile(project);
-	return profile.category === "banner" ? LIMITS.shots : Math.min(LIMITS.shots, profile.maxCount);
+function shotCapacity(_project) {
+	return LIMITS.shots;
 }
 var panoramaStyle = {
 	template: "panorama",
@@ -1960,7 +2302,7 @@ var panoramaStyles = {
 		titleSize: 116
 	}
 };
-function collectionLayout$1(h, style, id) {
+function collectionLayout$1(h, style, id, exportProfile) {
 	const { composition, rotation, centerX: preferredCenter } = collectionPanoramaLayouts[id];
 	const right = isPanoramaEnd(style.template);
 	const wide = h <= 1080;
@@ -1974,11 +2316,11 @@ function collectionLayout$1(h, style, id) {
 		y: h * .08,
 		height: h * .84
 	};
-	const unit = deviceGeometry(style.device, 1e3, style.frame, style.deviceOrientation);
+	const unit = deviceGeometry(style.device, 1e3, style.frame, style.deviceOrientation, exportProfile);
 	const angle = Math.abs(rotation) * Math.PI / 180;
 	const scale = Math.min(area.width / (Math.cos(angle) * unit.width + Math.sin(angle) * unit.height), area.height / (Math.sin(angle) * unit.width + Math.cos(angle) * unit.height));
 	const width = Math.max(32, Math.min(2160, Math.floor(unit.width * scale)));
-	const height = deviceGeometry(style.device, width, style.frame, style.deviceOrientation).height;
+	const height = deviceGeometry(style.device, width, style.frame, style.deviceOrientation, exportProfile).height;
 	const boundWidth = Math.cos(angle) * width + Math.sin(angle) * height;
 	const centerX = 1080 + Math.min(preferredCenter - 1080, boundWidth * .2);
 	const low = composition === "reverse" ? !right : right;
@@ -2019,19 +2361,19 @@ function collectionLayout$1(h, style, id) {
 function panoramaLayout(project, style) {
 	const { height: h } = canonicalCanvas(project);
 	const collection = collectionPanoramaId(style.template);
-	if (collection) return collectionLayout$1(h, style, collection);
+	if (collection) return collectionLayout$1(h, style, collection, project.exportProfile);
 	const right = isPanoramaEnd(style.template);
 	const family = panoramaStart(style.template);
 	const expressive = family !== "panorama";
 	const wide = h <= 1080;
 	const rotation = family === "daybreak" ? 16 : family === "tidal" ? -10 : family === "orbit" ? 12 : family === "moonlight" ? -12 : -8;
-	const unit = deviceGeometry(style.device, 1e3, style.frame, style.deviceOrientation);
+	const unit = deviceGeometry(style.device, 1e3, style.frame, style.deviceOrientation, project.exportProfile);
 	const radians = Math.abs(rotation) * Math.PI / 180;
 	const boundW = Math.cos(radians) * unit.width + Math.sin(radians) * unit.height;
 	const boundH = Math.sin(radians) * unit.width + Math.cos(radians) * unit.height;
 	const scale = Math.min((expressive ? 1100 : 980) / boundW, h * .85 / boundH);
 	const width = Math.floor(unit.width * scale);
-	const height = deviceGeometry(style.device, width, style.frame, style.deviceOrientation).height;
+	const height = deviceGeometry(style.device, width, style.frame, style.deviceOrientation, project.exportProfile).height;
 	if (expressive) return {
 		phone: {
 			x: Math.round(1080 - width / 2),
@@ -2839,7 +3181,7 @@ function compositionLayout(project, style, companions) {
 	].includes(id);
 	const boxes = frames.map((frame, index) => {
 		const pose = { ...poses[index] };
-		const size = deviceGeometry(frame.device, pose.width, frame.frame, frame.deviceOrientation);
+		const size = deviceGeometry(frame.device, pose.width, frame.frame, frame.deviceOrientation, project.exportProfile);
 		if (mirrored) {
 			pose.x = 1e3 - pose.x - size.width;
 			pose.rotation *= -1;
@@ -2864,7 +3206,7 @@ function compositionLayout(project, style, companions) {
 	const devices = boxes.map((box, index) => {
 		const width = Math.max(PLACEMENT_LIMITS.width.min, box.width * scale);
 		const frame = frames[index];
-		const geometry = deviceGeometry(frame.device, width, frame.frame, frame.deviceOrientation);
+		const geometry = deviceGeometry(frame.device, width, frame.frame, frame.deviceOrientation, project.exportProfile);
 		const angle = Math.abs(box.rotation) * Math.PI / 180;
 		const rotatedWidth = Math.cos(angle) * geometry.width + Math.sin(angle) * geometry.height;
 		const rotatedHeight = Math.sin(angle) * geometry.width + Math.cos(angle) * geometry.height;
@@ -4429,13 +4771,13 @@ function templateLayout(project, style) {
 		};
 	}
 	const rotation = style.template === "tilt" ? -6 : 0;
-	const unit = deviceGeometry(style.device, 1e3, style.frame, style.deviceOrientation);
+	const unit = deviceGeometry(style.device, 1e3, style.frame, style.deviceOrientation, project.exportProfile);
 	const radians = Math.abs(rotation) * Math.PI / 180;
 	const boundW = Math.cos(radians) * unit.width + Math.sin(radians) * unit.height;
 	const boundH = Math.sin(radians) * unit.width + Math.cos(radians) * unit.height;
 	const scale = Math.min(area.width / boundW, area.height / boundH);
 	const width = Math.round(unit.width * scale);
-	const height = deviceGeometry(style.device, width, style.frame, style.deviceOrientation).height;
+	const height = deviceGeometry(style.device, width, style.frame, style.deviceOrientation, project.exportProfile).height;
 	const phone = {
 		width,
 		x: Math.round(area.x + (area.width - width) / 2),
@@ -4553,13 +4895,13 @@ function collectionLayout(project, style, template) {
 			height: area.height * (1 - inset * 2)
 		};
 	}
-	const unit = deviceGeometry(style.device, 1e3, style.frame, style.deviceOrientation);
+	const unit = deviceGeometry(style.device, 1e3, style.frame, style.deviceOrientation, project.exportProfile);
 	const rotation = template.composition ? template.phone.rotation : style.template === "punch" ? -6 : 0;
 	const radians = Math.abs(rotation) * Math.PI / 180;
 	const boundW = Math.cos(radians) * unit.width + Math.sin(radians) * unit.height;
 	const boundH = Math.sin(radians) * unit.width + Math.cos(radians) * unit.height;
 	const width = Math.floor(rotation === 0 ? Math.min(area.width, area.height / unit.height * 1e3) : 1e3 * Math.min(area.width / boundW, area.height / boundH));
-	const height = deviceGeometry(style.device, width, style.frame, style.deviceOrientation).height;
+	const height = deviceGeometry(style.device, width, style.frame, style.deviceOrientation, project.exportProfile).height;
 	return {
 		...template,
 		title,
@@ -4790,7 +5132,7 @@ function loadImage(asset) {
 }
 /** Validate the whole batch before returning any assets; the caller owns persistence. */
 async function importImages(files) {
-	if (files.length > LIMITS.shots) throw new Error("Choose up to 20 images at a time.");
+	if (files.length > LIMITS.shots) throw new Error("Choose up to 50 images at a time.");
 	for (const file of files) {
 		if (!file.size) throw new Error(`“${file.name}” is empty (0 bytes). Choose the original image or download it again.`);
 		if (file.size > LIMITS.assetBytes) throw new Error(`“${file.name}” is ${(file.size / 1024 / 1024).toFixed(1)} MB. The limit is 50 MB per image. Compress a copy or choose a smaller image.`);
@@ -5119,7 +5461,7 @@ function parseDesignSpec(value) {
 	if (!exportProfiles.some((p) => p.id === raw.profile)) throw new Error("Unknown export profile. Run hen profiles for supported IDs.");
 	if (raw.sourceLanguage !== void 0 && !isLanguage(raw.sourceLanguage)) throw new Error("Unsupported sourceLanguage. Run hen languages.");
 	if (raw.brandKit !== void 0) string(raw.brandKit, 4096, "brandKit");
-	if (!Array.isArray(raw.slides) || !raw.slides.length || raw.slides.length > LIMITS.shots) throw new Error("Provide 1–20 slides.");
+	if (!Array.isArray(raw.slides) || !raw.slides.length || raw.slides.length > LIMITS.shots) throw new Error("Provide 1–50 slides.");
 	raw.slides.forEach((value, index) => {
 		const at = `slides[${index}]`;
 		const slide = object(value, [
@@ -5436,13 +5778,31 @@ function drawDeviceDetails(group, device, camera) {
 		strokeWidth: Math.min(device.width, device.height) * .0015,
 		listening: false
 	}));
+	if (device.frame && device.homeButton) group.add(new Konva.Rect({
+		...device.homeButton,
+		cornerRadius: device.homeButton.radius,
+		fill: "#101114",
+		stroke: "#70747A",
+		strokeWidth: Math.min(device.width, device.height) * .002,
+		listening: false
+	}));
 	if (!camera || device.family === "card") return;
 	const cutout = device.camera;
 	const diameter = Math.min(cutout.width, cutout.height);
-	const island = device.family === "ios";
+	const island = device.family === "ios" && device.cameraKind !== "lens";
 	group.add(new Konva.Rect({
 		...cutout,
-		cornerRadius: cutout.radius,
+		cornerRadius: device.cameraKind === "notch" ? cutout.width > cutout.height ? [
+			0,
+			0,
+			cutout.radius,
+			cutout.radius
+		] : [
+			0,
+			cutout.radius,
+			cutout.radius,
+			0
+		] : cutout.radius,
 		fill: "#050608",
 		stroke: "#24262B",
 		strokeWidth: diameter * .035,
@@ -8931,7 +9291,7 @@ function createScene(project, shot, image, options = {}) {
 			if (empty && !options.emptyDeviceLabel) continue;
 			if (!empty && (!source?.complete || source.naturalWidth <= 0 || source.naturalHeight <= 0)) throw new Error("The screenshot has not finished loading.");
 			const imageWidth = source?.naturalWidth ?? 0, imageHeight = source?.naturalHeight ?? 0;
-			const device = deviceGeometry(style.device, slot.phone.width, style.frame, style.deviceOrientation);
+			const device = deviceGeometry(style.device, slot.phone.width, style.frame, style.deviceOrientation, project.exportProfile);
 			const phone = new Konva.Group({
 				x: slot.phone.x + device.width / 2 - cropOffset,
 				y: slot.phone.y + device.height / 2,
@@ -9145,7 +9505,7 @@ async function imageFor(asset, project, shot) {
 	for (const slot of [shot, ...(shot.companions ?? []).map((d) => deviceShot(shot, `device:${d.id}`))]) {
 		if (slot.assetId !== asset.id) continue;
 		const style = resolveStyle(project, slot);
-		const screen = deviceGeometry(style.device, slot.phone.width, style.frame, style.deviceOrientation).screen;
+		const screen = deviceGeometry(style.device, slot.phone.width, style.frame, style.deviceOrientation, project.exportProfile).screen;
 		scales.push(fitImage(asset.width, asset.height, screen, style.fit).width / asset.width);
 	}
 	for (const owner of linkedShots(project, shot.id)) for (const overlay of owner.overlays ?? []) if (overlay.assetId === asset.id) scales.push(Math.max(overlay.width / asset.width, overlay.height / asset.height));

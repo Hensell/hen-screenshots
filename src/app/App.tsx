@@ -1,3 +1,4 @@
+import { ScreenshotFitControl } from "../editor/ScreenshotFitControl";
 import { Select } from "../ui/Select";
 import { appendTemplate, instantiateTemplate } from "../core/custom-templates";
 import { addEmptySlide } from "../core/slides";
@@ -50,6 +51,7 @@ import {
 } from "react";
 import mark from "../../brand/mark.svg";
 import {
+  resolveStyle,
   createShot,
   errorMessage,
   LIMITS,
@@ -1132,6 +1134,26 @@ export function App() {
                   <Icon name="image" size={18} />
                   {t(emptyImage ? "Add image" : "Replace image")}
                 </button>
+                {shot && (
+                  <ScreenshotFitControl
+                    compact
+                    value={
+                      resolveStyle(project, deviceShot(shot, imageElement)).fit
+                    }
+                    disabled={
+                      !!busy || !!resolveExportProfile(project).sourceOnly
+                    }
+                    onChange={(fit) =>
+                      state.edit((draft) => {
+                        editLinkedShots(draft, shot.id, (target) => {
+                          editDevice(target, imageElement, (device) => {
+                            device.style.fit = fit;
+                          });
+                        });
+                      })
+                    }
+                  />
+                )}
                 <button
                   type="button"
                   className="toolbar-button desktop-slide-action"

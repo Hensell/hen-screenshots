@@ -26,7 +26,9 @@ type Name =
   | "close"
   | "folder"
   | "layout"
-  | "phone";
+  | "phone"
+  | "laptop"
+  | "devices";
 const paths: Record<Name, string> = {
   star: "m12 3 2.8 5.7 6.3.9-4.55 4.43 1.08 6.27L12 17.34l-5.63 2.96 1.08-6.27L2.9 9.6l6.3-.9Z",
   edit: "m16 3 5 5M4 15 16 3a3.5 3.5 0 0 1 5 5L9 20l-6 1z",
@@ -57,6 +59,8 @@ const paths: Record<Name, string> = {
   image: "M3 3h18v18H3zM3 17l6-6 5 5 3-3 4 4M16 7h.01",
   close: "m6 6 12 12M6 18 18 6",
   folder: "M3 5h7l2 3h9v12H3z",
+  laptop: "M5 4h14v12H5zM5 16l-3 4h20l-3-4M10 18h4",
+  devices: "M3 4h14v10H3zM3 14l-2 4h12M16 10h6v11h-6zM18 19h2",
   phone:
     "M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm3 3h4m-3 14h2",
 };
