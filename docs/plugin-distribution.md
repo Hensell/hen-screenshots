@@ -1,6 +1,6 @@
 # Plugin distribution
 
-Version **0.2.6** is being prepared on September 30, 2026. It includes the 0.2.5 device formats and slide-capacity improvements and adds Gemini CLI extension manifests for Git and ZIP installations. The shared skill and local renderer are unchanged between providers. OpenAI publication and Gemini gallery indexing remain unconfirmed until verified.
+Version **0.2.7** is being prepared on September 30, 2026. It includes the 0.2.5 device formats and slide-capacity improvements and adds Gemini CLI extension manifests for Git and ZIP installations. The shared skill and local renderer are unchanged between providers. OpenAI publication and Gemini gallery indexing remain unconfirmed until verified. Version 0.2.7 corrects the OpenAI listing subtitle and explicit support/privacy URLs after the 0.2.6 upload reported metadata issues. Version 0.2.6 is available on GitHub and passed all three platform checks in [run 36758768308](https://github.com/Hensell/hen-screenshots/actions/runs/36758768308). The repository now carries the `gemini-cli-extension` topic for gallery indexing.
 
 Version **0.2.5** is prepared for the website ZIP on September 30, 2026. It adds Apple formats and frame variants, Google Play large-screen presets up to 7680 px, and consistent 50-slide editing capacity. Local validation passed 763 tests, lint, formatting, build, and package smoke checks. GitHub release and official-directory submission are separate and have not been performed for this version. The latest confirmed OpenAI directory version remains **0.2.4**.
 

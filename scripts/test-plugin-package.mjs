@@ -47,6 +47,18 @@ assert.equal(
   await readFile(join(plugin, gemini.contextFileName), "utf8"),
   skill,
 );
+const codex = JSON.parse(
+  await readFile(join(plugin, ".codex-plugin/plugin.json"), "utf8"),
+);
+assert.ok(codex.interface.shortDescription.length <= 30);
+assert.equal(
+  codex.interface.supportURL,
+  "https://github.com/Hensell/hen-screenshots/issues",
+);
+assert.equal(
+  codex.interface.privacyPolicyURL,
+  `https://github.com/Hensell/hen-screenshots/blob/plugin-v${version}/plugins/hen-screenshots/PRIVACY.md`,
+);
 const work = process.argv[3]
   ? resolve(process.argv[3])
   : await mkdtemp(join(tmpdir(), "hen-plugin-release-"));
