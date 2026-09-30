@@ -1,3 +1,4 @@
+import { CanvasFormatPicker } from "../editor/CanvasFormatPicker";
 import { ScreenshotFitControl } from "../editor/ScreenshotFitControl";
 import { Select } from "../ui/Select";
 import { appendTemplate, instantiateTemplate } from "../core/custom-templates";
@@ -71,7 +72,6 @@ import {
   resetComposition,
 } from "../core/templates";
 import { CanvasSettings } from "../editor/CanvasSettings";
-import { projectPurpose } from "../core/canvas-formats";
 import { NewProjectDialog } from "./NewProjectDialog";
 import { DeleteSlidesDialog } from "./DeleteSlidesDialog";
 import { SlideActionsMenu, type SlideMenuTarget } from "./SlideActionsMenu";
@@ -1197,37 +1197,11 @@ export function App() {
               role="group"
               aria-label={t("Canvas and languages")}
             >
-              <button
-                type="button"
-                className="canvas-format-button"
-                onClick={() => openInspector("canvas")}
+              <CanvasFormatPicker
+                project={project}
                 disabled={!!busy}
-                aria-label={t("Canvas settings: {name}, {width} × {height}", {
-                  name: t(resolveExportProfile(project).name),
-                  width: resolveExportProfile(project).width,
-                  height: resolveExportProfile(project).height,
-                })}
-                title={t("Change canvas size and orientation for this project")}
-              >
-                <Icon name="canvas" size={17} />
-                <span>
-                  <small>
-                    {t(
-                      banners
-                        ? "Banners"
-                        : projectPurpose(project) === "stores"
-                          ? "App stores"
-                          : "Portfolio",
-                    )}{" "}
-                    {t("· Canvas")}
-                  </small>
-                  <strong>
-                    {resolveExportProfile(project).width} ×{" "}
-                    {resolveExportProfile(project).height}
-                  </strong>
-                </span>
-                <Icon name="down" size={13} />
-              </button>
+                onAdvanced={() => openInspector("canvas")}
+              />
               <div
                 className={`language-control ${project.localization ? "has-versions" : ""}`}
               >

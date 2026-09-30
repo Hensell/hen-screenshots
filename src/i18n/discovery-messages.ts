@@ -1,4 +1,36 @@
 export const discoveryMessages: Record<string, readonly [string, string]> = {
+  Close: ["Cerrar", "Fechar"],
+  Orientation: ["Orientación", "Orientação"],
+  Square: ["Cuadrado", "Quadrado"],
+  Custom: ["Personalizado", "Personalizado"],
+  "Choose store, device and resolution": [
+    "Elige tienda, dispositivo y resolución",
+    "Escolha loja, dispositivo e resolução",
+  ],
+  "Choose your format": ["Elige tu formato", "Escolha seu formato"],
+  "Store, device and resolution in one selection.": [
+    "Tienda, dispositivo y resolución en una selección.",
+    "Loja, dispositivo e resolução em uma seleção.",
+  ],
+  "Search formats": ["Buscar formatos", "Buscar formatos"],
+  "Search device or resolution…": [
+    "Busca un dispositivo o resolución…",
+    "Busque um dispositivo ou resolução…",
+  ],
+  "All stores": ["Todas las tiendas", "Todas as lojas"],
+  "All devices": ["Todos los dispositivos", "Todos os dispositivos"],
+  "All orientations": ["Todas las orientaciones", "Todas as orientações"],
+  "Available formats": ["Formatos disponibles", "Formatos disponíveis"],
+  "No formats match your search.": [
+    "No hay formatos que coincidan con tu búsqueda.",
+    "Nenhum formato corresponde à sua busca.",
+  ],
+  "Canvas and main device apply to all slides. Undo anytime.": [
+    "El lienzo y el dispositivo principal se aplican a todas las slides. Puedes deshacer.",
+    "A tela e o dispositivo principal se aplicam a todos os slides. Você pode desfazer.",
+  ],
+  "More canvas settings": ["Más ajustes del lienzo", "Mais ajustes da tela"],
+
   "How your screenshot fits": [
     "Cómo encaja tu captura",
     "Como sua captura se encaixa",

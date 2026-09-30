@@ -1,3 +1,4 @@
+import { selectCanvasFormat } from "./select-canvas-format";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   canvasOrientation,
@@ -264,5 +265,50 @@ describe("additional store slots", () => {
     expect(profileForStore("play-auto-portrait", "apple")).toBe(
       "apple-iphone69-portrait",
     );
+  });
+});
+
+describe("combined canvas selection", () => {
+  it("uses a landscape screenshot card for TV and restores a phone frame when switching back", () => {
+    const project = createProject();
+    project.shots = [createShot("one", 0)];
+    selectCanvasFormat(project, "play-tv");
+    expect(project.style.device).toBe("card");
+    expect(project.shots[0].style.deviceOrientation).toBe("landscape");
+    expect(project.shots[0].style.frame).toBe(false);
+    selectCanvasFormat(project, "play-phone-portrait");
+    expect(project.shots[0].style.device).toBe("android");
+    expect(project.shots[0].style.frame).toBe(true);
+  });
+
+  it("applies iPad size and frame orientation together, including when reselecting the same canvas", () => {
+    const project = createProject();
+    project.shots = [createShot("one", 0), createShot("two", 1)];
+    project.exportProfile = "apple-ipad11-landscape";
+    selectCanvasFormat(project, "apple-ipad11-landscape");
+    for (const shot of project.shots) {
+      expect(shot.style.device).toBe("ipad");
+      expect(shot.style.deviceOrientation).toBe("landscape");
+      expect(shot.phone.width).toBeGreaterThan(0);
+    }
+    validateProject(project);
+  });
+  it("undoes the canvas and main devices together without replacing captures", () => {
+    const project = createProject();
+    project.shots = [createShot("one", 0)];
+    const before = structuredClone(project);
+    useEditor.getState().open({ project, assets: [], revision: 1 });
+    useEditor
+      .getState()
+      .edit((draft) => selectCanvasFormat(draft, "apple-ipad11-portrait"));
+    expect(useEditor.getState().project?.exportProfile).toBe(
+      "apple-ipad11-portrait",
+    );
+    expect(useEditor.getState().project?.shots[0].style.device).toBe("ipad");
+    useEditor.getState().undo();
+    expect(useEditor.getState().project).toMatchObject({
+      ...before,
+      updatedAt: expect.any(Number),
+    });
   });
 });
