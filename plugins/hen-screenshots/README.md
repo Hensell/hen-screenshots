@@ -2,7 +2,7 @@
 
 Create screenshot series from local captures with the same templates and scene engine as [Hen Screenshots](https://screenshots.hensell.dev/). Export PNGs, a contact-sheet preview, a ZIP organized by language, and an editable `.henscreenshots` project.
 
-**Version 0.2.7 · MIT · Local rendering.** This version adds Apple device formats and matching frames, Google Play large-screen presets up to 7680 px, and a shared editing limit of 50 slides for adding, duplicating, and panoramas. It preserves copied typography from the web studio, including font weight, scale, line height, and supporting-text opacity, when importing and rendering editable projects. These attributes are also available in design specifications. It includes manifests for Codex, Claude Code, Cursor, and Gemini CLI. Official directory availability is tracked in the [distribution notes](https://github.com/Hensell/hen-screenshots/blob/main/docs/plugin-distribution.md). No Hen account, API key, MCP server, background service, or `.exe` is required. Your agent provider's plan and data policies still apply.
+**Version 0.2.8 · MIT · Local rendering.** This version adds Apple device formats and matching frames, Google Play large-screen presets up to 7680 px, and a shared editing limit of 50 slides for adding, duplicating, and panoramas. It preserves copied typography from the web studio, including font weight, scale, line height, and supporting-text opacity, when importing and rendering editable projects. These attributes are also available in design specifications. It includes manifests for Codex, Claude Code, Cursor, and Gemini CLI. Official directory availability is tracked in the [distribution notes](https://github.com/Hensell/hen-screenshots/blob/main/docs/plugin-distribution.md). No Hen account, API key, MCP server, background service, or `.exe` is required. Your agent provider's plan and data policies still apply.
 
 ## Requirements
 
@@ -45,7 +45,7 @@ These commands install from the Hen repository marketplace. They do not install 
 Install the tagged release from the repository:
 
 ```sh
-gemini extensions install https://github.com/Hensell/hen-screenshots --ref plugin-v0.2.7
+gemini extensions install https://github.com/Hensell/hen-screenshots --ref plugin-v0.2.8
 ```
 
 Review Gemini's installation consent prompt, then start a new Gemini CLI session. Ask:
@@ -89,18 +89,18 @@ From the extracted directory:
 node scripts/setup.mjs
 ```
 
-Setup installs the locked dependencies in that directory and runs `doctor`. It does not install Node globally or alter your source images. A successful check reports `"ok": true` and version `0.2.7`.
+Setup installs the locked dependencies in that directory and runs `doctor`. It does not install Node globally or alter your source images. A successful check reports `"ok": true` and version `0.2.8`.
 
 To verify the archive before extracting it:
 
 ```sh
 # macOS
-shasum -a 256 -c hen-screenshots-plugin-0.2.7.zip.sha256
+shasum -a 256 -c hen-screenshots-plugin-0.2.8.zip.sha256
 # Linux
-sha256sum -c hen-screenshots-plugin-0.2.7.zip.sha256
+sha256sum -c hen-screenshots-plugin-0.2.8.zip.sha256
 ```
 
-On Windows, use `Get-FileHash .\hen-screenshots-plugin-0.2.7.zip -Algorithm SHA256` in PowerShell and compare the hash with the `.sha256` file.
+On Windows, use `Get-FileHash .\hen-screenshots-plugin-0.2.8.zip -Algorithm SHA256` in PowerShell and compare the hash with the `.sha256` file.
 
 For a Claude Code session using the extracted ZIP:
 

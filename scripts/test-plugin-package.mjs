@@ -57,7 +57,7 @@ assert.equal(
 );
 assert.equal(
   codex.interface.privacyPolicyURL,
-  `https://github.com/Hensell/hen-screenshots/blob/plugin-v${version}/plugins/hen-screenshots/PRIVACY.md`,
+  "https://github.com/Hensell/hen-screenshots/blob/main/plugins/hen-screenshots/PRIVACY.md",
 );
 const work = process.argv[3]
   ? resolve(process.argv[3])

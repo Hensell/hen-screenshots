@@ -1,6 +1,6 @@
 {
   "name": "hen-screenshots",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Create app-store screenshots, portfolio mockups and Play banners from local images. Export PNGs and editable Hen projects.",
   "author": {
     "name": "Hensell",
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "Hen Screenshots",
     "shortDescription": "Create screenshots and mockups",
-    "longDescription": "Create App Store screenshots, Google Play screenshots and banners, and portfolio mockups from your own images. Choose phone, tablet, desktop, multi-device, or linked panorama templates, including fixed isometric device poses. Export opaque RGB PNGs, a preview, files organized by language, and an editable .henscreenshots project for the free web studio. Includes iPad 11-inch and additional Apple device sizes with matching frames, Google Play large-screen presets up to 7680 px, and consistent editing capacity of 50 slides. Store export limits still apply. Imported projects preserve typography and custom background images. To reuse a personal template, download a .henscreenshots project from the studio; the plugin does not access your browser library or import .hentemplate files directly. Hen Screenshots is free and MIT-licensed. Requires Node.js 22.12+ and one-time dependency setup with internet access. Rendering then runs locally offline. Hen does not upload captures or require an API key. Your agent provider\u2019s plan and data policies still apply. Supports PNG, JPEG, and still WebP inputs. Review captions, crops, and store requirements before publishing.",
+    "longDescription": "Create App Store screenshots, Google Play screenshots and banners, and portfolio mockups from your own images. Choose phone, tablet, desktop, multi-device, or linked panorama templates, including fixed isometric device poses. Export opaque RGB PNGs, a preview, files organized by language, and an editable .henscreenshots project for the web studio. Includes iPad 11-inch and additional Apple device sizes with matching frames, Google Play large-screen presets up to 7680 px, and consistent editing capacity of 50 slides. Store export limits still apply. Imported projects preserve typography and custom background images. To reuse a personal template, download a .henscreenshots project from the studio; the plugin does not access your browser library or import .hentemplate files directly. Requires Node.js 22.12+ and one-time dependency setup with internet access. Rendering then runs locally offline. Hen does not upload captures or require an API key. Your agent provider\u2019s data policies still apply. Supports PNG, JPEG, and still WebP inputs. Review captions, crops, and store requirements before publishing.",
     "developerName": "Hensell",
     "category": "Creativity",
     "capabilities": [
@@ -37,7 +37,7 @@
     "composerIcon": "./assets/icon.png",
     "logo": "./assets/icon.png",
     "supportURL": "https://github.com/Hensell/hen-screenshots/issues",
-    "privacyPolicyURL": "https://github.com/Hensell/hen-screenshots/blob/plugin-v0.2.7/plugins/hen-screenshots/PRIVACY.md"
+    "privacyPolicyURL": "https://github.com/Hensell/hen-screenshots/blob/main/plugins/hen-screenshots/PRIVACY.md"
   },
   "license": "MIT"
 }
