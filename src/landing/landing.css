@@ -1349,3 +1349,290 @@ details > p {
 .landing-footer {
   flex-wrap: wrap;
 }
+
+/* Landing direction: a composition studio, with actual exports as the material.
+   Scoped here because the agent guide shares the base public-page stylesheet. */
+body.landing-page {
+  --brand-paper: #faf9f6;
+  --brand-sage: #e8ece5;
+  --brand-muted: #535e57;
+  background: var(--brand-paper);
+}
+.landing-page .landing-header {
+  min-height: 96px;
+  border-bottom: 0;
+}
+.landing-page .hero {
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 28px 64px;
+  padding-block: 56px 88px;
+}
+.landing-page .hero h1 {
+  font-size: clamp(3.5rem, 6.4vw, 5.8rem);
+  font-weight: 800;
+  letter-spacing: -0.065em;
+  line-height: 1.04;
+}
+.landing-page .lead {
+  max-width: 370px;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  margin-top: 28px;
+}
+.landing-page .hero-actions {
+  gap: 24px;
+  margin-top: 32px;
+}
+.landing-page .action {
+  border-radius: 999px;
+  min-height: 52px;
+  padding-inline: 24px;
+}
+.landing-page .action-small {
+  min-height: 44px;
+  padding-inline: 18px;
+}
+.landing-page .hero-art {
+  position: relative;
+  padding: 36px 24px 22px;
+  background: #e8ece5;
+  border-radius: 180px 180px 16px 16px;
+}
+.landing-page .hero-prints {
+  aspect-ratio: 1.02;
+  margin-block: 16px 24px;
+}
+.landing-page .print {
+  width: 47%;
+  box-shadow: 0 16px 24px #20272518;
+}
+.landing-page .print-dark {
+  left: 3%;
+  top: 0;
+  transform: rotate(-5deg);
+}
+.landing-page .print-light {
+  left: 50%;
+  top: 11%;
+  transform: rotate(5deg);
+}
+.landing-page .hero-art figcaption,
+.landing-page .reassurance,
+.landing-page .hero-capabilities {
+  font-size: 0.75rem;
+}
+.landing-page .reassurance {
+  color: var(--brand-ink);
+  font-weight: 650;
+}
+.landing-page .hero-capabilities > span[aria-hidden] {
+  margin-inline: 4px;
+}
+.landing-page .section-space {
+  padding-block: 96px;
+}
+.landing-page h2 {
+  font-weight: 750;
+  letter-spacing: -0.05em;
+}
+.landing-page .possibilities-section {
+  border-top: 1px solid var(--brand-border);
+}
+.landing-page .section-intro {
+  gap: 64px;
+  margin-bottom: 48px;
+}
+.landing-page .output-grid {
+  gap: 20px;
+  grid-template-columns: 1.15fr 1fr;
+}
+.landing-page .output-grid article {
+  border-radius: 16px;
+}
+.landing-page .output-stores,
+.landing-page .translation-demo {
+  background: #e8ece5;
+}
+.landing-page .output-portfolio,
+.landing-page .output-banner {
+  background: #efeee9;
+}
+.landing-page .output-copy {
+  padding: 36px 36px 0;
+}
+.landing-page .output-copy h3 {
+  font-weight: 750;
+}
+.landing-page .output-banner {
+  padding: 36px;
+}
+.landing-page .output-banner .output-copy {
+  padding: 0;
+}
+.landing-page .output-phone-art {
+  padding-block: 48px;
+}
+.landing-page .output-note,
+.landing-page .portfolio-example figcaption,
+.landing-page .panorama-example figcaption {
+  font-size: 0.75rem;
+}
+.landing-page .translation-demo {
+  border-radius: 16px;
+  padding: 28px;
+}
+.landing-page .template-examples {
+  gap: 24px;
+}
+.landing-page .template-examples img {
+  border-radius: 8px;
+}
+.landing-page .template-examples figcaption {
+  margin-top: 20px;
+}
+.landing-page .template-examples figcaption strong {
+  font-size: 1rem;
+}
+.landing-page .panorama-section {
+  background: #e8ece5;
+}
+.landing-page .panorama-layout {
+  gap: 88px;
+}
+.landing-page .panorama-tiles {
+  gap: 4px;
+}
+.landing-page .panorama-tiles img {
+  box-shadow: none;
+}
+.landing-page .brand-section h2,
+.landing-page .how-section h2,
+.landing-page .faq-section h2,
+.landing-page .feedback-section h2 {
+  font-size: clamp(2rem, 3.5vw, 3rem);
+}
+.landing-page .steps h3,
+.landing-page .brand-benefits h3 {
+  font-size: 1.25rem;
+  font-weight: 750;
+}
+.landing-page .plugin-announcement {
+  padding-block: 32px;
+  margin-bottom: 40px;
+}
+.landing-page .free-layout h2 {
+  font-weight: 750;
+}
+.landing-page .free-section {
+  border-radius: 24px;
+  margin-inline: 20px;
+}
+.landing-page .free-section .wrap {
+  width: min(1200px, calc(100% - 64px));
+}
+.landing-page .free-copy .action-paper {
+  background: var(--brand-paper);
+}
+.landing-page .landing-footer {
+  padding-block: 40px;
+}
+@media (max-width: 1240px) {
+  .landing-page .landing-header {
+    min-height: 80px;
+  }
+}
+@media (max-width: 1000px) {
+  .landing-page .hero {
+    gap: 24px 32px;
+  }
+  .landing-page .hero h1 {
+    font-size: clamp(3rem, 6.4vw, 4.5rem);
+  }
+  .landing-page .hero-art {
+    padding: 24px 18px 20px;
+  }
+  .landing-page .hero-art figcaption {
+    font-size: 0.6875rem;
+  }
+  .landing-page .panorama-layout {
+    gap: 40px;
+  }
+}
+@media (max-width: 760px) {
+  .landing-page .hero {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-block: 32px 56px;
+  }
+  .landing-page .hero h1 {
+    font-size: clamp(2.8rem, 10.6vw, 4.8rem);
+  }
+  .landing-page .hero-art {
+    margin-top: 12px;
+    padding: 24px 18px 20px;
+    border-radius: 140px 140px 12px 12px;
+  }
+  .landing-page .hero-prints {
+    aspect-ratio: 1.08;
+  }
+  .landing-page .hero-art figcaption {
+    font-size: 0.6875rem;
+    flex-direction: column;
+  }
+  .landing-page .lead {
+    font-size: 1rem;
+  }
+  .landing-page .hero-actions {
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .landing-page .hero-capabilities {
+    font-size: 0.6875rem;
+  }
+  .landing-page .section-space {
+    padding-block: 56px;
+  }
+  .landing-page .section-intro {
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .landing-page .output-grid {
+    grid-template-columns: 1fr;
+  }
+  .landing-page .output-copy {
+    padding: 28px 24px 0;
+  }
+  .landing-page .output-banner {
+    padding: 28px 24px;
+  }
+  .landing-page .output-phone-art {
+    padding-block: 36px;
+  }
+  .landing-page .translation-demo {
+    padding: 20px 16px;
+  }
+  .landing-page .template-examples {
+    gap: 28px 16px;
+  }
+  .landing-page .panorama-layout {
+    gap: 32px;
+  }
+  .landing-page .free-section {
+    margin-inline: 8px;
+    border-radius: 16px;
+  }
+  .landing-page .free-section .wrap {
+    width: calc(100% - 32px);
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .landing-page .print {
+    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .landing-page .hero-art:hover .print-dark {
+    transform: translateY(-6px) rotate(-2deg);
+  }
+  .landing-page .hero-art:hover .print-light {
+    transform: translateY(-6px) rotate(2deg);
+  }
+}
